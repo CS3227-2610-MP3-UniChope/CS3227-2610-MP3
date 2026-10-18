@@ -24,6 +24,23 @@ control over what is saved.
 
 ## 3. Functional Requirements and Acceptance Criteria
 
+### User stories
+
+These stories explain the user needs. The linked requirements below define their
+acceptance criteria; the stories do not add separate functionality.
+
+| ID | User story | Requirements |
+| --- | --- | --- |
+| US-T01 | As a tutor, I want to view my upcoming availability so I can check which consultation times I have offered. | [TUT-SLOT-01](#tut-slot-01-view-availability) |
+| US-T02 | As a tutor, I want to publish slots for my assigned modules so students can book consultations during my available times. | [TUT-SLOT-02](#tut-slot-02-create-a-slot) |
+| US-T03 | As a tutor, I want to cancel an unbooked slot so students cannot book a time I can no longer offer. | [TUT-SLOT-03](#tut-slot-03-cancel-a-slot) |
+| US-T04 | As a tutor, I want to filter my bookings by module, date, and status so I can find and prepare for relevant consultations. | [TUT-BOOK-01](#tut-book-01-view-bookings) |
+| US-T05 | As a tutor, I want to mark a consultation complete so its outcome is reflected in the booking and slot records. | [TUT-BOOK-02](#tut-book-02-complete-a-consultation) |
+| US-T06 | As a tutor, I want to review my cancelled and completed slots so I can refer to my consultation history. | [TUT-HIST-01](#tut-hist-01-view-slot-history) |
+| US-T07 | As a tutor, I want to load, edit, and save private notes for my completed consultations so I can retain their outcomes and follow-up actions. | [TUT-NOTE-01](#tut-note-01-load-and-save-notes) |
+| US-T08 | As a tutor, I want an editable AI draft from my rough notes so I can prepare structured notes while controlling what is saved. | [TUT-AI-01](#tut-ai-01-generate-an-editable-note-draft), [TUT-NOTE-01](#tut-note-01-load-and-save-notes) |
+| US-T09 | As a tutor, I want to retain my work and continue writing notes manually when AI is unavailable or limited so I can finish documenting a consultation. | [TUT-AI-02](#tut-ai-02-handle-ai-limits-and-failures), [TUT-NOTE-01](#tut-note-01-load-and-save-notes) |
+
 ### TUT-SLOT-01: View availability
 
 - Show the tutor's AVAILABLE and BOOKED slots whose start is strictly after the
