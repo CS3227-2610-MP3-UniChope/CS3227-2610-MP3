@@ -29,6 +29,12 @@ Three roles are proposed because MP2 has three roles. Team size and final role
 allocation remain unconfirmed. If there are two teammates, revise this scope
 before using it as an implementation baseline.
 
+Current shared allocation, corrected by the human on 20 October 2026: Huanghao
+(Tutor) owns platform/core domain, core tables/repositories/migrations and
+ConsultationLifecycle; the Student role owns shared AI infrastructure. Each role
+still owns its own AI feature. Other assignments and teammate acceptance are not
+implied by this allocation.
+
 ## 2. Functional Requirements (Product-Level)
 
 | ID | Requirement | Scope status |
@@ -100,8 +106,10 @@ Hosting and provider access still require verification.
 
 Technical requirements, shared security/reliability constraints, API/data contracts,
 and execution tasks belong in separate technical, integration, and plan documents.
-Those documents have not yet been written. This product spec
-does not establish endpoint names, schema definitions, or implementation steps.
+See the draft [Shared Technical Spec](SHARED-TECHNICAL-SPEC.md),
+[Integration Spec](INTEGRATION-SPEC.md), [Tutor Technical Spec](tutor/TECHNICAL-SPEC.md),
+and [Tutor Plan](tutor/PLAN.md). This product spec does not establish endpoint
+names, schema definitions, or implementation steps. All drafts require review.
 
 ## 8. Development and Submission Constraints
 
@@ -123,4 +131,5 @@ does not establish endpoint names, schema definitions, or implementation steps.
 1. Confirm team size, role ownership, and Student/Admin AI scope.
 2. Review the proposed active-account and tutor-private-note policies together.
 3. Agree shared technical and integration contracts before role implementations.
-4. Confirm SoC limits and deployment connectivity; approve concrete AI budgets.
+4. Before enabling the real provider, confirm SoC limits and deployment connectivity
+   and approve concrete AI budgets. Fake-backed development can proceed first.
