@@ -1,0 +1,28 @@
+# Local editor settings
+.idea/
+.vscode/
+.DS_Store
+
+# Local environment files and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+
+# Build outputs and dependency caches
+node_modules/
+dist/
+coverage/
+.gradle/
+build/
+*.class
+
+# Local databases and runtime logs (development summaries belong in logs/)
+*.db
+*.db-shm
+*.db-wal
+*.log
+!workflow/core/evidence/*.log
+!workflow/tutor/evidence/*.log

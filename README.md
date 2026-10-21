@@ -1,9 +1,14 @@
 # CS3227-2610-MP3
 
-UniChope MP3 is currently in specification drafting; no application is implemented yet.
+UniChope shared core development baseline: domain models, PostgreSQL read repositories,
+consultation lifecycle. Authentication storage
+extensions, management writes and production database activation remain pending.
+
+Start with the [backend README](src/backend/README.md) for the available
+interfaces, tests and integration limits. The backend is under `src/backend`.
+Existing Admin/Auth specifications are preserved; see the
+[integration contract](workflow/INTEGRATION-SPEC.md) and
+[shared technical specification](workflow/SHARED-TECHNICAL-SPEC.md).
 
 - [Shared product specification](workflow/PRODUCT-SPEC.md)
 - [Tutor product specification](workflow/tutor/PRODUCT-SPEC.md) (owner: Huanghao)
-
-Team review, technical/integration specifications, and an implementation plan
-are still required before feature implementation.
