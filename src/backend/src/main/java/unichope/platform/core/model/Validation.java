@@ -13,7 +13,10 @@ public final class Validation {
 
     public static String email(String value) {
         String email = text(value, "email");
-        if (!email.matches("[^\\s@]+@[^\\s@]+\\.[^\\s@]+")) {
+        int at = email.indexOf('@');
+        if (at <= 0 || at != email.lastIndexOf('@') || at == email.length() - 1
+                || email.codePointCount(0, email.length()) > 254
+                || email.codePoints().anyMatch(c -> Character.isWhitespace(c) || Character.isSpaceChar(c) || Character.isISOControl(c))) {
             throw new IllegalArgumentException("email must be a valid email address");
         }
         return email;

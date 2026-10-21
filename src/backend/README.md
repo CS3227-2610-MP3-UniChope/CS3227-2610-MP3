@@ -48,7 +48,50 @@ not verify PostgreSQL behavior.
 DDL for explicitly isolated tests, not an active/default production migration.
 There is no automatic datasource/service wiring or authentication implementation.
 The committed [auth specification](../../workflow/auth/TECHNICAL-SPEC.md) selects
-passwordHash and sessionGeneration on users; the corresponding model/storage,
-atomic provisioning/revocation and production migration remain unimplemented here.
+passwordHash and sessionGeneration on users. The core account proposal below now
+implements internal storage and atomic provisioning/revocation. Authentication
+wiring, session policy and production migration activation remain pending.
 Its storage decision supersedes the historical SQL comment; reviewed SQL is unchanged.
 Core and Student AI owners must coordinate production migration versions.
+
+
+Core account storage proposal
+-----------------------------
+`AccountStorage` / `PostgresAccountStorage` add internal credential reads and guarded
+account operations. Public `User` and `AccountState` remain credential-free; the
+internal snapshot deliberately uses non-bean accessors and redacts diagnostics.
+Keep it out of DTOs and custom serializers. No auth/session/HTTP service is wired.
+
+Only the new isolated auth tests explicitly select `db/core-review` followed by
+`db/auth-review`. V1 and the original credential-free tests remain unchanged.
+The review extension requires an empty users table; applying it to existing accounts
+fails atomically. Production activation, migration numbering, real-account backfill
+and owner agreement require a separate review.
+
+Creation strips names (1–100 Unicode code points), strips and ROOT-lowercases emails
+(1–254 code points, one @, nonempty sides, no Unicode whitespace/control), and accepts
+dotless domains. Hash generation/format checking is auth-owned and happens before
+core; core accepts nonblank encoded material only. New credential reads use exact
+Java canonical email equality. Ordinary user reads preserve legacy case-insensitive
+lookup while filtering any PostgreSQL case-folding alias with a different Java
+canonical identity. The unchanged lower(btrim(email)) unique index can reject extra
+Unicode equivalents under the selected database collation; this returns generic
+ACCOUNT_UNAVAILABLE. No NFC or ASCII-only restriction is introduced.
+
+Each write/confirmation owns READ COMMITTED / REQUIRES_NEW commit and rollback,
+locks existing users in PostgreSQL UUID order before consultation reads, and uses
+5-second lock / 10-second statement timeouts. A surrounding caller transaction does
+not become atomic with this boundary. Contention is TEMPORARILY_UNAVAILABLE; only
+structured `users_email_unique` violations mean ACCOUNT_UNAVAILABLE. Other storage
+failures become STORAGE_FAILURE with no retained SQL cause, since PostgreSQL error
+DETAIL can contain the encoded hash. This deliberately trades raw outward database
+diagnostics for a safe internal error boundary; add any future internal observability
+without logging SQL parameters or failing rows. No automatic retry occurs.
+
+Trusted `AdminContext` comes from auth, which remains responsible for establishing
+caller identity. Confirmation accepts only observations after outside-lock password
+verification. It returns identity/generation after commit; auth must still recheck
+its deadline/reservation before issuance and fresh state/generation for protected
+requests. A deactivation after confirmation can invalidate its result immediately.
+The PostgreSQL driver already used at runtime is now compile-visible solely for
+structured constraint metadata, with the same BOM-managed dependency/version.
