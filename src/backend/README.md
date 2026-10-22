@@ -46,7 +46,7 @@ not verify PostgreSQL behavior.
 
 `src/main/resources/db/core-review/V1__create_core_tables.sql` is credential-free
 DDL for explicitly isolated tests, not an active/default production migration.
-There is no automatic datasource/service wiring or authentication implementation.
+The app-api profile now supplies explicit datasource/service/authentication wiring.
 The committed [auth specification](../../workflow/auth/TECHNICAL-SPEC.md) selects
 passwordHash and sessionGeneration on users. The core account proposal below now
 implements internal storage and atomic provisioning/revocation. Authentication
@@ -60,7 +60,7 @@ Core account storage proposal
 `AccountStorage` / `PostgresAccountStorage` add internal credential reads and guarded
 account operations. Public `User` and `AccountState` remain credential-free; the
 internal snapshot deliberately uses non-bean accessors and redacts diagnostics.
-Keep it out of DTOs and custom serializers. No auth/session/HTTP service is wired.
+Keep it out of DTOs and custom serializers. The app-api profile wires auth/session/HTTP services.
 
 Only the new isolated auth tests explicitly select `db/core-review` followed by
 `db/auth-review`. V1 and the original credential-free tests remain unchanged.
@@ -95,3 +95,49 @@ its deadline/reservation before issuance and fresh state/generation for protecte
 requests. A deactivation after confirmation can invalidate its result immediately.
 The PostgreSQL driver already used at runtime is now compile-visible solely for
 structured constraint metadata, with the same BOM-managed dependency/version.
+
+## Running the integrated application
+
+The `app-api` profile activates authentication, Admin and Tutor APIs. Default startup
+remains closed and database-free. Runtime migrations use `db/migration`: core V1,
+account columns V2, private notes V3 and initial-Admin marker V4. Existing isolated
+review migrations/tests remain unchanged. Use a new empty database for first setup;
+these migrations do not backfill credentialless accounts from old review schemas.
+
+Set `UNICHOPE_JDBC_URL`, `UNICHOPE_JDBC_USER` and `UNICHOPE_JDBC_PASSWORD` for a
+PostgreSQL database. For first setup only, set `UNICHOPE_ADMIN_NAME`,
+`UNICHOPE_ADMIN_EMAIL`, `UNICHOPE_ADMIN_PASSWORD` and run `./gradlew bootstrapAdmin`.
+This hashes the password and creates one Admin under a database lock. Repeated setup
+is rejected. Remove the Admin credential variables afterward. No default account or
+HTTP bootstrap endpoint exists. Never use production credentials for tests.
+
+Run `./gradlew bootRun --args='--spring.profiles.active=app-api,local'` locally.
+On Windows use `gradlew.bat`. `local` permits an HTTP session cookie; omit that profile
+for production HTTPS. Production uses Secure/HttpOnly/SameSite=Lax cookies and a
+30-minute idle session. The deployment proxy must preserve HTTPS correctly; configure
+forwarded headers only for a trusted proxy. The server uses one replica/in-memory
+sessions; restart requires sign-in again while database records remain.
+
+Authentication endpoints: `GET /api/auth/csrf`, `POST /api/auth/login`,
+`GET /api/auth/me`, `POST /api/auth/logout`, `POST /api/auth/register`.
+Obtain CSRF first with cookies, send its returned header/token on mutations and
+obtain a new token after login/logout. User output contains only id/name/role.
+Student registration does not sign in. Password reset/change and forced-change flows
+are excluded. Admin APIs are specified in `workflow/admin/TECHNICAL-SPEC.md`.
+Tutor APIs now receive trusted identity from the same session through runtime wiring.
+
+AI is unavailable by default. `UNICHOPE_AI_MODE=fake` is permitted only with `local`
+and produces explicitly labelled deterministic reports without a model call. Its
+in-memory limits support local testing only. No real SoC adapter or shared durable
+quota implementation is supplied by this Admin/auth increment; production returns
+AI_UNAVAILABLE for nonempty reports. Empty statistics need no provider. Do not treat
+fake output as satisfying the final product AI requirement. Integrate the Student-owned
+gateway with durable shared limits/deadlines before enabling real reports.
+
+
+When the shared provider and durable quotas are implemented, `UNICHOPE_AI_MODE=shared`
+selects the externally supplied AiGateway bean. Missing bean fails startup; nonlocal
+fake responses are rejected. Do not use shared mode before that infrastructure is
+verified. Role-level report deadlines and in-flight checks do not replace its durable
+request/token accounting. An interrupted provider that still runs retains the
+per-account block beyond60seconds until it actually finishes.

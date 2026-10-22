@@ -2,7 +2,7 @@
 
 Status: draft for review, 21 October 2026. Owner Kok Seng; reviewer Student.
 [Product](PRODUCT-SPEC.md), [shared technical](../SHARED-TECHNICAL-SPEC.md),
-[integration](../INTEGRATION-SPEC.md) at main50c6213 are inputs.
+[integration](../INTEGRATION-SPEC.md) at main98ca801 are inputs.
 
 ## Structure and inherited conventions
 
@@ -126,3 +126,19 @@ actions, and no retry. Empty data makes no provider call. Shared provider budget
 may impose stricter limits; real generation stays unavailable until verified provider
 token accounting and output-token cap are configured by the shared AI implementation.
 Fake-backed development and tests do not require those provider details.
+
+## Runtime implementation notes — 22 October 2026
+
+Use app-api to activate authenticated Admin APIs. AccountStorage provides guarded
+provisioning/activation; PostgresAdminRepository supplies module/assignment mutations
+with the existing parent lock order and statistics using a single SQL statement.
+
+Report gateway calls use4 workers/16queue and30-second response deadline. Same-user
+in-flight calls return409 AI_BUSY with Retry-After. Uncertain calls remain blocked
+for at least60seconds and until actual worker completion, preventing overlap when
+a provider ignores interruption. This role-level safety does not replace shared
+durable request/token budgets. The default runtime has no real provider; local fake
+mode is labelled, limited in memory and never claims production quota durability.
+Selected development token cap is2048; real shared provider must verify compatible
+request/token accounting before activation. shared mode accepts an externally supplied
+AiGateway bean, rejects fake results outside local and retains role safeguards.

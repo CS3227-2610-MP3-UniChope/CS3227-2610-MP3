@@ -1,7 +1,7 @@
 # Admin product specification
 
-Status: draft for Kok Seng to decide, 21 October 2026. Owner: Kok Seng.
-Baseline: main 50c6213, fetched before this work. No implementation/approval claim.
+Status: backend implemented locally, 22 October 2026. Owner: Kok Seng.
+Baseline: main 98ca801, fetched before this work. Implementation status is recorded below; release acceptance is pending.
 Parents: ADM-01, ADM-AI-01, SEC-01/02/03 in [shared product](../PRODUCT-SPEC.md).
 Use [shared technical](../SHARED-TECHNICAL-SPEC.md) and
 [integration](../INTEGRATION-SPEC.md); this document extends rather than replaces them.
@@ -15,9 +15,9 @@ AI infrastructure belongs to Student under current shared allocation. Tutor-loca
 documents still claim AI ownership: reconcile that discrepancy, do not reassign it.
 No private notes, autonomous actions, history deletion or core lifecycle bypass.
 
-## Proposed role requirements
+## Role requirements
 
-Detailed Admin rules below are proposals for review, not inherited shared decisions.
+The rules below define the implemented Admin behavior.
 All calls require current active ADMIN; mutation eligibility is rechecked under locks.
 
 | ID | Behavior | Acceptance cases |
@@ -44,9 +44,20 @@ No persistent reports, chat, exports or extra data source is required.
 
 Kok Seng decides Admin scope, management rules, statistics and AI report policies.
 Coordinate shared storage, locks and gateway interfaces with their implementers.
-Password reset and forced password change are excluded. Specifications and tests
-remain drafts until the relevant decisions are made.
+Password reset and forced password change are excluded. Implementation and verification status are recorded below.
 
 
 Admin AI input/output/security limits are selected in the technical specification,
 including aggregate-only input and no automatic actions.
+
+
+## Implementation status — 22 October 2026
+
+Admin account/module/assignment APIs, booking queries, deterministic statistics and
+aggregate-only report parsing are implemented locally. Reports have bounded workers,
+a30-second deadline and per-user in-flight protection. Interrupted/uncertain calls
+retain protection for at least60seconds and until the worker actually finishes.
+Fake reports are explicitly local; production defaults to AI_UNAVAILABLE. Completing
+a live SoC report depends on the Student-owned shared provider and durable quota
+infrastructure. No frontend or deployment is claimed. Verification results are
+recorded in logs/kokseng.md after checks complete.
