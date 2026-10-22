@@ -12,4 +12,5 @@ public interface ConsultationLifecycle {
     Booking bookAvailableSlot(UUID actorId, UUID slotId);
     Booking cancelActiveBooking(UUID actorId, UUID bookingId);
     Booking completeActiveBooking(UUID actorId, UUID bookingId);
+    LockedCompletedBooking lockForPrivateNote(UUID tutorId, UUID bookingId);
 }

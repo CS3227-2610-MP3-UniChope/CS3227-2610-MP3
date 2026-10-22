@@ -1,0 +1,48 @@
+name: Backend CI
+
+on:
+  pull_request:
+    branches: [main, prepare/core-sharing]
+  push:
+    branches: [main, prepare/core-sharing]
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: mp3_test
+          POSTGRES_USER: mp3_test
+          POSTGRES_PASSWORD: ci_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mp3_test -d mp3_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: gradle
+
+      - name: Run unit, PostgreSQL, and packaging checks
+        working-directory: src/backend
+        run: >-
+          ./gradlew test postgresTest bootJar
+          -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:5432/mp3_test
+          -Dcore.test.user=mp3_test
+          -Dcore.test.password=ci_test_password
