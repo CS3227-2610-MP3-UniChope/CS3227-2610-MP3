@@ -20,7 +20,7 @@ of shared code or authorize changing another teammate's contracts.
 
 | Agent | Run with | Responsibility | Produces |
 | --- | --- | --- | --- |
-| [Spec analyst](agents/spec-analyst.md) | Claude | Understand the request, inspect existing contracts, specify behavior, plan small tasks | Spec changes, acceptance IDs, plan, risks and dependencies |
+| [Spec analyst](agents/spec-analyst.md) | Claude | Audit requirements against technical/integration specs, propose and resolve fixes, specify behavior and plan tasks | Coverage matrix, findings/resolutions, spec readiness verdict, acceptance IDs and plan |
 | [Test writer](agents/test-writer.md) | GPT | Turn acceptance criteria into independent behavioral tests before implementation | Tests, acceptance-to-test mapping, expected failure evidence |
 | [Implementer](agents/implementer.md) | GPT | Implement one agreed task while preserving contracts and test intent | Code, passing verification evidence, limitations |
 | [Reviewer / security checker](agents/reviewer-security.md) | Claude, fresh session | Inspect spec, tests and diff independently; examine security and integration | Findings with evidence, review verdict, retest requirements |
@@ -42,8 +42,9 @@ Claude review. If the required model is unavailable, record that stage as pendin
 - Applicable repository instructions and skills, actual source and build configuration.
 
 The existing specifications are drafts. Do not treat their presence as approval
-or as evidence that code exists. Student product/technical specifications and a
-Student plan still need to be written for concrete Student features.
+or as evidence that code exists. Read the current [Student product spec](PRODUCT-SPEC.md),
+[Student technical spec](TECHNICAL-SPEC.md) and [Student plan](PLAN.md) when relevant;
+their presence does not replace the task-specific consistency and readiness check.
 
 ## The working loop
 
@@ -85,8 +86,9 @@ The diagram below describes the standard path after the scope check.
 ```mermaid
 flowchart TD
     A[Scoped change and repository context] --> B[Claude: spec analyst]
-    B --> C[Agreed spec, acceptance criteria and tasks]
-    C --> D[GPT: test writer]
+    B --> C{Requirements and technical specs consistent?}
+    C -->|No: propose fixes and resolve decisions| B
+    C -->|Yes: READY_FOR_TESTS| D[GPT: test writer]
     D --> E[GPT: implementer]
     E --> F[Claude: independent review and security check]
     F -->|Code defect| E
@@ -96,6 +98,19 @@ flowchart TD
 ```
 
 ### 1. Claude specifies one small change
+
+The analyst also performs a technical readiness check before handoff. First audit
+the request and current documents without changing them. Map each requirement to
+the role/shared technical and integration contract that supports it. Record gaps,
+contradictions, unverified assumptions and implementation drift with references.
+Do not silently prioritize an existing draft over the request or change a shared
+contract to make the conflict disappear.
+
+For each flaw, propose a concrete fix, its target document, impact, affected tests
+and decision owner. Apply already-authorized clarifications; keep material policy
+or cross-owner changes proposed until the required decision is recorded. Recheck
+the revised specs and record each finding's resolution. A report containing only
+questions, without recommended fixes where evidence permits them, is incomplete.
 
 Read the current behavior and authoritative contracts. Describe the goal,
 non-goals, affected roles and files, owner dependencies, and externally visible
@@ -117,7 +132,26 @@ Shared contract changes need the affected owner's agreement/review under the
 existing team rules. Routine implementation details within that baseline do not
 need repeated permission.
 
+Record READY_FOR_TESTS only for a named task whose acceptance criteria and
+technical contracts agree, blocking findings are resolved, necessary decisions
+are recorded and validation is feasible. Use CHANGES_REQUIRED for unresolved
+actionable flaws or BLOCKED for essential unavailable evidence/decisions. Deferred
+provider details need not block fake-backed tasks that do not depend on them.
+Spec readiness proves document consistency for that scope, not working software.
+
+For example, if a proposed login flow stores a session secret in browser storage,
+cite its conflict with SH-AUTH-02, explain the exposure, propose server-side
+sessions with the configured cookie/CSRF flow, and update the agreed UI/technical
+contract before tests are written. Add acceptance coverage for logout/session
+expiry and private-state clearing. This is an illustrative finding, not a claim
+that the current application contains this defect.
+
 ### 2. GPT writes tests against the spec
+
+Before editing tests, verify the analyst's readiness verdict and spec revision
+for this task. Read its findings and fixes; return unresolved or stale contracts
+to Claude rather than inventing the expected result. READY_FOR_IMPLEMENTATION
+requires the current readiness record and executable test baseline evidence.
 
 Use the test-writer prompt in a separate session. Map acceptance IDs to tests
 and identify cases requiring manual or real-provider evaluation. Cover behavior
@@ -135,6 +169,10 @@ until executable; do not fabricate commands or failure evidence.
 
 ### 3. GPT implements the smallest agreed task
 
+Check both upstream handoffs: the analyst's readiness decision and the test
+writer's baseline must refer to the current task and spec/test revisions. Missing
+or stale readiness is a reason to return the handoff, not skip directly to code.
+
 Use the implementer prompt with the baseline spec and test handoff. Read the
 tests and implement the behavior, then run the focused tests and affected
 integration/build checks. Keep SQL in repositories, policy in services and
@@ -150,6 +188,8 @@ and review evidence and must be checked again.
 Start a fresh Claude session with the reviewer prompt, baseline, complete diff,
 test sources and command results. The reviewer inspects evidence and reruns
 checks when possible rather than accepting the implementer's summary.
+Independently check the analyst's flaw resolutions as well; shared model choice
+does not make the analyst's self-check an independent review.
 
 Review all changed shared boundaries. Require concrete findings: severity,
 file/line, affected acceptance ID, trigger, impact and recommended correction.
@@ -161,6 +201,8 @@ unmet requirement cannot be waived by merely assigning it a lower severity.
 GPT fixes implementation findings; the test writer handles coverage gaps; Claude
 revises requirements when needed. Claude reviews the resulting diff again.
 Review is tied to the actual code revision/diff, not a permanently valid badge.
+After two fix/review cycles on the same unresolved finding without new evidence,
+summarize the issue and options for the human owner instead of looping indefinitely.
 
 ### 5. Verify and keep the record current
 
@@ -192,6 +234,13 @@ failure. Production fake mode cannot satisfy the AI requirement.
 
 ## One handoff record per change
 
+Follow the [handoff protocol](HANDOFF.md): exchange a factual artifact manifest
+and evidence, not conversations or interaction logs. Do not read `logs/` or
+previous agents' transcripts/summaries as task context; exclude them from searches.
+Each role starts in a fresh session, reads canonical requirements directly and
+verifies the producer's referenced artifacts before accepting the handoff. A
+readiness verdict is a claim to check, not a substitute for those artifacts.
+
 Keep records at `workflow/student/changes/<change-id>.md` for work coordinated
 here, including shared work. This directory is created when the first change
 starts. Link canonical specs; do not duplicate them into every record. Keep tests
@@ -207,11 +256,30 @@ Scope classification and reason:
 Parent request / related changes / dependencies (if split):
 Human owner / affected owners:
 Current agent role / actual model or tool:
+Stage handoff manifest / revision (see HANDOFF.md):
+Receiver receipt: ACCEPTED | RETURNED, with checked inputs or exact missing evidence
 Base commit and current revision/diff reference:
 Spec paths + revision (commit or hash if uncommitted):
 Acceptance IDs and Given/When/Then scenarios:
 Allowed scope/files and dependencies:
 Assumptions / open decisions / owner agreement:
+
+## Requirement-to-technical coverage
+| Requirement / acceptance ID | Product source | Technical / integration source | Coverage | Planned validation |
+| --- | --- | --- | --- | --- |
+Coverage: COVERED | MISSING | CONFLICT | UNVERIFIED
+COVERED describes specification support, not implemented/tested behavior.
+
+## Spec findings and proposed fixes
+| Finding ID / severity | Evidence and impact | Proposed fix / target | Decision owner | Resolution reference / state |
+| --- | --- | --- | --- | --- |
+
+## Spec readiness
+Verdict: READY_FOR_TESTS | CHANGES_REQUIRED | BLOCKED
+Assessed task and exact spec revision/hash:
+Remaining findings and task-specific deferral rationale:
+Required owner decisions and recorded outcome:
+Recheck evidence:
 
 ## Tasks and acceptance-to-test mapping
 | Task | Acceptance ID | Test file/case or manual check | State |
@@ -237,8 +305,17 @@ Next agent, exact task and required inputs:
 
 Include enough evidence to reproduce checks, with secret values and private data
 removed. Never include raw credentials, private consultation text or hidden model
-reasoning. Sanitized interaction summaries may be recorded in `logs/` after human
-verification; a handoff is not a verified interaction log.
+reasoning. Append required sanitized interaction summaries to `logs/` from the
+current task, pending human verification, without reading previous entries.
+These summaries are never inputs to handoffs. Sanitized command-output artifacts
+are verification evidence and remain separate from narrative interaction logs.
+
+Before accepting a handoff, the receiving agent checks that its task, input
+revisions, scope and dependencies match the actual files. Record a mismatch and
+return it to the responsible stage. Updating a spec invalidates its old readiness
+verdict and affected tests/review; updating code invalidates affected review
+evidence. Refresh only the evidence affected by the change. Keep earlier findings
+and resolutions traceable rather than erasing them after a fix.
 
 ## Start a change
 
@@ -248,3 +325,22 @@ include Student, Tutor and Admin redirects, expiry and logout behavior.”
 Then pass the resulting record to GPT with `agents/test-writer.md`, followed by
 a separate GPT implementation session with `agents/implementer.md`. Finally pass
 the complete diff and evidence to fresh Claude with `agents/reviewer-security.md`.
+
+## Design influences
+
+This is a team-authored documentation workflow; no SDD toolkit or SDD skill is
+installed or invoked. Concepts adapted for these prompts:
+
+- CS3227 Lecture 7, slides 14-20, 30-31 and 34-38: separate specifications from
+  execution plans, keep specifications current, specialize tasks, hand off and
+  independently verify. The lecture's agent personas are examples, not additional
+  instructions for this repository.
+- [GitHub Spec Kit consistency analysis](https://github.github.com/spec-kit/quickstart):
+  identify cross-document conflicts before implementation and fix their sources.
+- [BMad requirements](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/plan/define-requirements-and-a-specification.md)
+  and [shared architecture decisions](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/plan/design-ux-and-architecture.md):
+  trace requirements to sources and give separate agents consistent technical inputs.
+
+The four-agent Claude/GPT assignment, finding/coverage tables and readiness rules
+are this team's adaptation. These are role instructions, not enforced filesystem
+permissions or an automatic cross-extension launcher.
