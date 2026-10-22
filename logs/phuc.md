@@ -79,3 +79,101 @@ no isolated multi-agent cycle or application tests were run. No commit, push or
 deployment was performed. The instructions do not enforce filesystem permissions.
 
 Verification: pending Phuc's review.
+
+## 22 October 2026: Codex (GPT-6): Shared actor and identity API proposal
+
+I asked Codex to review the current code and propose whether identity should use
+an API such as whoami rather than the Tutor-local current actor. It inspected the
+canonical specifications and source/tests without reading interaction logs. It
+created `workflow/student/changes/shared-current-actor.md` as an unapproved GPT
+inspection and proposal, not an independent Claude review or implementation.
+
+It recommended retaining the existing shared GET /api/auth/me contract, with a
+role-neutral Auth-owned internal actor adapter and PostgreSQL account-state reads.
+It identified missing production Auth wiring, the need to enforce session-generation
+revocation, the Tutor-local interface boundary and an open in-flight revocation
+race policy. The proposal preserves role checks and transactional lifecycle rules;
+shared owner agreement and Claude analysis/review remain pending.
+
+The focused TutorReadServiceTest and TutorActivationTest run passed six tests with
+zero failures, errors or skips after resolving cache access and downloading missing
+dependencies. PostgreSQL tests and real login/end-to-end identity tests were not
+run. Codex checked the proposal links and formatting. No application source was
+changed; no commit, push or deployment was performed.
+
+Verification: pending Phuc's review.
+
+## 22 October 2026: Claude Code (Opus 5.5): Student booking specification and handoff
+
+I asked Claude to implement Student booking according to the spec, ignoring the AI
+feature, and to raise anything unclear rather than assume. After I updated my branch
+onto origin/main, it found Tutor's REST pattern and asked me four questions. I decided
+that Claude prepares the handoff and GPT writes the tests and implementation; that the
+current-user interface goes in platform/auth for teammates to implement, without editing
+Tutor code; that Student owns a read-only repository while all writes go through the
+core lifecycle; and that Docker should provide the test database.
+
+Claude updated the Student technical spec with these decisions and the exact API, input,
+access and error contract, linked the plan to change records, added
+src/backend/compose.test.yaml, and wrote four change records with test-writer handoffs
+under workflow/student/changes (browse slots, book a slot, my bookings, cancel booking).
+It started Docker Desktop and ran the existing suites against the new database: 26 unit
+and 103 PostgreSQL tests passed at 502d09f, recorded as baseline evidence.
+
+No Student code or tests were written. The records stay SPEC_DRAFT until I confirm
+product assumptions on enrolment, listing overlapping slots, cancelling until start and
+the shared conflict code. Nothing was committed, and teammates have not reviewed the
+platform/auth and platform/web additions.
+
+Verification: pending Phuc's review.
+
+
+## 22 October 2026: Codex GPT-6: Student booking scope and decisions
+I asked for all four Student booking changes and fresh sessions for tests. I approved
+any active student booking any active module, listing overlapping slots, cancellation
+until start without notice, and one unavailable-slot conflict response. The agent
+recorded my decisions in workflow/student/PRODUCT-SPEC.md and the four change records,
+verified the current spec hashes and base commit, and prepared the fresh test stage.
+No application code or tests were changed at this point; implementation, execution,
+Claude review and my manual verification remain pending.
+Verification: pending Phuc's review.
+
+## 22 October 2026: Codex GPT-6: C1 test-writer entry check
+I asked for a fresh GPT test-writing stage for Student slot browsing C1-T1 through
+C1-T4 after approving the four proposed booking rules. The agent read the repository
+workflow and canonical contracts, verified the referenced hashes and unchanged base
+artifacts, and appended a returned receiver receipt to
+workflow/student/changes/stu-c1-browse-slots.md. It found the analyst coverage matrix
+and findings/resolution assessment missing, so it recorded the exact Claude handoff
+gaps. My recorded approvals were retained without requesting them again. No tests
+or application implementation were changed, and no build or test suite was run in
+this stage. Historical baseline content and its hash were checked; passing results
+were not freshly verified. Existing local modifications were preserved.
+Verification: pending Phuc's review.
+
+
+## 22 October 2026: Codex GPT-6: Claude readiness repair handoff
+I requested implementation of all four booking changes. A fresh GPT test writer
+returned c1 because the required Claude coverage and findings/resolution assessments
+are missing. The agent prepared workflow/student/changes/CLAUDE-READINESS-HANDOFF.md
+with the exact missing artifacts, my approved rules, current canonical hashes and
+dependency order. No configured Claude launcher was available. Documentation was
+inspected and git diff --check ran without errors; no application tests were run
+and no test or implementation code was written. Claude readiness repair, fresh GPT
+tests/implementation, independent Claude review and my verification remain pending.
+Verification: pending Phuc's review.
+
+## 22 October 2026: Claude Code (Opus 5.5): Single-agent workflow
+
+I asked Claude to remove the Claude/GPT split so that it does every role, each in a
+fresh session. It rewrote NOTE.md, HANDOFF.md, the four role prompts, PLAN.md,
+AGENTS.md and CLAUDE.md so that roles are model-neutral and each runs in a fresh
+session or fresh subagent, never reviewing its own work. It renamed the readiness
+handoff to ANALYST-READINESS-HANDOFF.md and made it model-neutral, refreshing its
+input hashes. In the four change records it neutralised forward-looking role labels
+and added a dated decision (D5) superseding the old assignment, while keeping the
+"actual tool and model" fields and the earlier Codex receipt as historical record.
+
+Only whitespace was checked. No tests or code changed and nothing was committed.
+
+Verification: pending Phuc's review.

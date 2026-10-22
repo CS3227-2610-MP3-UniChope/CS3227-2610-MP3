@@ -15,37 +15,49 @@ allocation. Follow shared auth/session, database, lock-order, error, and API
 conventions. Student code does not invent its own users table, session format,
 booking statuses, SoC credentials, or quota counters.
 
-| Dependency | Owner | Student needs |
-| --- | --- | --- |
-| Backend/frontend scaffold, CI | Team to assign | Build, test, and Testcontainers harness |
-| `platform/core` tables, repositories, `ConsultationLifecycle` | Huanghao | `bookSlot` and `cancelBooking` transitions; bookable-slot and student-booking read queries |
-| `platform/auth` | Kok Seng | Request-scoped current actor, active/role revalidation, CSRF |
-| `platform/web` | Assigned per task | Shared error envelope, request IDs, `no-store` |
-| Shared React shell and API client | Not yet assigned | Authenticated layout, CSRF-aware fetch helper, 401/403 handling |
+| Dependency | Owner | Student needs | State on `branch_student` (base `98ca801`) |
+| --- | --- | --- | --- |
+| Backend scaffold, CI | Huanghao (as built) | Gradle, Boot 4.0.8 MVC/Security, `postgresTest` task | Exists; CI runs `test postgresTest bootJar` on PRs to `main` |
+| `platform/core` lifecycle and repositories | Huanghao | `bookAvailableSlot`, `cancelActiveBooking`, `UserRepository` | Exists; no change needed |
+| `platform/auth` actor seam | Kok Seng implements; Student defines the interface | `CurrentActorProvider` (section 2) | Missing; Student adds the interface only |
+| `platform/web` | Assigned per task | `ApiErrors`, `ApiFailure`, `ApiSecurityConfiguration` | Exists; Student adds a `student-api` route rule |
+| Shared React shell and API client | Not yet assigned | Frontend pages | Out of scope for the booking backend changes |
 
-Where the Student role needs a core read query or lifecycle method that does not
-exist yet, propose it to Huanghao as an interface addition; do not write raw SQL
-against core tables from `student/` to bypass the lifecycle.
+Decision (Phuc, 22 October 2026, current-session request): Student reads core tables
+through its own read-only repository, following `PostgresTutorReadRepository` and
+shared technical spec §2. All slot and booking writes still go through
+`ConsultationLifecycle`; Student code never issues INSERT/UPDATE/DELETE.
 
 ## 2. Backend Structure
 
-`src/backend/src/main/java/unichope/student/` with matching test packages:
-`StudentController`, `StudentService`, `AgendaController`, `AgendaService`,
-`AgendaPrompt` (versioned prompt and parser), and `dto/`. Read queries come from
-core repository interfaces; Student adds no tables in this scope.
+Mirror the Tutor REST increment layout. Class names are the spec's proposal; the
+implementer may rename them only together with this spec and the tests.
 
-| Component | Responsibility |
-| --- | --- |
-| Student controller | Map endpoints in section 3, validate shapes/filters, return DTOs |
-| Student service | Active Student checks, filters, `cancellable` computation, calls lifecycle |
-| `ConsultationLifecycle` (core) | Locked, rechecked `bookSlot` / `cancelBooking` transactions |
-| Agenda service | Ownership/eligibility check, prompt build, gateway call, output validation, post-call recheck |
-| `platform/ai` | Gateway, providers, admission/quota, deadlines, typed failures (section 6) |
+| Location | Component | Responsibility |
+| --- | --- | --- |
+| `platform/auth` | `CurrentActorProvider` | `Optional<UUID> currentActorId()`; the session-authenticated actor. Interface only |
+| `student/` | `StudentAccess` | Resolve actor via provider, re-read stored account, enforce active STUDENT (section 3.2) |
+| `student/` | `StudentReadRepository`, `PostgresStudentReadRepository` | Read-only parameterized SQL joins (section 4) |
+| `student/` | `StudentReadService` | Filters, ordering, `cancellable`, ownership-scoped detail |
+| `student/` | Records `ModuleOption`, `BookableSlot`, `StudentBooking` | Exact JSON shapes (section 3) |
+| `student/http/` | `StudentController`, `StudentApiInput`, `StudentHttpService`, `StudentExceptionHandler`, `StudentApiConfiguration` | Routes, strict input parsing, lifecycle calls and error mapping, `@Profile("student-api")` wiring |
+| `platform/web` | `ApiSecurityConfiguration` | When profile `student-api` is active, `/api/student/**` requires authentication; everything else unchanged |
 
-Dependencies flow controller -> service -> core interfaces / lifecycle / gateway.
-`student/` imports only `platform/*`; platform never imports `student/`. The actor is
-the request-scoped authenticated ID, re-read for current role and active state; IDs
-in bodies are never trusted.
+Decision (Phuc, 22 October 2026, current-session request): the actor interface lives
+in `unichope.platform.auth` so the auth owner implements it once for every role.
+Do not edit `unichope.tutor.CurrentActorProvider` or any other Tutor file; Tutor can
+migrate later at Huanghao's choice.
+
+Dependencies flow controller -> service -> read repository / lifecycle. `student/`
+imports only `platform/*`; platform never imports `student/`. The actor is the
+request-scoped authenticated ID, re-read for current role and active state on every
+request; IDs in bodies, queries or headers never select the actor.
+
+Activation follows `tutor-api`: default startup exposes no Student route. With
+`student-api` active, missing provider, read repository, lifecycle, `Clock` or
+`DataSource` beans fail startup; there is no anonymous or main-source test actor.
+Production activation waits for the auth owner's real provider and the production
+migration, as for Tutor.
 
 ## 3. Student API
 
@@ -84,39 +96,105 @@ AgendaDraft    { bookingId, agenda, requiresReview: true, providerMode: "fake" |
   holds an overlapping ACTIVE booking. Both leave all records unchanged.
 - Another student's booking ID behaves exactly like a nonexistent ID: 404.
 - `tutorName` is the tutor's display name only. No emails, student names, or notes
-  appear in any Student DTO.
-- New error codes `SLOT_UNAVAILABLE` and `BOOKING_OVERLAP` are Student additions to
-  the shared error contract; record them in the integration spec in a reviewed change.
+  appear in any Student DTO. JSON objects contain exactly the listed fields.
+- `SLOT_UNAVAILABLE` is a new Student error code; `BOOKING_OVERLAP` already exists
+  as a core `LifecycleFailure` code. Both are Student-local contracts in this spec;
+  adding `SLOT_UNAVAILABLE` to the integration spec's shared list needs team review
+  but does not block Student implementation.
+
+### 3.1 Input rules
+
+Carry forward the Tutor REST input rules (`workflow/tutor/REST-INCREMENT-SPEC.md` §2):
+any violation returns 400 `VALIDATION_FAILED` unless stated otherwise.
+
+- IDs (path, query, body) are canonical 8-4-4-4-12 hexadecimal UUID strings.
+- `date` is exactly `YYYY-MM-DD` and a real calendar date.
+- `GET /modules`, `GET /bookings/{id}`, and both POSTs accept no query parameters.
+- `GET /slots` accepts only `moduleId` and `date`, each at most once.
+- `GET /bookings` accepts only `status` (zero or more times; each ACTIVE, CANCELLED,
+  or COMPLETED; repeated equal values are harmless) and `date` at most once.
+- POST bodies need `Content-Type: application/json` (else 415
+  `UNSUPPORTED_MEDIA_TYPE`) and at most 65,536 bytes read from the stream (else 413
+  `PAYLOAD_TOO_LARGE`, regardless of `Content-Length`). Malformed JSON, duplicate
+  keys, trailing tokens, or a non-object body are 400.
+- `POST /bookings` body is exactly `{ "slotId": "<uuid string>" }`. Any other or
+  extra field (for example `studentId`, `status`, `role`) is 400, not ignored.
+- `POST /bookings/{id}/cancel` body is exactly `{}`.
+
+### 3.2 Identity and access
+
+Every operation, before reading any resource, resolves the actor from
+`platform.auth.CurrentActorProvider` and re-reads the stored account:
+
+| Condition | Response |
+| --- | --- |
+| Provider returns empty | 401 `UNAUTHENTICATED` |
+| Actor ID not found in `users` | 401 `UNAUTHENTICATED`; clear security context and invalidate session |
+| Account inactive | 403 `ACCOUNT_INACTIVE`; clear security context and invalidate session |
+| Active account whose stored role is not STUDENT | 403 `FORBIDDEN` (authorities in the session are ignored) |
+| Unsafe request without valid CSRF token | 403 `CSRF_INVALID` from the filter chain; no write |
+
+If the lifecycle throws `ACCESS_DENIED` (account changed between the access check
+and the locked transaction), re-run the access check and return its 401/403; if the
+account is somehow still valid, return 403 `FORBIDDEN`. This matches Tutor.
+
+### 3.3 Error mapping
+
+| Operation | Lifecycle code or condition | Response |
+| --- | --- | --- |
+| Book | `NOT_FOUND`, `INVALID_STATE`, `MODULE_UNAVAILABLE` | 409 `SLOT_UNAVAILABLE`, message "This slot is no longer available. Refresh the list and choose another." |
+| Book | `BOOKING_OVERLAP` | 409 `BOOKING_OVERLAP`, message "This slot overlaps one of your active bookings." |
+| Book | Unique-index violation on `bookings_one_active_per_slot` | 409 `SLOT_UNAVAILABLE` |
+| Cancel | `NOT_FOUND` (missing or another student's booking) | 404 `NOT_FOUND` |
+| Cancel | `INVALID_STATE` (not ACTIVE, slot not BOOKED, or started) | 409 `INVALID_STATE` |
+| Both | `INVALID_INPUT` | 400 `VALIDATION_FAILED` |
+| Both | `TEMPORARILY_UNAVAILABLE` | 503 `TEMPORARILY_UNAVAILABLE` |
+| Both | `ACCESS_DENIED` | Section 3.2 |
+| Any | Unexpected exception | 500 `INTERNAL_ERROR`, fixed message, no SQL, IDs or stack text |
+
+Every response, success or error, has `Cache-Control: no-store`. Errors use exactly
+`{ code, message, requestId }` from `ApiErrors`, including 405 `METHOD_NOT_ALLOWED`
+(with `Allow`), 406 `NOT_ACCEPTABLE`, and 404 `NOT_FOUND` for unknown
+`/api/student/**` routes, written as JSON even when `Accept` excludes JSON.
+
+After a successful lifecycle call the transition has committed. If building the
+response then fails, return 500 without retrying; the booking or cancellation stays
+committed and a later GET shows it. Do not describe this as a rollback.
 
 ## 4. Persistence and Concurrency
 
-Student adds no migration. It relies on the core logical model: Booking
-`{ id, studentId, slotId, createdAt, status }` with a partial unique index on
-ACTIVE bookings per slot, and Slot status/tutor/module.
+Student adds no migration and no table. It reads `users`, `modules`, `tutor_modules`,
+`slots`, and `bookings` from the core review DDL (`db/core-review/V1`).
 
-Booking follows the integration row-lock protocol under READ COMMITTED:
+`PostgresStudentReadRepository` uses parameterized `JdbcClient` SQL only, no locks:
 
-1. Read the slot's immutable `tutorId` and `moduleId` without locks (discovery
-   only; a missing slot returns `SLOT_UNAVAILABLE`).
-2. Lock the student and tutor user rows, sorted by ID; then the module row; then the slot.
-3. Recheck: actor is an active STUDENT; tutor active and TUTOR; module active;
-   assignment exists; slot AVAILABLE and `startTime > now`.
-4. With the student row held, check for an ACTIVE booking of this student whose
-   slot satisfies `newStart < existingEnd AND newEnd > existingStart`.
-5. Insert the ACTIVE booking and set the slot to BOOKED in the same transaction.
+- **Bookable slots:** `slots s JOIN users t ON t.id = s.tutor_id JOIN modules m ON
+  m.id = s.module_id` where `s.status = 'AVAILABLE'`, `s.start_time > :now`,
+  `t.active`, `t.role = 'TUTOR'`, `m.active`, and a `tutor_modules` row exists for
+  `(s.tutor_id, s.module_id)`; optional `s.module_id = :moduleId`; SGT date applied
+  as the half-open UTC range `[date 00:00 SGT, next day 00:00 SGT)`. Order
+  `s.start_time, s.id`.
+- **Active modules:** `modules` where `active`, order `code, id`.
+- **Student bookings:** `bookings b JOIN slots s JOIN modules m JOIN users t` where
+  `b.student_id = :actor`; optional status set and SGT date on `s.start_time`.
+  Order `s.start_time, b.id`. Detail adds `b.id = :id` to the same owner condition,
+  so another student's booking is simply not found.
 
-The student-row lock serializes overlap checks across different slots, which the
-per-slot unique index cannot. A unique-index violation is mapped to
-`SLOT_UNAVAILABLE`, not 500.
+Writes use the existing core methods, which already implement the integration
+row-lock protocol, rechecks, and atomic two-row updates:
 
-Cancellation locks student and tutor (sorted), module, slot, booking. It rechecks
-actor, ownership, booking ACTIVE, slot BOOKED, and `startTime > now`, then sets the
-booking CANCELLED and the slot AVAILABLE. Repeats return 409 with no writes.
+- `ConsultationLifecycle.bookAvailableSlot(actorId, slotId)`: checks STUDENT actor,
+  slot AVAILABLE and future, tutor/module eligibility, no ACTIVE booking on the slot,
+  and no overlapping ACTIVE booking for the student (half-open), then inserts the
+  ACTIVE booking and sets the slot BOOKED.
+- `ConsultationLifecycle.cancelActiveBooking(actorId, bookingId)`: checks ownership
+  (`NOT_FOUND` otherwise), booking ACTIVE, slot BOOKED, slot start after now; then
+  sets the booking CANCELLED and slot AVAILABLE.
 
-Both operations live in `ConsultationLifecycle` (core). Student service calls them
-and maps their typed outcomes to HTTP. Bound lock/statement waits; on deadlock or
-lock timeout roll back and return 503 `TEMPORARILY_UNAVAILABLE`, never retrying.
-Lists use plain reads with no write locks.
+Core already covers lock ordering, races, and rollback in its own PostgreSQL tests.
+Student tests verify the Student HTTP contract end to end against real PostgreSQL
+and the Student-visible races (S-BOOK-4, S-CANC-3); they need not re-test core SQL.
+The response projection after a write re-reads through `StudentReadRepository`.
 
 ## 5. Agenda (STU-AI-01/02) Contract
 
@@ -293,6 +371,8 @@ presentation only.
 | `platform/ai` | Gateway unit tests; admission tests on PostgreSQL; `SocLlmProvider` against a local mock HTTP server (headers, mapping, errors, oversized/malformed bodies, timeouts); production `fake` startup failure |
 | Shared SEC/AUTH | 401/403/CSRF/inactive on every Student endpoint; logs contain no question text |
 
-Use Testcontainers PostgreSQL for locking and constraint behavior; do not substitute
-H2/SQLite. A real-provider evaluation with synthetic questions (normal, vague,
+PostgreSQL-backed tests follow the existing `postgresTest` convention (tag
+`postgres`, explicit `-Dcore.test.*` properties, unique schema per test). Locally,
+start the disposable database in `src/backend/compose.test.yaml`; CI uses its own
+PostgreSQL 17 service. Do not substitute H2/SQLite. A real-provider evaluation with synthetic questions (normal, vague,
 injection, "answer my exam") is separate and later. No tests have been run.

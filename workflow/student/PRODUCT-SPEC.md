@@ -247,7 +247,7 @@ JavaFX views, local databases, or default credentials. No MP2 code has been reus
 
 Phuc owns the Student role and, under the 20 October 2026 allocation, `platform/ai`.
 
-Assumptions made by the spec analyst, not yet decided by the Student owner or team:
+Booking decisions 1-4 approved by Phuc on 22 October 2026 in the current user reply: "all" and "Approve all four proposed rules". AI assumptions 5-6 remain undecided and outside this request:
 
 1. Any active student can book any active module's slot; there is no enrolment model.
 2. Overlapping slots are listed and rejected on booking rather than hidden.

@@ -26,10 +26,10 @@ Separate decisions, proposals and observations; omit narrative history.
 
 | Stage | Required artifacts and evidence |
 | --- | --- |
-| Claude analyst to GPT test writer | Current canonical product/technical/integration references, acceptance IDs, coverage matrix, findings and resolution references, readiness verdict, task/dependencies |
-| GPT test writer to GPT implementer | Analyst packet reference, actual test files, acceptance-to-test mapping, reproducible commands and red/existing-baseline results, setup requirements |
-| GPT implementer to Claude reviewer | Canonical baseline, actual code/test revisions, complete base-to-head diff or saved patch, reproducible verification evidence, pending checks |
-| Claude reviewer to responsible role | Finding ID, exact artifact location/revision, trigger, requirement violated, impact and observable closure check; proposed correction labelled as a proposal |
+| Spec analyst to test writer | Current canonical product/technical/integration references, acceptance IDs, coverage matrix, findings and resolution references, readiness verdict, task/dependencies |
+| Test writer to implementer | Analyst packet reference, actual test files, acceptance-to-test mapping, reproducible commands and red/existing-baseline results, setup requirements |
+| Implementer to reviewer | Canonical baseline, actual code/test revisions, complete base-to-head diff or saved patch, reproducible verification evidence, pending checks |
+| Reviewer to responsible role | Finding ID, exact artifact location/revision, trigger, requirement violated, impact and observable closure check; proposed correction labelled as a proposal |
 
 For evidence, reference sanitized command output or reports, not a conversation
 summary. Command output may live under `changes/<change-id>/evidence/`; these are

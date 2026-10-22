@@ -15,9 +15,10 @@ Inputs: [Student Product](PRODUCT-SPEC.md), [Student Technical](TECHNICAL-SPEC.m
 
 ## 1. Execution Rules
 
-- Each task runs through the [workflow](NOTE.md): Claude spec analyst confirms the
-  task's acceptance IDs, GPT writes failing tests, GPT implements, a fresh Claude
-  session reviews, and a human verifies. Keep one handoff record per task in
+- Each task runs through the [workflow](NOTE.md), each role in a fresh session: the
+  spec analyst confirms the task's acceptance IDs, the test writer writes failing
+  tests, the implementer implements, an independent reviewer reviews, and a human
+  verifies. Keep one handoff record per task in
   `workflow/student/changes/<task-id>.md`.
 - Tests first for behavior changes; record the expected red result. Never weaken a
   test to get green; send wrong tests back to the test writer and wrong requirements
@@ -48,10 +49,9 @@ Depends on: none. Verify: decisions recorded with names and dates in the specs.
 
 ### S1: Scaffold (team dependency)
 
-Not Student-owned. Student needs `src/backend` and `src/frontend` building, the
-`unichope.student` and `unichope.platform.ai` packages, Testcontainers PostgreSQL,
-fake AI as the dev/test default, and CI with no SoC secrets for untrusted jobs.
-Student can help but does not claim this task.
+Done by Huanghao on `main` (PRs #1-#4): Gradle/Boot backend, `postgresTest`, and
+backend CI. Student adds `src/backend/compose.test.yaml` for a local disposable
+PostgreSQL 17. No frontend scaffold exists yet.
 
 ### AI1: Gateway and fake provider
 
@@ -78,6 +78,8 @@ Depends on: AI1. Requirements: SH-AI-03/04/05/06, AI-02.
 
 ### S2: Browse bookable slots
 
+Change record: [changes/stu-c1-browse-slots.md](changes/stu-c1-browse-slots.md).
+
 - [ ] Tests: S-SLOT-1, S-SLOT-2, S-AUTH-1 for `/modules` and `/slots`; DTO contains
   no emails; React filters, empty and error states.
 - [ ] Implement controller/service on core read queries, Student layout, and the
@@ -87,6 +89,8 @@ Depends on: S1, core read queries, auth actor. Requirements: STU-SLOT-01, AUTH-0
 
 ### S3: Book a slot
 
+Change record: [changes/stu-c2-book-slot.md](changes/stu-c2-book-slot.md).
+
 - [ ] Tests: S-BOOK-1 to S-BOOK-5 including both concurrency races on real
   PostgreSQL, unique-violation mapping, CSRF; React confirmation and conflict refresh.
 - [ ] Implement `POST /bookings` through `ConsultationLifecycle.bookSlot` (core
@@ -95,6 +99,10 @@ Depends on: S1, core read queries, auth actor. Requirements: STU-SLOT-01, AUTH-0
 Depends on: S2, core lifecycle. Requirements: STU-BOOK-01, REL-01.
 
 ### S4: My bookings and cancellation
+
+Change records: [changes/stu-c3-my-bookings.md](changes/stu-c3-my-bookings.md),
+[changes/stu-c4-cancel-booking.md](changes/stu-c4-cancel-booking.md). Backend
+only for now; React pages wait for the frontend scaffold.
 
 - [ ] Tests: S-LIST-1, S-CANC-1 to S-CANC-3 (race with tutor completion), fixed-clock
   `cancellable`, `GET /bookings/{id}` wrong-owner 404; React tabs, filters,
@@ -125,7 +133,7 @@ Depends on: AI2, SoC details. Requirements: AI-01, SH-AI-03/05/08. Serves all ro
 
 ### S6: Independent security review
 
-- [ ] Fresh Claude reviewer checks Student endpoints, lifecycle use, ownership,
+- [ ] Fresh-session reviewer checks Student endpoints, lifecycle use, ownership,
   CSRF, DTO fields, logs, `platform/ai` admission and secrets, prompt/data
   separation, and output rendering.
 - [ ] Run S-INJ-1 fixtures (prompt reveal, "answer my exam", "cancel all bookings")

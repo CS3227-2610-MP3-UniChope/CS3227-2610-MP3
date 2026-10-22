@@ -1,13 +1,14 @@
 # Student development note: spec driven agent workflow
 
 Status: workflow ready to use; no feature specification, implementation, test run,
-or Claude review is claimed by this document.
+or independent review is claimed by this document.
 
 ## Purpose and scope
 
-Use Claude to specify and independently review changes. Use GPT to write tests
-and implement the agreed behavior. Keep each agent focused on one responsibility
-with an explicit handoff, rather than asking one conversation to do everything.
+One coding agent runs every role: specification, test writing, implementation
+and independent review. Each role runs in its own fresh session with an explicit
+handoff, rather than one conversation doing everything. Independence comes from
+the fresh session and the artifact-only handoff, not from using a different model.
 
 **Student is the location of this workflow, not its feature boundary.** Apply it
 to Student features and relevant shared work: login/logout, session handling,
@@ -16,21 +17,20 @@ also be reused by Tutor and Admin owners. Location does not transfer ownership
 of shared code or authorize changing another teammate's contracts.
 
 
-## Agents and model assignment
+## Agents and sessions
 
-| Agent | Run with | Responsibility | Produces |
+| Agent | Session | Responsibility | Produces |
 | --- | --- | --- | --- |
-| [Spec analyst](agents/spec-analyst.md) | Claude | Audit requirements against technical/integration specs, propose and resolve fixes, specify behavior and plan tasks | Coverage matrix, findings/resolutions, spec readiness verdict, acceptance IDs and plan |
-| [Test writer](agents/test-writer.md) | GPT | Turn acceptance criteria into independent behavioral tests before implementation | Tests, acceptance-to-test mapping, expected failure evidence |
-| [Implementer](agents/implementer.md) | GPT | Implement one agreed task while preserving contracts and test intent | Code, passing verification evidence, limitations |
-| [Reviewer / security checker](agents/reviewer-security.md) | Claude, fresh session | Inspect spec, tests and diff independently; examine security and integration | Findings with evidence, review verdict, retest requirements |
+| [Spec analyst](agents/spec-analyst.md) | Fresh session | Audit requirements against technical/integration specs, propose and resolve fixes, specify behavior and plan tasks | Coverage matrix, findings/resolutions, spec readiness verdict, acceptance IDs and plan |
+| [Test writer](agents/test-writer.md) | Fresh session | Turn acceptance criteria into independent behavioral tests before implementation | Tests, acceptance-to-test mapping, expected failure evidence |
+| [Implementer](agents/implementer.md) | Fresh session | Implement one agreed task while preserving contracts and test intent | Code, passing verification evidence, limitations |
+| [Reviewer / security checker](agents/reviewer-security.md) | Fresh session, never one that produced the work | Inspect spec, tests and diff independently; examine security and integration | Findings with evidence, review verdict, retest requirements |
 
-These are reusable role prompts, not automatically registered agents. Open the
-chosen Claude or GPT tool, paste the role prompt and the handoff below, and attach
-or provide access to the referenced files. Use separate sessions for test writing,
-implementation, and review. A launcher may delegate only if it supports selecting
-the required model; otherwise hand off manually. Never label a GPT review as a
-Claude review. If the required model is unavailable, record that stage as pending.
+These are reusable role prompts, not automatically registered agents. Start a
+fresh agent session (or a fresh subagent with no inherited conversation),
+give it the role prompt and the change record, and let it read the referenced
+files itself. Never continue a role in the session that performed the previous
+stage. Record the actual tool and model used for each stage in the change record.
 
 ## Read the existing contracts first
 
@@ -85,19 +85,19 @@ The diagram below describes the standard path after the scope check.
 
 ```mermaid
 flowchart TD
-    A[Scoped change and repository context] --> B[Claude: spec analyst]
+    A[Scoped change and repository context] --> B[Spec analyst]
     B --> C{Requirements and technical specs consistent?}
     C -->|No: propose fixes and resolve decisions| B
-    C -->|Yes: READY_FOR_TESTS| D[GPT: test writer]
-    D --> E[GPT: implementer]
-    E --> F[Claude: independent review and security check]
+    C -->|Yes: READY_FOR_TESTS| D[Test writer]
+    D --> E[Implementer]
+    E --> F[Independent review and security check]
     F -->|Code defect| E
     F -->|Missing or incorrect tests| D
     F -->|Requirement or contract gap| B
     F -->|No blocking findings| G[Human verification and completion record]
 ```
 
-### 1. Claude specifies one small change
+### 1. The spec analyst specifies one small change
 
 The analyst also performs a technical readiness check before handoff. First audit
 the request and current documents without changing them. Map each requirement to
@@ -146,11 +146,11 @@ contract before tests are written. Add acceptance coverage for logout/session
 expiry and private-state clearing. This is an illustrative finding, not a claim
 that the current application contains this defect.
 
-### 2. GPT writes tests against the spec
+### 2. The test writer writes tests against the spec
 
 Before editing tests, verify the analyst's readiness verdict and spec revision
 for this task. Read its findings and fixes; return unresolved or stale contracts
-to Claude rather than inventing the expected result. READY_FOR_IMPLEMENTATION
+to the spec analyst rather than inventing the expected result. READY_FOR_IMPLEMENTATION
 requires the current readiness record and executable test baseline evidence.
 
 Use the test-writer prompt in a separate session. Map acceptance IDs to tests
@@ -167,7 +167,7 @@ The repository currently has no application scaffold. Establish the agreed
 build/test harness as an explicit prerequisite task. Record tests as not run
 until executable; do not fabricate commands or failure evidence.
 
-### 3. GPT implements the smallest agreed task
+### 3. The implementer implements the smallest agreed task
 
 Check both upstream handoffs: the analyst's readiness decision and the test
 writer's baseline must refer to the current task and spec/test revisions. Missing
@@ -183,13 +183,13 @@ return it with evidence to the test writer. If the requirement is wrong or missi
 return to the spec analyst. Approved contract changes invalidate affected test
 and review evidence and must be checked again.
 
-### 4. Claude independently reviews correctness and security
+### 4. The reviewer independently checks correctness and security
 
-Start a fresh Claude session with the reviewer prompt, baseline, complete diff,
+Start a fresh session with the reviewer prompt, baseline, complete diff,
 test sources and command results. The reviewer inspects evidence and reruns
 checks when possible rather than accepting the implementer's summary.
-Independently check the analyst's flaw resolutions as well; shared model choice
-does not make the analyst's self-check an independent review.
+Independently check the analyst's flaw resolutions as well; the analyst's
+self-check is not an independent review.
 
 Review all changed shared boundaries. Require concrete findings: severity,
 file/line, affected acceptance ID, trigger, impact and recommended correction.
@@ -198,8 +198,9 @@ Critical/high findings and any acceptance or required security failure block
 completion. Record lower severity follow-ups with an owner and rationale; an
 unmet requirement cannot be waived by merely assigning it a lower severity.
 
-GPT fixes implementation findings; the test writer handles coverage gaps; Claude
-revises requirements when needed. Claude reviews the resulting diff again.
+The implementer fixes implementation findings; the test writer handles coverage
+gaps; the spec analyst revises requirements when needed. A fresh reviewer session
+reviews the resulting diff again.
 Review is tied to the actual code revision/diff, not a permanently valid badge.
 After two fix/review cycles on the same unresolved finding without new evidence,
 summarize the issue and options for the human owner instead of looping indefinitely.
@@ -319,12 +320,12 @@ and resolutions traceable rather than erasing them after a fix.
 
 ## Start a change
 
-In Claude, provide `agents/spec-analyst.md`, this note and a concrete request,
+In a fresh session, provide `agents/spec-analyst.md`, this note and a concrete request,
 for example: “Specify shared login UI integration using the existing Auth API;
 include Student, Tutor and Admin redirects, expiry and logout behavior.”
-Then pass the resulting record to GPT with `agents/test-writer.md`, followed by
-a separate GPT implementation session with `agents/implementer.md`. Finally pass
-the complete diff and evidence to fresh Claude with `agents/reviewer-security.md`.
+Then pass the resulting record to a new session with `agents/test-writer.md`, then
+another new session with `agents/implementer.md`. Finally pass the complete diff and
+evidence to a new session with `agents/reviewer-security.md`.
 
 ## Design influences
 
@@ -341,6 +342,6 @@ installed or invoked. Concepts adapted for these prompts:
   and [shared architecture decisions](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/plan/design-ux-and-architecture.md):
   trace requirements to sources and give separate agents consistent technical inputs.
 
-The four-agent Claude/GPT assignment, finding/coverage tables and readiness rules
+The four-role fresh-session assignment, finding/coverage tables and readiness rules
 are this team's adaptation. These are role instructions, not enforced filesystem
 permissions or an automatic cross-extension launcher.
