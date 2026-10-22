@@ -1,0 +1,34 @@
+# stu-c3-my-bookings implementer-1 final verification (sanitized)
+# Date: 2026-10-22. Producer: Implementer / Claude Code, Opus 5.5 (claude-opus-5-5).
+# Base commit: 459fd6ef7108c2d08aeaa0f92ae0bccc054158b5 plus uncommitted stu-c1 + stu-c3 working tree (hashes in the change record).
+# Working directory: src/backend. Prerequisite: docker compose -f compose.test.yaml up -d --wait (exit 0); stopped afterwards with down (exit 0).
+# Command: ./gradlew clean test postgresTest bootJar -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55432/mp3_test -Dcore.test.user=mp3_test -Dcore.test.password=<local placeholder from compose.test.yaml> --console=plain
+# JUnit XML totals: test 28 tests, 0 failures, 0 errors, 0 skipped; postgresTest 132 tests, 0 failures, 0 errors, 0 skipped.
+# Per class (tests/failures/errors/skipped): StudentBookingsPgTest 9/0/0/0; StudentBrowsePgTest 20/0/0/0; TutorRestPgTest 31/0/0/0; StudentActivationTest 2/0/0/0; TutorActivationTest 2/0/0/0.
+# bootJar: build/libs/unichope-0.0.1-SNAPSHOT.jar
+# ---- Gradle output ----
+> Task :clean
+
+> Task :compileJava
+D:\cs3227\CS3227-2610-MP3\src\backend\src\main\java\unichope\platform\ai\AiGateway.java:50: warning: [serial] serializable class Failure has no definition of serialVersionUID
+    final class Failure extends RuntimeException {
+          ^
+1 warning
+
+> Task :processResources
+> Task :classes
+> Task :resolveMainClassName
+> Task :bootJar
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :test
+> Task :postgresTest
+
+[Incubating] Problems report is available at: file:///D:/cs3227/CS3227-2610-MP3/src/backend/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 3m 20s
+8 actionable tasks: 8 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html
+EXIT=0

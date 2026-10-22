@@ -1,0 +1,333 @@
+diff --git a/src/backend/src/main/java/unichope/student/PostgresStudentReadRepository.java b/src/backend/src/main/java/unichope/student/PostgresStudentReadRepository.java
+index e2a18f8..5031ba7 100644
+--- a/src/backend/src/main/java/unichope/student/PostgresStudentReadRepository.java
++++ b/src/backend/src/main/java/unichope/student/PostgresStudentReadRepository.java
+@@ -3,10 +3,14 @@ package unichope.student;
+ import java.time.Instant;
+ import java.time.OffsetDateTime;
+ import java.time.ZoneOffset;
++import java.sql.ResultSet;
++import java.sql.SQLException;
+ import java.util.List;
+ import java.util.Optional;
++import java.util.Set;
+ import java.util.UUID;
+ import org.springframework.jdbc.core.simple.JdbcClient;
++import unichope.platform.core.model.consultation.BookingStatus;
+ import unichope.platform.core.model.user.Role;
+ 
+ /**
+@@ -28,6 +32,18 @@ public final class PostgresStudentReadRepository implements StudentReadRepositor
+     private static final String MODULE_FILTER = "  AND s.module_id = :moduleId\n";
+     private static final String START_RANGE_FILTER = "  AND s.start_time >= :from AND s.start_time < :to\n";
+     private static final String SLOT_ORDER = "ORDER BY s.start_time, s.id";
++    // Owner condition only: no tutor/module eligibility filter (TECH §4, C3-ELIG-1).
++    private static final String STUDENT_BOOKINGS = """
++            SELECT b.id, b.slot_id, s.module_id, m.code, m.name, t.name AS tutor_name, s.start_time, s.end_time, b.status
++            FROM bookings b
++            JOIN slots s ON s.id = b.slot_id
++            JOIN modules m ON m.id = s.module_id
++            JOIN users t ON t.id = s.tutor_id
++            WHERE b.student_id = :studentId
++            """;
++    private static final String BOOKING_ID_FILTER = "  AND b.id = :bookingId\n";
++    private static final String STATUS_FILTER = "  AND b.status IN (:statuses)\n";
++    private static final String BOOKING_ORDER = "ORDER BY s.start_time, b.id";
+ 
+     private final JdbcClient jdbc;
+ 
+@@ -74,6 +90,43 @@ public final class PostgresStudentReadRepository implements StudentReadRepositor
+                 row.getObject("end_time", OffsetDateTime.class).toInstant())).list();
+     }
+ 
++    @Override
++    public List<BookingRow> findStudentBookings(UUID studentId, Set<BookingStatus> statuses, Optional<StartRange> startRange) {
++        // Only fixed SQL fragments are appended; every value is a bound parameter.
++        StringBuilder sql = new StringBuilder(STUDENT_BOOKINGS);
++        if (!statuses.isEmpty()) sql.append(STATUS_FILTER);
++        if (startRange.isPresent()) sql.append(START_RANGE_FILTER);
++        sql.append(BOOKING_ORDER);
++        JdbcClient.StatementSpec statement = jdbc.sql(sql.toString()).param("studentId", studentId);
++        if (!statuses.isEmpty()) statement = statement.param("statuses", statuses.stream().map(BookingStatus::name).sorted().toList());
++        if (startRange.isPresent()) {
++            statement = statement.param("from", utc(startRange.get().from())).param("to", utc(startRange.get().to()));
++        }
++        return statement.query((row, index) -> bookingRow(row)).list();
++    }
++
++    @Override
++    public Optional<BookingRow> findStudentBooking(UUID studentId, UUID bookingId) {
++        return jdbc.sql(STUDENT_BOOKINGS + BOOKING_ID_FILTER)
++                .param("studentId", studentId)
++                .param("bookingId", bookingId)
++                .query((row, index) -> bookingRow(row))
++                .optional();
++    }
++
++    private static BookingRow bookingRow(ResultSet row) throws SQLException {
++        return new BookingRow(
++                row.getObject("id", UUID.class),
++                row.getObject("slot_id", UUID.class),
++                row.getObject("module_id", UUID.class),
++                row.getString("code"),
++                row.getString("name"),
++                row.getString("tutor_name"),
++                row.getObject("start_time", OffsetDateTime.class).toInstant(),
++                row.getObject("end_time", OffsetDateTime.class).toInstant(),
++                BookingStatus.valueOf(row.getString("status")));
++    }
++
+     private static OffsetDateTime utc(Instant instant) {
+         return instant.atOffset(ZoneOffset.UTC);
+     }
+diff --git a/src/backend/src/main/java/unichope/student/StudentBooking.java b/src/backend/src/main/java/unichope/student/StudentBooking.java
+new file mode 100644
+index 0000000..37dc4bf
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/StudentBooking.java
+@@ -0,0 +1,22 @@
++package unichope.student;
++
++import java.time.Instant;
++import java.util.UUID;
++import unichope.platform.core.model.consultation.BookingStatus;
++
++/**
++ * Student {@code StudentBooking} JSON (TECH §3): exactly these fields. {@code tutorName} is the
++ * tutor's display name only; no email, student name, student ID or tutor ID is exposed.
++ * {@code cancellable} is computed by the server from the injected clock, never by the client.
++ */
++public record StudentBooking(
++        UUID id,
++        UUID slotId,
++        UUID moduleId,
++        String moduleCode,
++        String moduleName,
++        String tutorName,
++        Instant startTime,
++        Instant endTime,
++        BookingStatus status,
++        boolean cancellable) {}
+diff --git a/src/backend/src/main/java/unichope/student/StudentReadRepository.java b/src/backend/src/main/java/unichope/student/StudentReadRepository.java
+index fbf23c0..e0783d0 100644
+--- a/src/backend/src/main/java/unichope/student/StudentReadRepository.java
++++ b/src/backend/src/main/java/unichope/student/StudentReadRepository.java
+@@ -3,7 +3,9 @@ package unichope.student;
+ import java.time.Instant;
+ import java.util.List;
+ import java.util.Optional;
++import java.util.Set;
+ import java.util.UUID;
++import unichope.platform.core.model.consultation.BookingStatus;
+ 
+ /** Read-only boundary over core tables for the Student role (TECH §4, decision D3). */
+ public interface StudentReadRepository {
+@@ -22,6 +24,30 @@ public interface StudentReadRepository {
+      */
+     List<BookableSlot> findBookableSlots(Instant now, Optional<UUID> moduleId, Optional<StartRange> startRange);
+ 
++    /**
++     * The student's own bookings in any status, ordered by slot start time, then booking ID. No
++     * tutor/module eligibility condition applies (C3-ELIG-1).
++     *
++     * @param statuses status filter; empty means every status
++     * @param startRange optional half-open slot start-time range {@code [from, to)}
++     */
++    List<BookingRow> findStudentBookings(UUID studentId, Set<BookingStatus> statuses, Optional<StartRange> startRange);
++
++    /** One booking under the same owner condition; another student's booking is simply absent. */
++    Optional<BookingRow> findStudentBooking(UUID studentId, UUID bookingId);
++
+     /** Half-open start-time range {@code [from, to)}. */
+     record StartRange(Instant from, Instant to) {}
++
++    /** Stored booking projection; {@code cancellable} is decided by the service. */
++    record BookingRow(
++            UUID id,
++            UUID slotId,
++            UUID moduleId,
++            String moduleCode,
++            String moduleName,
++            String tutorName,
++            Instant startTime,
++            Instant endTime,
++            BookingStatus status) {}
+ }
+diff --git a/src/backend/src/main/java/unichope/student/StudentReadService.java b/src/backend/src/main/java/unichope/student/StudentReadService.java
+index 5fe5153..15275b7 100644
+--- a/src/backend/src/main/java/unichope/student/StudentReadService.java
++++ b/src/backend/src/main/java/unichope/student/StudentReadService.java
+@@ -1,11 +1,14 @@
+ package unichope.student;
+ 
+ import java.time.Clock;
++import java.time.Instant;
+ import java.time.LocalDate;
+ import java.time.ZoneId;
+ import java.util.List;
+ import java.util.Optional;
++import java.util.Set;
+ import java.util.UUID;
++import unichope.platform.core.model.consultation.BookingStatus;
+ 
+ /** Student read operations. Every call checks the current actor before reading any resource. */
+ public final class StudentReadService {
+@@ -33,8 +36,41 @@ public final class StudentReadService {
+      */
+     public List<BookableSlot> bookableSlots(Optional<UUID> moduleId, Optional<LocalDate> sgtDate) {
+         access.requireActiveStudent();
+-        Optional<StudentReadRepository.StartRange> range = sgtDate.map(date -> new StudentReadRepository.StartRange(
++        return reads.findBookableSlots(clock.instant(), moduleId, sgtDay(sgtDate));
++    }
++
++    /**
++     * The current student's own bookings in any status (or only {@code statuses} when not empty),
++     * optionally on one SGT slot start date, ordered by slot start time then booking ID.
++     */
++    public List<StudentBooking> myBookings(Set<BookingStatus> statuses, Optional<LocalDate> sgtDate) {
++        UUID student = access.requireActiveStudent();
++        Instant now = clock.instant();
++        return reads.findStudentBookings(student, Set.copyOf(statuses), sgtDay(sgtDate)).stream()
++                .map(row -> project(row, now))
++                .toList();
++    }
++
++    /**
++     * The current student's booking with this ID in any status. Empty for a nonexistent ID and for
++     * another student's booking alike (TECH §3, §4).
++     */
++    public Optional<StudentBooking> myBooking(UUID bookingId) {
++        UUID student = access.requireActiveStudent();
++        Instant now = clock.instant();
++        return reads.findStudentBooking(student, bookingId).map(row -> project(row, now));
++    }
++
++    /** {@code cancellable} = ACTIVE and slot start strictly after the injected clock (TECH §3). */
++    private static StudentBooking project(StudentReadRepository.BookingRow row, Instant now) {
++        boolean cancellable = row.status() == BookingStatus.ACTIVE && row.startTime().isAfter(now);
++        return new StudentBooking(row.id(), row.slotId(), row.moduleId(), row.moduleCode(), row.moduleName(),
++                row.tutorName(), row.startTime(), row.endTime(), row.status(), cancellable);
++    }
++
++    /** SGT calendar date as the half-open UTC range {@code [date 00:00 SGT, next day 00:00 SGT)}. */
++    private static Optional<StudentReadRepository.StartRange> sgtDay(Optional<LocalDate> sgtDate) {
++        return sgtDate.map(date -> new StudentReadRepository.StartRange(
+                 date.atStartOfDay(SINGAPORE).toInstant(), date.plusDays(1).atStartOfDay(SINGAPORE).toInstant()));
+-        return reads.findBookableSlots(clock.instant(), moduleId, range);
+     }
+ }
+diff --git a/src/backend/src/main/java/unichope/student/http/StudentApiInput.java b/src/backend/src/main/java/unichope/student/http/StudentApiInput.java
+index 8429510..d454b09 100644
+--- a/src/backend/src/main/java/unichope/student/http/StudentApiInput.java
++++ b/src/backend/src/main/java/unichope/student/http/StudentApiInput.java
+@@ -2,12 +2,14 @@ package unichope.student.http;
+ 
+ import java.time.LocalDate;
+ import java.time.format.DateTimeParseException;
++import java.util.EnumSet;
+ import java.util.Map;
+ import java.util.Optional;
+ import java.util.Set;
+ import java.util.UUID;
+ import java.util.regex.Pattern;
+ import jakarta.servlet.http.HttpServletRequest;
++import unichope.platform.core.model.consultation.BookingStatus;
+ import unichope.platform.web.ApiFailure;
+ 
+ /** Adapter-local strict query parsing (TECH §3.1); every violation is 400 VALIDATION_FAILED. */
+@@ -16,12 +18,18 @@ public final class StudentApiInput {
+             Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+     private static final Pattern DATE_TEXT = Pattern.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}");
+     private static final Set<String> SLOT_PARAMETERS = Set.of("moduleId", "date");
++    private static final Set<String> BOOKING_PARAMETERS = Set.of("status", "date");
++    private static final Map<String, BookingStatus> BOOKING_STATUSES = Map.of(
++            "ACTIVE", BookingStatus.ACTIVE, "CANCELLED", BookingStatus.CANCELLED, "COMPLETED", BookingStatus.COMPLETED);
+ 
+     private StudentApiInput() {}
+ 
+     /** Parsed {@code GET /slots} filters. */
+     public record SlotFilter(Optional<UUID> moduleId, Optional<LocalDate> date) {}
+ 
++    /** Parsed {@code GET /bookings} filters; an empty status set means every status. */
++    public record BookingFilter(Set<BookingStatus> statuses, Optional<LocalDate> date) {}
++
+     /** Rejects any query parameter. */
+     public static void noQuery(HttpServletRequest request) {
+         if (!request.getParameterMap().isEmpty()) throw invalid();
+@@ -35,6 +43,25 @@ public final class StudentApiInput {
+                 single(parameters, "date").map(StudentApiInput::date));
+     }
+ 
++    /**
++     * {@code GET /bookings}: only {@code status} (zero or more times, each exactly ACTIVE, CANCELLED
++     * or COMPLETED; repeated equal values are harmless) and {@code date} at most once.
++     */
++    public static BookingFilter bookingFilter(HttpServletRequest request) {
++        Map<String, String[]> parameters = request.getParameterMap();
++        if (!BOOKING_PARAMETERS.containsAll(parameters.keySet())) throw invalid();
++        Set<BookingStatus> statuses = EnumSet.noneOf(BookingStatus.class);
++        String[] values = parameters.get("status");
++        if (values != null) {
++            for (String value : values) {
++                BookingStatus status = value == null ? null : BOOKING_STATUSES.get(value);
++                if (status == null) throw invalid();
++                statuses.add(status);
++            }
++        }
++        return new BookingFilter(Set.copyOf(statuses), single(parameters, "date").map(StudentApiInput::date));
++    }
++
+     /** Canonical 8-4-4-4-12 hexadecimal UUID text. */
+     public static UUID id(String value) {
+         if (value == null || !UUID_TEXT.matcher(value).matches()) throw invalid();
+diff --git a/src/backend/src/main/java/unichope/student/http/StudentController.java b/src/backend/src/main/java/unichope/student/http/StudentController.java
+index 2bd7acc..292585c 100644
+--- a/src/backend/src/main/java/unichope/student/http/StudentController.java
++++ b/src/backend/src/main/java/unichope/student/http/StudentController.java
+@@ -1,17 +1,21 @@
+ package unichope.student.http;
+ 
+ import java.util.List;
++import java.util.UUID;
+ import jakarta.servlet.http.HttpServletRequest;
+ import org.springframework.context.annotation.Profile;
+ import org.springframework.web.bind.annotation.GetMapping;
++import org.springframework.web.bind.annotation.PathVariable;
+ import org.springframework.web.bind.annotation.RequestMapping;
+ import org.springframework.web.bind.annotation.RestController;
++import unichope.platform.web.ApiFailure;
+ import unichope.student.BookableSlot;
+ import unichope.student.ModuleOption;
++import unichope.student.StudentBooking;
+ import unichope.student.StudentReadService;
+ 
+ /**
+- * Student browse routes. Request syntax is validated before the actor check (TECH §3.2
++ * Student browse and own-booking read routes. Request syntax is validated before the actor check (TECH §3.2
+  * evaluation order), so a syntax error never reads data or invalidates a session.
+  */
+ @RestController("studentController")
+@@ -35,4 +39,23 @@ public class StudentController {
+         StudentApiInput.SlotFilter filter = StudentApiInput.slotFilter(request);
+         return reads.bookableSlots(filter.moduleId(), filter.date());
+     }
++
++    @GetMapping("/bookings")
++    public List<StudentBooking> bookings(HttpServletRequest request) {
++        StudentApiInput.BookingFilter filter = StudentApiInput.bookingFilter(request);
++        return reads.myBookings(filter.statuses(), filter.date());
++    }
++
++    /**
++     * The path ID is bound as text and parsed here, so a malformed ID is 400 VALIDATION_FAILED (not a
++     * framework type-mismatch) and is rejected before the actor check, like any query parameter.
++     */
++    @GetMapping("/bookings/{id}")
++    public StudentBooking booking(@PathVariable("id") String id, HttpServletRequest request) {
++        StudentApiInput.noQuery(request);
++        UUID bookingId = StudentApiInput.id(id);
++        // Another student's booking and a nonexistent ID give the same 404 (TECH §3).
++        return reads.myBooking(bookingId)
++                .orElseThrow(() -> new ApiFailure(404, "NOT_FOUND", "Resource not found"));
++    }
+ }

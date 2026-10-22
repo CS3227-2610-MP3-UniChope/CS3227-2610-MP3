@@ -1,0 +1,177 @@
+stu-c2-book-slot: pre-implementation red run (test writer, 22 October 2026)
+Working directory: src/backend
+Revision: HEAD 459fd6ef7108c2d08aeaa0f92ae0bccc054158b5 + uncommitted stu-c1 + stu-c3 working tree (unchanged) + new test file
+  src/backend/src/test/java/unichope/platform/core/postgres/StudentBookSlotPgTest.java SHA-256 50ed5340fcadc22a14c4273c337c175547a605bfbd16563d64e7729770604cb4
+Prerequisite: docker compose -f compose.test.yaml up -d --wait (exit 0)
+Compile check: ./gradlew compileTestJava --console=plain -> exit 0, no warnings from test sources
+Command: ./gradlew clean test postgresTest -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55432/mp3_test -Dcore.test.user=mp3_test -Dcore.test.password=<local placeholder from compose.test.yaml> --console=plain --continue
+Exit code: 1 (expected: only the new C2 tests fail)
+
+Interpretation: all 15 failures are AssertionFailedError in StudentBookSlotPgTest. POST /api/student/bookings
+does not exist yet: the c1 Student resolver answers 405 METHOD_NOT_ALLOWED (HttpRequestMethodNotSupportedException)
+instead of 201/400/401/403/409/413/415/500/503; the two S-BOOK-4 races observe no blocked PostgreSQL caller
+(fixture awaitBlocked fails); the activation test's context starts without a ConsultationLifecycle bean.
+No compile, discovery or database failure. The existing 28 unit + 132 PostgreSQL tests pass.
+
+== JUnit XML summary ==
+[test] total tests=28 failures=0 errors=0 skipped=0
+  unichope.UnichopeApplicationTest: tests=1 failures=0 errors=0 skipped=0
+  unichope.platform.ai.AiGatewayTest: tests=5 failures=0 errors=0 skipped=0
+  unichope.platform.core.model.DomainTest: tests=3 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.AccountInputTest: tests=2 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.LifecycleInputTest: tests=1 failures=0 errors=0 skipped=0
+  unichope.student.http.StudentActivationTest: tests=2 failures=0 errors=0 skipped=0
+  unichope.tutor.TutorNoteInputTest: tests=4 failures=0 errors=0 skipped=0
+  unichope.tutor.TutorReadServiceTest: tests=4 failures=0 errors=0 skipped=0
+  unichope.tutor.http.TutorActivationTest: tests=2 failures=0 errors=0 skipped=0
+  unichope.tutor.http.TutorApiInputTest: tests=4 failures=0 errors=0 skipped=0
+[postgresTest] total tests=147 failures=15 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresAccountConcurrencyTest: tests=9 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresAccountFailureTest: tests=5 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresAccountStorageTest: tests=7 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresAuthMigrationTest: tests=2 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresCoreReadTest: tests=4 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresLifecycleConcurrencyTest: tests=11 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresLifecycleTest: tests=19 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresPrivateNoteLockTest: tests=13 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.StudentBookSlotPgTest: tests=15 failures=15 errors=0 skipped=0
+  unichope.platform.core.postgres.StudentBookingsPgTest: tests=9 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.StudentBrowsePgTest: tests=20 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.TutorRestPgTest: tests=31 failures=0 errors=0 skipped=0
+  unichope.tutor.PostgresTutorReadTest: tests=2 failures=0 errors=0 skipped=0
+
+== Failing test cases (type: first line of message, request IDs elided) ==
+- StudentBookSlotPgTest.sBook4SameSlotRaceHasExactlyOneWinner() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: Did not observe 1 independently blocked PostgreSQL callers
+- StudentBookSlotPgTest.c2In3ActorHeaderIsIgnored() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <201> but was: <405>
+- StudentBookSlotPgTest.c2ActStudentApiWithoutConsultationLifecycleFailsStartup() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: student-api context started without a ConsultationLifecycle bean ==> Expected java.lang.RuntimeException to be thrown, but nothing was thrown.
+- StudentBookSlotPgTest.c2In1RejectsEveryNonExactBodyAndAnyQueryBeforeTheActorCheck() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <400> but was: <405>
+- StudentBookSlotPgTest.sBook2EveryUnavailableCauseSharesOneConflictAndChangesNothing() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <409> but was: <405>
+- StudentBookSlotPgTest.c2Acc1AccessMatrixAndCsrfDenyWithoutAnyChange() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <401> but was: <405>
+- StudentBookSlotPgTest.sBook5RebookingAfterCancellationCreatesNewBookingAndKeepsHistory() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <201> but was: <405>
+- StudentBookSlotPgTest.c2In2MediaTypeAndStreamedBodySizeLimits() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <415> but was: <405>
+- StudentBookSlotPgTest.sBook4OverlappingSlotsRaceForOneStudentHasExactlyOneWinner() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: Did not observe 1 independently blocked PostgreSQL callers
+- StudentBookSlotPgTest.sBook1BooksEligibleSlotWithLocationExactProjectionAndAtomicRows() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <201> but was: <405>
+- StudentBookSlotPgTest.sBook3OverlapWithOwnActiveBookingIsRejectedAndAdjacentIsAllowed() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <409> but was: <405>
+- StudentBookSlotPgTest.c2Err2LifecycleAccessDeniedRerunsTheAccessCheck() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <403> but was: <405>
+- StudentBookSlotPgTest.c2Prec1UnavailableWinsOverOverlap() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <409> but was: <405>
+- StudentBookSlotPgTest.c2Err3ProjectionFailureAfterCommitIs500AndKeepsTheBookingOnce() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <500> but was: <405>
+- StudentBookSlotPgTest.c2Err1LifecycleOutcomesMapToSafeStudentErrors() [failure: org.opentest4j.AssertionFailedError]
+    org.opentest4j.AssertionFailedError: {"code":"METHOD_NOT_ALLOWED","message":"Request method is not allowed","requestId":"<uuid>"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported ==> expected: <400> but was: <405>
+
+== Gradle console output (sanitized; no secrets present) ==
+> Task :clean
+
+> Task :compileJava
+D:\cs3227\CS3227-2610-MP3\src\backend\src\main\java\unichope\platform\ai\AiGateway.java:50: warning: [serial] serializable class Failure has no definition of serialVersionUID
+    final class Failure extends RuntimeException {
+          ^
+1 warning
+
+> Task :processResources
+> Task :classes
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :test
+> Task :postgresTest
+
+StudentBookSlotPgTest > sBook4SameSlotRaceHasExactlyOneWinner() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:274
+
+StudentBookSlotPgTest > c2In3ActorHeaderIsIgnored() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:723
+
+StudentBookSlotPgTest > c2ActStudentApiWithoutConsultationLifecycleFailsStartup() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:635
+
+StudentBookSlotPgTest > c2In1RejectsEveryNonExactBodyAndAnyQueryBeforeTheActorCheck() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > sBook2EveryUnavailableCauseSharesOneConflictAndChangesNothing() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > c2Acc1AccessMatrixAndCsrfDenyWithoutAnyChange() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > sBook5RebookingAfterCancellationCreatesNewBookingAndKeepsHistory() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:723
+
+StudentBookSlotPgTest > c2In2MediaTypeAndStreamedBodySizeLimits() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > sBook4OverlappingSlotsRaceForOneStudentHasExactlyOneWinner() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:302
+
+StudentBookSlotPgTest > sBook1BooksEligibleSlotWithLocationExactProjectionAndAtomicRows() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:723
+
+StudentBookSlotPgTest > sBook3OverlapWithOwnActiveBookingIsRejectedAndAdjacentIsAllowed() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > c2Err2LifecycleAccessDeniedRerunsTheAccessCheck() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > c2Prec1UnavailableWinsOverOverlap() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > c2Err3ProjectionFailureAfterCommitIs500AndKeepsTheBookingOnce() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > c2Err1LifecycleOutcomesMapToSafeStudentErrors() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+147 tests completed, 15 failed
+
+> Task :postgresTest FAILED
+
+[Incubating] Problems report is available at: file:///D:/cs3227/CS3227-2610-MP3/src/backend/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':postgresTest'.
+> There were failing tests. See the report at: file:///D:/cs3227/CS3227-2610-MP3/src/backend/build/reports/tests/postgresTest/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 3m 40s
+6 actionable tasks: 6 executed
+
+== Test-validity check (NOT implementation evidence) ==
+Disposable copy of src/backend in the session scratch directory (outside the repository; deleted afterwards).
+A minimal spec-following prototype (throwaway StudentHttpService, POST /bookings in StudentController, strict body
+parser, TECH §3.3 mapping, projection via StudentReadService.myBooking, lifecycle injected by type) was added there only.
+Full run: ./gradlew clean test postgresTest (same -Dcore.test.* properties) -> exit 0; test 28/0/0/0; postgresTest 147/0/0/0
+(StudentBookSlotPgTest 15/15 pass, all c1/c3/core/Tutor tests pass).
+Seeded defects, one at a time (focused: ./gradlew postgresTest --tests 'unichope.platform.core.postgres.StudentBookSlotPgTest'):
+  extra-fields-ignored: exit=1 caught_by: c2In1RejectsEveryNonExactBodyAndAnyQueryBeforeTheActorCheck 
+  overlap-as-unavailable: exit=1 caught_by: sBook4OverlappingSlotsRaceForOneStudentHasExactlyOneWinner sBook3OverlapWithOwnActiveBookingIsRejectedAndAdjacentIsAllowed c2Prec1UnavailableWinsOverOverlap c2Err1LifecycleOutcomesMapToSafeStudentErrors 
+  access-denied-no-recheck: exit=1 caught_by: c2Err2LifecycleAccessDeniedRerunsTheAccessCheck 
+  unique-index-unmapped: exit=1 caught_by: c2Err1LifecycleOutcomesMapToSafeStudentErrors 
+  unique-index-message-only: exit=1 caught_by: c2Err1LifecycleOutcomesMapToSafeStudentErrors 
+  any-integrity-409: exit=1 caught_by: c2Err1LifecycleOutcomesMapToSafeStudentErrors 
+  unknown-code-409: exit=1 caught_by: c2Err1LifecycleOutcomesMapToSafeStudentErrors 
+  actor-before-syntax: exit=1 caught_by: c2In1RejectsEveryNonExactBodyAndAnyQueryBeforeTheActorCheck c2In2MediaTypeAndStreamedBodySizeLimits 
+  retry-after-projection-failure: exit=1 caught_by: c2Err3ProjectionFailureAfterCommitIs500AndKeepsTheBookingOnce 
+  lazy-lifecycle: exit=1 caught_by: c2ActStudentApiWithoutConsultationLifecycleFailsStartup 
+  no-location: exit=1 caught_by: sBook1BooksEligibleSlotWithLocationExactProjectionAndAtomicRows 
+  unbounded-body: exit=1 caught_by: c2In2MediaTypeAndStreamedBodySizeLimits 
+  header-actor: exit=1 caught_by: c2In3ActorHeaderIsIgnored 
+  exception-text-in-500: exit=1 caught_by: c2Err1LifecycleOutcomesMapToSafeStudentErrors 
+All 14 seeded defects were caught (exit 1) by the intended test(s).
