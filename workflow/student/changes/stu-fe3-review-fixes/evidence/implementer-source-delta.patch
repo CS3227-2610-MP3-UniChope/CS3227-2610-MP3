@@ -1,0 +1,142 @@
+diff --git a/src/frontend/src/App.tsx b/src/frontend/src/App.tsx
+index 20d38e0..3120dec 100644
+--- a/src/frontend/src/App.tsx
++++ b/src/frontend/src/App.tsx
+@@ -38,13 +38,20 @@ export default function App() {
+   }
+   async function logout() {
+     if (signingOut) return; setSigningOut(true); setActor(null); setMessage(''); setLogoutFailed(false); api.reset(); navigate('/login', true);
+-    try { await api.request('/api/auth/logout', {}, false); api.reset(); await api.csrf(); }
++    try {
++      await api.request('/api/auth/logout', {}, false);
++      api.reset();
++      // The server has confirmed sign-out. Anonymous token refresh is best effort;
++      // Login will acquire a fresh token on submit if this attempt fails.
++      try { await api.csrf(); } catch { /* Keep the confirmed sign-out state. */ }
++    }
+     catch (error) { if (!(error instanceof StaleRequest)) { setLogoutFailed(true); setMessage('Server sign-out could not be confirmed. Retry sign out to close your session.'); } } finally { setSigningOut(false); }
+   }
+   const unknown = !['/', '/login', '/tutor', '/admin', '/student/slots', '/student/bookings'].includes(window.location.pathname);
+   return <><a className="skip-link" href="#main-content">Skip to content</a>
+-    {restoring ? <main id="main-content" className="restore-screen"><Brand /><h1>Opening your workspace</h1><Loading label="Checking your session" /></main> : restoreFailed ? <main id="main-content" className="restore-screen"><Brand /><h1>Unable to open your workspace</h1><p role="alert">{message}</p><button className="btn btn-primary" onClick={() => window.location.reload()}>Retry</button></main> : unknown ? <main id="main-content" className="restore-screen"><Brand /><h1>Page not found</h1><p>This page could not be found.</p><Link href={actor ? home(actor) : '/login'}>Back to home</Link></main> : !actor ? <Login login={login} message={message} signingOut={signingOut} retryLogout={logoutFailed ? () => void logout() : undefined} /> : <>
+-      <header className="app-header"><Link href={home(actor)} className="brand-link"><Brand /></Link><span className="header-caption">CONSULTATION PLANNER</span><div className="account"><span><strong>{actor.name}</strong><small>{actor.role.charAt(0) + actor.role.slice(1).toLowerCase()}</small></span><button className="btn sign-out" onClick={() => void logout()}><Icon name="logout" />Sign out</button></div></header>
++    {(restoring || restoreFailed || unknown) && <header className="app-header"><Brand /></header>}
++    {restoring ? <main id="main-content" className="restore-screen"><h1>Opening your workspace</h1><Loading label="Checking your session" /></main> : restoreFailed ? <main id="main-content" className="restore-screen"><h1>Unable to open your workspace</h1><p role="alert">{message}</p><button className="btn btn-primary" onClick={() => window.location.reload()}>Retry</button></main> : unknown ? <main id="main-content" className="restore-screen"><h1>Page not found</h1><p>This page could not be found.</p><Link href={actor ? home(actor) : '/login'}>Back to home</Link></main> : !actor ? <Login login={login} message={message} signingOut={signingOut} retryLogout={logoutFailed ? () => void logout() : undefined} /> : <>
++      <header className="app-header"><Link href={home(actor)} className="brand-link"><Brand /></Link>{actor.role === 'STUDENT' && <span className="header-caption">CONSULTATION PLANNER</span>}<div className="account">{actor.role === 'STUDENT' && <span><strong>{actor.name}</strong><small>{actor.role.charAt(0) + actor.role.slice(1).toLowerCase()}</small></span>}<button className="btn sign-out" onClick={() => void logout()}><Icon name="logout" />Sign out</button></div></header>
+       {actor.role === 'STUDENT' ? <StudentWorkspace key={actor.id} api={api} location={location} signOut={() => void logout()} /> : <main id="main-content" tabIndex={-1} className="placeholder-page"><div className="placeholder-icon"><Icon name="book" /></div><span className="eyebrow">YOUR UNICHOPE WORKSPACE</span><h1>{actor.role === 'TUTOR' ? 'Tutor' : 'Admin'} home</h1><p>Your workspace is not ready yet.</p><p className="muted">This space is being prepared for you. Please check back later.</p></main>}
+     </>}
+   </>;
+diff --git a/src/frontend/src/Login.tsx b/src/frontend/src/Login.tsx
+index 17dce0a..ffc8ef1 100644
+--- a/src/frontend/src/Login.tsx
++++ b/src/frontend/src/Login.tsx
+@@ -14,7 +14,7 @@ export default function Login({ login, message, retryLogout, signingOut = false
+     } finally { setPassword(''); setPending(false); }
+   }
+   return <div className="login-page"><header className="login-header"><Brand /><span className="quiet">Your time, well spent.</span></header>
+-    <main id="main-content" tabIndex={-1} className="login-main"><div className="login-intro"><span className="eyebrow">A LITTLE TIME. A LOT OF CLARITY.</span><h2>Make room for<br />your next question.</h2><p>Find a consultation, choose a time, and keep your learning moving.</p><div className="login-note"><Icon name="calendar" /><span>A simpler way to connect<br /><strong>One consultation at a time.</strong></span></div></div>
++    <main id="main-content" tabIndex={-1} className="login-main"><div className="login-intro"><span className="eyebrow">A LITTLE TIME. A LOT OF CLARITY.</span><p className="login-intro-title">Make room for<br />your next question.</p><p>Find a consultation, choose a time, and keep your learning moving.</p><div className="login-note"><Icon name="calendar" /><span>A simpler way to connect<br /><strong>One consultation at a time.</strong></span></div></div>
+       <section className="login-form-panel" aria-labelledby="login-title"><span className="eyebrow">WELCOME TO UNICHOPE</span><h1 id="login-title">Sign in</h1><p className="muted">Your next conversation starts here.</p>
+         {(error || message) && <div role="alert" className="notice error">{error || message}</div>}
+         {retryLogout && <button className="btn btn-outline-secondary mb-3" onClick={retryLogout}>Retry sign out</button>}
+diff --git a/src/frontend/src/api.ts b/src/frontend/src/api.ts
+index 7017e16..caf8632 100644
+--- a/src/frontend/src/api.ts
++++ b/src/frontend/src/api.ts
+@@ -6,6 +6,9 @@ export class ApiError extends Error {
+   constructor(public status = 0, public code = 'UNAVAILABLE', public retryAfter = '') { super(code); }
+ }
+ export class StaleRequest extends Error {}
++export class PreflightError extends ApiError {
++  constructor() { super(0, 'NOTHING_SENT'); }
++}
+ export const isActor = (value: unknown): value is Actor => {
+   const a = value as Actor | null;
+   return !!a && typeof a.id === 'string' && typeof a.name === 'string' && ['STUDENT', 'TUTOR', 'ADMIN'].includes(a.role);
+@@ -47,7 +50,7 @@ export class ApiClient {
+           this.onSessionError(error);
+           if (generation !== this.generation) throw new StaleRequest();
+         }
+-        throw error;
++        throw new PreflightError();
+       }
+     }
+     if (generation !== this.generation) throw new StaleRequest();
+@@ -83,6 +86,7 @@ export class ApiClient {
+   }
+ }
+ export function safeError(error: unknown, mutation = false) {
++  if (error instanceof PreflightError) return 'Nothing was changed. Please try again.';
+   const e = error instanceof ApiError ? error : new ApiError();
+   if (e.code === 'CSRF_INVALID') return 'Your security token expired. Retry with a fresh token to continue.';
+   if (e.code === 'FORBIDDEN') return 'Access denied. You do not have permission to view this resource.';
+diff --git a/src/frontend/src/student/StudentWorkspace.tsx b/src/frontend/src/student/StudentWorkspace.tsx
+index b4feebf..2272e8a 100644
+--- a/src/frontend/src/student/StudentWorkspace.tsx
++++ b/src/frontend/src/student/StudentWorkspace.tsx
+@@ -1,5 +1,5 @@
+-﻿import { useCallback, useEffect, useState } from 'react';
+-import { ApiClient, ApiError, StaleRequest, safeError, type Booking, type Module, type Slot } from '../api';
++﻿import { useCallback, useEffect, useRef, useState } from 'react';
++import { ApiClient, ApiError, PreflightError, StaleRequest, safeError, type Booking, type Module, type Slot } from '../api';
+ import { Icon, Link, Loading } from '../components';
+ import { navigate } from '../navigation';
+ import Confirmation from './Confirmation';
+@@ -13,6 +13,7 @@ export default function StudentWorkspace({ api, location, signOut }: { api: ApiC
+   const [revision, setRevision] = useState(0); const [invalid, setInvalid] = useState(false);
+   const [selection, setSelection] = useState<Slot | Booking | null>(null); const [pending, setPending] = useState(false);
+   const [notice, setNotice] = useState(''); const [error, setError] = useState<unknown>(null); const [retryItem, setRetryItem] = useState<Slot | Booking | null>(null);
++  const normalizedLocation = useRef<string | null>(null);
+   const [mobile, setMobile] = useState(window.innerWidth < 1024);
+   useEffect(() => { const resize = () => setMobile(window.innerWidth < 1024); window.addEventListener('resize', resize); return () => window.removeEventListener('resize', resize); }, []);
+   const modules = useRead<Module>(api, '/api/student/modules', 'modules', revision);
+@@ -23,7 +24,15 @@ export default function StudentWorkspace({ api, location, signOut }: { api: ApiC
+   const dataPath = `/api/student/${bookings ? 'bookings' : 'slots'}${query.size ? `?${query}` : ''}`;
+   const data = useRead<Booking | Slot>(api, dataPath, bookings ? 'bookings' : 'slots', revision);
+   useEffect(() => {
+-    if (f.invalid) { setInvalid(true); const suffix = f.clean.toString(); navigate(`${bookings ? '/student/bookings' : '/student/slots'}${suffix ? `?${suffix}` : ''}`, true); }
++    if (f.invalid) {
++      setInvalid(true);
++      const suffix = f.clean.toString();
++      normalizedLocation.current = `${bookings ? '/student/bookings' : '/student/slots'}${suffix ? `?${suffix}` : ''}`;
++      navigate(normalizedLocation.current, true);
++    } else {
++      if (normalizedLocation.current !== location) setInvalid(false);
++      normalizedLocation.current = null;
++    }
+   }, [location]);
+   useEffect(() => { setPending(false); setSelection(null); setNotice(''); setError(null); setRetryItem(null); }, [location]);
+   // An unmounted workspace or a changed filter must not accept an old mutation completion.
+@@ -31,6 +40,7 @@ export default function StudentWorkspace({ api, location, signOut }: { api: ApiC
+   useEffect(() => { lifecycle.active = true; lifecycle.current++; return () => { lifecycle.active = false; lifecycle.current++; }; }, [location, lifecycle]);
+   const close = useCallback(() => setSelection(null), []);
+   function change(values: Record<string, string>) {
++    setInvalid(false);
+     const next = new URLSearchParams(window.location.search);
+     Object.entries(values).forEach(([key, value]) => value ? next.set(key, value) : next.delete(key));
+     navigate(`${bookings ? '/student/bookings' : '/student/slots'}${next.size ? `?${next}` : ''}`);
+@@ -49,7 +59,7 @@ export default function StudentWorkspace({ api, location, signOut }: { api: ApiC
+     } catch (failure) {
+       if (!lifecycle.active || lifecycle.current !== generation || failure instanceof StaleRequest) return;
+       setError(failure); setSelection(null);
+-      if (failure instanceof ApiError && failure.code === 'CSRF_INVALID') setRetryItem(item);
++      if (failure instanceof PreflightError || (failure instanceof ApiError && failure.code === 'CSRF_INVALID')) setRetryItem(item);
+       if (failure instanceof ApiError && [404, 409].includes(failure.status)) setRevision(value => value + 1);
+     } finally { if (lifecycle.active && lifecycle.current === generation) setPending(false); }
+   }
+diff --git a/src/frontend/src/styles.css b/src/frontend/src/styles.css
+index 8ac2cc4..b1697d8 100644
+--- a/src/frontend/src/styles.css
++++ b/src/frontend/src/styles.css
+@@ -52,9 +52,9 @@ label { font-size: .75rem; font-weight: 650; display: block; margin: 1.25rem 0 .
+ .empty-state { padding: 4rem 1.5rem; text-align: center; border: 1px dashed #cbd1da; border-radius: var(--radius); background: #fafbfc; }.empty-state>.line-icon { width: 2rem; height: 2rem; color: var(--muted); margin-bottom: 1rem; }.empty-state h2 { font-size: 1rem; }.empty-state p { color: var(--muted); font-size: .8125rem; max-width: 24rem; margin: 0 auto; }.loading-state { padding: 2rem; background: #fafbfc; border: 1px solid var(--soft-line); }.loading-state p { color: var(--muted); font-size: .8125rem; margin: 1rem 0 0; }.skeleton { display: block; width: 80%; height: .875rem; background: #e7eaf0; margin-bottom: .75rem; border-radius: .125rem; }.skeleton.short { width: 50%; }
+ .dialog-backdrop { position: fixed; inset: 0; background: #17212e80; z-index: 1050; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto; }.confirmation { width: 30rem; max-width: 100%; max-height: calc(100dvh - 2rem); overflow-y: auto; background: var(--surface); padding: 2rem; border-radius: .375rem; box-shadow: 0 .75rem 3rem #15203020; overflow-wrap: anywhere; }.confirmation h2 { font-size: 1.5rem; letter-spacing: -.035em; margin-bottom: .75rem; }.confirmation>p { font-size: .8125rem; color: var(--muted); }.confirmation-details { margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-left: 3px solid var(--accent); background: #fafbfc; }.confirmation-details h3 { font-size: 1rem; margin: .25rem 0 .75rem; }.confirmation-details p { font-size: .8125rem; margin-bottom: .75rem; }.confirmation-details p:last-child { margin: 0; }.dialog-actions { display: flex; justify-content: flex-end; gap: .75rem; }.dialog-actions .btn { padding: .625rem .875rem; }
+ .placeholder-page { max-width: 40rem; margin: 6rem auto; padding: 2rem; text-align: center; }.placeholder-icon { color: var(--accent); width: 4rem; height: 4rem; background: var(--accent-soft); display: grid; place-items: center; margin: 0 auto 2rem; border-radius: .5rem; }.placeholder-icon .line-icon { width: 2rem; height: 2rem; }.placeholder-page h1 { margin-bottom: 1.5rem; }.restore-screen { padding: 4rem 1.5rem; margin: auto; max-width: 40rem; }.restore-screen h1 { margin-top: 3rem; }
+-.login-page { min-height: 100dvh; background: #fafaf9; display: flex; flex-direction: column; }.login-header { padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); background: var(--surface); }.login-header .quiet { font-size: .75rem; }.login-main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 5rem; width: min(100%,64rem); margin: auto; padding: 4rem 2rem; }.login-intro { max-width: 26rem; }.login-intro .eyebrow { color: var(--accent); }.login-intro h2 { font-size: 2.875rem; line-height: 1.15; letter-spacing: -.055em; font-weight: 600; margin: 1.25rem 0 1.5rem; }.login-intro>p { font-size: 1rem; line-height: 1.8; color: var(--muted); max-width: 23rem; }.login-note { display: flex; gap: 1rem; align-items: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: .6875rem; color: var(--muted); }.login-note .line-icon { color: var(--accent); width: 1.75rem; height: 1.75rem; }.login-note strong { color: var(--ink); font-weight: 550; }.login-form-panel { background: var(--surface); padding: 2.5rem; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius); }.login-form-panel h1 { font-size: 1.875rem; }.login-form-panel>.muted { margin-bottom: 2rem; font-size: .8125rem; }.login-form-panel label { margin-top: 1.25rem; }.login-form-panel .form-control { min-height: 2.75rem; }.login-submit { margin-top: 1.75rem; width: 100%; display: flex; align-items: center; justify-content: space-between; min-height: 2.75rem; }.login-help { margin: 1.5rem 0 0; font-size: .6875rem; color: var(--muted); text-align: center; }.login-footer { text-align: center; color: var(--muted); font-size: .625rem; padding: 1.5rem; border-top: 1px solid var(--soft-line); }
++.login-page { min-height: 100dvh; background: #fafaf9; display: flex; flex-direction: column; }.login-header { padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); background: var(--surface); }.login-header .quiet { font-size: .75rem; }.login-main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 5rem; width: min(100%,64rem); margin: auto; padding: 4rem 2rem; }.login-intro { max-width: 26rem; }.login-intro .eyebrow { color: var(--accent); }.login-intro .login-intro-title { color: var(--ink); max-width: none; font-size: 2.875rem; line-height: 1.15; letter-spacing: -.055em; font-weight: 600; margin: 1.25rem 0 1.5rem; }.login-intro>p { font-size: 1rem; line-height: 1.8; color: var(--muted); max-width: 23rem; }.login-note { display: flex; gap: 1rem; align-items: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: .6875rem; color: var(--muted); }.login-note .line-icon { color: var(--accent); width: 1.75rem; height: 1.75rem; }.login-note strong { color: var(--ink); font-weight: 550; }.login-form-panel { background: var(--surface); padding: 2.5rem; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius); }.login-form-panel h1 { font-size: 1.875rem; }.login-form-panel>.muted { margin-bottom: 2rem; font-size: .8125rem; }.login-form-panel label { margin-top: 1.25rem; }.login-form-panel .form-control { min-height: 2.75rem; }.login-submit { margin-top: 1.75rem; width: 100%; display: flex; align-items: center; justify-content: space-between; min-height: 2.75rem; }.login-help { margin: 1.5rem 0 0; font-size: .6875rem; color: var(--muted); text-align: center; }.login-footer { text-align: center; color: var(--muted); font-size: .625rem; padding: 1.5rem; border-top: 1px solid var(--soft-line); }
+ @media (max-width: 1199px) { .student-layout { grid-template-columns: 10.5rem minmax(0,1fr); }.workspace-main { padding: 2rem 1.25rem; }.workspace-nav { padding: 2rem .625rem; }.browse-layout { grid-template-columns: 9.5rem minmax(0,1fr); gap: 1rem; }.day-header span { font-size: .5625rem; }.timetable-head,.time-band { grid-template-columns: 2.25rem repeat(7,minmax(0,1fr)); }.consultation { padding: .5rem .25rem; }.page-heading h1 { font-size: 1.625rem; } }
+-@media (max-width: 1023px) { .app-header { padding: 1rem 1.5rem; }.header-caption { display: none; }.student-layout { display: block; }.workspace-nav { padding: .5rem 1.5rem; flex-direction: row; border-right: 0; border-bottom: 1px solid var(--line); }.nav-caption,.nav-footnote { display: none; }.workspace-nav>a { padding: .625rem .75rem; }.workspace-main { padding: 2rem 1.5rem; }.browse-layout { grid-template-columns: 12rem minmax(0,1fr); gap: 1.5rem; }.day-list { margin-bottom: 1.5rem; }.day-list>h2 { font-size: .75rem; color: var(--muted); background: var(--canvas); padding: .75rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }.consultation { padding: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .75rem; }.consultation h3 { font-size: .8125rem; margin: .25rem 0 .75rem; }.consultation .module-code { font-size: .75rem; }.consultation .tutor-name { font-size: .75rem; }.consultation .consultation-time { font-size: .6875rem; margin-bottom: 0; }.consultation .consultation-time .line-icon { display: block; }.btn-book { width: auto; padding: .5rem .875rem; font-size: .75rem; }.login-main { gap: 2rem; }.login-intro h2 { font-size: 2.375rem; }.login-form-panel { padding: 2rem; } }
++@media (max-width: 1023px) { .app-header { padding: 1rem 1.5rem; }.header-caption { display: none; }.student-layout { display: block; }.workspace-nav { padding: .5rem 1.5rem; flex-direction: row; border-right: 0; border-bottom: 1px solid var(--line); }.nav-caption,.nav-footnote { display: none; }.workspace-nav>a { padding: .625rem .75rem; }.workspace-main { padding: 2rem 1.5rem; }.browse-layout { grid-template-columns: 12rem minmax(0,1fr); gap: 1.5rem; }.day-list { margin-bottom: 1.5rem; }.day-list>h2 { font-size: .75rem; color: var(--muted); background: var(--canvas); padding: .75rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }.consultation { padding: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .75rem; }.consultation h3 { font-size: .8125rem; margin: .25rem 0 .75rem; }.consultation .module-code { font-size: .75rem; }.consultation .tutor-name { font-size: .75rem; }.consultation .consultation-time { font-size: .6875rem; margin-bottom: 0; }.consultation .consultation-time .line-icon { display: block; }.btn-book { width: auto; padding: .5rem .875rem; font-size: .75rem; }.login-main { gap: 2rem; }.login-intro .login-intro-title { font-size: 2.375rem; }.login-form-panel { padding: 2rem; } }
+ @media (max-width: 767px) { .app-header { padding: 1rem; gap: .75rem; }.brand { font-size: 1.125rem; gap: .5rem; }.brand-mark { width: 1.75rem; height: 1.75rem; }.account { gap: .5rem; }.account>span { max-width: 7rem; }.account strong { font-size: .625rem; }.sign-out { padding: .375rem .25rem .375rem .625rem; font-size: .625rem; gap: .25rem; }.sign-out .line-icon { width: 1rem; height: 1rem; }.workspace-nav { padding: .5rem; gap: .25rem; }.workspace-nav>a { font-size: .6875rem; padding: .5rem; gap: .375rem; }.workspace-nav .line-icon { width: 1rem; height: 1rem; }.workspace-main { padding: 1.5rem 1rem; }.page-heading { align-items: flex-start; margin-bottom: 1.5rem; }.page-heading .eyebrow { font-size: .5rem; max-width: 15rem; }.page-heading h1 { font-size: 1.5rem; }.page-heading p { font-size: .75rem; }.refresh-button { padding: .375rem .5rem; font-size: .6875rem; }.browse-layout { display: block; }.filter-sidebar { margin-bottom: 1.5rem; padding: 1rem; background: #fafbfc; border: 1px solid var(--line); border-radius: var(--radius); }.filter-sidebar label { margin-top: 1rem; }.filter-tip { display: none; }.filter-heading h2 { font-size: .8125rem; }.week-toolbar { align-items: flex-start; flex-direction: column; gap: .875rem; }.week-toolbar h2 { font-size: 1rem; }.week-controls { width: 100%; }.week-controls .btn:nth-child(2) { flex: 1; }.consultation { padding: .875rem; gap: .75rem; }.consultation h3 { font-size: .75rem; }.consultation .tutor-name { font-size: .6875rem; }.btn-book { padding: .5rem .625rem; }.booking-row { align-items: flex-start; flex-direction: column; padding: 1.25rem 0; }.booking-row .consultation-action { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }.booking-tabs { margin-bottom: 1.5rem; }.confirmation { padding: 1.25rem; }.confirmation h2 { font-size: 1.25rem; }.confirmation-details { padding: 1rem; }.dialog-actions { flex-direction: column-reverse; }.dialog-actions .btn { width: 100%; }.login-header { padding: 1.25rem; }.login-header .quiet { display: none; }.login-main { display: block; padding: 2rem 1rem; max-width: 28rem; }.login-intro { display: none; }.login-form-panel { padding: 1.5rem; }.login-form-panel h1 { font-size: 1.75rem; }.login-form-panel>.muted { margin-bottom: 1.5rem; }.placeholder-page { margin: 3rem auto; padding: 1.5rem; }.notice { padding: .75rem; }.empty-state { padding: 3rem 1rem; } }
+ @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+ 

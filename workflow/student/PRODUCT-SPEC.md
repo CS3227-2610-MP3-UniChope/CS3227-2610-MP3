@@ -1,5 +1,11 @@
 # Student Product Specification
 
+Frontend increment: the scoped [frontend design contract](FRONTEND-DESIGN.md)
+extends section 5 with the authorized UniChope weekly timetable/filter sidebar,
+mobile list and booking journeys (FE2 acceptance). It excludes AI UI from this
+increment; the future agenda requirements below remain pending, and FE2 exposes
+no unfinished agenda action. See FE0/FE1/FE2 in [the plan](PLAN.md).
+
 Status: Draft for Student owner and team review; no features are implemented by this file.
 Owner: Phuc (Student role owner)
 Date: 22 October 2026

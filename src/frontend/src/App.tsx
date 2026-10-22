@@ -4,8 +4,12 @@ import { Brand, Icon, Link, Loading } from './components';
 import Login from './Login';
 import { navigate, useLocation } from './navigation';
 import StudentWorkspace from './student/StudentWorkspace';
+import { ThemeProvider, ThemeSwitch } from './theme';
 export const home = (actor: Actor) => actor.role === 'STUDENT' ? '/student/slots' : `/${actor.role.toLowerCase()}`;
 export default function App() {
+  return <ThemeProvider><SessionApp /></ThemeProvider>;
+}
+function SessionApp() {
   const [api] = useState(() => new ApiClient());
   const [actor, setActor] = useState<Actor | null>(null); const [restoring, setRestoring] = useState(true);
   const [message, setMessage] = useState(''); const [logoutFailed, setLogoutFailed] = useState(false);
@@ -50,9 +54,9 @@ export default function App() {
   }
   const unknown = !['/', '/login', '/tutor', '/admin', '/student/slots', '/student/bookings'].includes(window.location.pathname);
   return <><a className="skip-link" href="#main-content">Skip to content</a>
-    {(restoring || restoreFailed || unknown) && <header className="app-header"><Brand /></header>}
+    {(restoring || restoreFailed || unknown) && <header className="app-header"><Brand /><div className="account"><ThemeSwitch /></div></header>}
     {restoring ? <main id="main-content" className="restore-screen"><h1>Opening your workspace</h1><Loading label="Checking your session" /></main> : restoreFailed ? <main id="main-content" className="restore-screen"><h1>Unable to open your workspace</h1><p role="alert">{message}</p><button className="btn btn-primary" onClick={() => setRestoreAttempt(value => value + 1)}>Try again</button></main> : unknown ? <main id="main-content" className="restore-screen"><h1>Page not found</h1><p>This page could not be found.</p><Link href={actor ? home(actor) : '/login'}>Back to home</Link></main> : !actor ? <Login login={login} message={message} signingOut={signingOut} retryLogout={logoutFailed ? () => void logout() : undefined} /> : <>
-      <header className="app-header"><Link href={home(actor)} className="brand-link"><Brand /></Link>{actor.role === 'STUDENT' && <span className="header-caption">CONSULTATION PLANNER</span>}<div className="account">{actor.role === 'STUDENT' && <span><strong>{actor.name}</strong><small>{actor.role.charAt(0) + actor.role.slice(1).toLowerCase()}</small></span>}<button className="btn sign-out" onClick={() => void logout()}><Icon name="logout" />Sign out</button></div></header>
+      <header className="app-header"><Link href={home(actor)} className="brand-link"><Brand /></Link>{actor.role === 'STUDENT' && <span className="header-caption">CONSULTATION PLANNER</span>}<div className="account">{actor.role === 'STUDENT' && <span><strong>{actor.name}</strong><small>{actor.role.charAt(0) + actor.role.slice(1).toLowerCase()}</small></span>}<ThemeSwitch /><button className="btn sign-out" onClick={() => void logout()}><Icon name="logout" />Sign out</button></div></header>
       {actor.role === 'STUDENT' ? <StudentWorkspace key={actor.id} api={api} location={location} signOut={() => void logout()} /> : <main id="main-content" tabIndex={-1} className="placeholder-page"><div className="placeholder-icon"><Icon name="book" /></div><span className="eyebrow">YOUR UNICHOPE WORKSPACE</span><h1>{actor.role === 'TUTOR' ? 'Tutor' : 'Admin'} home</h1><p>Your workspace is not ready yet.</p><p className="muted">This space is being prepared for you. Please check back later.</p></main>}
     </>}
   </>;

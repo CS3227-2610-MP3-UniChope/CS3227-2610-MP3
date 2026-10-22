@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react';
 import { ApiError } from './api';
 import { Brand, Icon } from './components';
+import { ThemeSwitch } from './theme';
 export default function Login({ login, message, retryLogout, signingOut = false }: { login: (email: string, password: string) => Promise<void>; message: string; retryLogout?: () => void; signingOut?: boolean }) {
   const [email, setEmail] = useState(''); const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false); const [error, setError] = useState(''); const [csrfFailed, setCsrfFailed] = useState(false);
@@ -13,7 +14,7 @@ export default function Login({ login, message, retryLogout, signingOut = false 
       setCsrfFailed(true);
     } finally { setPassword(''); setPending(false); }
   }
-  return <div className="login-page"><header className="login-header"><Brand /><span className="quiet">Your time, well spent.</span></header>
+  return <div className="login-page"><header className="login-header"><Brand /><span className="quiet">Your time, well spent.</span><ThemeSwitch /></header>
     <main id="main-content" tabIndex={-1} className="login-main"><div className="login-intro"><span className="eyebrow">A LITTLE TIME. A LOT OF CLARITY.</span><p className="login-intro-title">Make room for<br />your next question.</p><p>Find a consultation, choose a time, and keep your learning moving.</p><div className="login-note"><Icon name="calendar" /><span>A simpler way to connect<br /><strong>One consultation at a time.</strong></span></div></div>
       <section className="login-form-panel" aria-labelledby="login-title"><span className="eyebrow">WELCOME TO UNICHOPE</span><h1 id="login-title">Sign in</h1><p className="muted">Your next conversation starts here.</p>
         {(error || message) && <div role="alert" className="notice error">{error || message}</div>}

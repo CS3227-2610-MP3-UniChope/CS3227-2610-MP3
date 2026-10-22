@@ -51,7 +51,8 @@ test.each(['STUDENT', 'TUTOR', 'ADMIN'] as const)('FE1-RESTORE restored %s resol
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(new RegExp(role, 'i'));
     expect(screen.getByText(/workspace is not ready yet/i)).toBeVisible();
     expect(api.calls.some(call => call.url.pathname.startsWith('/api/student'))).toBe(false);
-    expect(screen.getAllByRole('button')).toHaveLength(1);
+    expect(screen.getAllByRole('button')).toHaveLength(2);
+    expect(screen.getByRole('button', { name: 'Dark theme' })).toBeVisible();
   }
 });
 

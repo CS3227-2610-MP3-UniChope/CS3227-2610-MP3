@@ -24,6 +24,17 @@ invent duplicate users tables or port desktop setup UI. Password reset and force
 
 ## Current results
 
+Frontend task FE1 is separately tracked at
+[stu-fe1-auth-ui](../student/changes/stu-fe1-auth-ui.md), dependent on FE0 harness.
+This current user-authorized UI scope does not imply Kok Seng's review approval.
+Existing backend results below do not prove frontend integration.
+Frontend revision 2 (Phuc, 22 October 2026) changes only how the UI presents existing
+Auth responses: logout of an already-ended session is treated as signed out
+(FE1-LOGOUT-ENDED) and a Login failing only because an old session ended shows
+"Please try again." (FE1-LOGIN-STALE); see
+[stu-fe4-followups](../student/changes/stu-fe4-followups.md). No Auth endpoint,
+policy or backend change; Kok Seng reviews these with the Auth merge review.
+
 AUTH-P0–P5 are implemented using AccountStorage and existing shared contracts.
 AUTH-P6 includes independent security review, unit/HTTP/PostgreSQL verification and
 guides; final user acceptance remains pending. Cached Java25 and a separate local

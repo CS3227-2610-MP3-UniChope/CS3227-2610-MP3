@@ -21,7 +21,7 @@ booking statuses, SoC credentials, or quota counters.
 | `platform/core` lifecycle and repositories | Huanghao | `bookAvailableSlot`, `cancelActiveBooking`, `UserRepository` | Exists; no change needed |
 | `platform/auth` actor seam | Kok Seng implements; Student defines the interface | `CurrentActorProvider` (section 2) | Interface exists; C5 adds a trusted SessionPrincipal runtime adapter |
 | `platform/web` | Assigned per task | `ApiErrors`, `ApiFailure`, `ApiSecurityConfiguration` | Student route rule exists; shared auth filter remains authoritative |
-| Shared React shell and API client | Not yet assigned | Frontend pages | Out of scope for the booking backend changes |
+| Shared React shell and API client | Phuc, within the FE1 scope he authorized; affected Auth/role owners keep ownership and merge review | Frontend pages | Implemented locally under [FRONTEND-DESIGN.md](FRONTEND-DESIGN.md) (FE0-FE2; revision 2 follow-ups FE3/FE4 in [PLAN](PLAN.md)); not part of the booking backend changes |
 
 Decision (Phuc, 22 October 2026, current-session request): Student reads core tables
 through its own read-only repository, following `PostgresTutorReadRepository` and
@@ -379,6 +379,13 @@ shell, or callback access for the model, and no browser parameter selects a prov
   (UNAVAILABLE, zero calls).
 
 ## 7. React Workspace and State
+
+For the current FE0/FE1/FE2 frontend increment, the normative scoped detail is
+[FRONTEND-DESIGN.md](FRONTEND-DESIGN.md), including exact URL/API mapping, SGT week
+semantics, safe mutation failures and responsive/accessibility requirements.
+FE2 implements slots/bookings only; the agenda route/actions below are future
+scope. FE1 supplies shared cookie/CSRF/auth handling without changing backend
+contracts. Use Bootstrap plus local tokens; do not replace the agreed stack.
 
 Routes inside the authenticated Student layout: `/student/slots`,
 `/student/bookings`, `/student/bookings/:bookingId/agenda`. Use the shared API
