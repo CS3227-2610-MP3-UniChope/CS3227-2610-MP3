@@ -177,3 +177,120 @@ and added a dated decision (D5) superseding the old assignment, while keeping th
 Only whitespace was checked. No tests or code changed and nothing was committed.
 
 Verification: pending Phuc's review.
+
+## 22 October 2026: Claude Code (Opus 5.5): Analyst readiness repair (fresh subagent)
+
+I asked Claude to start the next stage in a fresh session. It launched a fresh spec
+analyst subagent that worked only from ANALYST-READINESS-HANDOFF.md, the change records,
+the canonical specs and the code. The analyst accepted the packet (hashes matched; base
+commit had moved to 459fd6e with identical files), added a coverage matrix, a findings
+register (F2-01 to F2-19, none high or critical) and a numbered analyst-2 handoff to each
+change record, and lightly edited TECHNICAL-SPEC §3.2/§3.3/§8 and PLAN.md. It marked c1
+READY_FOR_TESTS, with c3, c2 and c4 ready in dependency order after c1 is implemented.
+Two items remain open for me: whether teammate review of the platform/auth and
+platform/web additions blocks only the merge, and who adds SLOT_UNAVAILABLE to the shared
+integration spec.
+
+No tests were run and no code was written; nothing was committed by Claude.
+
+Verification: pending Phuc's review.
+
+## 22 October 2026: Claude Code (Opus 5.5): c1 test writing (fresh subagent)
+
+I decided that teammate review of the platform/auth and platform/web additions gates only
+the merge to main, and that adding SLOT_UNAVAILABLE to the shared integration spec is
+deferred; Claude recorded these as D6 and D7 in the c1 record. A fresh test-writer
+subagent then accepted the c1 handoff and wrote 22 tests for browsing slots: two test
+classes and a test-only actor provider, with no product code changed. The existing suite
+stayed green at 459fd6e (26 unit, 103 PostgreSQL). The new tests fail on assertions
+before implementation (1 unit and 20 PostgreSQL failures, no compile errors); one
+already passes because default startup was already closed. Evidence is saved under the
+c1 change folder. c1 is now READY_FOR_IMPLEMENTATION.
+
+Nothing was committed.
+
+Verification: pending Phuc's review.
+
+## 22 October 2026: Claude Code (Opus 5.5): c1 implementation (fresh subagent)
+
+A fresh implementer subagent accepted the c1 handoff and implemented browsing: the new
+platform/auth CurrentActorProvider interface, a two-line student-api rule in
+platform/web security config, and Student access, read repository, service, input
+parsing, controller, error handler and profile wiring under unichope.student. No Tutor,
+core, migration, build or test file changed. The full run (clean test postgresTest
+bootJar against the Docker database) passed: 28 unit and 123 PostgreSQL tests, 0
+failures. The startup check for a missing lifecycle bean is deferred to c2. The patch and
+output are saved as evidence; c1 is IN_REVIEW, awaiting a fresh independent review.
+
+Nothing was committed.
+
+Verification: pending Phuc's review.
+
+## 22 October 2026: Claude Code (Opus 5.5): c1 independent review (fresh subagent)
+
+A fresh reviewer subagent, which produced none of the c1 work, built its own checklist
+from the request and specs, inspected the diff, reran the full suite (28 unit and 123
+PostgreSQL tests, 0 failures) and gave c1 a PASS with five low or informational findings:
+a bare 404 for /api/student without a trailing slash (same as Tutor), one header
+assertion that cannot fail, no server-side logging of unexpected errors, a session not
+invalidated when no actor is present (spec silent), and the lifecycle startup check
+deferred to c2. c1 is READY_FOR_HUMAN; my API walkthrough and teammate merge review
+remain. The c3 test writer was then started in a fresh subagent.
+
+Nothing was committed.
+
+Verification: pending Phuc's review.
+
+## 22 October 2026: Claude Code (Opus 5.5): c3 test writing (fresh subagent)
+
+A fresh test-writer subagent accepted the c3 handoff after confirming c1 was implemented,
+reviewed and green, and wrote StudentBookingsPgTest with 9 PostgreSQL tests for viewing
+my bookings. Baseline stayed green (28 unit, 123 PostgreSQL); the red run had exactly the
+9 new tests failing on missing routes, with no compile errors. In a throwaway copy it also
+checked that a spec-following prototype passes and that five planted bugs are each caught.
+It left the c1 review follow-ups (R1-01, R1-02) out of c3 scope. A fresh c3 implementer was
+then started.
+
+Nothing was committed.
+
+Verification: pending Phuc's review.
+
+## 22 October 2026: Claude Code (Opus 5.5): c3 implementation (fresh subagent)
+
+A fresh implementer subagent accepted the c3 handoff and added the StudentBooking record,
+the owner-scoped booking query with status and Singapore-date filters, server-computed
+cancellable, and GET /api/student/bookings and /bookings/{id}, writing only under
+unichope.student. The full run passed: 28 unit and 132 PostgreSQL tests, 0 failures. It
+noted that cancellable does not also check the slot is BOOKED, which matches the spec.
+c3 is IN_REVIEW; a fresh reviewer was started.
+
+Nothing was committed.
+
+Verification: pending Phuc's review.
+
+## 22 October 2026: Claude Code (Opus 5.5): c3 independent review (fresh subagent)
+
+A fresh reviewer subagent reviewed the c3 increment, confirmed the patch matched the
+working tree and that c1 did not regress, and reran the full suite (28 unit and 132
+PostgreSQL tests, 0 failures). Verdict PASS, with an optional spec note that an ACTIVE
+booking implies a BOOKED slot, a low test gap on tutor/admin sessions staying valid
+after a 403, and the c1 follow-ups still unscheduled. c3 is READY_FOR_HUMAN. The c2 test
+writer was then started in a fresh subagent.
+
+Nothing was committed.
+
+Verification: pending Phuc's review.
+
+## 22 October 2026: Claude Code (Opus 5.5): c2 test writing (fresh subagent)
+
+A fresh test-writer subagent accepted the c2 handoff after confirming c1 and c3 were
+implemented and reviewed, and wrote StudentBookSlotPgTest with 15 PostgreSQL tests for
+booking a slot, including both PostgreSQL race cases and the deferred check that
+student-api startup fails without the lifecycle bean. Baseline stayed green (28 unit,
+132 PostgreSQL); the red run had exactly the 15 new tests failing on assertions, no
+compile errors. A throwaway prototype passed and 14 planted defects were each caught.
+A fresh c2 implementer was then started.
+
+Nothing was committed.
+
+Verification: pending Phuc's review.

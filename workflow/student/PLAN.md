@@ -34,10 +34,17 @@ Inputs: [Student Product](PRODUCT-SPEC.md), [Student Technical](TECHNICAL-SPEC.m
 
 ### S0: Agree decisions and interfaces
 
-- [ ] Confirm the assumptions in Product spec section 10.
-- [ ] Agree with Huanghao the core additions Student needs: bookable-slot query,
+- [x] Confirm booking assumptions 1-4 in Product spec section 10 (Phuc, 22 October
+  2026). AI assumptions 5-6 remain open.
+- [x] ~~Agree with Huanghao the core additions Student needs: bookable-slot query,
   student-booking queries, `ConsultationLifecycle.bookSlot` / `cancelBooking`
-  outcomes.
+  outcomes.~~ Superseded (analyst-2 finding F2-01): no core change is needed.
+  Student uses the existing `bookAvailableSlot` / `cancelActiveBooking` unchanged and
+  its own read-only repository (Phuc decisions D2/D3; Technical spec §1, §4).
+- [ ] Get Kok Seng's review of the new `unichope.platform.auth.CurrentActorProvider`
+  interface and Huanghao's (or the assigned `platform/web` reviewer's) review of the
+  `student-api` rule in `ApiSecurityConfiguration` before Student code merges to
+  `main` (finding F2-13). Not a prerequisite for writing tests.
 - [ ] Agree the `AiGateway` / `AiRequest` / `AiResult` contract and task policies
   with Huanghao and Kok Seng; reconcile the Tutor spec/plan text that still assigns
   `platform/ai` to Huanghao.
@@ -85,7 +92,13 @@ Change record: [changes/stu-c1-browse-slots.md](changes/stu-c1-browse-slots.md).
 - [ ] Implement controller/service on core read queries, Student layout, and the
   Find a consultation page.
 
-Depends on: S1, core read queries, auth actor. Requirements: STU-SLOT-01, AUTH-02, SEC-01.
+Analyst-2 note (F2-01): the backend part is change stu-c1 (C1-T1..T4): the actor
+seam, `student-api` wiring, Student-owned `StudentReadRepository` over core tables
+(not new core queries) and the two GET endpoints. React work stays pending here
+until a frontend scaffold exists.
+
+Depends on: S1, auth actor interface (Student-defined, Kok Seng implements).
+Requirements: STU-SLOT-01, AUTH-02, SEC-01.
 
 ### S3: Book a slot
 
@@ -93,10 +106,12 @@ Change record: [changes/stu-c2-book-slot.md](changes/stu-c2-book-slot.md).
 
 - [ ] Tests: S-BOOK-1 to S-BOOK-5 including both concurrency races on real
   PostgreSQL, unique-violation mapping, CSRF; React confirmation and conflict refresh.
-- [ ] Implement `POST /bookings` through `ConsultationLifecycle.bookSlot` (core
-  method coordinated with Huanghao) and the booking dialog.
+- [ ] Implement `POST /bookings` through the existing, unchanged
+  `ConsultationLifecycle.bookAvailableSlot` (analyst-2 F2-01) and the booking dialog.
 
-Depends on: S2, core lifecycle. Requirements: STU-BOOK-01, REL-01.
+Depends on: S2 (stu-c1) and the stu-c3 `StudentBooking` projection and
+`GET /bookings/{id}` used by the response and its `Location`. Requirements:
+STU-BOOK-01, REL-01.
 
 ### S4: My bookings and cancellation
 
@@ -109,7 +124,10 @@ only for now; React pages wait for the frontend scaffold.
   confirmation, keyboard flow.
 - [ ] Implement list, detail, and cancel endpoints and the My bookings page.
 
-Depends on: S3. Requirements: STU-BOOK-02, STU-BOOK-03.
+Depends on (analyst-2 F2-01): stu-c3 (list/detail) depends only on stu-c1 and runs
+before stu-c2; stu-c4 (cancel, via the existing `cancelActiveBooking`) depends on
+stu-c1 and stu-c3 and runs after stu-c2 in the recorded order c1, c3, c2, c4.
+Requirements: STU-BOOK-02, STU-BOOK-03.
 
 ### S5: Fake-backed agenda
 
@@ -177,3 +195,18 @@ npm run build
 
 None of these exist or have been run yet. Record actual command, revision, exit
 code, and relevant output in each task's handoff record.
+
+Analyst-2 correction (F2-01): the backend scaffold now exists, and the command above
+alone is insufficient for booking work because `test` excludes the `postgres` tag,
+where the Student MockMvc-to-PostgreSQL tests live. For stu-c1..c4 use the baseline
+command recorded in
+`changes/stu-c1-browse-slots/evidence/baseline-2026-10-22.txt` (run in `src/backend`
+after `docker compose -f compose.test.yaml up -d --wait`):
+
+```sh
+./gradlew test postgresTest -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55432/mp3_test \
+    -Dcore.test.user=mp3_test -Dcore.test.password=mp3_test_local --console=plain
+```
+
+Focused runs may add `--tests` filters to both tasks; the final check runs the full
+command so existing Tutor and core suites stay green.

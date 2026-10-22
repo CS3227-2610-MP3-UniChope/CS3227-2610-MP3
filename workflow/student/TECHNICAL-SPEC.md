@@ -136,7 +136,16 @@ Every operation, before reading any resource, resolves the actor from
 
 If the lifecycle throws `ACCESS_DENIED` (account changed between the access check
 and the locked transaction), re-run the access check and return its 401/403; if the
-account is somehow still valid, return 403 `FORBIDDEN`. This matches Tutor.
+account is somehow still valid, return 403 `FORBIDDEN` without invalidating the
+session (the generic lifecycle result alone never invalidates, per Integration §2).
+This matches Tutor (`TutorHttpService.mutate`).
+
+Evaluation order (clarification, analyst-2 finding F2-06; matches `TutorController`):
+filter-chain denials come first (no authenticated principal 401, missing/invalid CSRF
+403); then request syntax (query parameters, path ID, content type, body size and
+body shape: 400/413/415); then the actor check above; only then any resource read or
+lifecycle call. A syntax error therefore returns 400/413/415 even for a principal
+that would fail the actor check, and causes no read, write or session invalidation.
 
 ### 3.3 Error mapping
 
@@ -150,7 +159,21 @@ account is somehow still valid, return 403 `FORBIDDEN`. This matches Tutor.
 | Both | `INVALID_INPUT` | 400 `VALIDATION_FAILED` |
 | Both | `TEMPORARILY_UNAVAILABLE` | 503 `TEMPORARILY_UNAVAILABLE` |
 | Both | `ACCESS_DENIED` | Section 3.2 |
+| Both | Any other lifecycle code | 500 `INTERNAL_ERROR` (not reachable from current core; never echo the core code) |
 | Any | Unexpected exception | 500 `INTERNAL_ERROR`, fixed message, no SQL, IDs or stack text |
+
+Clarifications (analyst-2 findings F2-07, F2-08):
+
+- The unique-index row applies when `bookAvailableSlot` throws a Spring
+  `DataIntegrityViolationException` (including `DuplicateKeyException`) whose message,
+  or the message of any exception in its cause chain, contains
+  `bookings_one_active_per_slot`. Any other `DataAccessException` escaping the
+  lifecycle is an unexpected exception (500). Core makes this path unreachable in
+  normal operation (the slot row lock and ACTIVE-booking recheck run first); the
+  mapping is defensive and is verified with a lifecycle test double.
+- When a booking attempt is both no longer available and overlapping, the response
+  is 409 `SLOT_UNAVAILABLE`: core checks slot state and eligibility before the
+  student's overlap (`PostgresConsultationLifecycle.bookAvailableSlot`).
 
 Every response, success or error, has `Cache-Control: no-store`. Errors use exactly
 `{ code, message, requestId }` from `ApiErrors`, including 405 `METHOD_NOT_ALLOWED`
@@ -363,7 +386,7 @@ presentation only.
 | Requirement | Verification |
 | --- | --- |
 | STU-SLOT-01 | Full MockMvc-to-PostgreSQL: eligibility exclusions, filters, SGT boundary, ordering, safe DTO fields |
-| STU-BOOK-01 | Lifecycle integration tests on Testcontainers PostgreSQL: success, every `SLOT_UNAVAILABLE` cause, overlap/adjacent, concurrent same-slot, concurrent overlapping slots for one student, rebooking after cancel, unique-violation mapping |
+| STU-BOOK-01 | MockMvc-to-PostgreSQL tests through the real lifecycle (`postgresTest`, see below): success, every `SLOT_UNAVAILABLE` cause, overlap/adjacent, concurrent same-slot, concurrent overlapping slots for one student, rebooking after cancel; unique-violation mapping with a lifecycle test double |
 | STU-BOOK-02 | Owner scope, status/date filters, `cancellable` with fixed clock |
 | STU-BOOK-03 | Atomic cancel, wrong owner 404, started/COMPLETED/repeat 409, race with tutor completion |
 | STU-AI-01 | Fake call counter is zero on every rejection; exact provider input fields; output validator cases; formatting; post-call recheck discards on deactivation; React late-response and regenerate-confirm tests |
