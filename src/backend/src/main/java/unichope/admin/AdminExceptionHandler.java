@@ -6,7 +6,7 @@ import unichope.platform.ai.AiGateway;
 import unichope.platform.core.AccountFailure;
 import unichope.platform.web.*;
 
-@RestControllerAdvice(assignableTypes = AdminController.class)
+@RestControllerAdvice(assignableTypes = {AdminController.class, AdminAiModelController.class})
 @org.springframework.context.annotation.Profile("admin-api")
 public final class AdminExceptionHandler {
   @ExceptionHandler(Exception.class)
