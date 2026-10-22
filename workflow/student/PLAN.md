@@ -1,6 +1,14 @@
 # Student Implementation Plan
 
-Status: Backend C1/C3 reads and C5/C2/C4 auth/booking/cancellation implemented locally; verification and pending review are recorded in their change records. Writing this plan does not
+Status: Backend booking and frontend FE0/FE1/FE2 implemented locally. FE0 has an
+independent PASS. FE1/FE2 have an independent reviewer-3 PASS on the manifest-r2
+revision (FE-R1 corrected and closed; 49/49 RTL tests, build, seven browser checks
+and a real synthetic backend login/book/cancel journey recorded). Phuc's owner
+decisions of 22 October 2026 (OD-1..OD-17) add FRONTEND-DESIGN revision 2:
+FE3 review fixes and FE4 follow-ups have independent PASS reviews and are READY_FOR_HUMAN.
+Revision 3 (TH-D1..TH-D3) adds the FE5 light/dark theme switch after FE3/FE4; FE5 has an independent PASS and is READY_FOR_HUMAN.
+Human acceptance and affected-owner merge review remain pending. Verification
+revisions are recorded in the change records. Writing this plan does not
 indicate team approval or authorize changes to other roles' code.
 Owner: Phuc (Student role owner)
 Date: 22 October 2026
@@ -32,6 +40,38 @@ Inputs: [Student Product](PRODUCT-SPEC.md), [Student Technical](TECHNICAL-SPEC.m
 
 ## 2. Tasks
 
+### Current frontend increment: FE0 -> FE1 -> FE2
+
+Direct authorization: Phuc's current Login/role-placeholder/Student frontend
+request and selected weekly timetable/filter-sidebar/mobile-list direction.
+Canonical scoped design and acceptance: [FRONTEND-DESIGN.md](FRONTEND-DESIGN.md).
+All tasks use fresh-role handoffs; no same-session review or automatic human signoff.
+
+| Task / record | Acceptance | Dependencies / scope / verification |
+| --- | --- | --- |
+| FE0 [foundation](changes/stu-fe0-foundation.md) | FE0-RUN, FE0-PROXY, FE0-QA | Implemented React/TS/Vite/Bootstrap scaffold, locked dependencies, Vitest/RTL and Playwright harness, proxy and setup documentation. Executable passing setup baseline preceded feature tests; fresh FE0 reviewer recorded PASS. |
+| FE1 [auth UI](changes/stu-fe1-auth-ui.md) | FE1-LOGIN/RESTORE/LOGOUT/DENIAL/PRIVACY/UI | Implemented real shared shell/API/session layer, Login, stored-role routing and honest Tutor/Admin placeholders. Feature tests preceded implementation; independent reviewer-3 PASS on manifest-r2. Affected Auth/role owner merge review and Phuc acceptance remain pending. |
+| FE2 [booking UI](changes/stu-fe2-booking-ui.md) | FE2-BROWSE/BOOK/LIST/CANCEL/RACE/UI | Implemented Student weekly/list slots, My bookings, confirmations and exact existing API contracts, without AI/backend changes. Independent reviewer-3 PASS on manifest-r2; Phuc acceptance remains pending. |
+| FE3 [review fixes](changes/stu-fe3-review-fixes.md) | FE2-NOTHING-SENT, FE1-DENIAL-CACHED, FE1-LOGOUT-CONFIRMED, FE2-NOTICE-CLEAR, FE1-UI-LANDMARKS | READY_FOR_HUMAN (independent reviewer-1 PASS; human acceptance pending). Before acceptance (OD-13): OD-4, OD-5, OD-8, OD-12 plus FE-R7(b) regression. Depends on FE1/FE2 manifest-r2. Frontend source/tests only; tests first, fresh review, then Phuc's OD-15 acceptance journey. |
+| FE4 [follow-ups](changes/stu-fe4-followups.md) | FE1-RESTORE-UNREACHABLE, FE2-UNKNOWN-MODULE, FE2-MODULES-DEGRADED, FE-UI-CONTRAST, FE1-LOGIN-STALE, FE1-LOGOUT-ENDED, FE2-BROWSE-MIDNIGHT | READY_FOR_HUMAN (independent reviewer-2 PASS; human acceptance pending). Follow-ups (OD-13): OD-3, OD-7, OD-9, OD-11; OD-1/OD-2 placed here pending Phuc's confirmation and Kok Seng's review; FE-R7(a,c) coverage. Starts after FE3 review. OD-10 is a human check; OD-6 deferred. |
+| FE5 [theme switch](changes/stu-fe5-theme-switch.md) | TH-DEFAULT, TH-TOGGLE, TH-A11Y, TH-PLACEMENT, TH-PERSIST, TH-STORAGE-FALLBACK, TH-NOFLASH, TH-CONTRAST, TH-SESSION | READY_FOR_HUMAN (independent reviewer-1 PASS; human acceptance pending). FRONTEND-DESIGN revision 3 (Phuc's TH-D1..TH-D3, 22 October 2026): light default, browser-remembered light/dark switch in every page banner. Hard dependency on FE3's reviewed revision (banners, OD-12); default order after FE4's reviewed revision (shared styles/contrast check). Frontend source/tests/styles, `index.html` and one same-origin early theme script only; tests first, fresh review, Phuc's check. |
+
+Allowed runtime dependency versions are compatible pinned versions selected by
+the harness stage and recorded in package-lock.json; Node24.21.0/npm12.0.2 are
+available locally. On PowerShell use npm.cmd (npm.ps1 is policy-blocked).
+Installed dependencies and Edge-backed Playwright execution are evidenced in FE0/FE2.
+Owner review and Phuc's human acceptance remain pending until actually recorded.
+
+Execution evidence inspected for this status refresh: FE2
+`evidence/unit-final.json` reports 45/45 tests, `build-final.txt` records strict
+TypeScript/Vite output, and `browser-final.txt` reports seven passing browser
+checks. Superseding r2 evidence after the FE-R1 correction: `unit-r2.json` 49/49,
+`build-r2.txt`, `browser-r2.txt` 7/7, and reviewer-3's reruns (`reviewer3-*.txt`). `evidence/live-browser-smoke.json` records actual isolated backend booking
+201/cancellation200 with CSRF, History and Student/Tutor/Admin routing, no persisted
+private browser storage or page errors, no overflow at four widths, and zero axe
+violations on seven screens. These bounded checks do not establish final review,
+exhaustive accessibility, human acceptance, Tutor/Admin features or deployment.
+
 ### S0: Agree decisions and interfaces
 
 - [x] Confirm booking assumptions 1-4 in Product spec section 10 (Phuc, 22 October
@@ -50,7 +90,8 @@ Inputs: [Student Product](PRODUCT-SPEC.md), [Student Technical](TECHNICAL-SPEC.m
   `platform/ai` to Huanghao.
 - [ ] Add `SLOT_UNAVAILABLE` and `BOOKING_OVERLAP` to the integration spec's error
   contract in a reviewed change.
-- [ ] Confirm who owns the shared React shell and API client.
+- [x] Implement shared React shell/API client within Phuc's authorized FE1 scope;
+  affected Auth/role owners retain their ownership and pending merge review.
 
 Depends on: none. Verify: decisions recorded with names and dates in the specs.
 
@@ -58,7 +99,8 @@ Depends on: none. Verify: decisions recorded with names and dates in the specs.
 
 Done by Huanghao on `main` (PRs #1-#4): Gradle/Boot backend, `postgresTest`, and
 backend CI. Student adds `src/backend/compose.test.yaml` for a local disposable
-PostgreSQL 17. No frontend scaffold exists yet.
+PostgreSQL 17. FE0 now supplies the frontend scaffold and harness; see its
+implementation and independent review records.
 
 ### C5: Integrate Student with shared authentication
 
@@ -100,15 +142,15 @@ Depends on: AI1. Requirements: SH-AI-03/04/05/06, AI-02.
 
 Change record: [changes/stu-c1-browse-slots.md](changes/stu-c1-browse-slots.md).
 
-- [ ] Tests: S-SLOT-1, S-SLOT-2, S-AUTH-1 for `/modules` and `/slots`; DTO contains
-  no emails; React filters, empty and error states.
-- [ ] Implement controller/service on core read queries, Student layout, and the
-  Find a consultation page.
+- [x] Backend browse/security tests exist in stu-c1; FE2 adds evidenced React
+  filters, empty/error, SGT and stale-response coverage.
+- [x] Implement Student-owned backend read repository/controller/service and FE2
+  Student layout/Find a consultation page. Final frontend review remains pending.
 
 Analyst-2 note (F2-01): the backend part is change stu-c1 (C1-T1..T4): the actor
 seam, `student-api` wiring, Student-owned `StudentReadRepository` over core tables
-(not new core queries) and the two GET endpoints. React work stays pending here
-until a frontend scaffold exists.
+(not new core queries) and the two GET endpoints. The originally deferred React
+work is now implemented under FE2, with verification and review state above.
 
 Depends on: S1, auth actor interface (Student-defined, Kok Seng implements).
 Requirements: STU-SLOT-01, AUTH-02, SEC-01.
@@ -121,7 +163,8 @@ Change record: [changes/stu-c2-book-slot.md](changes/stu-c2-book-slot.md).
   PostgreSQL, unique-violation mapping and CSRF (15 focused C2 tests passing).
 - [x] Implement `POST /bookings` through the existing, unchanged
   `ConsultationLifecycle.bookAvailableSlot` (analyst-2 F2-01).
-- [ ] React booking dialog, confirmation and conflict refresh.
+- [x] FE2 React booking dialog, confirmation and conflict refresh implemented;
+  verification evidenced above, final review/human acceptance pending.
 
 Depends on: S2 (stu-c1) and the stu-c3 `StudentBooking` projection and
 `GET /bookings/{id}` used by the response and its `Location`. Requirements:
@@ -130,14 +173,15 @@ STU-BOOK-01, REL-01.
 ### S4: My bookings and cancellation
 
 Change records: [changes/stu-c3-my-bookings.md](changes/stu-c3-my-bookings.md),
-[changes/stu-c4-cancel-booking.md](changes/stu-c4-cancel-booking.md). Backend
-only for now; React pages wait for the frontend scaffold.
+[changes/stu-c4-cancel-booking.md](changes/stu-c4-cancel-booking.md). The initial
+backend-only scope is now complemented by FE2 React pages.
 
 - [x] Backend list/detail already implemented; cancellation tests S-CANC-1 to S-CANC-3
   include the tutor-completion race, boundary clock, ownership, input/security and
   committed-response failure cases (11 focused C4 tests passing).
 - [x] Implement list, detail, and cancel endpoints; cancellation uses unchanged core lifecycle.
-- [ ] My bookings React page, tabs, filters, confirmation and keyboard flow.
+- [x] FE2 My bookings React page, tabs, filters, confirmation and keyboard flow
+  implemented and checked as evidenced above; final review/human acceptance pending.
 
 Depends on (analyst-2 F2-01): stu-c3 (list/detail) depends only on stu-c1 and runs
 before stu-c2; stu-c4 (cancel, via the existing `cancelActiveBooking`) depends on
@@ -196,19 +240,22 @@ Depends on: S6, S7, deployment.
 
 ## 3. Verification Commands
 
-The scaffold (S1) will establish the real commands. Expected, once it exists:
+Actual frontend scripts are defined in src/frontend/package.json. On PowerShell
+use npm.cmd; the backend unit-only example below does not run PostgreSQL coverage:
 
 ```sh
 # src/backend, against disposable test PostgreSQL only
 ./gradlew test --tests 'unichope.student.*' --tests 'unichope.platform.ai.*'
 
 # src/frontend
-npm ci
-npm run test -- --run
-npm run build
+npm.cmd ci
+npm.cmd test
+npm.cmd run build
+npm.cmd run test:browser
 ```
 
-Backend Gradle commands exist; frontend work is pending. This spec session ran no tests. Record actual command, revision, exit
+Backend and frontend commands exist. This spec-only status refresh inspected
+recorded evidence and did not rerun product tests. Record actual command, revision, exit
 code, and relevant output in each task's handoff record.
 
 Analyst-2 correction (F2-01): the backend scaffold now exists, and the command above
@@ -226,14 +273,15 @@ after `docker compose -f compose.test.yaml up -d --wait`):
 Focused runs may add `--tests` filters to both tasks; the final check runs the full
 command so existing Tutor and core suites stay green.
 
-## 4. Current booking increment (22 October 2026)
+## 4. Historical backend booking increment (22 October 2026)
 
 Direct source: Phuc's request "Update the spec and intergrate with new auth,
 implement student booking". Backend only: C5 auth composition -> C2 creation -> C4
 cancellation. Tests may be authored as one combined executable packet before
 implementation, with per-change acceptance mappings/handoffs. Existing C2 tests
 must be refreshed against current hashes and preserved, not duplicated or weakened.
-Use the existing c1/c3 code; do not reimplement browsing/list/detail. Frontend and
-AI remain pending, not silently removed. Real runtime tests use db/migration V1-V4;
+Use the existing c1/c3 code; do not reimplement browsing/list/detail. Frontend was
+deferred by that backend-only request and is now implemented in the current FE0/FE1/FE2
+increment above. AI remains pending. Real runtime tests use db/migration V1-V4;
 isolated fake actors continue as focused seam tests only. Full regression includes
 Auth, Admin, Tutor, Student and core tests plus bootJar.

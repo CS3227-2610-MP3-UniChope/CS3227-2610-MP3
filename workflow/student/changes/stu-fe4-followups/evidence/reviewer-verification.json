@@ -1,0 +1,198 @@
+﻿{
+    "reviewer":  "Codex GPT-6",
+    "date":  "2026-10-22",
+    "verdict":  "CHANGES_REQUIRED",
+    "manifest":  "workflow/student/changes/stu-fe4-followups/evidence/implementer-manifest.json",
+    "manifestHash":  "3D0862A5ABB60DB6F4536D1EAE359325BC91F418F7F9BEF256D369EFCF346FE7",
+    "manifestEntries":  71,
+    "mismatches":  [
+
+                   ],
+    "changedFrontendSinceTestWriter":  [
+                                           "src/frontend/src/api.ts",
+                                           "src/frontend/src/App.tsx",
+                                           "src/frontend/src/Login.tsx",
+                                           "src/frontend/src/student/StudentWorkspace.tsx",
+                                           "src/frontend/src/styles.css"
+                                       ],
+    "checkedHashes":  [
+                          {
+                              "path":  "src/frontend/.gitignore",
+                              "sha256":  "463B5F9362420AAA6BBF70C200B7CEF361AF47F34E60E6767851406F3091A39A"
+                          },
+                          {
+                              "path":  "src/frontend/README.md",
+                              "sha256":  "11654DAEFCC4C0A7CD357E4FFB6A383A30F10F142FA70E524AA5594C8EC62B16"
+                          },
+                          {
+                              "path":  "src/frontend/e2e/contrast-audit.ts",
+                              "sha256":  "D8EA4F0A63C461B3480AE0E35522E14DBE9DCEA95DD47C112CBB1F1E0CA95874"
+                          },
+                          {
+                              "path":  "src/frontend/e2e/contrast.spec.ts",
+                              "sha256":  "CA7ED820143C74448E4DCFF7AA46BB7D029019282A1485132B4A1071D1E1AF64"
+                          },
+                          {
+                              "path":  "src/frontend/e2e/shell.spec.ts",
+                              "sha256":  "18F36AD0CE5881EE4C04821EED444E9FBDADFD72C0770D046E1DE5705D98A593"
+                          },
+                          {
+                              "path":  "src/frontend/e2e/workspace.spec.ts",
+                              "sha256":  "9D579B62B509162EC04B1B57336D0238DA6FAD691157AD1CC77F2D6EDC3D7711"
+                          },
+                          {
+                              "path":  "src/frontend/index.html",
+                              "sha256":  "EFDFEF6716C05E6E591EE9B25CF79433C2551FE6CAEB852BBAA66A644E719C24"
+                          },
+                          {
+                              "path":  "src/frontend/package-lock.json",
+                              "sha256":  "522E3BC0CCCF79F4B90AF1EE534B0DD58BCCEA5CC64723C124A8E2E7C09464E9"
+                          },
+                          {
+                              "path":  "src/frontend/package.json",
+                              "sha256":  "7D1443F243169FC0636318D59DCFD44B5633A1DE1848CF0C91084EAB97CB95A5"
+                          },
+                          {
+                              "path":  "src/frontend/playwright.config.ts",
+                              "sha256":  "8165F9FB3562F611B9E13CDCD29CCE0E4920E19F7726AFBA8867D8F9031DA300"
+                          },
+                          {
+                              "path":  "src/frontend/src/App.tsx",
+                              "sha256":  "EBDCFD2A51DEFC1CBAD715C60EEC0FE085CD8AD2F29C31F06B229853E56D5E9D"
+                          },
+                          {
+                              "path":  "src/frontend/src/Login.tsx",
+                              "sha256":  "0AA3DDFB70FCA27585F7C61E3AD9EE3FBA1FD0837CF17FA7873E7CF3C60BE6F6"
+                          },
+                          {
+                              "path":  "src/frontend/src/api.ts",
+                              "sha256":  "FC3809078E4D8A152FA202149F373210F73B8AA34EEE8AF3D8AF8726380860DC"
+                          },
+                          {
+                              "path":  "src/frontend/src/components.tsx",
+                              "sha256":  "B23D6F0CE1907CC218D49A2106EC4BB2FCE5E72DCEC8DF5536AF30CCAF05224C"
+                          },
+                          {
+                              "path":  "src/frontend/src/main.tsx",
+                              "sha256":  "BA6B140C8A74A56B5F0A0E6280E5AB36CE941568595775B5C8A1DB2C958BA684"
+                          },
+                          {
+                              "path":  "src/frontend/src/navigation.ts",
+                              "sha256":  "30691ACEEF5519F515BBBB084FC12BF3F4F3CCB25ED366632315338FB05CD9E1"
+                          },
+                          {
+                              "path":  "src/frontend/src/student/Confirmation.tsx",
+                              "sha256":  "F69937B16CDA1BF16BC618489E556F555AF99EA885603271117BEA90A8BC144B"
+                          },
+                          {
+                              "path":  "src/frontend/src/student/Consultations.tsx",
+                              "sha256":  "1AB2702504138F501F9C28A1A5077F04B5C59CC5B04D51C31ABC53C09C4FE4BD"
+                          },
+                          {
+                              "path":  "src/frontend/src/student/StudentWorkspace.tsx",
+                              "sha256":  "2091E876D80E9B0607AC48579C4BDF46378CB8836CF30D0DA479EA6F87AE6C11"
+                          },
+                          {
+                              "path":  "src/frontend/src/student/data.ts",
+                              "sha256":  "D429DD8218603C0E22F85194166BA47F7AF983B7BC8C6485AAD2E1074DBFC089"
+                          },
+                          {
+                              "path":  "src/frontend/src/student/dates.ts",
+                              "sha256":  "3628A3EEE3AD068A5041FE8E03E0F6A2713005EA671DB82F827BF70FAA0429F5"
+                          },
+                          {
+                              "path":  "src/frontend/src/student/filters.ts",
+                              "sha256":  "9A05C9ADC0A395689AC7DA76F0B31281CBBA5C93F8B8335CD6378A53F1F52E8D"
+                          },
+                          {
+                              "path":  "src/frontend/src/styles.css",
+                              "sha256":  "38161EFD52B80BC13C4A099AED3A40C223130B1E4C9755AC937662837413CB98"
+                          },
+                          {
+                              "path":  "src/frontend/src/test/api-fixture.ts",
+                              "sha256":  "6DB9A97AAD01B4CF14AE22834FA20F1F14B1D50253B4FD0F4F8E24CEE7DD48D7"
+                          },
+                          {
+                              "path":  "src/frontend/src/test/auth.test.tsx",
+                              "sha256":  "101CFC584A4CCF871BB775252DC5B9510965B2CA3A9371A35F7029941E4986A3"
+                          },
+                          {
+                              "path":  "src/frontend/src/test/fe3.test.tsx",
+                              "sha256":  "FE3B2AC749E7838941BC03F66FBE078430E2136DC821BDF0DCA5FE5FE1369722"
+                          },
+                          {
+                              "path":  "src/frontend/src/test/fe4.test.tsx",
+                              "sha256":  "C248C15BE4F17E9B915A66D12A18103873751E4B87361DFC7487E79B502524EB"
+                          },
+                          {
+                              "path":  "src/frontend/src/test/harness.test.tsx",
+                              "sha256":  "39EE66143D4C0B16CE6903AB96F643BF4ED06B3410F9A9B3459C2BE17809DDED"
+                          },
+                          {
+                              "path":  "src/frontend/src/test/setup.ts",
+                              "sha256":  "268E7200D092DAA3225EB06790ED72842E5D3234A53980C90FF463D7B81528D3"
+                          },
+                          {
+                              "path":  "src/frontend/src/test/student.test.tsx",
+                              "sha256":  "3E4BDACEB6D2B1C0A03CFF6792EEDEA572329EA853F5361B7D298A49D959C967"
+                          },
+                          {
+                              "path":  "src/frontend/src/vite-env.d.ts",
+                              "sha256":  "65996936FBB042915F7B74A200FCDDE7E410F32A669B1AB9597CFAA4B0FADDB5"
+                          },
+                          {
+                              "path":  "src/frontend/tsconfig.json",
+                              "sha256":  "A3F2DFA3B5973773567BB4CB9A712FE1F83751205CCEAF9D12F628DB8834487E"
+                          },
+                          {
+                              "path":  "src/frontend/vite.config.ts",
+                              "sha256":  "842071AEBDDA1ED54A07200061C9EB2A73C3EA60E36CEFFF2F04E48BE1806BE3"
+                          },
+                          {
+                              "path":  "src/frontend/vitest.config.ts",
+                              "sha256":  "E00BC5927BE93AC5E5D3DAA131AE51B4DAD309EF4053047D507020F56F074387"
+                          },
+                          {
+                              "path":  "workflow/student/FRONTEND-DESIGN.md",
+                              "sha256":  "DBA3D9A321D93BD54798F34A20EA23DD97E4931EE19DBC2F2DFE30A201513089"
+                          },
+                          {
+                              "path":  "workflow/student/PLAN.md",
+                              "sha256":  "919BD0A2EB8B66453F54B67CCE8B55F222B6678FE41DAAD969FD0788D0851FAE"
+                          }
+                      ],
+    "evidenceHashes":  [
+                           {
+                               "sha256":  "46EBBBD49D135A29292EAF878AC778FAF809A0CE02DD63831CD31C24E32FFE09",
+                               "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-unit.json"
+                           },
+                           {
+                               "sha256":  "3B586530A012296A78367036A43842C4629BFA875AC72200962C713505F0A2AA",
+                               "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-unit-isolated.json"
+                           },
+                           {
+                               "sha256":  "7A45B53A838D26F44F2EF6B19F32CB4C5404111F36276E725B42D48BD8BCA8B2",
+                               "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-build.txt"
+                           },
+                           {
+                               "sha256":  "4AED0822D7F317127F5BD045366ECCD52D99975D726654B706B1F5E78FAB8798",
+                               "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-browser.txt"
+                           },
+                           {
+                               "sha256":  "CB247947DF09F7458CE8FE346CC267A4497AB66790901D880DE0487377FE90F2",
+                               "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-merged-error-probe.mjs"
+                           },
+                           {
+                               "sha256":  "C1496D8824E0D948A3E9F9ACFAFFF3ED5A3E67010009B42B3458FD149FB0C15D",
+                               "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-merged-error-probe.txt"
+                           }
+                       ],
+    "checks":  {
+                   "probe":  "exit 0; module FORBIDDEN masked with slots 503 or malformed list",
+                   "build":  "exit 0",
+                   "unitIsolated":  "exit 0; 139/139",
+                   "browser":  "exit 0; 16/16",
+                   "unitConcurrent":  "exit 1; 137/139, one timeout with cascading typing failure",
+                   "diffCheck":  "exit 0; line-ending notices only"
+               }
+}

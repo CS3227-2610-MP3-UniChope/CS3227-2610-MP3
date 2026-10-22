@@ -1,0 +1,28 @@
+npm notice run unichope-frontend@0.0.0 test:browser
+npm notice run playwright test
+
+Running 7 tests using 7 workers
+
+(node:54404) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:63044) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:53372) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:44344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57300) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58952) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:63936) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 4 e2e\shell.spec.ts:3:1 › FE0-QA: browser loads the UniChope shell without runtime errors (2.1s)
+  ok 6 e2e\workspace.spec.ts:87:1 › FE1-UI mobile Login labels, keyboard flow, one h1 and no overflow (2.7s)
+  ok 2 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 320px all choices visible, no page/dialog horizontal overflow (3.0s)
+  ok 1 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 768px all choices visible, no page/dialog horizontal overflow (3.1s)
+  ok 7 e2e\workspace.spec.ts:71:1 › FE2-UI confirmation traps Tab and Shift-Tab then restores focus on Escape (3.3s)
+  ok 3 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 1024px all choices visible, no page/dialog horizontal overflow (3.5s)
+  ok 5 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 1440px all choices visible, no page/dialog horizontal overflow (3.8s)
+
+  7 passed (5.7s)

@@ -1,5 +1,56 @@
 # Developer guide
 
+## Start the web application locally (Windows)
+
+Install Java 25 and Node.js 24 or newer, and start Docker Desktop. Open PowerShell
+in the repository root and run:
+
+```powershell
+.\src\backend\scripts\start-local-test.ps1
+```
+
+Enter a test-account password when prompted. The command creates or starts the
+local PostgreSQL database, builds and starts the backend, installs frontend
+dependencies if needed, starts the Vite web server, and seeds sample data through
+the real APIs. Open **<http://127.0.0.1:5173/login>** when it prints `Ready`.
+
+| Service | Local address |
+| --- | --- |
+| Web application | `http://127.0.0.1:5173` |
+| Backend API | `http://127.0.0.1:8080` |
+| Sample PostgreSQL database | `127.0.0.1:55433`, container `unichope-manual-db` |
+
+Sign in with one of these synthetic accounts, using the password you supplied:
+
+| Account | Sample content |
+| --- | --- |
+| `student1@example.edu` | Upcoming booking and cancelled-booking history |
+| `student2@example.edu` | No bookings initially; browse and book consultations |
+| `tutor1@example.edu`, `tutor2@example.edu` | Tutor accounts; current web destinations are placeholders |
+| `admin@example.edu` | Administrator account; current web destination is a placeholder |
+
+The sample includes three modules and about 20 consultation slots over the next
+seven days in Singapore time. Student pages support finding consultations,
+booking, viewing bookings and cancellation. The theme switch is available in each
+page header.
+
+For later testing, run the same command with the **same password**. Existing
+passwords are not reset. Accounts and modules are reused, overlapping slots are
+skipped, existing bookings are preserved, and an upcoming sample booking is added
+if student1 no longer has one. Database records survive stopping and restarting
+the container; removing the container deletes this sample database.
+
+The servers run in the background. Startup output is in
+`src/backend/build/local-test/unichope-manual-db/` (`build.txt`, `backend.out.txt`,
+`backend.err.txt`, `frontend.out.txt` and `frontend.err.txt`; frontend output files
+are created when the command starts that server). Rerunning the command reuses
+running servers. Vite updates frontend edits automatically; restart the backend
+after Java changes.
+
+Use `-BackendOnly` to start and seed only the backend. Alternate container names
+and ports are also supported; see the [setup script](../src/backend/scripts/start-local-test.ps1)
+and [backend setup instructions](../src/backend/README.md#reusable-local-sample-setup-windows).
+
 ## Admin and authentication architecture
 
 Authentication uses the existing AccountStorage boundary. Password verification

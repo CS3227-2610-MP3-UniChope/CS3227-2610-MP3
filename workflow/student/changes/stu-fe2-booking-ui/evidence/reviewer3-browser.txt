@@ -1,0 +1,47 @@
+# Reviewer-3 (Claude Opus 5.5, Claude Code) evidence, 22 Oct 2026
+# cwd: src/frontend; base commit e277e583f1319320ed5f44e1944ac85296bb7d15 + uncommitted worktree matching frontend-manifest-r2.json (40/40 hashes verified)
+# Node v24.21.0, npm 12.0.2, Windows PowerShell 5.1 (npm stderr notices appear as NativeCommandError text; process exit codes recorded below)
+# command: npm.cmd run test:browser (PLAYWRIGHT_CHANNEL unset -> msedge; no backend on 8080, feature checks use test-only route intercepts)
+
+﻿npm.cmd : npm notice run unichope-frontend@0.0.0 test:browser
+At line:1 char:588
++ ... t OwningProcess; npm.cmd run test:browser *> "$o\browser.txt"; "EXIT_ ...
++                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm notice run ....0 test:browser:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm notice run playwright test
+[WebServer] npm notice run unichope-frontend@0.0.0 dev
+[WebServer] npm notice run vite --host 127.0.0.1 --port 5173 --strictPort
+[WebServer] (node:32336) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 7 workers
+
+(node:60024) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:51276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54940) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59984) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31848) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59528) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 8:51:22 PM [vite] http proxy error: /api/auth/me
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:8080
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:2021:16)
+  ok 3 e2e\shell.spec.ts:3:1 › FE0-QA: browser loads the UniChope shell without runtime errors (3.8s)
+  ok 1 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 768px all choices visible, no page/dialog horizontal overflow (4.2s)
+  ok 2 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 320px all choices visible, no page/dialog horizontal overflow (4.5s)
+  ok 7 e2e\workspace.spec.ts:87:1 › FE1-UI mobile Login labels, keyboard flow, one h1 and no overflow (4.4s)
+  ok 4 e2e\workspace.spec.ts:71:1 › FE2-UI confirmation traps Tab and Shift-Tab then restores focus on Escape (5.2s)
+  ok 6 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 1024px all choices visible, no page/dialog horizontal overflow (5.6s)
+  ok 5 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 1440px all choices visible, no page/dialog horizontal overflow (5.6s)
+
+  7 passed (30.2s)
+EXIT_BROWSER=0
