@@ -1,6 +1,6 @@
 # Authentication implementation plan
 
-Status: all pending, draft21October2026. Owner Kok Seng; Student reviews.
+Status: backend tasks implemented locally, 22 October 2026. Owner Kok Seng; independent review performed.
 Inputs [Product](PRODUCT-SPEC.md),[Technical](TECHNICAL-SPEC.md),
 [shared integration](../INTEGRATION-SPEC.md). Use existing /api/auth contracts.
 
@@ -20,3 +20,14 @@ shape. Record actual commands, revisions, failures and remaining limits. In-memo
 HTTP sessions are not business persistence; test restart signs users out and retains
 committed data. Platform/core migration changes reviewed by Huanghao; auth does not
 invent duplicate users tables or port desktop setup UI. Password reset and forced password change are excluded. No password-change endpoint is planned.
+
+
+## Current results
+
+AUTH-P0–P5 are implemented using AccountStorage and existing shared contracts.
+AUTH-P6 includes independent security review, unit/HTTP/PostgreSQL verification and
+guides; final user acceptance remains pending. Cached Java25 and a separate local
+PostgreSQL17 instance were used; Docker is not required by the current explicit
+PostgreSQL test task. Actual commands are gradlew.bat test postgresTest bootJar with
+core.test.jdbcUrl/user/password to a disposable database. Startup instructions are
+in src/backend/README.md. All commands/results in the log refer to actual checks.

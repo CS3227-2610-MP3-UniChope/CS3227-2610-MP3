@@ -2,7 +2,7 @@
 
 Status: draft, 21 October 2026. Owner Kok Seng; reviewer Student.
 References: [Product](PRODUCT-SPEC.md), [shared](../SHARED-TECHNICAL-SPEC.md),
-[integration](../INTEGRATION-SPEC.md). Baseline main50c6213.
+[integration](../INTEGRATION-SPEC.md). Baseline main98ca801.
 
 ## Shared compatibility
 
@@ -124,3 +124,19 @@ Use at most four password-verification workers and queue at most16; reject exces
 with503 TEMPORARILY_UNAVAILABLE. Queue time counts toward the deadline. Do not evict
 active failure histories; full new-key store returns429. Slow/expired workers never
 issue a session. These values may be tuned with explicit spec/test updates.
+
+## Runtime implementation notes — 22 October 2026
+
+Actual authentication uses the core AccountStorage snapshot/state/confirmation API.
+The server confirms the observed hash,role,generation after outside-lock verification.
+The whole lookup/verify/confirm sequence is bounded; session issuance checks its
+remaining deadline and uses the confirmed credential-free user without another
+blocking lookup. Runtime JDBC connection/socket defaults are5/10seconds. Existing
+core transactions retain their documented5/10second lock/statement bounds.
+
+Argon2id uses19456KiB,two iterations,one parallel lane with16-byte salt and32-byte
+hash. Four workers and16 queued jobs bound password work. Runtime migrations put
+password_hash/session_generation on users consistently with existing core storage.
+bootstrapAdmin uses the separate bootstrap_state marker and advisory lock. Sessions
+and throttles stay in memory on one replica; counter reset on restart is intentional.
+Read src/backend/README.md for profiles and startup, not the old no-scaffold text.

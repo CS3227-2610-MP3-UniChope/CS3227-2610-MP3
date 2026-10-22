@@ -1,8 +1,8 @@
 # Admin implementation plan
 
-Status: all pending, draft21October2026. Owner Kok Seng; Student reviews.
+Status: backend tasks implemented locally, 22 October 2026. Owner Kok Seng; independent review performed.
 Inputs [Product](PRODUCT-SPEC.md),[Technical](TECHNICAL-SPEC.md),
-[shared integration](../INTEGRATION-SPEC.md). Main50c6213 read before drafting.
+[shared integration](../INTEGRATION-SPEC.md). Main98ca801 reviewed before implementation.
 
 | Task | Dependencies | Work and completion evidence |
 | --- | --- | --- |
@@ -22,3 +22,15 @@ Core/AI/frontend/deployment implementation not assigned to Admin; coordinate int
 changes rather than duplicating scaffolds. Separate assigned reviews: Tutor, core
 management rules and shared AI. Actual build/test commands await app scaffold; record
 command+exit+revision then. No implementation/tests/approval claimed by this plan.
+
+
+## Current results and remaining dependency
+
+ADM-P0–P5 are implemented locally, with management/read/AI validation tests and
+application wiring. ADM-P6 real SoC evaluation remains blocked by the shared real
+provider/quota implementation. ADM-P7 backend independent review/guides/checks are
+performed locally; frontend/deployment remain outside this ownership and user
+acceptance is pending. Existing core account operations were reused. Admin-specific
+guarded module/assignment writes were implemented in Admin without changing shared
+ConsultationLifecycle. Tests include both orderings of module/assignment conflicts
+with Tutor slot creation. Results are recorded in logs/kokseng.md.
