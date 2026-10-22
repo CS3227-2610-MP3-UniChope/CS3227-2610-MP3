@@ -1,0 +1,18 @@
+[
+    {
+        "task":  "test",
+        "suites":  18,
+        "tests":  59,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0
+    },
+    {
+        "task":  "postgresTest",
+        "suites":  17,
+        "tests":  178,
+        "failures":  0,
+        "errors":  0,
+        "skipped":  0
+    }
+]

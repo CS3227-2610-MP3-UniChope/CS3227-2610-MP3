@@ -1,0 +1,68 @@
+[
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4In1ExactEmptyObjectCanonicalPathNoQueriesAndStreamedSize()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"f7c8e23c-00a7-4091-8fb2-f430e424ed2e\"} ==\u003e expected: \u003c400\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "sCanc1CancelsAtomicallyReturnsExactProjectionReleasesSlotAndRepeatConflicts()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"1a77b50c-9fbd-457f-ac3c-2412b55b5e6e\"} ==\u003e expected: \u003c200\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Err1SafeLifecycleMappingsAndNoMutation()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"bf37b60f-aa8d-46c3-acfb-1a9c4ad6597a\"} ==\u003e expected: \u003c400\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Acc1CsrfAndStoredActorMatrixRejectWithoutLifecycleCalls()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"d3d876cd-957c-4847-bd01-e25c0f4a51f1\"} ==\u003e expected: \u003c401\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "sCanc3DoubleHttpCancelHasOneSuccessAndOneConflict()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"620a9f12-c2dd-44a3-b6ac-e4484c80806e\"} ==\u003e expected: \u003c200\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Bnd1OneSecondBeforeStartIsAllowedExactStartIsConflict()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"e94e9b81-3cae-44a0-913b-dfe4f149e15d\"} ==\u003e expected: \u003c200\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "sCanc2ForeignMissingStartedHistoryAndUnbookedSlotNeverChangeRows()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"7fbd9f44-fa1a-4a8e-8489-25f14d63d8c8\"} ==\u003e expected: \u003c409\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Err1AccessDeniedRechecksInactiveDeletedChangedRoleAndStillValidActor()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"eda33371-844c-44ad-b793-d01e6c9efdf4\"} ==\u003e expected: \u003c403\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "sCanc3CompletionAndHttpCancellationRaceKeepConsistentStates()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"2a48779f-8d9d-4ad0-8ebe-15de944903be\"} ==\u003e expected: \u003c200\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Elig1CancellationIgnoresTutorModuleAndAssignmentIneligibility()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"4a82c96b-52b8-4985-8d8d-dfc26ceae3d0\"} ==\u003e expected: \u003c200\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Err1ProjectionFailureAfterCommitKeepsCancellationAndDoesNotRetry()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"e34cf967-79ee-40cd-b71c-d2b2bd0b60fd\"} ==\u003e expected: \u003c500\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    }
+]

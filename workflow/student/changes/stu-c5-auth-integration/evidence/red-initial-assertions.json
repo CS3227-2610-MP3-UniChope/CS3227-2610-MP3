@@ -1,0 +1,200 @@
+[
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "sBook4SameSlotRaceHasExactlyOneWinner()",
+        "failure":  "org.opentest4j.AssertionFailedError: Did not observe 1 independently blocked PostgreSQL callers",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "c2In3ActorHeaderIsIgnored()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"918a2732-45d6-427f-9a23-7c7b3f0971d6\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c201\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "c2ActStudentApiWithoutConsultationLifecycleFailsStartup()",
+        "failure":  "org.opentest4j.AssertionFailedError: student-api context started without a ConsultationLifecycle bean ==\u003e Expected java.lang.RuntimeException to be thrown, but nothing was thrown.",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "c2In1RejectsEveryNonExactBodyAndAnyQueryBeforeTheActorCheck()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"7fca5796-d87e-44c3-bd53-70ff919746c3\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c400\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "sBook2EveryUnavailableCauseSharesOneConflictAndChangesNothing()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"81e26f61-c4b1-475c-99c7-b10413f7a829\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c409\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "c2Acc1AccessMatrixAndCsrfDenyWithoutAnyChange()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"f6c00e9f-ebd9-485d-b737-73f75e0a26a1\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c401\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "sBook5RebookingAfterCancellationCreatesNewBookingAndKeepsHistory()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"63ec35bf-f76e-40c1-a4cc-4d91fd63c206\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c201\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "c2In2MediaTypeAndStreamedBodySizeLimits()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"cbac6eda-f0e4-4d51-aab0-f34227a55e10\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c415\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "sBook4OverlappingSlotsRaceForOneStudentHasExactlyOneWinner()",
+        "failure":  "org.opentest4j.AssertionFailedError: Did not observe 1 independently blocked PostgreSQL callers",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "sBook1BooksEligibleSlotWithLocationExactProjectionAndAtomicRows()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"79dff2a1-2f2d-4325-b754-d9375c18bc97\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c201\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "sBook3OverlapWithOwnActiveBookingIsRejectedAndAdjacentIsAllowed()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"74c606d2-d402-4d3c-9702-2fcd5f2072e5\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c409\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "c2Err2LifecycleAccessDeniedRerunsTheAccessCheck()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"66e587fe-dffb-4cc6-86e0-76e4d43047bd\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c403\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "c2Prec1UnavailableWinsOverOverlap()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"84d6521a-9255-4272-a8d5-f16a93d0a16e\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c409\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "c2Err3ProjectionFailureAfterCommitIs500AndKeepsTheBookingOnce()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"53558ebe-aac0-4ab8-aa44-9d99839be3ab\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c500\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentBookSlotPgTest",
+        "test":  "c2Err1LifecycleOutcomesMapToSafeStudentErrors()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"METHOD_NOT_ALLOWED\",\"message\":\"Request method is not allowed\",\"requestId\":\"a878efba-93f4-49b1-b3e4-8c75694d09f9\"} resolved=org.springframework.web.HttpRequestMethodNotSupportedException: Request method \u0027POST\u0027 is not supported ==\u003e expected: \u003c400\u003e but was: \u003c405\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4In1ExactEmptyObjectCanonicalPathNoQueriesAndStreamedSize()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"ea0572b7-842f-4901-bb1b-f68d8e00dbdd\"} ==\u003e expected: \u003c400\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "sCanc1CancelsAtomicallyReturnsExactProjectionReleasesSlotAndRepeatConflicts()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"6be6651f-3835-4e4f-b090-2d1e0257ef15\"} ==\u003e expected: \u003c200\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Err1SafeLifecycleMappingsAndNoMutation()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"e5bc733c-d287-4e07-b95a-cd1e1bea4e39\"} ==\u003e expected: \u003c400\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Acc1CsrfAndStoredActorMatrixRejectWithoutLifecycleCalls()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"cedeab96-8ca8-4e51-af68-ec2cf06337c3\"} ==\u003e expected: \u003c401\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "sCanc3DoubleHttpCancelHasOneSuccessAndOneConflict()",
+        "failure":  "org.opentest4j.AssertionFailedError: Did not observe 1 independently blocked PostgreSQL callers",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Bnd1OneSecondBeforeStartIsAllowedExactStartIsConflict()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"fcc1d022-94a6-48a1-b727-c60c6709988c\"} ==\u003e expected: \u003c200\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "sCanc2ForeignMissingStartedHistoryAndUnbookedSlotNeverChangeRows()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"03b9e2b1-a17a-49d0-9746-bb64a894ae66\"} ==\u003e expected: \u003c409\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Err1AccessDeniedRechecksInactiveDeletedChangedRoleAndStillValidActor()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"a200d92b-ce4b-4e4a-808a-ef776fe9656c\"} ==\u003e expected: \u003c403\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "sCanc3CompletionAndHttpCancellationRaceKeepConsistentStates()",
+        "failure":  "org.opentest4j.AssertionFailedError: Did not observe 2 independently blocked PostgreSQL callers",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Elig1CancellationIgnoresTutorModuleAndAssignmentIneligibility()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"beea2108-e927-42f3-95fe-0ad3607c6906\"} ==\u003e expected: \u003c200\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "test":  "c4Err1ProjectionFailureAfterCommitKeepsCancellationAndDoesNotRetry()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"NOT_FOUND\",\"message\":\"Resource not found\",\"requestId\":\"16f0499c-714a-465b-80c2-0afa4925946d\"} ==\u003e expected: \u003c500\u003e but was: \u003c404\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.runtime.StudentAuthIntegrationPgTest",
+        "test":  "c5Rev1TwoSessionsAdminDeactivationAndReactivationNeverReviveOldGeneration()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"FORBIDDEN\",\"message\":\"Access is forbidden\",\"requestId\":\"565e9d6d-f240-469a-af44-ed4427d77f44\"} ==\u003e expected: \u003c200\u003e but was: \u003c403\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.runtime.StudentAuthIntegrationPgTest",
+        "test":  "c5Run1AppApiIncludesStudentWithRealRuntimeMigrationsAndSharedActor()",
+        "failure":  "org.opentest4j.AssertionFailedError: expected: \u003ctrue\u003e but was: \u003cfalse\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.runtime.StudentAuthIntegrationPgTest",
+        "test":  "c5Auth1RegistrationLoginRotationOldCsrfFailsFreshCsrfBooksReadsAndCancels()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"FORBIDDEN\",\"message\":\"Access is forbidden\",\"requestId\":\"d2ed4312-8a03-4cc4-8aeb-c5b24788e896\"} ==\u003e expected: \u003c201\u003e but was: \u003c403\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.runtime.StudentAuthIntegrationPgTest",
+        "test":  "c5Csrf1MissingInvalidTokensLogoutCookieRepeatAndFreshLogin()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"FORBIDDEN\",\"message\":\"Access is forbidden\",\"requestId\":\"7714be38-5abe-4be3-9913-2b18c23ee498\"} ==\u003e expected: \u003c201\u003e but was: \u003c403\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.runtime.StudentAuthIntegrationPgTest",
+        "test":  "c5Auth2MissingAccountWinsMalformedSyntaxAndInvalidatesSession()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"FORBIDDEN\",\"message\":\"Access is forbidden\",\"requestId\":\"07aec57e-92a6-41bc-ae27-f04c9eb41070\"} ==\u003e expected: \u003c200\u003e but was: \u003c403\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.runtime.StudentAuthIntegrationPgTest",
+        "test":  "c5Auth2AnonymousWrongRoleCachedAuthoritiesAndUntrustedPrincipalsCannotChooseActor()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"FORBIDDEN\",\"message\":\"Access is forbidden\",\"requestId\":\"77e4ccf8-9afa-4ac2-adb1-703815603433\"} ==\u003e expected: \u003c400\u003e but was: \u003c403\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    },
+    {
+        "class":  "unichope.platform.runtime.StudentAuthIntegrationPgTest",
+        "test":  "c5State1LogoutThenDifferentLoginRetainsNoActorOrBookingState()",
+        "failure":  "org.opentest4j.AssertionFailedError: {\"code\":\"FORBIDDEN\",\"message\":\"Access is forbidden\",\"requestId\":\"e1c7c8dc-6d2f-4ac1-b962-3b31fe1f8bd2\"} ==\u003e expected: \u003c201\u003e but was: \u003c403\u003e",
+        "type":  "org.opentest4j.AssertionFailedError"
+    }
+]

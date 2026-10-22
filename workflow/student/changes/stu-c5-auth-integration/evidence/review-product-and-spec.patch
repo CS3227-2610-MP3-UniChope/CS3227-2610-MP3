@@ -1,0 +1,1193 @@
+diff --git a/src/backend/README.md b/src/backend/README.md
+index 347a063..5ac34ab 100644
+--- a/src/backend/README.md
++++ b/src/backend/README.md
+@@ -49,8 +49,8 @@ DDL for explicitly isolated tests, not an active/default production migration.
+ The app-api profile now supplies explicit datasource/service/authentication wiring.
+ The committed [auth specification](../../workflow/auth/TECHNICAL-SPEC.md) selects
+ passwordHash and sessionGeneration on users. The core account proposal below now
+-implements internal storage and atomic provisioning/revocation. Authentication
+-wiring, session policy and production migration activation remain pending.
++implements internal storage and atomic provisioning/revocation. Auth/session wiring and runtime V1-V4 migrations exist. Student app-api composition
++and its platform.auth actor adapter are specified in stu-c5 and pending this increment.
+ Its storage decision supersedes the historical SQL comment; reviewed SQL is unchanged.
+ Core and Student AI owners must coordinate production migration versions.
+ 
+@@ -65,8 +65,8 @@ Keep it out of DTOs and custom serializers. The app-api profile wires auth/sessi
+ Only the new isolated auth tests explicitly select `db/core-review` followed by
+ `db/auth-review`. V1 and the original credential-free tests remain unchanged.
+ The review extension requires an empty users table; applying it to existing accounts
+-fails atomically. Production activation, migration numbering, real-account backfill
+-and owner agreement require a separate review.
++fails atomically. Runtime numbering is V1-V4; real-account backfill, deployment activation
++and owner agreement require separate review.
+ 
+ Creation strips names (1–100 Unicode code points), strips and ROOT-lowercases emails
+ (1–254 code points, one @, nonempty sides, no Unicode whitespace/control), and accepts
+@@ -98,7 +98,9 @@ structured constraint metadata, with the same BOM-managed dependency/version.
+ 
+ ## Running the integrated application
+ 
+-The `app-api` profile activates authentication, Admin and Tutor APIs. Default startup
++The baseline `app-api` profile activates authentication, Admin and Tutor APIs.
++The authorized stu-c5 increment also activates Student with a SessionPrincipal actor
++adapter; see workflow/student/changes/stu-c5-auth-integration.md for current evidence. Default startup
+ remains closed and database-free. Runtime migrations use `db/migration`: core V1,
+ account columns V2, private notes V3 and initial-Admin marker V4. Existing isolated
+ review migrations/tests remain unchanged. Use a new empty database for first setup;
+diff --git a/src/backend/src/main/java/unichope/platform/runtime/ApplicationConfiguration.java b/src/backend/src/main/java/unichope/platform/runtime/ApplicationConfiguration.java
+index 28a1c29..6d9f564 100644
+--- a/src/backend/src/main/java/unichope/platform/runtime/ApplicationConfiguration.java
++++ b/src/backend/src/main/java/unichope/platform/runtime/ApplicationConfiguration.java
+@@ -93,6 +93,19 @@ public class ApplicationConfiguration {
+         java.util.Optional.ofNullable(AuthController.principal()).map(SessionPrincipal::userId);
+   }
+ 
++  @Bean
++  unichope.platform.auth.CurrentActorProvider sharedActor() {
++    return () -> {
++      var authentication = org.springframework.security.core.context.SecurityContextHolder
++          .getContext().getAuthentication();
++      if (authentication == null || !authentication.isAuthenticated()
++          || !(authentication.getPrincipal() instanceof SessionPrincipal principal)) {
++        return java.util.Optional.empty();
++      }
++      return java.util.Optional.of(principal.userId());
++    };
++  }
++
+   @Bean
+   PasswordHasher passwordHasher() {
+     return new Argon2PasswordHasher();
+diff --git a/src/backend/src/main/java/unichope/student/http/StudentApiConfiguration.java b/src/backend/src/main/java/unichope/student/http/StudentApiConfiguration.java
+index 24b624c..03a30f1 100644
+--- a/src/backend/src/main/java/unichope/student/http/StudentApiConfiguration.java
++++ b/src/backend/src/main/java/unichope/student/http/StudentApiConfiguration.java
+@@ -19,6 +19,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
+ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+ import org.springframework.web.servlet.resource.NoResourceFoundException;
+ import unichope.platform.auth.CurrentActorProvider;
++import unichope.platform.core.ConsultationLifecycle;
+ import unichope.platform.web.ApiErrors;
+ import unichope.student.PostgresStudentReadRepository;
+ import unichope.student.StudentAccess;
+@@ -27,7 +28,7 @@ import unichope.student.StudentReadService;
+ 
+ /**
+  * Student HTTP wiring, active only with profile {@code student-api} (TECH §2). Missing
+- * {@link CurrentActorProvider}, {@link DataSource} or {@link Clock} beans fail startup; there is
++ * {@link CurrentActorProvider}, {@link DataSource}, {@link ConsultationLifecycle} or {@link Clock} beans fail startup; there is
+  * no anonymous, fallback or main-source test actor.
+  */
+ @Configuration
+@@ -81,4 +82,9 @@ public class StudentApiConfiguration implements WebMvcConfigurer {
+     StudentReadService studentReadService(StudentAccess studentAccess, StudentReadRepository studentReadRepository, Clock clock) {
+         return new StudentReadService(studentAccess, studentReadRepository, clock);
+     }
++
++    @Bean
++    StudentHttpService studentHttpService(StudentAccess access, ConsultationLifecycle lifecycle, StudentReadService reads) {
++        return new StudentHttpService(access, lifecycle, reads);
++    }
+ }
+diff --git a/src/backend/src/main/java/unichope/student/http/StudentApiInput.java b/src/backend/src/main/java/unichope/student/http/StudentApiInput.java
+index d454b09..1dd3e26 100644
+--- a/src/backend/src/main/java/unichope/student/http/StudentApiInput.java
++++ b/src/backend/src/main/java/unichope/student/http/StudentApiInput.java
+@@ -1,5 +1,6 @@
+ package unichope.student.http;
+ 
++import java.io.IOException;
+ import java.time.LocalDate;
+ import java.time.format.DateTimeParseException;
+ import java.util.EnumSet;
+@@ -9,11 +10,21 @@ import java.util.Set;
+ import java.util.UUID;
+ import java.util.regex.Pattern;
+ import jakarta.servlet.http.HttpServletRequest;
++import org.springframework.http.MediaType;
++import tools.jackson.core.JacksonException;
++import tools.jackson.core.StreamReadFeature;
++import tools.jackson.databind.DeserializationFeature;
++import tools.jackson.databind.JsonNode;
++import tools.jackson.databind.json.JsonMapper;
+ import unichope.platform.core.model.consultation.BookingStatus;
+ import unichope.platform.web.ApiFailure;
+ 
+-/** Adapter-local strict query parsing (TECH §3.1); every violation is 400 VALIDATION_FAILED. */
++/** Adapter-local strict parsing (TECH §3.1), including streamed body bounds and media types. */
+ public final class StudentApiInput {
++    private static final int MAX_BYTES = 65536;
++    private static final JsonMapper JSON = JsonMapper.builder()
++            .enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION)
++            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
+     private static final Pattern UUID_TEXT =
+             Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+     private static final Pattern DATE_TEXT = Pattern.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}");
+@@ -24,6 +35,37 @@ public final class StudentApiInput {
+ 
+     private StudentApiInput() {}
+ 
++    /** Exact booking body; identity is never accepted from request data. */
++    public static UUID book(HttpServletRequest request) throws IOException {
++        JsonNode body = object(request);
++        if (!Set.copyOf(body.propertyNames()).equals(Set.of("slotId"))
++                || !body.get("slotId").isString()) throw invalid();
++        return id(body.get("slotId").stringValue());
++    }
++
++    public static void cancel(HttpServletRequest request) throws IOException {
++        if (!object(request).isEmpty()) throw invalid();
++    }
++
++    private static JsonNode object(HttpServletRequest request) throws IOException {
++        try {
++            MediaType type = request.getContentType() == null ? null : MediaType.parseMediaType(request.getContentType());
++            if (type == null || !type.getType().equals("application") || !type.getSubtype().equals("json"))
++                throw new ApiFailure(415, "UNSUPPORTED_MEDIA_TYPE", "JSON content type is required");
++        } catch (org.springframework.http.InvalidMediaTypeException error) {
++            throw new ApiFailure(415, "UNSUPPORTED_MEDIA_TYPE", "JSON content type is required");
++        }
++        byte[] bytes = request.getInputStream().readNBytes(MAX_BYTES + 1);
++        if (bytes.length > MAX_BYTES) throw new ApiFailure(413, "PAYLOAD_TOO_LARGE", "Request body is too large");
++        try {
++            JsonNode body = JSON.readTree(bytes);
++            if (body == null || !body.isObject()) throw invalid();
++            return body;
++        } catch (JacksonException error) {
++            throw invalid();
++        }
++    }
++
+     /** Parsed {@code GET /slots} filters. */
+     public record SlotFilter(Optional<UUID> moduleId, Optional<LocalDate> date) {}
+ 
+diff --git a/src/backend/src/main/java/unichope/student/http/StudentController.java b/src/backend/src/main/java/unichope/student/http/StudentController.java
+index 292585c..e3cdeec 100644
+--- a/src/backend/src/main/java/unichope/student/http/StudentController.java
++++ b/src/backend/src/main/java/unichope/student/http/StudentController.java
+@@ -1,11 +1,15 @@
+ package unichope.student.http;
+ 
+ import java.util.List;
++import java.io.IOException;
++import java.net.URI;
+ import java.util.UUID;
+ import jakarta.servlet.http.HttpServletRequest;
+ import org.springframework.context.annotation.Profile;
++import org.springframework.http.ResponseEntity;
+ import org.springframework.web.bind.annotation.GetMapping;
+ import org.springframework.web.bind.annotation.PathVariable;
++import org.springframework.web.bind.annotation.PostMapping;
+ import org.springframework.web.bind.annotation.RequestMapping;
+ import org.springframework.web.bind.annotation.RestController;
+ import unichope.platform.web.ApiFailure;
+@@ -15,17 +19,35 @@ import unichope.student.StudentBooking;
+ import unichope.student.StudentReadService;
+ 
+ /**
+- * Student browse and own-booking read routes. Request syntax is validated before the actor check (TECH §3.2
+- * evaluation order), so a syntax error never reads data or invalidates a session.
++ * Student browse and owned booking routes. After shared security filter admission, request syntax
++ * is validated before StudentAccess and resource work (TECH §3.2).
+  */
+ @RestController("studentController")
+ @Profile("student-api")
+ @RequestMapping("/api/student")
+ public class StudentController {
+     private final StudentReadService reads;
++    private final StudentHttpService writes;
+ 
+-    public StudentController(StudentReadService reads) {
++    public StudentController(StudentReadService reads, StudentHttpService writes) {
+         this.reads = reads;
++        this.writes = writes;
++    }
++
++    @PostMapping("/bookings")
++    public ResponseEntity<StudentBooking> book(HttpServletRequest request) throws IOException {
++        StudentApiInput.noQuery(request);
++        UUID slotId = StudentApiInput.book(request);
++        StudentBooking booking = writes.book(slotId);
++        return ResponseEntity.created(URI.create("/api/student/bookings/" + booking.id())).body(booking);
++    }
++
++    @PostMapping("/bookings/{id}/cancel")
++    public StudentBooking cancel(@PathVariable("id") String id, HttpServletRequest request) throws IOException {
++        StudentApiInput.noQuery(request);
++        UUID bookingId = StudentApiInput.id(id);
++        StudentApiInput.cancel(request);
++        return writes.cancel(bookingId);
+     }
+ 
+     @GetMapping("/modules")
+diff --git a/src/backend/src/main/resources/application.properties b/src/backend/src/main/resources/application.properties
+index e89a9c8..57e175f 100644
+--- a/src/backend/src/main/resources/application.properties
++++ b/src/backend/src/main/resources/application.properties
+@@ -1 +1 @@
+-spring.profiles.group.app-api=auth-api,tutor-api,admin-api
++spring.profiles.group.app-api=auth-api,tutor-api,admin-api,student-api
+diff --git a/workflow/INTEGRATION-SPEC.md b/workflow/INTEGRATION-SPEC.md
+index 25273f8..ff5532a 100644
+--- a/workflow/INTEGRATION-SPEC.md
++++ b/workflow/INTEGRATION-SPEC.md
+@@ -144,7 +144,7 @@ contract; SQL migration details belong to the technical implementation.
+ 
+ | Record | Required fields and invariants |
+ | --- | --- |
+-| User | id, name, normalized unique email, role STUDENT/TUTOR/ADMIN, active; auth-selected core extensions: passwordHash and nonnegative sessionGeneration (initially 0). Both are internal and excluded from ordinary responses. The current review-only core schema does not implement these extensions. |
++| User | id, name, normalized unique email, role STUDENT/TUTOR/ADMIN, active; auth-selected core extensions: passwordHash and nonnegative sessionGeneration (initially 0). Both are internal and excluded from ordinary responses. Runtime migration V2 implements these internal columns; the isolated core-review schema intentionally remains credential-free. |
+ | Module | id, unique case-normalized code, name, active |
+ | TutorModule | tutorId and moduleId foreign keys, unique pair; assigned user must be a tutor |
+ | Slot | id, tutorId, moduleId, startTime, endTime, status; end > start; retained history |
+@@ -241,16 +241,35 @@ Student/Admin endpoint contracts remain their owners' responsibility.
+ 
+ ### Decisions still requiring owner agreement
+ 
+-- The committed [auth specification](auth/TECHNICAL-SPEC.md#selected-credential-storage)
+-  selects passwordHash and sessionGeneration on the existing users record; no second
+-  credential/user table. Core storage, migration and atomic provisioning/revocation
+-  operations still need implementation and affected-owner review. The current DDL
+-  remains credential-free and review-only; production schema activation is blocked.
+-- Auth supplies trusted session identity to `CurrentActorProvider`; the exact shared
+-  principal adapter and application-wide security wiring still require integration.
+-- The core owner and Student AI owner coordinate migration version allocation before
+-  either adds production migrations. The current review-only core DDL does not reserve
+-  a production version number.
++- Runtime `AccountStorage`/provisioning/revocation and app-api migrations V1-V4
++  exist at a9dd650. Public User/DTOs remain credential-free. Isolated core-review
++  DDL is test-only; existing-account backfill/deployment approval is not established.
++- Phuc's 22 October request "Update the spec and intergrate with new auth, implement
++  student booking" authorizes adding student-api to app-api and a
++  platform.auth.CurrentActorProvider SessionPrincipal adapter. At the inspected
++  baseline these are pending implementation. Default startup remains closed;
++  Auth/Admin/Tutor semantics and Tutor's actor seam are preserved. Affected-owner
++  review remains required before merge; no teammate approval is claimed.
++- Future AI migrations require coordinated new versions after runtime V4; do not
++  rewrite applied migrations. Student's proposed AI gateway requires compatibility
++  review with existing Tutor/Admin AiGateway consumers, outside booking scope.
+ - The proposed auth and deployment assignments in the shared technical spec require
+   confirmation by the affected teammates; this contract does not record that
+   confirmation.
++
++## 9. Student booking integration
++
++The canonical Student DTO, strict input, eligibility, ownership, response/error and
++post-commit projection rules are [Student Technical sections 3-4](student/TECHNICAL-SPEC.md).
++Creation: POST /api/student/bookings {slotId} returns 201 StudentBooking + Location;
++unavailable/missing/ineligible slots use 409 SLOT_UNAVAILABLE, overlap uses 409
++BOOKING_OVERLAP. Cancellation: POST /api/student/bookings/{id}/cancel {} returns
++200 CANCELLED StudentBooking; foreign/missing IDs are 404, invalid state/start is
++409 INVALID_STATE. Both use existing ConsultationLifecycle and this document's
++section 7 locks/atomic transitions unchanged. SLOT_UNAVAILABLE is Student-specific.
++
++Composed Auth current-account checks precede controller syntax. A malformed request
++with stale/inactive/unsupported principal is denied by the shared filter before
++validation; after filter admission, Student syntax precedes StudentAccess checks.
++See Student Technical section 3.2 for exact precedence and section 9 for real-auth,
++generation revocation/reactivation, CSRF and cross-account acceptance requirements.
+diff --git a/workflow/auth/TECHNICAL-SPEC.md b/workflow/auth/TECHNICAL-SPEC.md
+index cedd32b..2e5f482 100644
+--- a/workflow/auth/TECHNICAL-SPEC.md
++++ b/workflow/auth/TECHNICAL-SPEC.md
+@@ -8,8 +8,8 @@ References: [Product](PRODUCT-SPEC.md), [shared](../SHARED-TECHNICAL-SPEC.md),
+ 
+ Keep /api,64KiB JSON body bound, shared error envelope and existing exact actor DTO.
+ Do not introduce /api/v1, persistent/multi-replica sessions, blanket version columns,
+-a second user table or independently chosen throttle. Current core User includes
+-passwordHash; do not move it into a credentials table without reviewed core migration.
++a second user table or independently chosen throttle. Current internal account storage includes
++passwordHash; public core User remains credential-free; do not move it into a credentials table without reviewed core migration.
+ platform/auth owns hashing/authentication logic, core owns physical user storage.
+ Collaborator interface for atomic credential-bearing user creation is agreed with
+ Huanghao before implementation. Platform must not import Admin role classes.
+@@ -78,8 +78,9 @@ registration/provision G1/P1 unique race/rollback/migration tests; I1 bootstrap
+ T1 fixed clock counter admission/expiry/capacity tests. Assert safe DTO/error/log
+ fields, exact inactive403 then401, cross-role/forced actor rejection. PostgreSQL
+ Testcontainers for real transaction rules; no mock substitutes for races. Backend
+-restart signs out but retains committed data. No test command exists before app
+-scaffold; plan must establish actual commands/results then.
++restart signs out but retains committed data. Backend scaffold and Gradle test /
++postgresTest tasks now exist; see src/backend/README.md. Current acceptance requires
++reproducible command-output evidence, never interaction logs.
+ Assess MP2 AuthenticationService/Argon2PasswordHasher and tests without copying
+ data/default credentials. Verify exact source revision/diff; measure reused/adapted/
+ new lines, document changed desktop/session policies. No reuse measured or tests run.
+@@ -104,8 +105,8 @@ pool independently of request arrivals so abandoned hashing cannot exhaust resou
+ 
+ ## Selected credential storage
+ 
+-Keep passwordHash on the existing core User record, as defined by the shared data
+-model; do not create a second credentials/user table. Auth owns validation and
++Keep passwordHash on the existing users storage record, as defined by the shared data
++model; public User remains credential-free; do not create a second credentials/user table. Auth owns validation and
+ Argon2id hashing; core provides the parameterized storage operation. Registration
+ and Admin provisioning insert the user and hash in one transaction, with normalized
+ email uniqueness enforced by PostgreSQL. A failed insert commits neither account
+@@ -140,3 +141,13 @@ password_hash/session_generation on users consistently with existing core storag
+ bootstrapAdmin uses the separate bootstrap_state marker and advisory lock. Sessions
+ and throttles stay in memory on one replica; counter reset on restart is intentional.
+ Read src/backend/README.md for profiles and startup, not the old no-scaffold text.
++
++
++## Student runtime integration increment ? 22 October 2026
++
++Phuc's direct request authorizes Student app-api composition and the existing
++platform.auth.CurrentActorProvider adapter over authenticated SessionPrincipal.
++Shared CurrentAccountFilter keeps generation/current-state validation before
++controller validation. Preserve existing Auth/Admin/Tutor contracts and Tutor's
++separate actor seam. See Student Technical sections 3.2/9 and change stu-c5 for
++acceptance. This records authorized scope, not teammate review or test success.
+diff --git a/workflow/student/PLAN.md b/workflow/student/PLAN.md
+index 270d120..87764ac 100644
+--- a/workflow/student/PLAN.md
++++ b/workflow/student/PLAN.md
+@@ -1,6 +1,6 @@
+ # Student Implementation Plan
+ 
+-Status: Draft execution plan; every task is pending. Writing this plan does not
++Status: Backend C1/C3 reads and C5/C2/C4 auth/booking/cancellation implemented locally; verification and pending review are recorded in their change records. Writing this plan does not
+ indicate team approval or authorize changes to other roles' code.
+ Owner: Phuc (Student role owner)
+ Date: 22 October 2026
+@@ -60,13 +60,26 @@ Done by Huanghao on `main` (PRs #1-#4): Gradle/Boot backend, `postgresTest`, and
+ backend CI. Student adds `src/backend/compose.test.yaml` for a local disposable
+ PostgreSQL 17. No frontend scaffold exists yet.
+ 
++### C5: Integrate Student with shared authentication
++
++Change record: [changes/stu-c5-auth-integration.md](changes/stu-c5-auth-integration.md).
++
++- [x] Add student-api to app-api; supply authenticated SessionPrincipal-only platform.auth actor adapter.
++- [x] Real runtime PostgreSQL tests C5-RUN-1, C5-AUTH-1/2, C5-REV-1, C5-CSRF-1, C5-STATE-1. Focused C5/C2/C4 run: 33 tests, zero failures/errors/skips. C5-REG-1 full regression evidence is recorded in the implementation handoff; independent/human acceptance remains pending.
++- [ ] Affected Auth/web/core owner review before merge; no code approval is implied.
++
++Implementation order: C5 runtime foundation, C2 creation, C4 cancellation. Existing
++c1/c3 read foundations already exist. Fresh test writing may cover all boundaries
++together now; combined journey cases become green after C2/C4, not before. No
++implemented-upstream prerequisite is imposed on writing executable failing tests.
++
+ ### AI1: Gateway and fake provider
+ 
+ - [ ] Tests: gateway delegates to the configured provider; fake outputs are
+   deterministic per task; test double simulates timeout, error, malformed, HTML,
+   oversized, and empty responses; production profile with `fake` fails at startup;
+   `disabled` returns UNAVAILABLE with zero calls.
+-- [ ] Implement `AiGateway`, `AiRequest`, `AiResult`, `AiTask`, `AiTaskPolicy`,
++- [ ] Reconcile existing provisional AiGateway/Tutor/Admin consumers before implementing the future proposal; implement `AiGateway`, `AiRequest`, `AiResult`, `AiTask`, `AiTaskPolicy`,
+   `FakeProvider`, provider selection config, and `platform/web` failure mapping.
+ - [ ] Publish fake examples so Tutor and Admin can integrate without waiting for AI2.
+ 
+@@ -104,10 +117,11 @@ Requirements: STU-SLOT-01, AUTH-02, SEC-01.
+ 
+ Change record: [changes/stu-c2-book-slot.md](changes/stu-c2-book-slot.md).
+ 
+-- [ ] Tests: S-BOOK-1 to S-BOOK-5 including both concurrency races on real
+-  PostgreSQL, unique-violation mapping, CSRF; React confirmation and conflict refresh.
+-- [ ] Implement `POST /bookings` through the existing, unchanged
+-  `ConsultationLifecycle.bookAvailableSlot` (analyst-2 F2-01) and the booking dialog.
++- [x] Backend tests: S-BOOK-1 to S-BOOK-5 including both concurrency races on real
++  PostgreSQL, unique-violation mapping and CSRF (15 focused C2 tests passing).
++- [x] Implement `POST /bookings` through the existing, unchanged
++  `ConsultationLifecycle.bookAvailableSlot` (analyst-2 F2-01).
++- [ ] React booking dialog, confirmation and conflict refresh.
+ 
+ Depends on: S2 (stu-c1) and the stu-c3 `StudentBooking` projection and
+ `GET /bookings/{id}` used by the response and its `Location`. Requirements:
+@@ -119,10 +133,11 @@ Change records: [changes/stu-c3-my-bookings.md](changes/stu-c3-my-bookings.md),
+ [changes/stu-c4-cancel-booking.md](changes/stu-c4-cancel-booking.md). Backend
+ only for now; React pages wait for the frontend scaffold.
+ 
+-- [ ] Tests: S-LIST-1, S-CANC-1 to S-CANC-3 (race with tutor completion), fixed-clock
+-  `cancellable`, `GET /bookings/{id}` wrong-owner 404; React tabs, filters,
+-  confirmation, keyboard flow.
+-- [ ] Implement list, detail, and cancel endpoints and the My bookings page.
++- [x] Backend list/detail already implemented; cancellation tests S-CANC-1 to S-CANC-3
++  include the tutor-completion race, boundary clock, ownership, input/security and
++  committed-response failure cases (11 focused C4 tests passing).
++- [x] Implement list, detail, and cancel endpoints; cancellation uses unchanged core lifecycle.
++- [ ] My bookings React page, tabs, filters, confirmation and keyboard flow.
+ 
+ Depends on (analyst-2 F2-01): stu-c3 (list/detail) depends only on stu-c1 and runs
+ before stu-c2; stu-c4 (cancel, via the existing `cancelActiveBooking`) depends on
+@@ -193,7 +208,7 @@ npm run test -- --run
+ npm run build
+ ```
+ 
+-None of these exist or have been run yet. Record actual command, revision, exit
++Backend Gradle commands exist; frontend work is pending. This spec session ran no tests. Record actual command, revision, exit
+ code, and relevant output in each task's handoff record.
+ 
+ Analyst-2 correction (F2-01): the backend scaffold now exists, and the command above
+@@ -210,3 +225,15 @@ after `docker compose -f compose.test.yaml up -d --wait`):
+ 
+ Focused runs may add `--tests` filters to both tasks; the final check runs the full
+ command so existing Tutor and core suites stay green.
++
++## 4. Current booking increment (22 October 2026)
++
++Direct source: Phuc's request "Update the spec and intergrate with new auth,
++implement student booking". Backend only: C5 auth composition -> C2 creation -> C4
++cancellation. Tests may be authored as one combined executable packet before
++implementation, with per-change acceptance mappings/handoffs. Existing C2 tests
++must be refreshed against current hashes and preserved, not duplicated or weakened.
++Use the existing c1/c3 code; do not reimplement browsing/list/detail. Frontend and
++AI remain pending, not silently removed. Real runtime tests use db/migration V1-V4;
++isolated fake actors continue as focused seam tests only. Full regression includes
++Auth, Admin, Tutor, Student and core tests plus bootJar.
+diff --git a/workflow/student/TECHNICAL-SPEC.md b/workflow/student/TECHNICAL-SPEC.md
+index db099e0..d604fd8 100644
+--- a/workflow/student/TECHNICAL-SPEC.md
++++ b/workflow/student/TECHNICAL-SPEC.md
+@@ -15,12 +15,12 @@ allocation. Follow shared auth/session, database, lock-order, error, and API
+ conventions. Student code does not invent its own users table, session format,
+ booking statuses, SoC credentials, or quota counters.
+ 
+-| Dependency | Owner | Student needs | State on `branch_student` (base `98ca801`) |
++| Dependency | Owner | Student needs | Observed state at `a9dd650` / required increment |
+ | --- | --- | --- | --- |
+ | Backend scaffold, CI | Huanghao (as built) | Gradle, Boot 4.0.8 MVC/Security, `postgresTest` task | Exists; CI runs `test postgresTest bootJar` on PRs to `main` |
+ | `platform/core` lifecycle and repositories | Huanghao | `bookAvailableSlot`, `cancelActiveBooking`, `UserRepository` | Exists; no change needed |
+-| `platform/auth` actor seam | Kok Seng implements; Student defines the interface | `CurrentActorProvider` (section 2) | Missing; Student adds the interface only |
+-| `platform/web` | Assigned per task | `ApiErrors`, `ApiFailure`, `ApiSecurityConfiguration` | Exists; Student adds a `student-api` route rule |
++| `platform/auth` actor seam | Kok Seng implements; Student defines the interface | `CurrentActorProvider` (section 2) | Interface exists; C5 adds a trusted SessionPrincipal runtime adapter |
++| `platform/web` | Assigned per task | `ApiErrors`, `ApiFailure`, `ApiSecurityConfiguration` | Student route rule exists; shared auth filter remains authoritative |
+ | Shared React shell and API client | Not yet assigned | Frontend pages | Out of scope for the booking backend changes |
+ 
+ Decision (Phuc, 22 October 2026, current-session request): Student reads core tables
+@@ -35,13 +35,13 @@ implementer may rename them only together with this spec and the tests.
+ 
+ | Location | Component | Responsibility |
+ | --- | --- | --- |
+-| `platform/auth` | `CurrentActorProvider` | `Optional<UUID> currentActorId()`; the session-authenticated actor. Interface only |
++| `platform/auth` | `CurrentActorProvider` | `Optional<UUID> currentActorId()`; existing seam, runtime adapter accepts only authenticated `SessionPrincipal` |
+ | `student/` | `StudentAccess` | Resolve actor via provider, re-read stored account, enforce active STUDENT (section 3.2) |
+ | `student/` | `StudentReadRepository`, `PostgresStudentReadRepository` | Read-only parameterized SQL joins (section 4) |
+ | `student/` | `StudentReadService` | Filters, ordering, `cancellable`, ownership-scoped detail |
+ | `student/` | Records `ModuleOption`, `BookableSlot`, `StudentBooking` | Exact JSON shapes (section 3) |
+-| `student/http/` | `StudentController`, `StudentApiInput`, `StudentHttpService`, `StudentExceptionHandler`, `StudentApiConfiguration` | Routes, strict input parsing, lifecycle calls and error mapping, `@Profile("student-api")` wiring |
+-| `platform/web` | `ApiSecurityConfiguration` | When profile `student-api` is active, `/api/student/**` requires authentication; everything else unchanged |
++| `student/http/` | `StudentController`, `StudentApiInput`, `StudentHttpService`, `StudentExceptionHandler`, `StudentApiConfiguration` | Routes, strict input parsing, lifecycle calls and error mapping, `@Profile("student-api")` wiring; reads exist, mutations are this increment |
++| `platform/web` | `ApiSecurityConfiguration` | Existing `student-api` authenticated route rule; composed auth filter checks current session state first |
+ 
+ Decision (Phuc, 22 October 2026, current-session request): the actor interface lives
+ in `unichope.platform.auth` so the auth owner implements it once for every role.
+@@ -53,11 +53,21 @@ imports only `platform/*`; platform never imports `student/`. The actor is the
+ request-scoped authenticated ID, re-read for current role and active state on every
+ request; IDs in bodies, queries or headers never select the actor.
+ 
+-Activation follows `tutor-api`: default startup exposes no Student route. With
+-`student-api` active, missing provider, read repository, lifecycle, `Clock` or
+-`DataSource` beans fail startup; there is no anonymous or main-source test actor.
+-Production activation waits for the auth owner's real provider and the production
+-migration, as for Tutor.
++Current baseline at `a9dd650`: c1 browsing and c3 owned booking list/detail exist;
++creation/cancellation handlers and the Student runtime adapter are absent. Runtime
++Flyway V1-V4 and the Auth/Tutor/Admin `app-api` composition already exist.
++
++Authorized increment (Phuc, 22 October 2026; direct request "Update the spec and
++intergrate with new auth, implement student booking"): include `student-api` in
++`app-api` and supply `platform.auth.CurrentActorProvider` in runtime configuration.
++The adapter reads only an authenticated `SessionPrincipal` and returns its user ID;
++it never accepts UUID/string principals or request headers. Shared auth validates
++generation and stored state first; StudentAccess still checks current STUDENT status.
++Preserve Tutor's separate actor provider and all Auth/Admin contracts. Default
++startup remains closed/database-free. Isolated `student-api` with missing actor,
++read repository, lifecycle (once mutations are wired), Clock or DataSource fails
++startup; never add an anonymous fallback. Shared-owner review is a merge gate,
++not a blocker for the authorized implementation or test writing.
+ 
+ ## 3. Student API
+ 
+@@ -140,12 +150,18 @@ account is somehow still valid, return 403 `FORBIDDEN` without invalidating the
+ session (the generic lifecycle result alone never invalidates, per Integration §2).
+ This matches Tutor (`TutorHttpService.mutate`).
+ 
+-Evaluation order (clarification, analyst-2 finding F2-06; matches `TutorController`):
+-filter-chain denials come first (no authenticated principal 401, missing/invalid CSRF
+-403); then request syntax (query parameters, path ID, content type, body size and
+-body shape: 400/413/415); then the actor check above; only then any resource read or
+-lifecycle call. A syntax error therefore returns 400/413/415 even for a principal
+-that would fail the actor check, and causes no read, write or session invalidation.
++Evaluation order: shared security filters precede controller syntax and actor
++checks. With `auth-api`, `CurrentAccountFilter` runs immediately after loading the
++security context: a non-SessionPrincipal, absent account or stale generation returns
++401 and invalidates the session; inactive returns 403 ACCOUNT_INACTIVE and
++invalidates it; account-storage failure returns sanitized 503. These can win even
++when syntax or CSRF is invalid. Later CSRF/authorization denials use the existing
++filter order (an unsafe anonymous request without CSRF can be 403 CSRF_INVALID;
++an anonymous GET or POST with valid anonymous CSRF is 401). Do not change shared
++filters to force controller precedence. Once filters admit the request, validate
++query/path/content-type/size/JSON before StudentAccess, then resource/lifecycle work.
++Thus syntax still precedes StudentAccess wrong-role checks, but never the shared
++current-account filter. Isolated UUID-principal tests remain seam tests only.
+ 
+ ### 3.3 Error mapping
+ 
+@@ -187,7 +203,8 @@ committed and a later GET shows it. Do not describe this as a rollback.
+ ## 4. Persistence and Concurrency
+ 
+ Student adds no migration and no table. It reads `users`, `modules`, `tutor_modules`,
+-`slots`, and `bookings` from the core review DDL (`db/core-review/V1`).
++`slots`, and `bookings` from runtime `db/migration` V1-V4. Isolated seam tests may still use
++`db/core-review/V1`; real-auth integration must use runtime migrations.
+ 
+ `PostgresStudentReadRepository` uses parameterized `JdbcClient` SQL only, no locks:
+ 
+@@ -293,7 +310,13 @@ their prompts, context selection, and output validation; `platform/ai` owns
+ everything provider-facing and quota-related. Agree this contract with Huanghao
+ (Tutor) and Kok Seng (Admin) before they integrate.
+ 
+-### Gateway contract
++### Gateway contract (future proposal; compatibility decision required)
++
++Existing `platform.ai.AiGateway` uses nested Request/Result and typed Failure;
++Tutor/Admin already consume it. The proposed API below must be reconciled or
++migrated with those owners before AI implementation. Existing Admin configuration
++uses `unichope.ai.mode=unavailable|fake|shared`; it does not establish durable shared
++quotas. This booking increment does not change the gateway or AI behavior.
+ 
+ ```java
+ public interface AiGateway {
+@@ -399,3 +422,24 @@ PostgreSQL-backed tests follow the existing `postgresTest` convention (tag
+ start the disposable database in `src/backend/compose.test.yaml`; CI uses its own
+ PostgreSQL 17 service. Do not substitute H2/SQLite. A real-provider evaluation with synthetic questions (normal, vague,
+ injection, "answer my exam") is separate and later. No tests have been run.
++
++## 9. Auth-to-Student runtime acceptance (stu-c5)
++
++All C5 scenarios use actual AuthController/AuthenticationService/CurrentAccountFilter,
++SessionPrincipal, runtime Flyway migrations and PostgreSQL, through app-api. UUID
++principal injection and isolated review DDL cannot satisfy these criteria.
++
++| ID | Given / When / Then |
++| --- | --- |
++| C5-RUN-1 | Given default startup / when Student is requested / then no Student route is exposed and access is closed. Given app-api and valid PostgreSQL config / when started / then auth-api, tutor-api, admin-api and student-api are active, Student modules/slots/list/detail use the same runtime; missing Student actor or required dependencies in isolated student-api fails startup. |
++| C5-AUTH-1 | Given registration and real login for active S1 / when fresh login CSRF is fetched and S1 browses, books, lists, reads detail and cancels / then existing exact DTOs, ownership and C2/C4 transitions apply. Login rotates session; the pre-login CSRF token fails mutation and the fresh token succeeds. Book/cancel tests can be written before those handlers exist and fail behaviorally until C2/C4 implementation. |
++| C5-AUTH-2 | Given anonymous, missing-account, stale-generation, inactive, wrong-role or non-SessionPrincipal authentication / when Student is requested / then section 3.2 denials apply with no lifecycle call or resource disclosure. Stored TUTOR/ADMIN cannot become Student via cached authorities or header/body identity. Test stale/inactive with malformed syntax too: shared filter wins. Test valid wrong-role session with malformed syntax: controller syntax wins once filters admit it. |
++| C5-REV-1 | Given two real sessions for S1 / when Admin deactivates S1 / then first use of an old session while inactive gives 403 ACCOUNT_INACTIVE and invalidates it, subsequent use is 401. Reactivate S1 before using the second session: its old generation still gives 401 and invalidates it. Only new login restores Student access. Missing account also gives 401 and invalidation. |
++| C5-CSRF-1 | Given authenticated S1 / when logout uses fresh CSRF / then 204, invalid session/cookie and old token cannot mutate. Fetch fresh anonymous CSRF; repeat logout is 204; new login requires fresh post-login CSRF. Missing/invalid CSRF cannot book or cancel. |
++| C5-STATE-1 | Given S1 creates a booking then logs out and S2 logs in / when listing/detail/cancel are requested with S1's ID / then S2's list excludes it and detail/cancel are indistinguishable 404; actor headers never switch account. Backend retains no previous actor or cached booking state; future UI must separately verify section 7 clearing and late-response rules. |
++| C5-REG-1 | Given existing Tutor/Admin authenticated journeys / when Student runtime wiring is enabled / then existing role access, CSRF, revocation and lifecycle suites retain their contracts; do not migrate Tutor's actor seam in this increment. |
++
++Verification prerequisite: disposable real PostgreSQL 17 with CREATE SCHEMA permission,
++Java 25 and Gradle wrapper. Run focused unit and postgresTest suites, then full
++`test postgresTest bootJar`. Use unique schemas and synthetic credentials only.
++No runtime success is claimed by this specification.
+diff --git a/src/backend/src/main/java/unichope/student/http/StudentHttpService.java b/src/backend/src/main/java/unichope/student/http/StudentHttpService.java
+new file mode 100644
+index 0000000..fd90caf
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/http/StudentHttpService.java
+@@ -0,0 +1,80 @@
++package unichope.student.http;
++
++import java.util.UUID;
++import java.util.function.Supplier;
++import org.springframework.dao.DataIntegrityViolationException;
++import unichope.platform.core.ConsultationLifecycle;
++import unichope.platform.core.LifecycleFailure;
++import unichope.platform.core.model.consultation.Booking;
++import unichope.platform.web.ApiFailure;
++import unichope.student.StudentAccess;
++import unichope.student.StudentAccessDeniedException;
++import unichope.student.StudentBooking;
++import unichope.student.StudentReadService;
++
++/** Student mutations use the shared atomic lifecycle, followed by an owned read projection. */
++public final class StudentHttpService {
++    private final StudentAccess access;
++    private final ConsultationLifecycle lifecycle;
++    private final StudentReadService reads;
++
++    public StudentHttpService(StudentAccess access, ConsultationLifecycle lifecycle, StudentReadService reads) {
++        this.access = access;
++        this.lifecycle = lifecycle;
++        this.reads = reads;
++    }
++
++    public StudentBooking book(UUID slotId) {
++        UUID actor = access.requireActiveStudent();
++        Booking booking = mutate(() -> lifecycle.bookAvailableSlot(actor, slotId), true);
++        return project(booking);
++    }
++
++    public StudentBooking cancel(UUID bookingId) {
++        UUID actor = access.requireActiveStudent();
++        Booking booking = mutate(() -> lifecycle.cancelActiveBooking(actor, bookingId), false);
++        return project(booking);
++    }
++
++    private Booking mutate(Supplier<Booking> operation, boolean booking) {
++        try {
++            return operation.get();
++        } catch (LifecycleFailure failure) {
++            if (failure.code() == LifecycleFailure.Code.ACCESS_DENIED) {
++                access.requireActiveStudent();
++                throw new StudentAccessDeniedException(StudentAccessDeniedException.Reason.FORBIDDEN);
++            }
++            throw switch (failure.code()) {
++                case INVALID_INPUT -> new ApiFailure(400, "VALIDATION_FAILED", "Request validation failed");
++                case TEMPORARILY_UNAVAILABLE -> new ApiFailure(503, "TEMPORARILY_UNAVAILABLE", "The consultation operation is temporarily unavailable");
++                case NOT_FOUND -> booking ? unavailable() : new ApiFailure(404, "NOT_FOUND", "Resource not found");
++                case INVALID_STATE -> booking ? unavailable() : new ApiFailure(409, "INVALID_STATE", "The consultation transition is no longer available");
++                case MODULE_UNAVAILABLE -> booking ? unavailable() : internal();
++                case BOOKING_OVERLAP -> booking
++                        ? new ApiFailure(409, "BOOKING_OVERLAP", "This slot overlaps one of your active bookings.") : internal();
++                default -> internal();
++            };
++        } catch (DataIntegrityViolationException failure) {
++            if (booking) {
++                for (Throwable cause = failure; cause != null; cause = cause.getCause()) {
++                    if (cause.getMessage() != null && cause.getMessage().contains("bookings_one_active_per_slot"))
++                        throw unavailable();
++                }
++            }
++            throw failure;
++        }
++    }
++
++    private StudentBooking project(Booking booking) {
++        // The lifecycle has committed; a failed response read must never retry the mutation.
++        return reads.myBooking(booking.id()).orElseThrow(IllegalStateException::new);
++    }
++
++    private static ApiFailure unavailable() {
++        return new ApiFailure(409, "SLOT_UNAVAILABLE", "This slot is no longer available. Refresh the list and choose another.");
++    }
++
++    private static ApiFailure internal() {
++        return new ApiFailure(500, "INTERNAL_ERROR", "The request could not be completed");
++    }
++}
+diff --git a/src/backend/src/test/java/unichope/platform/core/postgres/StudentCancelBookingPgTest.java b/src/backend/src/test/java/unichope/platform/core/postgres/StudentCancelBookingPgTest.java
+new file mode 100644
+index 0000000..99a373d
+--- /dev/null
++++ b/src/backend/src/test/java/unichope/platform/core/postgres/StudentCancelBookingPgTest.java
+@@ -0,0 +1,283 @@
++package unichope.platform.core.postgres;
++
++import static org.junit.jupiter.api.Assertions.*;
++import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
++import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
++import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
++
++import java.sql.Connection;
++import java.sql.SQLException;
++import java.time.Instant;
++import java.util.List;
++import java.util.Set;
++import java.util.UUID;
++import java.util.concurrent.atomic.AtomicInteger;
++import javax.sql.DataSource;
++import org.junit.jupiter.api.*;
++import org.springframework.jdbc.datasource.DelegatingDataSource;
++import org.springframework.mock.web.*;
++import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
++import org.springframework.security.core.authority.SimpleGrantedAuthority;
++import org.springframework.security.core.context.SecurityContextHolder;
++import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
++import org.springframework.test.web.servlet.*;
++import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
++import org.springframework.test.web.servlet.setup.MockMvcBuilders;
++import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
++import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
++import tools.jackson.databind.JsonNode;
++import tools.jackson.databind.json.JsonMapper;
++import unichope.platform.core.*;
++import unichope.platform.core.model.consultation.*;
++import unichope.platform.web.ApiSecurityConfiguration;
++import unichope.student.StudentTestActors;
++
++/** C4 seam tests: simulated UUID authentication, real PostgreSQL lifecycle and row-lock races.
++ * Actual shared SessionPrincipal authentication is separately covered by StudentAuthIntegrationPgTest. */
++@Tag("postgres")
++class StudentCancelBookingPgTest extends LifecyclePgFixture {
++    private static final String ROOT = "/api/student/bookings";
++    private static final Set<String> FIELDS = Set.of("id", "slotId", "moduleId", "moduleCode", "moduleName",
++            "tutorName", "startTime", "endTime", "status", "cancellable");
++    AnnotationConfigWebApplicationContext context;
++    MockMvc mvc;
++    ScriptedLifecycle writes;
++    FailingReads reads;
++
++    @BeforeEach void web() {
++        writes = new ScriptedLifecycle(lifecycle);
++        reads = new FailingReads(source);
++        context = new AnnotationConfigWebApplicationContext();
++        context.setServletContext(new MockServletContext());
++        context.getEnvironment().setActiveProfiles("student-api");
++        context.addBeanFactoryPostProcessor(factory -> {
++            factory.registerSingleton("dataSource", reads);
++            factory.registerSingleton("clock", clock);
++            factory.registerSingleton("consultationLifecycle", writes);
++            StudentTestActors.registerSessionProvider(factory);
++        });
++        context.register(DelegatingWebMvcConfiguration.class, ApiSecurityConfiguration.class);
++        context.scan("unichope.student");
++        context.refresh();
++        mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
++    }
++
++    @AfterEach void closeWeb() { if (context != null) context.close(); SecurityContextHolder.clearContext(); }
++
++    @Test void sCanc1CancelsAtomicallyReturnsExactProjectionReleasesSlotAndRepeatConflicts() throws Exception {
++        UUID slot = slot(T1, START, END, "BOOKED"), booking = booking(S1, slot, "ACTIVE");
++        JsonNode result = body(ok(cancel(booking), session(S1), 200));
++        assertEquals(FIELDS, Set.copyOf(result.propertyNames()));
++        assertEquals(booking.toString(), result.get("id").asString());
++        assertEquals(slot.toString(), result.get("slotId").asString());
++        assertEquals("CANCELLED", result.get("status").asString());
++        assertFalse(result.get("cancellable").booleanValue());
++        assertEquals("CANCELLED", bookingStatus(booking));
++        assertEquals("AVAILABLE", slotStatus(slot));
++        assertEquals(result, body(ok(get(ROOT + "/" + booking), session(S1), 200)));
++        assertEquals(slot.toString(), body(ok(get("/api/student/slots"), session(S1), 200)).get(0).get("id").asString());
++        String before = snapshot();
++        error(perform(cancel(booking), session(S1)), 409, "INVALID_STATE");
++        assertEquals(before, snapshot());
++        assertEquals(2, writes.calls.get());
++    }
++
++    @Test void sCanc2ForeignMissingStartedHistoryAndUnbookedSlotNeverChangeRows() throws Exception {
++        UUID foreign = booking(S2, slot(T1, START, END, "BOOKED"), "ACTIVE");
++        String before = snapshot();
++        JsonNode missing = error(perform(cancel(UUID.randomUUID()), session(S1)), 404, "NOT_FOUND");
++        JsonNode hidden = error(perform(cancel(foreign), session(S1)), 404, "NOT_FOUND");
++        assertEquals(missing.get("message"), hidden.get("message"));
++        assertFalse(hidden.toString().contains(foreign.toString()));
++        assertEquals(before, snapshot());
++        for (String status : List.of("CANCELLED", "COMPLETED", "ACTIVE")) {
++            String slotState = status.equals("ACTIVE") ? "AVAILABLE" : status.equals("COMPLETED") ? "COMPLETED" : "AVAILABLE";
++            UUID id = booking(S1, slot(T1, START, END, slotState), status);
++            before = snapshot();
++            error(perform(cancel(id), session(S1)), 409, "INVALID_STATE");
++            assertEquals(before, snapshot());
++        }
++        for (Instant start : List.of(N, N.minusSeconds(1))) {
++            UUID id = booking(S1, slot(T1, start, END, "BOOKED"), "ACTIVE");
++            before = snapshot();
++            error(perform(cancel(id), session(S1)), 409, "INVALID_STATE");
++            assertEquals(before, snapshot());
++        }
++    }
++
++    @Test void c4Bnd1OneSecondBeforeStartIsAllowedExactStartIsConflict() throws Exception {
++        UUID a = booking(S1, slot(T1, START, END, "BOOKED"), "ACTIVE");
++        clock.now.set(START.minusSeconds(1));
++        ok(cancel(a), session(S1), 200);
++        UUID b = booking(S1, slot(T2, START, END, "BOOKED"), "ACTIVE");
++        clock.now.set(START);
++        String before = snapshot();
++        error(perform(cancel(b), session(S1)), 409, "INVALID_STATE");
++        assertEquals(before, snapshot());
++    }
++
++    @Test void c4Elig1CancellationIgnoresTutorModuleAndAssignmentIneligibility() throws Exception {
++        for (String cause : List.of("tutor", "module", "assignment")) {
++            UUID slot = slot(T1, START, END, "BOOKED"), id = booking(S1, slot, "ACTIVE");
++            if (cause.equals("tutor")) db.sql("UPDATE users SET active=false WHERE id=:id").param("id", T1).update();
++            if (cause.equals("module")) db.sql("UPDATE modules SET active=false WHERE id=:id").param("id", M).update();
++            if (cause.equals("assignment")) db.sql("DELETE FROM tutor_modules WHERE tutor_id=:t AND module_id=:m").param("t", T1).param("m", M).update();
++            ok(cancel(id), session(S1), 200);
++            assertEquals("AVAILABLE", slotStatus(slot));
++            assertEquals(0, body(ok(get("/api/student/slots"), session(S1), 200)).size());
++            clearConsultations();
++            db.sql("UPDATE users SET active=true WHERE id=:id").param("id", T1).update();
++            db.sql("UPDATE modules SET active=true WHERE id=:id").param("id", M).update();
++        }
++    }
++
++    @Test void sCanc3CompletionAndHttpCancellationRaceKeepConsistentStates() throws Exception {
++        requireWorkingCancellation();
++        UUID slot = slot(T1, START, END, "BOOKED"), id = booking(S1, slot, "ACTIVE");
++        var outcomes = race(T1, () -> lifecycle.completeActiveBooking(T1, id), () -> perform(cancel(id), session(S1)));
++        MvcResult student = (MvcResult) outcomes.get(1);
++        if (student.getResponse().getStatus() == 200) {
++            assertInstanceOf(LifecycleFailure.class, outcomes.get(0));
++            assertEquals(LifecycleFailure.Code.INVALID_STATE, ((LifecycleFailure) outcomes.get(0)).code());
++            assertEquals("CANCELLED", bookingStatus(id)); assertEquals("AVAILABLE", slotStatus(slot));
++        } else {
++            error(student, 409, "INVALID_STATE"); assertInstanceOf(Booking.class, outcomes.get(0));
++            assertEquals("COMPLETED", bookingStatus(id)); assertEquals("COMPLETED", slotStatus(slot));
++        }
++        assertEquals(1, count("bookings"));
++    }
++
++    @Test void sCanc3DoubleHttpCancelHasOneSuccessAndOneConflict() throws Exception {
++        requireWorkingCancellation();
++        UUID slot = slot(T1, START, END, "BOOKED"), id = booking(S1, slot, "ACTIVE");
++        var outcomes = race(T1, () -> perform(cancel(id), session(S1)), () -> perform(cancel(id), session(S1)));
++        assertEquals(List.of(200, 409), outcomes.stream().map(MvcResult.class::cast).map(r -> r.getResponse().getStatus()).sorted().toList());
++        for (Object outcome : outcomes) if (((MvcResult) outcome).getResponse().getStatus() == 409) error((MvcResult) outcome, 409, "INVALID_STATE");
++        assertEquals("CANCELLED", bookingStatus(id)); assertEquals("AVAILABLE", slotStatus(slot));
++    }
++
++    @Test void c4In1ExactEmptyObjectCanonicalPathNoQueriesAndStreamedSize() throws Exception {
++        UUID id = booking(S1, slot(T1, START, END, "BOOKED"), "ACTIVE");
++        String before = snapshot();
++        for (String bad : List.of("", " ", "null", "[]", "42", "\"x\"", "{", "{\"reason\":\"x\"}",
++                "{\"studentId\":\"" + S2 + "\"}", "{\"x\":1,\"x\":2}", "{} {}", "{}x"))
++            error(perform(cancelAt(id.toString(), bad), session(S1)), 400, "VALIDATION_FAILED");
++        for (String bad : List.of("not-a-uuid", "1-1-1-1-1", id.toString().replace("-", "")))
++            error(perform(cancelAt(bad, "{}"), session(S1)), 400, "VALIDATION_FAILED");
++        for (String query : List.of("x=1", "studentId=" + S2, "flag"))
++            error(perform(cancel(id).queryParam(query.contains("=") ? query.split("=")[0] : query, "x"), session(S1)), 400, "VALIDATION_FAILED");
++        error(perform(post(ROOT + "/" + id + "/cancel").content("{}").with(csrf().asHeader()), session(S1)), 415, "UNSUPPORTED_MEDIA_TYPE");
++        error(perform(cancel(id).contentType("text/plain"), session(S1)), 415, "UNSUPPORTED_MEDIA_TYPE");
++        error(perform(cancel(id).content("{}" + " ".repeat(65535)).header("Content-Length", "2"), session(S1)), 413, "PAYLOAD_TOO_LARGE");
++        assertEquals(before, snapshot()); assertEquals(0, writes.calls.get());
++        // Isolated syntax precedes StudentAccess, while shared-auth filter ordering has its own C5 tests.
++        MockHttpSession deleted = session(id(999));
++        error(perform(cancelAt("not-a-uuid", "{}"), deleted), 400, "VALIDATION_FAILED"); assertFalse(deleted.isInvalid());
++        error(perform(cancelAt(id.toString(), "[]"), session(T1)), 400, "VALIDATION_FAILED");
++        ok(cancel(id).content("{}" + " ".repeat(65534)), session(S1), 200);
++    }
++
++    @Test void c4Acc1CsrfAndStoredActorMatrixRejectWithoutLifecycleCalls() throws Exception {
++        UUID id = booking(S1, slot(T1, START, END, "BOOKED"), "ACTIVE");
++        String before = snapshot();
++        error(perform(post(ROOT + "/" + id + "/cancel").contentType("application/json").content("{}"), session(S1)), 403, "CSRF_INVALID");
++        error(perform(post(ROOT + "/" + id + "/cancel").contentType("application/json").content("{}").with(csrf().asHeader().useInvalidToken()), session(S1)), 403, "CSRF_INVALID");
++        error(perform(cancel(id), null), 401, "UNAUTHENTICATED");
++        error(perform(cancel(id), session("untrusted")), 401, "UNAUTHENTICATED");
++        for (UUID actor : List.of(T1, ADMIN)) { MockHttpSession s = session(actor); error(perform(cancel(id), s), 403, "FORBIDDEN"); assertFalse(s.isInvalid()); }
++        MockHttpSession deleted = session(id(999)); error(perform(cancel(id), deleted), 401, "UNAUTHENTICATED"); assertTrue(deleted.isInvalid());
++        db.sql("UPDATE users SET active=false WHERE id=:id").param("id", S2).update();
++        MockHttpSession inactive = session(S2); error(perform(cancel(id), inactive), 403, "ACCOUNT_INACTIVE"); assertTrue(inactive.isInvalid());
++        assertEquals(before, snapshot()); assertEquals(0, writes.calls.get());
++        ok(cancel(id).header("X-Actor-Id", S2.toString()), session(S1), 200);
++    }
++
++    @Test void c4Err1SafeLifecycleMappingsAndNoMutation() throws Exception {
++        UUID id = booking(S1, slot(T1, START, END, "BOOKED"), "ACTIVE");
++        record Case(RuntimeException failure, int status, String code) {}
++        List<Case> cases = List.of(
++                new Case(new LifecycleFailure(LifecycleFailure.Code.INVALID_INPUT), 400, "VALIDATION_FAILED"),
++                new Case(new LifecycleFailure(LifecycleFailure.Code.TEMPORARILY_UNAVAILABLE), 503, "TEMPORARILY_UNAVAILABLE"),
++                new Case(new LifecycleFailure(LifecycleFailure.Code.NOT_FOUND), 404, "NOT_FOUND"),
++                new Case(new LifecycleFailure(LifecycleFailure.Code.INVALID_STATE), 409, "INVALID_STATE"),
++                new Case(new LifecycleFailure(LifecycleFailure.Code.BOOKING_OVERLAP), 500, "INTERNAL_ERROR"),
++                new Case(new LifecycleFailure(LifecycleFailure.Code.MODULE_UNAVAILABLE), 500, "INTERNAL_ERROR"),
++                new Case(new IllegalStateException("SELECT private-marker " + id), 500, "INTERNAL_ERROR"));
++        String before = snapshot();
++        for (Case c : cases) { writes.failure = c.failure(); error(perform(cancel(id), session(S1)), c.status(), c.code()); assertEquals(before, snapshot()); }
++        assertEquals(cases.size(), writes.calls.get());
++    }
++
++    @Test void c4Err1AccessDeniedRechecksInactiveDeletedChangedRoleAndStillValidActor() throws Exception {
++        UUID id = booking(S1, slot(T1, START, END, "BOOKED"), "ACTIVE");
++        String before = snapshot(); writes.failure = new LifecycleFailure(LifecycleFailure.Code.ACCESS_DENIED);
++        MockHttpSession valid = session(S1); error(perform(cancel(id), valid), 403, "FORBIDDEN"); assertFalse(valid.isInvalid());
++        ok(get(ROOT), valid, 200);
++        writes.before = () -> db.sql("UPDATE users SET active=false WHERE id=:id").param("id", S1).update();
++        MockHttpSession inactive = session(S1); error(perform(cancel(id), inactive), 403, "ACCOUNT_INACTIVE"); assertTrue(inactive.isInvalid());
++        error(perform(cancel(id), inactive), 401, "UNAUTHENTICATED");
++        writes.before = () -> db.sql("UPDATE users SET role='TUTOR' WHERE id=:id").param("id", S2).update();
++        MockHttpSession changed = session(S2); error(perform(cancel(id), changed), 403, "FORBIDDEN"); assertFalse(changed.isInvalid());
++        UUID other = id(998);
++        db.sql("INSERT INTO users VALUES (:id,'Synthetic','other@example.edu','STUDENT',true)").param("id", other).update();
++        writes.before = () -> db.sql("DELETE FROM users WHERE id=:id").param("id", other).update();
++        MockHttpSession deleted = session(other); error(perform(cancel(id), deleted), 401, "UNAUTHENTICATED"); assertTrue(deleted.isInvalid());
++        assertEquals(before, snapshot()); assertEquals(4, writes.calls.get());
++    }
++
++    @Test void c4Err1ProjectionFailureAfterCommitKeepsCancellationAndDoesNotRetry() throws Exception {
++        UUID slot = slot(T1, START, END, "BOOKED"), id = booking(S1, slot, "ACTIVE");
++        writes.after = () -> reads.fail = true;
++        MvcResult result = perform(cancel(id), session(S1)); reads.fail = false;
++        error(result, 500, "INTERNAL_ERROR");
++        assertEquals(1, writes.calls.get()); assertEquals(1, count("bookings"));
++        assertEquals("CANCELLED", bookingStatus(id)); assertEquals("AVAILABLE", slotStatus(slot));
++        assertEquals("CANCELLED", body(ok(get(ROOT + "/" + id), session(S1), 200)).get("status").asString());
++    }
++
++    private void requireWorkingCancellation() throws Exception {
++        UUID control = booking(S1, slot(T2, START, END, "BOOKED"), "ACTIVE");
++        ok(cancel(control), session(S1), 200);
++        clearConsultations();
++    }
++    private MockHttpServletRequestBuilder cancel(UUID id) { return cancelAt(id.toString(), "{}"); }
++    private MockHttpServletRequestBuilder cancelAt(String id, String body) { return post(ROOT + "/" + id + "/cancel").contentType("application/json").content(body).with(csrf().asHeader()); }
++    private MockHttpSession session(Object principal) {
++        var session = new MockHttpSession(); var security = SecurityContextHolder.createEmptyContext();
++        security.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(principal, "synthetic", List.of(new SimpleGrantedAuthority("ROLE_STUDENT"))));
++        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, security); return session;
++    }
++    private MvcResult perform(MockHttpServletRequestBuilder request, MockHttpSession session) throws Exception {
++        if (session != null) request.session(session); return mvc.perform(request.accept("application/json")).andReturn();
++    }
++    private MvcResult ok(MockHttpServletRequestBuilder request, MockHttpSession session, int status) throws Exception {
++        MvcResult r = perform(request, session); assertEquals(status, r.getResponse().getStatus(), r.getResponse().getContentAsString());
++        assertEquals("no-store", r.getResponse().getHeader("Cache-Control")); return r;
++    }
++    private JsonNode body(MvcResult result) throws Exception { return JsonMapper.shared().readTree(result.getResponse().getContentAsString()); }
++    private JsonNode error(MvcResult result, int status, String code) throws Exception {
++        assertEquals(status, result.getResponse().getStatus(), result.getResponse().getContentAsString());
++        assertEquals("no-store", result.getResponse().getHeader("Cache-Control"));
++        assertTrue(result.getResponse().getContentType().startsWith("application/json"));
++        JsonNode b = body(result); assertEquals(Set.of("code", "message", "requestId"), Set.copyOf(b.propertyNames()));
++        assertEquals(code, b.get("code").asString()); UUID.fromString(b.get("requestId").asString());
++        assertFalse(b.toString().contains("SELECT") || b.toString().contains("private-marker") || b.toString().contains("@")); return b;
++    }
++    private static final class FailingReads extends DelegatingDataSource {
++        volatile boolean fail; FailingReads(DataSource source) { super(source); }
++        private void check() throws SQLException { if (fail) throw new SQLException("SELECT private-marker projection unavailable"); }
++        @Override public Connection getConnection() throws SQLException { check(); return super.getConnection(); }
++        @Override public Connection getConnection(String u, String p) throws SQLException { check(); return super.getConnection(u, p); }
++    }
++    private static final class ScriptedLifecycle implements ConsultationLifecycle {
++        final ConsultationLifecycle delegate; final AtomicInteger calls = new AtomicInteger();
++        volatile RuntimeException failure; volatile Runnable before = () -> {}; volatile Runnable after = () -> {};
++        ScriptedLifecycle(ConsultationLifecycle delegate) { this.delegate = delegate; }
++        @Override public Booking cancelActiveBooking(UUID actor, UUID id) { calls.incrementAndGet(); if (failure != null) { before.run(); throw failure; } Booking b = delegate.cancelActiveBooking(actor, id); after.run(); return b; }
++        @Override public Booking bookAvailableSlot(UUID a, UUID s) { return delegate.bookAvailableSlot(a,s); }
++        @Override public Booking completeActiveBooking(UUID a, UUID b) { return delegate.completeActiveBooking(a,b); }
++        @Override public ConsultationSlot createSlot(UUID a, UUID m, Instant s, Instant e) { return delegate.createSlot(a,m,s,e); }
++        @Override public ConsultationSlot cancelAvailableSlot(UUID a, UUID s) { return delegate.cancelAvailableSlot(a,s); }
++        @Override public LockedCompletedBooking lockForPrivateNote(UUID a, UUID b) { return delegate.lockForPrivateNote(a,b); }
++    }
++}
+diff --git a/src/backend/src/test/java/unichope/platform/runtime/StudentAuthIntegrationPgTest.java b/src/backend/src/test/java/unichope/platform/runtime/StudentAuthIntegrationPgTest.java
+new file mode 100644
+index 0000000..4cd79a0
+--- /dev/null
++++ b/src/backend/src/test/java/unichope/platform/runtime/StudentAuthIntegrationPgTest.java
+@@ -0,0 +1,235 @@
++package unichope.platform.runtime;
++
++import static org.junit.jupiter.api.Assertions.*;
++import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
++import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
++
++import java.sql.Connection;
++import java.time.Instant;
++import java.util.*;
++import org.junit.jupiter.api.*;
++import org.springframework.boot.WebApplicationType;
++import org.springframework.boot.builder.SpringApplicationBuilder;
++import org.springframework.context.ConfigurableApplicationContext;
++import org.springframework.jdbc.core.simple.JdbcClient;
++import org.springframework.jdbc.datasource.DriverManagerDataSource;
++import org.springframework.mock.web.MockHttpSession;
++import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
++import org.springframework.security.core.authority.SimpleGrantedAuthority;
++import org.springframework.security.core.context.SecurityContextHolder;
++import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
++import org.springframework.test.web.servlet.*;
++import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
++import org.springframework.test.web.servlet.setup.MockMvcBuilders;
++import org.springframework.web.context.WebApplicationContext;
++import tools.jackson.databind.JsonNode;
++import tools.jackson.databind.json.JsonMapper;
++import unichope.UnichopeApplication;
++import unichope.platform.auth.PasswordHasher;
++import unichope.platform.auth.SessionPrincipal;
++
++/** C5: actual app-api/local composition, Flyway runtime migrations, AuthController login,
++ * SessionPrincipal and server-issued CSRF. No Student actor or CSRF test double. */
++@Tag("postgres")
++class StudentAuthIntegrationPgTest {
++    static final String PASSWORD = "Synthetic-pass-2026";
++    static final String ROOT = "/api/student/bookings";
++    static final Set<String> BOOKING_FIELDS = Set.of("id", "slotId", "moduleId", "moduleCode", "moduleName",
++            "tutorName", "startTime", "endTime", "status", "cancellable");
++    ConfigurableApplicationContext context;
++    DriverManagerDataSource base;
++    JdbcClient db;
++    String schema;
++    MockMvc mvc;
++    UUID student, second, tutor, admin, module, slot;
++    record Browser(MockHttpSession session, String header, String token) {}
++
++    @BeforeEach void setup() throws Exception {
++        String url = System.getProperty("core.test.jdbcUrl"); assertNotNull(url, "Disposable PostgreSQL required");
++        String user = System.getProperty("core.test.user", ""), password = System.getProperty("core.test.password", "");
++        base = new DriverManagerDataSource(url, user, password);
++        schema = "student_auth_test_" + UUID.randomUUID().toString().replace("-", "");
++        try (Connection c = base.getConnection(); var statement = c.createStatement()) { statement.execute("CREATE SCHEMA " + schema); }
++        context = new SpringApplicationBuilder(UnichopeApplication.class).web(WebApplicationType.SERVLET)
++                .profiles("app-api", "local").properties(Map.of("server.port", "0", "server.address", "127.0.0.1",
++                        "unichope.jdbc.url", url + (url.contains("?") ? "&" : "?") + "currentSchema=" + schema,
++                        "unichope.jdbc.user", user, "unichope.jdbc.password", password, "unichope.ai.mode", "fake")).run();
++        mvc = MockMvcBuilders.webAppContextSetup((WebApplicationContext) context).apply(springSecurity()).build();
++        db = JdbcClient.create(context.getBean(javax.sql.DataSource.class));
++        String hash = context.getBean(PasswordHasher.class).hash(PASSWORD);
++        tutor = seed("tutor", "TUTOR", hash); admin = seed("admin", "ADMIN", hash);
++        register("student"); register("second");
++        student = accountId("student"); second = accountId("second");
++        module = UUID.randomUUID(); slot = UUID.randomUUID();
++        db.sql("INSERT INTO modules VALUES(:id,'CS3227','Software Design',true)").param("id", module).update();
++        db.sql("INSERT INTO tutor_modules VALUES(:t,:m)").param("t", tutor).param("m", module).update();
++        Instant start = Instant.now().plusSeconds(86400);
++        db.sql("INSERT INTO slots VALUES(:id,:t,:m,:s,:e,'AVAILABLE')").param("id", slot).param("t", tutor).param("m", module)
++                .param("s", start.atOffset(java.time.ZoneOffset.UTC)).param("e", start.plusSeconds(3600).atOffset(java.time.ZoneOffset.UTC)).update();
++    }
++
++    @AfterEach void cleanup() throws Exception {
++        SecurityContextHolder.clearContext();
++        if (context != null) context.close();
++        if (schema != null) try (Connection c = base.getConnection(); var statement = c.createStatement()) { statement.execute("DROP SCHEMA " + schema + " CASCADE"); }
++    }
++
++    @Test void c5Run1AppApiIncludesStudentWithRealRuntimeMigrationsAndSharedActor() throws Exception {
++        assertTrue(Arrays.asList(context.getEnvironment().getActiveProfiles()).containsAll(List.of("auth-api", "tutor-api", "admin-api", "student-api")));
++        assertEquals(4, db.sql("SELECT count(*) FROM flyway_schema_history WHERE success").query(Integer.class).single());
++        Browser b = login("student");
++        assertInstanceOf(SessionPrincipal.class, authentication(b.session()).getPrincipal());
++        JsonNode modules = body(ok(get("/api/student/modules"), b, 200));
++        assertEquals(Set.of("id", "code", "name"), Set.copyOf(modules.get(0).propertyNames()));
++        JsonNode slots = body(ok(get("/api/student/slots"), b, 200));
++        assertEquals(Set.of("id", "moduleId", "moduleCode", "moduleName", "tutorName", "startTime", "endTime"), Set.copyOf(slots.get(0).propertyNames()));
++        assertEquals(slot.toString(), slots.get(0).get("id").asString());
++        assertEquals(0, body(ok(get(ROOT), b, 200)).size());
++        error(request(get(ROOT + "/" + UUID.randomUUID()), b), 404, "NOT_FOUND");
++    }
++
++    @Test void c5Auth1RegistrationLoginRotationOldCsrfFailsFreshCsrfBooksReadsAndCancels() throws Exception {
++        Browser anonymous = token(null);
++        String beforeId = anonymous.session().getId();
++        Browser b = login("student", anonymous);
++        assertNotEquals(beforeId, b.session().getId());
++        assertInstanceOf(SessionPrincipal.class, authentication(b.session()).getPrincipal());
++        assertEquals(student, ((SessionPrincipal) authentication(b.session()).getPrincipal()).userId());
++        error(request(book().header(anonymous.header(), anonymous.token()), new Browser(b.session(), "unused", "unused")), 403, "CSRF_INVALID");
++        assertEquals(0, bookingCount());
++        MvcResult bookingResponse = ok(book(), b, 201);
++        JsonNode created = body(bookingResponse);
++        assertEquals(BOOKING_FIELDS, Set.copyOf(created.propertyNames()));
++        UUID id = UUID.fromString(created.get("id").asString());
++        assertEquals(ROOT + "/" + id, bookingResponse.getResponse().getHeader("Location"));
++        assertEquals("ACTIVE", created.get("status").asString()); assertTrue(created.get("cancellable").booleanValue());
++        assertEquals(student, db.sql("SELECT student_id FROM bookings WHERE id=:id").param("id", id).query(UUID.class).single());
++        assertEquals(created, body(ok(get(ROOT + "/" + id), b, 200)));
++        assertEquals(created, body(ok(get(ROOT), b, 200)).get(0));
++        JsonNode cancelled = body(ok(cancel(id), b, 200));
++        assertEquals(BOOKING_FIELDS, Set.copyOf(cancelled.propertyNames())); assertEquals("CANCELLED", cancelled.get("status").asString()); assertFalse(cancelled.get("cancellable").booleanValue());
++        assertEquals("AVAILABLE", db.sql("SELECT status FROM slots WHERE id=:id").param("id", slot).query(String.class).single());
++    }
++
++    @Test void c5Auth2AnonymousWrongRoleCachedAuthoritiesAndUntrustedPrincipalsCannotChooseActor() throws Exception {
++        error(request(get(ROOT), null), 401, "UNAUTHENTICATED");
++        error(request(book(), null), 403, "CSRF_INVALID");
++        Browser anon = token(null); error(request(book(), anon), 401, "UNAUTHENTICATED");
++        for (String name : List.of("tutor", "admin")) {
++            Browser b = login(name);
++            var auth = authentication(b.session());
++            var security = SecurityContextHolder.createEmptyContext();
++            security.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(auth.getPrincipal(), null, List.of(new SimpleGrantedAuthority("ROLE_STUDENT"))));
++            b.session().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, security);
++            error(request(get(ROOT).header("X-Actor-Id", student), b), 403, "FORBIDDEN");
++            error(request(book().header("X-Actor-Id", student), b), 403, "FORBIDDEN");
++            error(request(cancel(UUID.randomUUID()), b), 403, "FORBIDDEN");
++            error(request(get(ROOT).param("status", "bad"), b), 400, "VALIDATION_FAILED");
++            error(request(post(ROOT).contentType("application/json").content("{}"), b), 400, "VALIDATION_FAILED");
++            assertFalse(b.session().isInvalid());
++        }
++        for (Object principal : List.of(student, student.toString())) {
++            MockHttpSession session = new MockHttpSession(); var security = SecurityContextHolder.createEmptyContext();
++            security.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(principal, null, List.of(new SimpleGrantedAuthority("ROLE_STUDENT"))));
++            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, security);
++            error(request(get(ROOT).param("status", "bad"), new Browser(session, "unused", "unused")), 401, "UNAUTHENTICATED");
++            assertTrue(session.isInvalid());
++        }
++        assertEquals(0, bookingCount());
++    }
++
++    @Test void c5Rev1TwoSessionsAdminDeactivationAndReactivationNeverReviveOldGeneration() throws Exception {
++        Browser first = login("student"), secondSession = login("student"), administrator = login("admin");
++        // Valid Student read control ensures this test cannot pass while Student is absent from app-api.
++        ok(get(ROOT), first, 200);
++        ok(put("/api/admin/users/" + student + "/active").contentType("application/json").content("{\"active\":false}"), administrator, 200);
++        error(request(post(ROOT).contentType("application/json").content("bad"), new Browser(first.session(), "unused", "unused")), 403, "ACCOUNT_INACTIVE");
++        assertTrue(first.session().isInvalid()); error(request(get(ROOT), first), 401, "UNAUTHENTICATED");
++        ok(put("/api/admin/users/" + student + "/active").contentType("application/json").content("{\"active\":true}"), administrator, 200);
++        error(request(get(ROOT).param("status", "bad"), secondSession), 401, "UNAUTHENTICATED"); assertTrue(secondSession.session().isInvalid());
++        Browser fresh = login("student"); ok(get(ROOT), fresh, 200);
++        assertEquals(0, bookingCount());
++    }
++
++    @Test void c5Auth2MissingAccountWinsMalformedSyntaxAndInvalidatesSession() throws Exception {
++        Browser b = login("second"); ok(get(ROOT), b, 200);
++        db.sql("DELETE FROM users WHERE id=:id").param("id", second).update();
++        error(request(get(ROOT).param("status", "bad"), b), 401, "UNAUTHENTICATED"); assertTrue(b.session().isInvalid());
++        error(request(get(ROOT), b), 401, "UNAUTHENTICATED"); assertEquals(0, bookingCount());
++    }
++
++    @Test void c5Csrf1MissingInvalidTokensLogoutCookieRepeatAndFreshLogin() throws Exception {
++        Browser b = login("student");
++        JsonNode created = body(ok(book(), b, 201)); UUID id = UUID.fromString(created.get("id").asString());
++        String before = snapshot();
++        Browser missing = new Browser(b.session(), "unused", "unused");
++        error(request(book(), missing), 403, "CSRF_INVALID"); error(request(cancel(id), missing), 403, "CSRF_INVALID");
++        Browser invalid = new Browser(b.session(), b.header(), "invalid");
++        error(request(book(), invalid), 403, "CSRF_INVALID"); error(request(cancel(id), invalid), 403, "CSRF_INVALID");
++        assertEquals(before, snapshot());
++        MvcResult logout = ok(post("/api/auth/logout"), b, 204); assertTrue(b.session().isInvalid());
++        var cookie = logout.getResponse().getCookie("JSESSIONID"); assertNotNull(cookie); assertEquals(0, cookie.getMaxAge()); assertTrue(cookie.isHttpOnly());
++        error(request(cancel(id), b), 403, "CSRF_INVALID"); assertEquals(before, snapshot());
++        Browser anon = token(null); ok(post("/api/auth/logout"), anon, 204);
++        Browser newAnon = token(null), fresh = login("student", newAnon);
++        error(request(cancel(id).header(newAnon.header(), newAnon.token()), new Browser(fresh.session(), "unused", "unused")), 403, "CSRF_INVALID");
++        ok(cancel(id), fresh, 200);
++    }
++
++    @Test void c5State1LogoutThenDifferentLoginRetainsNoActorOrBookingState() throws Exception {
++        Browser first = login("student"); UUID id = UUID.fromString(body(ok(book().header("X-Actor-Id", second), first, 201)).get("id").asString());
++        ok(post("/api/auth/logout"), first, 204);
++        Browser other = login("second");
++        assertEquals(0, body(ok(get(ROOT).header("X-Actor-Id", student), other, 200)).size());
++        JsonNode missing = error(request(get(ROOT + "/" + UUID.randomUUID()), other), 404, "NOT_FOUND");
++        JsonNode foreign = error(request(get(ROOT + "/" + id).header("X-Actor-Id", student), other), 404, "NOT_FOUND");
++        assertEquals(missing.get("message"), foreign.get("message"));
++        JsonNode cancelForeign = error(request(cancel(id).header("X-Actor-Id", student), other), 404, "NOT_FOUND");
++        JsonNode cancelMissing = error(request(cancel(UUID.randomUUID()), other), 404, "NOT_FOUND");
++        assertEquals(cancelMissing.get("message"), cancelForeign.get("message"));
++        assertEquals("ACTIVE", db.sql("SELECT status FROM bookings WHERE id=:id").param("id", id).query(String.class).single());
++        assertEquals(1, body(ok(get(ROOT), login("student"), 200)).size());
++    }
++
++    private UUID seed(String name, String role, String hash) {
++        UUID id = UUID.randomUUID(); db.sql("INSERT INTO users(id,name,email,role,active,password_hash) VALUES(:id,:n,:e,:r,true,:h)")
++                .param("id", id).param("n", name).param("e", name + "@example.edu").param("r", role).param("h", hash).update(); return id;
++    }
++    private UUID accountId(String name) { return db.sql("SELECT id FROM users WHERE email=:e").param("e", name + "@example.edu").query(UUID.class).single(); }
++    private void register(String name) throws Exception {
++        Browser b = token(null); ok(post("/api/auth/register").contentType("application/json").content("{\"name\":\"" + name + "\",\"email\":\"" + name + "@example.edu\",\"password\":\"" + PASSWORD + "\",\"confirmation\":\"" + PASSWORD + "\"}"), b, 201);
++        error(request(get("/api/auth/me"), b), 401, "UNAUTHENTICATED");
++    }
++    private Browser token(MockHttpSession session) throws Exception {
++        MvcResult result = request(get("/api/auth/csrf"), session == null ? null : new Browser(session, "unused", "unused"));
++        assertEquals(200, result.getResponse().getStatus(), result.getResponse().getContentAsString());
++        JsonNode b = body(result); return new Browser((MockHttpSession) result.getRequest().getSession(false), b.get("headerName").asString(), b.get("token").asString());
++    }
++    private Browser login(String name) throws Exception { return login(name, token(null)); }
++    private Browser login(String name, Browser b) throws Exception {
++        MvcResult result = ok(post("/api/auth/login").contentType("application/json").content("{\"email\":\"" + name + "@example.edu\",\"password\":\"" + PASSWORD + "\"}"), b, 200);
++        assertEquals(Set.of("id", "name", "role"), Set.copyOf(body(result).propertyNames())); return token((MockHttpSession) result.getRequest().getSession(false));
++    }
++    private org.springframework.security.core.Authentication authentication(MockHttpSession session) {
++        return ((org.springframework.security.core.context.SecurityContext) session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)).getAuthentication();
++    }
++    private MockHttpServletRequestBuilder book() { return post(ROOT).contentType("application/json").content("{\"slotId\":\"" + slot + "\"}"); }
++    private MockHttpServletRequestBuilder cancel(UUID id) { return post(ROOT + "/" + id + "/cancel").contentType("application/json").content("{}"); }
++    private MvcResult request(MockHttpServletRequestBuilder request, Browser browser) throws Exception {
++        if (browser != null && !browser.session().isInvalid()) { request.session(browser.session()); if (!browser.header().equals("unused")) request.header(browser.header(), browser.token()); }
++        else if (browser != null && !browser.header().equals("unused")) request.header(browser.header(), browser.token());
++        return mvc.perform(request.accept("application/json")).andReturn();
++    }
++    private MvcResult ok(MockHttpServletRequestBuilder request, Browser browser, int status) throws Exception {
++        MvcResult r = request(request, browser); assertEquals(status, r.getResponse().getStatus(), r.getResponse().getContentAsString()); assertEquals("no-store", r.getResponse().getHeader("Cache-Control")); return r;
++    }
++    private JsonNode body(MvcResult r) throws Exception { return JsonMapper.shared().readTree(r.getResponse().getContentAsString()); }
++    private JsonNode error(MvcResult r, int status, String code) throws Exception {
++        assertEquals(status, r.getResponse().getStatus(), r.getResponse().getContentAsString()); assertEquals("no-store", r.getResponse().getHeader("Cache-Control"));
++        JsonNode b = body(r); assertEquals(Set.of("code", "message", "requestId"), Set.copyOf(b.propertyNames())); assertEquals(code, b.get("code").asString()); UUID.fromString(b.get("requestId").asString());
++        for (String leak : List.of("@", "SELECT", "password", "Software Design")) assertFalse(b.toString().contains(leak), b.toString());
++        for (UUID id : Arrays.asList(student, tutor, slot)) if (id != null) assertFalse(b.toString().contains(id.toString()), b.toString()); return b;
++    }
++    private long bookingCount() { return db.sql("SELECT count(*) FROM bookings").query(Long.class).single(); }
++    private String snapshot() { return db.sql("SELECT row_to_json(b)::text FROM bookings b ORDER BY id").query(String.class).list().toString() + db.sql("SELECT row_to_json(s)::text FROM slots s ORDER BY id").query(String.class).list(); }
++}
