@@ -32,11 +32,16 @@ public final class PostgresUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String email) {
+        String canonical = email.strip().toLowerCase(Locale.ROOT);
+        Optional<User> exact = jdbc.sql(SELECT + " WHERE email=:email").param("email", canonical)
+                .query(PostgresUserRepository::map).optional();
+        if (exact.isPresent()) return exact;
         return jdbc.sql(SELECT + " WHERE lower(btrim(email))=:email")
-                .param("email", email.strip().toLowerCase(Locale.ROOT)).query(PostgresUserRepository::map).optional();
+                .param("email", canonical).query(PostgresUserRepository::map).optional()
+                .filter(user -> user.email().strip().toLowerCase(Locale.ROOT).equals(canonical));
     }
 
-    private static User map(ResultSet row, int index) throws SQLException {
+    static User map(ResultSet row, int index) throws SQLException {
         UUID id = row.getObject("id", UUID.class);
         String name = row.getString("name");
         String email = row.getString("email");
