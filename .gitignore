@@ -26,3 +26,6 @@ build/
 *.log
 !workflow/core/evidence/*.log
 !workflow/tutor/evidence/*.log
+
+CLAUDE.md
+AGENTS.md
