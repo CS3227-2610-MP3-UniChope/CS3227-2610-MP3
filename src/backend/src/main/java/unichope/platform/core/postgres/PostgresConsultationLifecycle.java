@@ -18,6 +18,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 import unichope.platform.core.ConsultationLifecycle;
+import unichope.platform.core.LockedCompletedBooking;
 import unichope.platform.core.LifecycleFailure;
 import unichope.platform.core.LifecycleFailure.Code;
 import unichope.platform.core.model.consultation.Booking;
@@ -37,6 +38,7 @@ public final class PostgresConsultationLifecycle implements ConsultationLifecycl
     private final PostgresBookingRepository bookings;
     private final Clock clock;
     private final TransactionTemplate transaction;
+    private final TransactionTemplate callerTransaction;
 
     public PostgresConsultationLifecycle(DataSource source, Clock clock) {
         this.jdbc = JdbcClient.create(source);
@@ -45,10 +47,13 @@ public final class PostgresConsultationLifecycle implements ConsultationLifecycl
         this.slots = new PostgresSlotRepository(jdbc);
         this.bookings = new PostgresBookingRepository(jdbc);
         this.clock = clock;
-        this.transaction = new TransactionTemplate(new DataSourceTransactionManager(source));
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(source);
+        this.transaction = new TransactionTemplate(transactionManager);
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
         // Own the complete commit/rollback before returning a result or mapping SQL failures.
         transaction.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        this.callerTransaction = new TransactionTemplate(transactionManager);
+        callerTransaction.setPropagationBehavior(TransactionDefinition.PROPAGATION_MANDATORY);
     }
 
     @Override
@@ -148,6 +153,46 @@ public final class PostgresConsultationLifecycle implements ConsultationLifecycl
         return changeBooking(actorId, bookingId, true);
     }
 
+    @Override
+    public LockedCompletedBooking lockForPrivateNote(UUID tutorId, UUID bookingId) {
+        required(tutorId, bookingId);
+        try {
+            return callerTransaction.execute(status -> {
+                String isolation = jdbc.sql("SHOW transaction_isolation").query(String.class).single();
+                if (!"read committed".equalsIgnoreCase(isolation)) {
+                    throw new IllegalStateException("READ_COMMITTED transaction required for private-note locking");
+                }
+                jdbc.sql("SET LOCAL lock_timeout='5s'").update();
+                jdbc.sql("SET LOCAL statement_timeout='10s'").update();
+
+                requireActor(tutorId, Role.TUTOR);
+                Booking discoveredBooking = booking(bookingId);
+                ConsultationSlot discoveredSlot = slot(discoveredBooking.slotId());
+
+                lockUsers(tutorId, discoveredBooking.studentId());
+                lockModule(discoveredSlot.moduleId());
+                lockSlot(discoveredSlot.id());
+                lockBooking(bookingId);
+
+                requireActor(tutorId, Role.TUTOR);
+                Booking currentBooking = booking(bookingId);
+                ConsultationSlot currentSlot = slot(currentBooking.slotId());
+                if (!currentSlot.tutorId().equals(tutorId)) throw fail(NOT_FOUND);
+                if (!currentBooking.slotId().equals(discoveredBooking.slotId())
+                        || !currentBooking.studentId().equals(discoveredBooking.studentId())
+                        || !currentSlot.moduleId().equals(discoveredSlot.moduleId())) throw fail(INVALID_STATE);
+                if (currentBooking.status() != BookingStatus.COMPLETED || currentSlot.status() != SlotStatus.COMPLETED) {
+                    throw fail(INVALID_STATE);
+                }
+                return new LockedCompletedBooking(currentBooking.id(), tutorId, currentBooking.studentId(),
+                        currentSlot.moduleId(), currentSlot.id());
+            });
+        } catch (DataAccessException error) {
+            if (isContention(error)) throw fail(TEMPORARILY_UNAVAILABLE);
+            throw error;
+        }
+    }
+
     private Booking changeBooking(UUID actorId, UUID bookingId, boolean complete) {
         Role role = complete ? Role.TUTOR : Role.STUDENT;
         return mutate(() -> {
@@ -183,13 +228,16 @@ public final class PostgresConsultationLifecycle implements ConsultationLifecycl
                 return work.get();
             });
         } catch (DataAccessException error) {
-            for (Throwable cause = error; cause != null; cause = cause.getCause()) {
-                if (cause instanceof SQLException sql && CONTENTION_STATES.contains(sql.getSQLState())) {
-                    throw fail(TEMPORARILY_UNAVAILABLE);
-                }
-            }
+            if (isContention(error)) throw fail(TEMPORARILY_UNAVAILABLE);
             throw error;
         }
+    }
+
+    private static boolean isContention(DataAccessException error) {
+        for (Throwable cause = error; cause != null; cause = cause.getCause()) {
+            if (cause instanceof SQLException sql && CONTENTION_STATES.contains(sql.getSQLState())) return true;
+        }
+        return false;
     }
 
     private User requireActor(UUID actorId, Role role) {

@@ -42,6 +42,9 @@ An authenticated wrong role returns 403 `FORBIDDEN`. Newly detected inactive
 accounts return 403 `ACCOUNT_INACTIVE` and invalidate the session. Invalid/missing
 CSRF returns 403 `CSRF_INVALID`; error precedence may follow the security filter
 chain, but must never allow a denied operation or leak record content.
+If a role operation rechecks the actor under its transaction locks and that shared
+core check returns generic `ACCESS_DENIED`, the existing lifecycle mapping is 403
+`FORBIDDEN`; it does not invalidate the session based on that generic result.
 
 ## 3. Tutor Resources and Response Shapes
 
@@ -82,11 +85,14 @@ tutor is assigned that module. No status filter means all booking statuses.
 Creation with a nonexistent/inactive/unassigned module returns the same
 `MODULE_UNAVAILABLE` response without disclosing additional module details.
 
-Note content is nonblank after trimming, at most 8,000 Unicode code points before
-trimming. `expectedVersion` is a required nonnegative integer; omitted values do
+Tutor private-note content is nonblank after Java 25 `String.strip()` and at most
+8,000 Unicode code points before stripping; persist the stripped value. Code points,
+not UTF-16 code units, are counted. This is the Tutor note decision for the current
+increment. `expectedVersion` is a required nonnegative integer; omitted values do
 not mean force-save. Initial saves require 0. Two concurrent initial saves cannot
 both succeed; 409 preserves the newer saved note and contains no note content.
-These numeric limits are proposed product values requiring team review.
+Separate Student AI rough-note and generated-draft limits remain proposed product
+values requiring review by their owners.
 
 ### Draft response
 
@@ -138,7 +144,7 @@ contract; SQL migration details belong to the technical implementation.
 
 | Record | Required fields and invariants |
 | --- | --- |
-| User | id, name, normalized unique email, role STUDENT/TUTOR/ADMIN, active, passwordHash; credential fields excluded from ordinary responses |
+| User | id, name, normalized unique email, role STUDENT/TUTOR/ADMIN, active; auth-selected core extensions: passwordHash and nonnegative sessionGeneration (initially 0). Both are internal and excluded from ordinary responses. The current review-only core schema does not implement these extensions. |
 | Module | id, unique case-normalized code, name, active |
 | TutorModule | tutorId and moduleId foreign keys, unique pair; assigned user must be a tutor |
 | Slot | id, tutorId, moduleId, startTime, endTime, status; end > start; retained history |
@@ -232,3 +238,19 @@ do not independently switch to `/api/v1` without updating clients/contracts/test
 change affecting other roles updates this contract and its tests in the same
 reviewed change. Do not silently change enum meanings, privacy, or lock protocols.
 Student/Admin endpoint contracts remain their owners' responsibility.
+
+### Decisions still requiring owner agreement
+
+- The committed [auth specification](auth/TECHNICAL-SPEC.md#selected-credential-storage)
+  selects passwordHash and sessionGeneration on the existing users record; no second
+  credential/user table. Core storage, migration and atomic provisioning/revocation
+  operations still need implementation and affected-owner review. The current DDL
+  remains credential-free and review-only; production schema activation is blocked.
+- Auth supplies trusted session identity to `CurrentActorProvider`; the exact shared
+  principal adapter and application-wide security wiring still require integration.
+- The core owner and Student AI owner coordinate migration version allocation before
+  either adds production migrations. The current review-only core DDL does not reserve
+  a production version number.
+- The proposed auth and deployment assignments in the shared technical spec require
+  confirmation by the affected teammates; this contract does not record that
+  confirmation.

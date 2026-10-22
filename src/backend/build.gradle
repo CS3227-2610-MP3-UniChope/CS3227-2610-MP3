@@ -19,9 +19,13 @@ repositories {
 dependencies {
     implementation platform('org.springframework.boot:spring-boot-dependencies:4.0.8')
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework:spring-jdbc'
-    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
     testImplementation 'org.postgresql:postgresql'
     testImplementation 'org.flywaydb:flyway-core'
     testRuntimeOnly 'org.flywaydb:flyway-database-postgresql'
