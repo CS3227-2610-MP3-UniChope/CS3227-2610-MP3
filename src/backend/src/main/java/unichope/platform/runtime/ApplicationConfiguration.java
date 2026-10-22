@@ -12,6 +12,7 @@ import unichope.platform.core.*;
 import unichope.platform.core.postgres.*;
 import unichope.platform.core.repository.*;
 import unichope.tutor.*;
+import unichope.tutor.CurrentActorProvider;
 
 /** Explicit application wiring; default profile remains closed and database-free. */
 @Configuration
