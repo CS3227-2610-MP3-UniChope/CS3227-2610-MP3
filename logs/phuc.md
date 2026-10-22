@@ -294,3 +294,21 @@ A fresh c2 implementer was then started.
 Nothing was committed.
 
 Verification: pending Phuc's review.
+
+
+## 22 October 2026: Codex GPT-6: Resolve Student rebase conflict
+I asked the agent to resolve the conflicts in my in-progress rebase. It preserved
+upstream auth/admin/tutor security configuration and filters while restoring the
+student-api authenticated route in ApiSecurityConfiguration.java. A verification
+build exposed an ambiguous CurrentActorProvider caused by the new shared auth
+interface and wildcard imports; the agent made the existing Tutor interface import
+explicit in ApplicationConfiguration.java, preserving its original wiring.
+The rebase onto 4c02854 completed on branch_student; the rebased feature commit is
+afe431f and final documentation HEAD is 62d01d2. Unit tests: 59 passed; bootJar built.
+PostgreSQL tests: 160 run, 145 passed, 15 failed, all in StudentBookSlotPgTest. The
+original feature commit also has no POST /bookings handler; its creation tests
+expect that unimplemented capability. The agent did not implement it or weaken
+those tests during the rebase. git diff --check passed. No independent review or
+manual API verification was performed. The pre-existing untracked src/backend/bin/
+was preserved. This log entry is appended after the rebase and left uncommitted.
+Verification: pending Phuc's review.
