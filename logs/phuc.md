@@ -385,7 +385,7 @@ I asked for the UniChope frontend foundation as a prerequisite to the login and 
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: Frontend foundation independent review
+## Codex GPT-6: Frontend foundation independent review
 I asked for Login, authenticated role destinations and Student booking UI. The independent reviewer checked the FE0 foundation against canonical contracts and actual source/hash revisions, recorded PASS for FE0 only in workflow/student/changes/stu-fe0-foundation.md, and changed no implementation. Fresh focused keyboard sentinel, strict build, isolated Edge shell, real local proxy shape checks and npm advisory query passed; clean installation was not repeated. Feature behavior, full responsive/accessibility journeys, teammate merge review and my acceptance remain pending. No commit or deployment was made.
 Verification: pending Phuc's review.
 
@@ -401,11 +401,11 @@ Verification: pending Phuc's review.
 I asked for protected logout behavior. The implementer requested a focused follow-up test for the already implemented sign-out guard; the test writer appended one deferred logout case confirming immediate private-state clearing and preventing Sign in until server logout settled. The targeted test passed, including fresh CSRF and no automatic session restoration. The FE1 supplemental handoff records the current source/test hashes; no product edits or browser/build runs were performed, and aggregate verification remains for the implementer/reviewer.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: UniChope frontend implementation
+## Codex GPT-6: UniChope frontend implementation
 I asked for the real Login, Tutor/Admin placeholders and Student consultation interface using the approved weekly timetable/sidebar/mobile-list design. The implementer read the canonical workflow/specs and frozen test handoffs, then built focused React/TypeScript auth, transport, routing, filters, timetable/list, booking/cancellation confirmations and semantic Bootstrap/CSS styling under src/frontend. I retained real backend defaults, in-memory private/session state, explicit confirmations and no automatic mutation replay. Independent test-writer supplements cover navigation during a pending booking and Login ordering during deferred logout. The agent ran the final45 unit tests, strict production build and7 installed-Edge browser checks successfully, and inspected the coordinator's saved real synthetic backend journey, zero-violation axe scans and responsive screenshots. No backend/source contract, package or acceptance test was weakened; no commit/push/deployment occurred. Exact manifest, complete patch and results are in workflow/student/changes/stu-fe2-booking-ui/evidence and both feature change records. CSRF acquisition feedback remains flagged for independent reviewer classification; independent review, affected-owner merge review and my human acceptance were not claimed complete.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: Frontend session denial review
+## Codex GPT-6: Frontend session denial review
 I asked for frontend authentication and Student booking. The independent reviewer inspected the actual frontend, tests and real browser evidence and found FE-R1: a401/403 inactive response during CSRF acquisition for a protected mutation failed to clear the displayed actor/private state. The reviewer recorded CHANGES_REQUIRED with an actual runtime reproduction and routed regression coverage and correction to the test writer and implementer. No implementation was changed by the reviewer. Successful prior browser/build evidence does not cover this boundary; final correction and fresh independent review remain pending. The reviewer also recorded a nonblocking CSRF failure copy follow-up. Affected records are workflow/student/changes/stu-fe1-auth-ui.md and stu-fe2-booking-ui.md; no commit was made.
 Verification: pending Phuc's review.
 
@@ -427,11 +427,11 @@ The final frontend suite passed 49 tests, the production build passed, and seven
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: Protected CSRF denial correction and Claude handoff
+## Codex GPT-6: Protected CSRF denial correction and Claude handoff
 I asked to address FE-R1 while preserving anonymous authentication behavior and to keep the required Claude specification/review gates honest. The implementer waited for the test writer's four real red Book/Cancel CSRF-denial cases, then changed only src/frontend/src/api.ts so protected acquisition401/inactive403 clears private session state before any mutation. The new four cases passed, the full49 unit cases passed, the strict production build passed and all7 Edge browser checks passed. The agent inspected the coordinator's separate post-fix real synthetic backend journey and zero-violation axe evidence. New revision manifests/patch and outputs preserve historical frozen evidence and adopt the refreshed PLAN hash. FE-R1 is implementation-addressed awaiting review, FE-R2 feedback remains a low follow-up, and the concrete manual Claude packet records that actual Claude specification and independent review are still pending. I have not accepted the human journey or obtained affected-owner merge review; no commit/push/deployment occurred.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): Frontend spec consistency check (fresh subagent)
+## Claude Code (Opus 5.5): Frontend spec consistency check (fresh subagent)
 
 I asked Claude to review the Login and Student booking frontend handoff. A fresh spec
 analyst subagent derived requirements from the canonical specs and backend before reading
@@ -448,7 +448,7 @@ Nothing was committed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): Frontend code and security review (fresh subagent)
+## Claude Code (Opus 5.5): Frontend code and security review (fresh subagent)
 
 A separate fresh reviewer subagent reviewed the uncommitted frontend (all 40 manifest
 files matched) and ran npm ci (0 vulnerabilities), the unit tests (49/49), the build and
@@ -465,7 +465,7 @@ Nothing was committed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): Local mock data script
+## Claude Code (Opus 5.5): Local mock data script
 
 I asked for mock data for testing. Claude added src/backend/scripts/seed-local.ps1, which
 fills a local backend through the real HTTP API: three modules, two tutors with
@@ -483,7 +483,7 @@ changed, and nothing was committed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): Theme switch specification (fresh subagent)
+## Claude Code (Opus 5.5): Theme switch specification (fresh subagent)
 
 I asked for a light and dark theme switch and decided: light by default on first visit,
 remember the choice on the same browser (including Login), and put the switch in the top
@@ -499,17 +499,17 @@ No tests or code were written and nothing was committed by Claude.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE5 prerequisite specification readiness
+## Codex GPT-6: FE5 prerequisite specification readiness
 
 I asked to implement stu-fe5. The spec analyst checked the existing canonical theme and prerequisite contracts against current frontend files and refreshed analyst handoffs in stu-fe3-review-fixes.md, stu-fe4-followups.md and stu-fe5-theme-switch.md, with analyst-current-manifest.json recording current hashes. The work follows FE3, FE4, then FE5, with each prerequisite reviewed before dependent execution. No new design decision or code/test change was made. All 36 historical frontend hashes matched; four historical spec hashes were superseded by current canonical files. The analyst did not run tests, builds, browser checks or human acceptance. Existing staged and unstaged work was preserved.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE3 prerequisite behavioral tests
+## Codex GPT-6: FE3 prerequisite behavioral tests
 I asked to implement stu-fe5, including its required FE3 prerequisite. The agent acted only as the fresh FE3 test writer, verified all 45 analyst manifest inputs and added 58 behavioral cases for preflight versus sent mutation failures, cached-token session denial, confirmed logout, filter notice lifetime and page landmarks. It preserved the XSS/storage test intent on the Student header and adapted the existing late-mutation Admin-destination assertion to the specified placeholder header. Affected files are src/frontend/src/test/fe3.test.tsx, auth.test.tsx, student.test.tsx, the FE3 change record and its evidence artifacts. The corrected baseline discovered 103 tests: 69 pass and 34 expected behavioral failures; all 45 retained tests pass. TypeScript/Vite build and diff whitespace check pass. No product code, specs, staging or commit changed; browser checks and human journeys remain pending. I made no new policy decision in this test-writing stage.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE3 prerequisite implementation
+## Codex GPT-6: FE3 prerequisite implementation
 I asked to implement stu-fe5, including its necessary FE3 prerequisite. The agent
 verified the current FE3 specification and test handoffs, then changed the frontend
 API preflight error distinction, confirmed logout handling, filter notice lifetime,
@@ -522,27 +522,27 @@ Human visual/journey/zoom checks and fresh independent review remain pending; no
 backend/provider smoke, staging or commit was performed in this stage.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE3 independent review
+## Codex GPT-6: FE3 independent review
 I asked the agent to progress the FE3 prerequisite while implementing stu-fe5. The fresh reviewer checked the canonical FE3 criteria, source/test deltas, specification resolutions and all 55 implementation-manifest hashes. It reran 103 unit tests, the TypeScript/Vite build and seven Edge browser tests; all passed. It recorded PASS and READY_FOR_HUMAN in workflow/student/changes/stu-fe3-review-fixes.md and added reviewer evidence under that change. It changed no implementation or tests and made no staging or commit. My laptop/phone acceptance journey, zoom/text-size checks and team merge review remain pending; no live backend/provider result was claimed.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE4 behavioral and contrast tests
+## Codex GPT-6: FE4 behavioral and contrast tests
 I asked to implement stu-fe5, with FE4 as its prerequisite after reviewed FE3. The test-writer agent verified the FE3 manifest and current FE4 specifications, added behavioral tests for session restoration, stale Login, ended-session sign-out, unknown module filters, degraded module loading and cross-midnight details, and added reusable browser contrast checks. I made no new product decision in this stage. The affected files are src/frontend/src/test/fe4.test.tsx, src/frontend/e2e/contrast.spec.ts, src/frontend/e2e/contrast-audit.ts and the FE4 record/evidence. The full unit baseline was 112 passing and 27 expected failing cases; the browser baseline was 8 passing and 8 expected contrast failures; the production build passed. No product implementation, backend integration, independent FE4 review or human visual verification was performed. The Windows sandbox account locked during verification; approved same-scope escalated commands completed the checks. No staging or commits were performed.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE4 frontend follow-ups implementation
+## Codex GPT-6: FE4 frontend follow-ups implementation
 I asked to implement stu-fe5, including its existing FE4 prerequisite. The agent verified the analyst/test-writer artifacts and reviewed FE3 dependency, implemented in-place session restore retry, stale-login and ended-logout feedback, unknown-module normalization, degraded module loading and stronger accessible control/focus contrast. It changed App.tsx, Login.tsx, api.ts, StudentWorkspace.tsx and styles.css, and recorded the FE4 handoff, manifest, complete frontend patch and sanitized verification evidence. No tests, dependencies, backend contracts, commits or staging were changed in this stage. All 139 unit tests, build and 16 browser tests passed. Desktop/mobile synthetic screenshots were visually inspected. Independent review, real backend integration and my laptop/phone/text-size acceptance remain pending.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE4 independent review
+## Codex GPT-6: FE4 independent review
 I asked to implement stu-fe5, including its required FE4 prerequisite. The fresh reviewer checked canonical requirements, the complete frontend patch and all 71 handoff hashes, and reran the build, 16 browser cases and 139 unit cases. The unit run passed when rerun alone after a concurrent-load timeout. An additional synthetic Edge probe found that a slots error masks a modules access denial, so the review records CHANGES_REQUIRED and routes a regression test and fix before FE5. The reviewer changed only the FE4 review record/evidence and this log; no product/test fixes or commits. Human visual checks and shared-owner merge reviews remain pending.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE4-R1 regression test handoff
+## Codex GPT-6: FE4-R1 regression test handoff
 I asked the agent to continue the FE4 prerequisite review loop. The fresh test writer verified the workflow, canonical denial requirements and incoming manifest without reading earlier logs. It added four tests in src/frontend/src/test/fe4.test.tsx for modules FORBIDDEN combined with slots 503 or malformed responses in both completion orders, and updated the FE4 change record with hashed evidence. The focused run had 36 existing cases pass and all four new cases fail on the expected lost-denial behavior. No product code, old tests, staging or commits changed. Full unit/build/browser checks were not rerun for this test-only stage; the fix and fresh independent review remain pending. I made no new policy decision in this stage.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE4 denial priority correction
+## Codex GPT-6: FE4 denial priority correction
 I asked for the FE4-R1 implementation correction before proceeding to FE5. The
 agent verified the current test-writer packet and fixed StudentWorkspace so a
 modules FORBIDDEN response keeps Access denied and Back to home even when slots
@@ -554,7 +554,7 @@ sequentially with synthetic fixtures. Independent re-review, actual backend and
 human/device checks were not performed by this implementer. No commit was made.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE4-R1 independent re-review
+## Codex GPT-6: FE4-R1 independent re-review
 I asked for the FE5 implementation to proceed through its required FE4 review.
 The fresh reviewer checked the corrected denial precedence and four independent
 combined-error tests, validated 84 artifact hashes, and reran unit, build, browser
@@ -567,18 +567,42 @@ shared-owner merge reviews and actual backend/provider verification remain open.
 Verification: pending Phuc's review.
 
 
-## 22 October 2026: Codex GPT-6: FE5 theme acceptance tests
+## Codex GPT-6: FE5 theme acceptance tests
 I asked to implement stu-fe5 with the workflow prerequisites. The agent acted only as a fresh test writer, verified the reviewed FE4 dependency and unchanged normalized theme contract, added 45 RTL theme/storage/session cases and browser early-script, both-theme contrast and responsive keyboard/dialog checks. It updated the documented placeholder button allowance and isolated theme storage/root state between tests. Expected red behavior was verified: 45 focused failures, earlier full suite 139 passes/47 failures, browser seven passes/70 theme failures; build passed. Two final contrast cases were rerun after helper/locator refinement. No product implementation, backend integration, human journey, staging or commit was performed; source revisions and limitations are in the FE5 change record/evidence.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE5 early-theme test oracle correction
+## Codex GPT-6: FE5 early-theme test oracle correction
 I asked for the FE5 theme tests to follow the canonical early-theme contract. The test writer checked the authored index.html and Vite-served output, found that the inline-script assertion incorrectly rejected Vite's React Refresh development preamble, and changed only e2e/theme.spec.ts to inspect authored HTML for inline scripts. The browser timing, same-origin external script, head order, synchronous loading and root-theme checks were preserved. The change record and test-writer-2 evidence were appended. The original focused run failed all 27 cases on the oracle; the corrected focused run passed all 27. Full suite/build verification is left to the implementer, and manual visual/human acceptance remains pending. No product source, dependencies, staging or commits were changed by this correction.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: FE5 theme-switch implementation
+## Codex GPT-6: FE5 theme-switch implementation
 I asked the agent to implement the existing stu-fe5 light/dark theme specification. The agent verified the analyst and test-writer handoffs and FE3/FE4 prerequisites, added a stable theme provider and native header switch, a synchronous public startup script, and semantic light/dark palette tokens while preserving the orange/neutral interface and session behavior. It changed App.tsx, Login.tsx, styles.css and index.html and added theme.tsx and public/theme.js. It returned a Vite development-script oracle defect to a fresh test writer instead of changing tests itself. Final sequential verification passed 188 unit tests, the TypeScript/Vite build and 77 browser cases, including both-theme contrast, keyboard/dialog and responsive checks. The agent inspected four production screenshots and recorded bounded early-dark/reload observations in the FE5 evidence and change record. Independent review, my real-device/keyboard/text-size/native-date and visual no-flash checks, and shared-owner merge reviews remain pending; no real backend/provider integration or human acceptance was claimed. No staging or commit was performed.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: Independent FE5 theme-switch review
+## Codex GPT-6: Independent FE5 theme-switch review
 I asked the agent to implement stu-fe5 through the repository workflow. In a fresh independent reviewer session, the agent checked all nine theme acceptance IDs, source/tests, the corrected authored-index oracle, prerequisite reviews and the 78-entry revision manifest. It independently reran 188 unit tests, the production build and 77 Edge browser checks successfully, inspected four production screenshots and the recorded early-script timelines, and recorded PASS / READY_FOR_HUMAN in workflow/student/changes/stu-fe5-theme-switch.md with fresh evidence. It updated only progress/status bookkeeping in workflow/student/PLAN.md; no implementation or test fixes, staging or commits were made. My human laptop/phone/keyboard, text-size/zoom, native date popup and visible production no-flash checks remain pending, as do shared-owner merge reviews. These runs used synthetic HTTP fixtures and did not verify real backend/provider integration.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Local manual testing setup
+I asked the agent to run the setup so I could test the app. The agent started a separate local PostgreSQL container (unichope-manual-db, port 55433), bootstrapped a synthetic administrator, started the real app-api/local backend on port 8080 and Vite frontend on port 5173 as hidden background processes, and ran the existing seed-local script. It created synthetic students/tutors/modules, 20 slots, and one upcoming plus one cancelled booking. It verified student sign-in, slot and booking reads through the frontend API proxy, and HTTP 200 responses for the Login page and early theme script. The backend build passed; no product source changed. I still need to perform the manual browser acceptance journey and visual checks. Credentials are intentionally omitted from this log.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Larger text and top filters
+I asked for larger text and filters above the results, explicitly skipping the repository workflow for this edit. The agent directly increased small UI typography, moved the consultation filters into a wrapping top bar on Find a consultation and My bookings, and kept mobile Book buttons on one line. It updated the existing responsive browser assertions for top placement and readable timetable text. Affected files: src/frontend/src/styles.css, src/frontend/src/student/StudentWorkspace.tsx, src/frontend/e2e/workspace.spec.ts. The production build and all 77 browser tests passed; live synthetic Student checks showed filters above results and no page overflow at 320, 768, 1024 and 1440px in both themes. Desktop/mobile screenshots were inspected. Unit tests were not rerun; no staged workflow roles, specification refresh or independent review was performed for this explicitly direct edit. The local app remains running for my visual check.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Readable consultation times
+I said the times were still too small. Continuing my instruction to skip the workflow for these visual edits, the agent increased consultation times and desktop timetable hour labels to 16px semibold, increased the timezone label, and widened the hour column so the labels fit. Only src/frontend/src/styles.css changed. The build and all 77 browser checks passed. Live Student checks confirmed 16px times at 320, 768, 1024 and 1440px, with 16px desktop hour labels and no horizontal overflow. Unit tests and independent review were not run for this direct CSS adjustment.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Booking status badge colours
+I asked for the green under My bookings to be darker and Cancelled to be red. Continuing my instruction for direct visual edits, the agent changed the Active status badge to solid dark green and the Cancelled badge to solid red, both with white semibold text, using dedicated CSS tokens in src/frontend/src/styles.css. The production build and six focused My bookings/History contrast checks passed across light and dark themes. The full unit/browser suites and independent workflow review were not rerun for this CSS-only adjustment.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Reusable local sample setup
+I asked to keep the current sample backend for later testing and chose a reusable setup command rather than a database backup. The agent added src/backend/scripts/start-local-test.ps1, documented it in src/backend/README.md, and updated scripts/seed-local.ps1 to replenish an upcoming sample booking when none remains while preserving existing bookings. The command prompts for a test password, starts/reuses the isolated local Docker database, builds and starts the backend, seeds through real APIs, and starts/reuses the frontend; backend-only and alternate local ports are available. No account password was saved in repository files. It successfully reused my existing setup, started a fresh separate verification stack, reran without duplicating the 5 accounts/20 slots/2 bookings, and replenished an active booking after an API cancellation. Both scripts parsed and the whitespace check passed. The temporary verification services/database were removed; my original testing app remains running. The full product test suites and independent workflow review were not run for this direct setup addition.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Web startup in the developer guide
+I asked to add instructions for starting the web application to the developer guide. The agent added a local Windows startup section to docs/DeveloperGuide.md with prerequisites, the repository-root setup command, the Login URL, service ports, synthetic account emails, password reuse, sample-data behaviour, background output locations and backend-only/alternate-port links. The instructions were checked against the actual setup/seed scripts and their previously verified execution. The documentation whitespace and linked-file checks passed; no product tests were rerun for this documentation-only edit, and no credentials were recorded.
 Verification: pending Phuc's review.

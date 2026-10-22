@@ -166,27 +166,39 @@ foreach ($tutorEmail in $slotPlan.Keys) {
 }
 Write-Host "Slots: $created created, $skipped already present."
 
-# ---- Student: one upcoming booking and one cancelled booking ----
+# ---- Student: keep an upcoming sample and a cancellation history example ----
 $student = New-Session 'student1@example.edu' $SeedPassword
-$existing = (Invoke-Api $student 'GET' '/api/student/bookings').Body
-if (@($existing).Count -eq 0) {
-    $slots = @((Invoke-Api $student 'GET' '/api/student/slots').Body)
-    if ($slots.Count -ge 3) {
-        $keep = Invoke-Api $student 'POST' '/api/student/bookings' @{ slotId = $slots[0].id }
-        Assert-Status $keep @(201) 'Book first slot'
-        $other = $slots | Where-Object { $_.startTime -ge $slots[0].endTime } | Select-Object -First 1
-        $temp = Invoke-Api $student 'POST' '/api/student/bookings' @{ slotId = $other.id }
-        Assert-Status $temp @(201) 'Book second slot'
-        $cancel = Invoke-Api $student 'POST' "/api/student/bookings/$($temp.Body.id)/cancel" @{}
-        Assert-Status $cancel @(200) 'Cancel second booking'
-        Write-Host 'student1: 1 upcoming booking, 1 cancelled booking.'
+$existing = @((Invoke-Api $student 'GET' '/api/student/bookings').Body)
+$hasUpcoming = @($existing | Where-Object { $_.status -eq 'ACTIVE' -and [DateTimeOffset]::Parse($_.startTime) -gt [DateTimeOffset]::UtcNow }).Count -gt 0
+$hasCancelled = @($existing | Where-Object { $_.status -eq 'CANCELLED' }).Count -gt 0
+
+function New-SampleBooking([string]$Purpose) {
+    $available = @((Invoke-Api $student 'GET' '/api/student/slots').Body)
+    foreach ($slot in $available) {
+        $result = Invoke-Api $student 'POST' '/api/student/bookings' @{ slotId = $slot.id }
+        if ($result.Status -eq 201) { return $result.Body }
+        # Only choose a different slot after an explicit rejection. Never retry an
+        # uncertain mutation, and never alter an existing booking to make room.
+        if ($result.Status -eq 409 -and $result.Body.code -in @('BOOKING_OVERLAP', 'SLOT_UNAVAILABLE')) { continue }
+        Assert-Status $result @(201) $Purpose
     }
-} else {
-    Write-Host "student1 already has $(@($existing).Count) booking(s); left unchanged."
+    throw "No available non-overlapping slot for $Purpose; existing bookings were left unchanged."
 }
 
+if (-not $hasUpcoming) {
+    $null = New-SampleBooking 'upcoming sample booking'
+    Write-Host 'student1: created an upcoming sample booking.'
+}
+if (-not $hasCancelled) {
+    $temporary = New-SampleBooking 'cancelled sample booking'
+    $cancel = Invoke-Api $student 'POST' "/api/student/bookings/$($temporary.id)/cancel" @{}
+    Assert-Status $cancel @(200) 'Cancel sample booking'
+    Write-Host 'student1: created a cancelled sample booking.'
+}
+if ($hasUpcoming -and $hasCancelled) { Write-Host 'student1: upcoming and cancelled samples already present; left unchanged.' }
+
 Write-Host ''
-Write-Host 'Done. Sign in at http://127.0.0.1:5173/login with:'
+Write-Host "Done. Local sample backend: $BaseUrl"
 Write-Host '  student1@example.edu  (has bookings)   student2@example.edu  (no bookings)'
 Write-Host '  tutor1@example.edu, tutor2@example.edu, and your Admin account'
 Write-Host 'Seeded accounts use the password you entered for this run.'

@@ -44,14 +44,14 @@ for (const width of [320, 768, 1024, 1440]) {
       for (const day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']) {
         await expect(page.getByText(new RegExp(`^${day}$|^${day.slice(0, 3)}$`, 'i')).first()).toBeVisible();
       }
-      const filters = await page.getByRole('combobox', { name: /module/i }).boundingBox();
-      const firstEvent = await book.first().boundingBox();
-      expect(filters!.x + filters!.width).toBeLessThan(firstEvent!.x);
-    } else if (width === 320) {
-      const filters = await page.getByRole('combobox', { name: /module/i }).boundingBox();
-      const firstEvent = await book.first().boundingBox();
-      expect(filters!.y).toBeLessThan(firstEvent!.y);
     }
+    const filters = await page.getByRole('complementary', { name: 'Consultation filters' }).boundingBox();
+    const results = await page.getByRole('region', { name: 'Available consultations' }).boundingBox();
+    expect(filters!.y + filters!.height).toBeLessThanOrEqual(results!.y);
+    const titleSize = await page.locator('.consultation h3').first().evaluate(element => parseFloat(getComputedStyle(element).fontSize));
+    expect(titleSize).toBeGreaterThanOrEqual(14);
+    const timeSize = await page.locator('.consultation-time').first().evaluate(element => parseFloat(getComputedStyle(element).fontSize));
+    expect(timeSize).toBeGreaterThanOrEqual(13);
     await book.first().click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();

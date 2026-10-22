@@ -143,3 +143,42 @@ fake responses are rejected. Do not use shared mode before that infrastructure i
 verified. Role-level report deadlines and in-flight checks do not replace its durable
 request/token accounting. An interrupted provider that still runs retains the
 per-account block beyond60seconds until it actually finishes.
+## Reusable local sample setup (Windows)
+
+From `src/backend` in PowerShell, with Java 25, Node 24+ and Docker Desktop running:
+
+```powershell
+.\scripts\start-local-test.ps1
+```
+
+Enter one test-account password when prompted. On later runs use the same password;
+the command never resets existing passwords. For the sample database created during
+this session, use the password supplied in chat. Passwords are not saved in repository
+files. The command builds the backend, creates or starts the isolated
+`unichope-manual-db` PostgreSQL 17 container (loopback port 55433), bootstraps its
+administrator once, starts the `app-api,local` backend on port 8080 and the frontend
+on port 5173, and seeds through the real HTTP APIs. Open
+<http://127.0.0.1:5173/login>.
+
+Sample accounts (all use the supplied password):
+
+- `admin@example.edu`
+- `student1@example.edu` (upcoming booking and cancellation history)
+- `student2@example.edu` (no bookings initially)
+- `tutor1@example.edu` and `tutor2@example.edu`
+
+The seed includes CS2030, CS2040 and MA1521 with about 20 slots over the next seven
+days in Singapore time, including simultaneous tutors and an overnight slot.
+Reruns reuse accounts/modules, skip overlapping slots, preserve existing bookings,
+and replenish student1's upcoming sample when no future active booking remains.
+Use `-BackendOnly` to omit the frontend. The services run in the background and
+their startup output is under the ignored `build/local-test/<container-name>/`
+directory. Starting an already-running setup reuses its services; restart the
+backend separately when Java source changes.
+
+Database records survive `docker stop unichope-manual-db` followed by another setup
+run. Removing that container deletes this disposable sample database. This setup
+uses its own local database and does not use the PostgreSQL integration-test
+container. For an additional isolated instance, the optional `-ContainerName`,
+`-DatabasePort`, `-BackendPort` and `-FrontendPort` parameters select its name and
+loopback ports.
