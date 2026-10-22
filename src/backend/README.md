@@ -49,8 +49,8 @@ DDL for explicitly isolated tests, not an active/default production migration.
 The app-api profile now supplies explicit datasource/service/authentication wiring.
 The committed [auth specification](../../workflow/auth/TECHNICAL-SPEC.md) selects
 passwordHash and sessionGeneration on users. The core account proposal below now
-implements internal storage and atomic provisioning/revocation. Authentication
-wiring, session policy and production migration activation remain pending.
+implements internal storage and atomic provisioning/revocation. Auth/session wiring and runtime V1-V4 migrations exist. Student app-api composition
+and its platform.auth actor adapter are specified in stu-c5 and pending this increment.
 Its storage decision supersedes the historical SQL comment; reviewed SQL is unchanged.
 Core and Student AI owners must coordinate production migration versions.
 
@@ -65,8 +65,8 @@ Keep it out of DTOs and custom serializers. The app-api profile wires auth/sessi
 Only the new isolated auth tests explicitly select `db/core-review` followed by
 `db/auth-review`. V1 and the original credential-free tests remain unchanged.
 The review extension requires an empty users table; applying it to existing accounts
-fails atomically. Production activation, migration numbering, real-account backfill
-and owner agreement require a separate review.
+fails atomically. Runtime numbering is V1-V4; real-account backfill, deployment activation
+and owner agreement require separate review.
 
 Creation strips names (1–100 Unicode code points), strips and ROOT-lowercases emails
 (1–254 code points, one @, nonempty sides, no Unicode whitespace/control), and accepts
@@ -98,7 +98,9 @@ structured constraint metadata, with the same BOM-managed dependency/version.
 
 ## Running the integrated application
 
-The `app-api` profile activates authentication, Admin and Tutor APIs. Default startup
+The baseline `app-api` profile activates authentication, Admin and Tutor APIs.
+The authorized stu-c5 increment also activates Student with a SessionPrincipal actor
+adapter; see workflow/student/changes/stu-c5-auth-integration.md for current evidence. Default startup
 remains closed and database-free. Runtime migrations use `db/migration`: core V1,
 account columns V2, private notes V3 and initial-Admin marker V4. Existing isolated
 review migrations/tests remain unchanged. Use a new empty database for first setup;

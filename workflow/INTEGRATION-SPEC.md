@@ -27,9 +27,14 @@ There is no event bus or asynchronous domain-event protocol in the initial desig
 
 ## 2. Shared Authentication Endpoints
 
+Credential validation, registration and session-generation semantics are defined in
+[Auth Technical](auth/TECHNICAL-SPEC.md#http-contract) and its selected credential
+storage section; the shared endpoint summary below follows that contract.
+
 | Method/path | Request | Success |
 | --- | --- | --- |
 | GET `/auth/csrf` | None; may create anonymous session | 200 `{ "headerName": "X-CSRF-TOKEN", "token": "..." }` |
+| POST `/auth/register` | `{ "name": "...", "email": "...", "password": "...", "confirmation": "..." }` with CSRF | 201 `{ "message": "Registration completed" }`; creates a Student account without authenticating the session |
 | POST `/auth/login` | `{ "email": "...", "password": "..." }` with CSRF | 200 authenticated-user object and rotated session cookie |
 | GET `/auth/me` | Session cookie | 200 authenticated-user object |
 | POST `/auth/logout` | CSRF and session cookie | 204; invalidate session and expire cookie |
@@ -39,7 +44,13 @@ Never return password hashes or stored credentials. Invalid/inactive login retur
 generic 401 `INVALID_CREDENTIALS`; throttle returns 429 without confirming whether
 an account exists. Protected missing/expired sessions return 401 `UNAUTHENTICATED`.
 An authenticated wrong role returns 403 `FORBIDDEN`. Newly detected inactive
-accounts return 403 `ACCOUNT_INACTIVE` and invalidate the session. Invalid/missing
+accounts return 403 `ACCOUNT_INACTIVE` and invalidate the session. An active account
+whose stored session generation differs from its session principal returns 401
+`UNAUTHENTICATED` and invalidates the session. Deactivation increments the generation;
+reactivation does not restore old sessions, even if no request occurred while inactive:
+a fresh login is required. Registration rejects duplicate accounts with 409
+`ACCOUNT_UNAVAILABLE` and invalid input with 400 `VALIDATION_FAILED`; clients cannot
+choose role or active state. Invalid/missing
 CSRF returns 403 `CSRF_INVALID`; error precedence may follow the security filter
 chain, but must never allow a denied operation or leak record content.
 If a role operation rechecks the actor under its transaction locks and that shared
@@ -144,7 +155,7 @@ contract; SQL migration details belong to the technical implementation.
 
 | Record | Required fields and invariants |
 | --- | --- |
-| User | id, name, normalized unique email, role STUDENT/TUTOR/ADMIN, active; auth-selected core extensions: passwordHash and nonnegative sessionGeneration (initially 0). Both are internal and excluded from ordinary responses. The current review-only core schema does not implement these extensions. |
+| User | id, name, normalized unique email, role STUDENT/TUTOR/ADMIN, active; auth-selected core extensions: passwordHash and nonnegative sessionGeneration (initially 0). Both are internal and excluded from ordinary responses. Runtime migration V2 implements these internal columns; the isolated core-review schema intentionally remains credential-free. |
 | Module | id, unique case-normalized code, name, active |
 | TutorModule | tutorId and moduleId foreign keys, unique pair; assigned user must be a tutor |
 | Slot | id, tutorId, moduleId, startTime, endTime, status; end > start; retained history |
@@ -241,16 +252,35 @@ Student/Admin endpoint contracts remain their owners' responsibility.
 
 ### Decisions still requiring owner agreement
 
-- The committed [auth specification](auth/TECHNICAL-SPEC.md#selected-credential-storage)
-  selects passwordHash and sessionGeneration on the existing users record; no second
-  credential/user table. Core storage, migration and atomic provisioning/revocation
-  operations still need implementation and affected-owner review. The current DDL
-  remains credential-free and review-only; production schema activation is blocked.
-- Auth supplies trusted session identity to `CurrentActorProvider`; the exact shared
-  principal adapter and application-wide security wiring still require integration.
-- The core owner and Student AI owner coordinate migration version allocation before
-  either adds production migrations. The current review-only core DDL does not reserve
-  a production version number.
+- Runtime `AccountStorage`/provisioning/revocation and app-api migrations V1-V4
+  exist at a9dd650. Public User/DTOs remain credential-free. Isolated core-review
+  DDL is test-only; existing-account backfill/deployment approval is not established.
+- Phuc's 22 October request "Update the spec and intergrate with new auth, implement
+  student booking" authorizes adding student-api to app-api and a
+  platform.auth.CurrentActorProvider SessionPrincipal adapter. At the inspected
+  baseline these are pending implementation. Default startup remains closed;
+  Auth/Admin/Tutor semantics and Tutor's actor seam are preserved. Affected-owner
+  review remains required before merge; no teammate approval is claimed.
+- Future AI migrations require coordinated new versions after runtime V4; do not
+  rewrite applied migrations. Student's proposed AI gateway requires compatibility
+  review with existing Tutor/Admin AiGateway consumers, outside booking scope.
 - The proposed auth and deployment assignments in the shared technical spec require
   confirmation by the affected teammates; this contract does not record that
   confirmation.
+
+## 9. Student booking integration
+
+The canonical Student DTO, strict input, eligibility, ownership, response/error and
+post-commit projection rules are [Student Technical sections 3-4](student/TECHNICAL-SPEC.md).
+Creation: POST /api/student/bookings {slotId} returns 201 StudentBooking + Location;
+unavailable/missing/ineligible slots use 409 SLOT_UNAVAILABLE, overlap uses 409
+BOOKING_OVERLAP. Cancellation: POST /api/student/bookings/{id}/cancel {} returns
+200 CANCELLED StudentBooking; foreign/missing IDs are 404, invalid state/start is
+409 INVALID_STATE. Both use existing ConsultationLifecycle and this document's
+section 7 locks/atomic transitions unchanged. SLOT_UNAVAILABLE is Student-specific.
+
+Composed Auth current-account checks precede controller syntax. A malformed request
+with stale/inactive/unsupported principal is denied by the shared filter before
+validation; after filter admission, Student syntax precedes StudentAccess checks.
+See Student Technical section 3.2 for exact precedence and section 9 for real-auth,
+generation revocation/reactivation, CSRF and cross-account acceptance requirements.

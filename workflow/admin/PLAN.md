@@ -20,8 +20,9 @@ Spec -> acceptance/security tests -> scoped implementation -> independent review
 human verification. Update spec/tests/code together when approved behavior changes.
 Core/AI/frontend/deployment implementation not assigned to Admin; coordinate interface
 changes rather than duplicating scaffolds. Separate assigned reviews: Tutor, core
-management rules and shared AI. Actual build/test commands await app scaffold; record
-command+exit+revision then. No implementation/tests/approval claimed by this plan.
+management rules and shared AI. Backend Gradle test/postgresTest/bootJar commands and source/tests now exist.
+Record command+exit+revision in artifact handoffs; this refresh neither reruns tests
+nor establishes earlier independent review/approval claims.
 
 
 ## Current results and remaining dependency

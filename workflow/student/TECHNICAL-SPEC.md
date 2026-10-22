@@ -15,12 +15,12 @@ allocation. Follow shared auth/session, database, lock-order, error, and API
 conventions. Student code does not invent its own users table, session format,
 booking statuses, SoC credentials, or quota counters.
 
-| Dependency | Owner | Student needs | State on `branch_student` (base `98ca801`) |
+| Dependency | Owner | Student needs | Observed state at `a9dd650` / required increment |
 | --- | --- | --- | --- |
 | Backend scaffold, CI | Huanghao (as built) | Gradle, Boot 4.0.8 MVC/Security, `postgresTest` task | Exists; CI runs `test postgresTest bootJar` on PRs to `main` |
 | `platform/core` lifecycle and repositories | Huanghao | `bookAvailableSlot`, `cancelActiveBooking`, `UserRepository` | Exists; no change needed |
-| `platform/auth` actor seam | Kok Seng implements; Student defines the interface | `CurrentActorProvider` (section 2) | Missing; Student adds the interface only |
-| `platform/web` | Assigned per task | `ApiErrors`, `ApiFailure`, `ApiSecurityConfiguration` | Exists; Student adds a `student-api` route rule |
+| `platform/auth` actor seam | Kok Seng implements; Student defines the interface | `CurrentActorProvider` (section 2) | Interface exists; C5 adds a trusted SessionPrincipal runtime adapter |
+| `platform/web` | Assigned per task | `ApiErrors`, `ApiFailure`, `ApiSecurityConfiguration` | Student route rule exists; shared auth filter remains authoritative |
 | Shared React shell and API client | Not yet assigned | Frontend pages | Out of scope for the booking backend changes |
 
 Decision (Phuc, 22 October 2026, current-session request): Student reads core tables
@@ -35,13 +35,13 @@ implementer may rename them only together with this spec and the tests.
 
 | Location | Component | Responsibility |
 | --- | --- | --- |
-| `platform/auth` | `CurrentActorProvider` | `Optional<UUID> currentActorId()`; the session-authenticated actor. Interface only |
+| `platform/auth` | `CurrentActorProvider` | `Optional<UUID> currentActorId()`; existing seam, runtime adapter accepts only authenticated `SessionPrincipal` |
 | `student/` | `StudentAccess` | Resolve actor via provider, re-read stored account, enforce active STUDENT (section 3.2) |
 | `student/` | `StudentReadRepository`, `PostgresStudentReadRepository` | Read-only parameterized SQL joins (section 4) |
 | `student/` | `StudentReadService` | Filters, ordering, `cancellable`, ownership-scoped detail |
 | `student/` | Records `ModuleOption`, `BookableSlot`, `StudentBooking` | Exact JSON shapes (section 3) |
-| `student/http/` | `StudentController`, `StudentApiInput`, `StudentHttpService`, `StudentExceptionHandler`, `StudentApiConfiguration` | Routes, strict input parsing, lifecycle calls and error mapping, `@Profile("student-api")` wiring |
-| `platform/web` | `ApiSecurityConfiguration` | When profile `student-api` is active, `/api/student/**` requires authentication; everything else unchanged |
+| `student/http/` | `StudentController`, `StudentApiInput`, `StudentHttpService`, `StudentExceptionHandler`, `StudentApiConfiguration` | Routes, strict input parsing, lifecycle calls and error mapping, `@Profile("student-api")` wiring; reads exist, mutations are this increment |
+| `platform/web` | `ApiSecurityConfiguration` | Existing `student-api` authenticated route rule; composed auth filter checks current session state first |
 
 Decision (Phuc, 22 October 2026, current-session request): the actor interface lives
 in `unichope.platform.auth` so the auth owner implements it once for every role.
@@ -53,11 +53,21 @@ imports only `platform/*`; platform never imports `student/`. The actor is the
 request-scoped authenticated ID, re-read for current role and active state on every
 request; IDs in bodies, queries or headers never select the actor.
 
-Activation follows `tutor-api`: default startup exposes no Student route. With
-`student-api` active, missing provider, read repository, lifecycle, `Clock` or
-`DataSource` beans fail startup; there is no anonymous or main-source test actor.
-Production activation waits for the auth owner's real provider and the production
-migration, as for Tutor.
+Current baseline at `a9dd650`: c1 browsing and c3 owned booking list/detail exist;
+creation/cancellation handlers and the Student runtime adapter are absent. Runtime
+Flyway V1-V4 and the Auth/Tutor/Admin `app-api` composition already exist.
+
+Authorized increment (Phuc, 22 October 2026; direct request "Update the spec and
+intergrate with new auth, implement student booking"): include `student-api` in
+`app-api` and supply `platform.auth.CurrentActorProvider` in runtime configuration.
+The adapter reads only an authenticated `SessionPrincipal` and returns its user ID;
+it never accepts UUID/string principals or request headers. Shared auth validates
+generation and stored state first; StudentAccess still checks current STUDENT status.
+Preserve Tutor's separate actor provider and all Auth/Admin contracts. Default
+startup remains closed/database-free. Isolated `student-api` with missing actor,
+read repository, lifecycle (once mutations are wired), Clock or DataSource fails
+startup; never add an anonymous fallback. Shared-owner review is a merge gate,
+not a blocker for the authorized implementation or test writing.
 
 ## 3. Student API
 
@@ -140,12 +150,18 @@ account is somehow still valid, return 403 `FORBIDDEN` without invalidating the
 session (the generic lifecycle result alone never invalidates, per Integration §2).
 This matches Tutor (`TutorHttpService.mutate`).
 
-Evaluation order (clarification, analyst-2 finding F2-06; matches `TutorController`):
-filter-chain denials come first (no authenticated principal 401, missing/invalid CSRF
-403); then request syntax (query parameters, path ID, content type, body size and
-body shape: 400/413/415); then the actor check above; only then any resource read or
-lifecycle call. A syntax error therefore returns 400/413/415 even for a principal
-that would fail the actor check, and causes no read, write or session invalidation.
+Evaluation order: shared security filters precede controller syntax and actor
+checks. With `auth-api`, `CurrentAccountFilter` runs immediately after loading the
+security context: a non-SessionPrincipal, absent account or stale generation returns
+401 and invalidates the session; inactive returns 403 ACCOUNT_INACTIVE and
+invalidates it; account-storage failure returns sanitized 503. These can win even
+when syntax or CSRF is invalid. Later CSRF/authorization denials use the existing
+filter order (an unsafe anonymous request without CSRF can be 403 CSRF_INVALID;
+an anonymous GET or POST with valid anonymous CSRF is 401). Do not change shared
+filters to force controller precedence. Once filters admit the request, validate
+query/path/content-type/size/JSON before StudentAccess, then resource/lifecycle work.
+Thus syntax still precedes StudentAccess wrong-role checks, but never the shared
+current-account filter. Isolated UUID-principal tests remain seam tests only.
 
 ### 3.3 Error mapping
 
@@ -187,7 +203,8 @@ committed and a later GET shows it. Do not describe this as a rollback.
 ## 4. Persistence and Concurrency
 
 Student adds no migration and no table. It reads `users`, `modules`, `tutor_modules`,
-`slots`, and `bookings` from the core review DDL (`db/core-review/V1`).
+`slots`, and `bookings` from runtime `db/migration` V1-V4. Isolated seam tests may still use
+`db/core-review/V1`; real-auth integration must use runtime migrations.
 
 `PostgresStudentReadRepository` uses parameterized `JdbcClient` SQL only, no locks:
 
@@ -293,7 +310,13 @@ their prompts, context selection, and output validation; `platform/ai` owns
 everything provider-facing and quota-related. Agree this contract with Huanghao
 (Tutor) and Kok Seng (Admin) before they integrate.
 
-### Gateway contract
+### Gateway contract (future proposal; compatibility decision required)
+
+Existing `platform.ai.AiGateway` uses nested Request/Result and typed Failure;
+Tutor/Admin already consume it. The proposed API below must be reconciled or
+migrated with those owners before AI implementation. Existing Admin configuration
+uses `unichope.ai.mode=unavailable|fake|shared`; it does not establish durable shared
+quotas. This booking increment does not change the gateway or AI behavior.
 
 ```java
 public interface AiGateway {
@@ -399,3 +422,24 @@ PostgreSQL-backed tests follow the existing `postgresTest` convention (tag
 start the disposable database in `src/backend/compose.test.yaml`; CI uses its own
 PostgreSQL 17 service. Do not substitute H2/SQLite. A real-provider evaluation with synthetic questions (normal, vague,
 injection, "answer my exam") is separate and later. No tests have been run.
+
+## 9. Auth-to-Student runtime acceptance (stu-c5)
+
+All C5 scenarios use actual AuthController/AuthenticationService/CurrentAccountFilter,
+SessionPrincipal, runtime Flyway migrations and PostgreSQL, through app-api. UUID
+principal injection and isolated review DDL cannot satisfy these criteria.
+
+| ID | Given / When / Then |
+| --- | --- |
+| C5-RUN-1 | Given default startup / when Student is requested / then no Student route is exposed and access is closed. Given app-api and valid PostgreSQL config / when started / then auth-api, tutor-api, admin-api and student-api are active, Student modules/slots/list/detail use the same runtime; missing Student actor or required dependencies in isolated student-api fails startup. |
+| C5-AUTH-1 | Given registration and real login for active S1 / when fresh login CSRF is fetched and S1 browses, books, lists, reads detail and cancels / then existing exact DTOs, ownership and C2/C4 transitions apply. Login rotates session; the pre-login CSRF token fails mutation and the fresh token succeeds. Book/cancel tests can be written before those handlers exist and fail behaviorally until C2/C4 implementation. |
+| C5-AUTH-2 | Given anonymous, missing-account, stale-generation, inactive, wrong-role or non-SessionPrincipal authentication / when Student is requested / then section 3.2 denials apply with no lifecycle call or resource disclosure. Stored TUTOR/ADMIN cannot become Student via cached authorities or header/body identity. Test stale/inactive with malformed syntax too: shared filter wins. Test valid wrong-role session with malformed syntax: controller syntax wins once filters admit it. |
+| C5-REV-1 | Given two real sessions for S1 / when Admin deactivates S1 / then first use of an old session while inactive gives 403 ACCOUNT_INACTIVE and invalidates it, subsequent use is 401. Reactivate S1 before using the second session: its old generation still gives 401 and invalidates it. Only new login restores Student access. Missing account also gives 401 and invalidation. |
+| C5-CSRF-1 | Given authenticated S1 / when logout uses fresh CSRF / then 204, invalid session/cookie and old token cannot mutate. Fetch fresh anonymous CSRF; repeat logout is 204; new login requires fresh post-login CSRF. Missing/invalid CSRF cannot book or cancel. |
+| C5-STATE-1 | Given S1 creates a booking then logs out and S2 logs in / when listing/detail/cancel are requested with S1's ID / then S2's list excludes it and detail/cancel are indistinguishable 404; actor headers never switch account. Backend retains no previous actor or cached booking state; future UI must separately verify section 7 clearing and late-response rules. |
+| C5-REG-1 | Given existing Tutor/Admin authenticated journeys / when Student runtime wiring is enabled / then existing role access, CSRF, revocation and lifecycle suites retain their contracts; do not migrate Tutor's actor seam in this increment. |
+
+Verification prerequisite: disposable real PostgreSQL 17 with CREATE SCHEMA permission,
+Java 25 and Gradle wrapper. Run focused unit and postgresTest suites, then full
+`test postgresTest bootJar`. Use unique schemas and synthetic credentials only.
+No runtime success is claimed by this specification.

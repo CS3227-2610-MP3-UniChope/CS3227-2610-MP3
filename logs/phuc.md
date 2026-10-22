@@ -3,7 +3,7 @@
 AI-generated summaries of my development sessions, written from my point of view.
 Each entry stays pending until I have checked it.
 
-## 22 October 2026: Claude Code (Opus 5.5): Student specifications and logging
+## Claude Code (Opus 5.5): Student specifications and logging
 
 I asked Claude how to connect Claude Code and Codex for automatic handoffs, and how
 OpenSpec orchestrates agents. It explained that neither tool links to the other
@@ -31,7 +31,7 @@ or deployed, and teammates have not reviewed the specifications.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex (GPT-6): Agent readiness and technical consistency
+## Codex (GPT-6): Agent readiness and technical consistency
 
 I asked Codex to improve the specialized agents using Lecture 7 and established
 repositories, especially making the spec analyst check requirements against the
@@ -57,7 +57,7 @@ real-provider evaluation, commit, push or deployment was performed for this task
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex (GPT-6): Handoffs without interaction-log context
+## Codex (GPT-6): Handoffs without interaction-log context
 
 I asked to prevent specialized agents from reading each other's logs because that
 can carry assumptions into the next stage. Codex added
@@ -80,7 +80,7 @@ deployment was performed. The instructions do not enforce filesystem permissions
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex (GPT-6): Shared actor and identity API proposal
+## Codex (GPT-6): Shared actor and identity API proposal
 
 I asked Codex to review the current code and propose whether identity should use
 an API such as whoami rather than the Tutor-local current actor. It inspected the
@@ -103,7 +103,7 @@ changed; no commit, push or deployment was performed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): Student booking specification and handoff
+## Claude Code (Opus 5.5): Student booking specification and handoff
 
 I asked Claude to implement Student booking according to the spec, ignoring the AI
 feature, and to raise anything unclear rather than assume. After I updated my branch
@@ -128,7 +128,7 @@ platform/auth and platform/web additions.
 Verification: pending Phuc's review.
 
 
-## 22 October 2026: Codex GPT-6: Student booking scope and decisions
+## Codex GPT-6: Student booking scope and decisions
 I asked for all four Student booking changes and fresh sessions for tests. I approved
 any active student booking any active module, listing overlapping slots, cancellation
 until start without notice, and one unavailable-slot conflict response. The agent
@@ -138,7 +138,7 @@ No application code or tests were changed at this point; implementation, executi
 Claude review and my manual verification remain pending.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Codex GPT-6: C1 test-writer entry check
+## Codex GPT-6: C1 test-writer entry check
 I asked for a fresh GPT test-writing stage for Student slot browsing C1-T1 through
 C1-T4 after approving the four proposed booking rules. The agent read the repository
 workflow and canonical contracts, verified the referenced hashes and unchanged base
@@ -152,7 +152,7 @@ were not freshly verified. Existing local modifications were preserved.
 Verification: pending Phuc's review.
 
 
-## 22 October 2026: Codex GPT-6: Claude readiness repair handoff
+## Codex GPT-6: Claude readiness repair handoff
 I requested implementation of all four booking changes. A fresh GPT test writer
 returned c1 because the required Claude coverage and findings/resolution assessments
 are missing. The agent prepared workflow/student/changes/CLAUDE-READINESS-HANDOFF.md
@@ -163,7 +163,7 @@ and no test or implementation code was written. Claude readiness repair, fresh G
 tests/implementation, independent Claude review and my verification remain pending.
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): Single-agent workflow
+## Claude Code (Opus 5.5): Single-agent workflow
 
 I asked Claude to remove the Claude/GPT split so that it does every role, each in a
 fresh session. It rewrote NOTE.md, HANDOFF.md, the four role prompts, PLAN.md,
@@ -178,7 +178,7 @@ Only whitespace was checked. No tests or code changed and nothing was committed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): Analyst readiness repair (fresh subagent)
+## Claude Code (Opus 5.5): Analyst readiness repair (fresh subagent)
 
 I asked Claude to start the next stage in a fresh session. It launched a fresh spec
 analyst subagent that worked only from ANALYST-READINESS-HANDOFF.md, the change records,
@@ -195,7 +195,7 @@ No tests were run and no code was written; nothing was committed by Claude.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): c1 test writing (fresh subagent)
+## Claude Code (Opus 5.5): c1 test writing (fresh subagent)
 
 I decided that teammate review of the platform/auth and platform/web additions gates only
 the merge to main, and that adding SLOT_UNAVAILABLE to the shared integration spec is
@@ -211,7 +211,7 @@ Nothing was committed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): c1 implementation (fresh subagent)
+## Claude Code (Opus 5.5): c1 implementation (fresh subagent)
 
 A fresh implementer subagent accepted the c1 handoff and implemented browsing: the new
 platform/auth CurrentActorProvider interface, a two-line student-api rule in
@@ -226,7 +226,7 @@ Nothing was committed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): c1 independent review (fresh subagent)
+## Claude Code (Opus 5.5): c1 independent review (fresh subagent)
 
 A fresh reviewer subagent, which produced none of the c1 work, built its own checklist
 from the request and specs, inspected the diff, reran the full suite (28 unit and 123
@@ -241,7 +241,7 @@ Nothing was committed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): c3 test writing (fresh subagent)
+## Claude Code (Opus 5.5): c3 test writing (fresh subagent)
 
 A fresh test-writer subagent accepted the c3 handoff after confirming c1 was implemented,
 reviewed and green, and wrote StudentBookingsPgTest with 9 PostgreSQL tests for viewing
@@ -255,7 +255,7 @@ Nothing was committed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): c3 implementation (fresh subagent)
+## Claude Code (Opus 5.5): c3 implementation (fresh subagent)
 
 A fresh implementer subagent accepted the c3 handoff and added the StudentBooking record,
 the owner-scoped booking query with status and Singapore-date filters, server-computed
@@ -268,7 +268,7 @@ Nothing was committed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): c3 independent review (fresh subagent)
+## Claude Code (Opus 5.5): c3 independent review (fresh subagent)
 
 A fresh reviewer subagent reviewed the c3 increment, confirmed the patch matched the
 working tree and that c1 did not regress, and reran the full suite (28 unit and 132
@@ -281,7 +281,7 @@ Nothing was committed.
 
 Verification: pending Phuc's review.
 
-## 22 October 2026: Claude Code (Opus 5.5): c2 test writing (fresh subagent)
+## Claude Code (Opus 5.5): c2 test writing (fresh subagent)
 
 A fresh test-writer subagent accepted the c2 handoff after confirming c1 and c3 were
 implemented and reviewed, and wrote StudentBookSlotPgTest with 15 PostgreSQL tests for
@@ -296,7 +296,7 @@ Nothing was committed.
 Verification: pending Phuc's review.
 
 
-## 22 October 2026: Codex GPT-6: Resolve Student rebase conflict
+## Codex GPT-6: Resolve Student rebase conflict
 I asked the agent to resolve the conflicts in my in-progress rebase. It preserved
 upstream auth/admin/tutor security configuration and filters while restoring the
 student-api authenticated route in ApiSecurityConfiguration.java. A verification
@@ -311,4 +311,60 @@ expect that unimplemented capability. The agent did not implement it or weaken
 those tests during the rebase. git diff --check passed. No independent review or
 manual API verification was performed. The pre-existing untracked src/backend/bin/
 was preserved. This log entry is appended after the rebase and left uncommitted.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Main Auth/Admin specification impact audit
+
+I asked for a check of specification changes needed after main's Admin backend and shared authentication increment. The agent compared commit 36221f7 and current revision a9dd650 with canonical specifications and actual runtime/test sources, then wrote workflow/student/changes/main-auth-admin-spec-impact.md. It proposed updates for Student runtime/profile integration, stale migration/storage descriptions, real-auth test scope, gateway compatibility and obsolete Auth/Admin status text. It preserved team ownership and retained unimplemented product/security requirements. No canonical specs, code or tests were changed; no tests, builds, database operations, live user journeys or independent review were performed. Cross-owner decisions and my review remain pending.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Student booking and shared-auth specification refresh
+
+I asked to update the spec, integrate with the new auth, and implement Student booking. The spec agent refreshed Student technical/plan and shared Integration contracts, documented the SessionPrincipal adapter and app-api Student composition, and added separate current test handoffs for auth integration, booking creation and cancellation. Existing browsing/views and lifecycle/locking rules were preserved. Targeted Auth/Admin/backend README text now distinguishes current runtime code from pending evidence. The adapter/profile details were agent implementation choices within my request; no teammate approval was claimed. No product code or tests changed in this specification stage. Artifact hashes and git diff --check were verified; no builds, tests, live journeys, independent review or human acceptance were performed in this stage. Affected files: workflow/student/{TECHNICAL-SPEC,PLAN}.md, workflow/INTEGRATION-SPEC.md, workflow/auth/TECHNICAL-SPEC.md, workflow/admin/{TECHNICAL-SPEC,PLAN}.md, src/backend/README.md, and stu-c2/c4/c5 change records.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Student authentication and booking acceptance tests
+I asked for Student booking and cancellation integrated with the new shared authentication. The fresh test-writer agent checked the current canonical spec and source hashes, preserved the fifteen existing booking-creation tests, added eleven cancellation tests and seven real runtime-auth tests, and recorded acceptance mappings plus sanitized red-baseline evidence in the C2, C4 and C5 change records. The new tests cover registration/login, session rotation, server-issued CSRF, revocation, account isolation, cancellation validation, ownership, state boundaries, lifecycle errors, committed-response failures and real PostgreSQL races. No product source was changed or committed. Compilation passed; the combined baseline discovered 33 tests and failed all 33 for absent behavior. A refreshed final cancellation baseline discovered eleven and failed all eleven on the missing route. Full final regression, independent review, teammate merge review and my journey verification remain pending implementation. Affected files are the new StudentCancelBookingPgTest and StudentAuthIntegrationPgTest, the three Student change records and C5 evidence directory.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Student shared auth and booking backend implementation
+I asked to integrate Student with the new shared authentication and implement booking and cancellation. The fresh implementer checked the canonical specs and frozen behavioral red tests, then enabled Student in app-api, added an authenticated SessionPrincipal actor adapter, strict bounded JSON inputs, and lifecycle-backed booking/cancel handlers with safe errors and owned post-commit projections. I kept the agreed booking rules and existing Tutor/Auth/Admin/core behavior; frontend and AI work remain pending. Affected files are Student HTTP sources, runtime ApplicationConfiguration, application.properties, Student PLAN, change records and sanitized verification artifacts. No tests were edited, no commit or push was made. The focused 33 tests passed, then full test postgresTest bootJar passed with 59 unit and 178 PostgreSQL tests, zero failures/errors/skips. Independent review, affected-owner review, UI/manual acceptance and production checks are still pending.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: Integration auth summary consistency
+
+I asked for the specs to reflect the new auth and Student booking integration. The agent checked Auth Technical, AuthController and AuthenticationService directly and added the missing registration endpoint and stale-session-generation/reactivation summary to Integration section 2. It recorded the new Integration hash in an explicit C5 metadata correction addendum while preserving earlier evidence. No behavior, tests or other canonical files changed. Source inspection and scoped git diff --check were completed; no builds or tests were rerun for this documentation correction.
+Verification: pending Phuc's review.
+
+## Codex GPT-6: independent Student booking and auth review
+
+I asked to update the specification, integrate the new authentication and implement Student booking. A fresh reviewer inspected the canonical contracts, actual backend changes and frozen tests independently, checked artifact hashes, and reviewed the booking/cancellation security and concurrency boundaries. The reviewer recorded PASS for the scoped backend increment in the C5/C2/C4 change records and saved its report and sanitized verification evidence under workflow/student/changes/stu-c5-auth-integration/evidence/. It independently reran 18 authentication/cancellation tests successfully and inspected the full producer result of 237 tests plus bootJar, without claiming to rerun that whole suite. Initial cache-access setup attempts were corrected before the successful independent run. No implementation or tests were changed by the reviewer. Affected-owner merge review and my human journey verification remain pending; frontend and AI work were not verified or implemented in this review. No commit or push was made.
+
+Verification: pending Phuc's review.
+
+
+## Codex GPT-6: Integrated Student booking backend
+I asked to update the specifications, integrate the new authentication backend and
+implement Student booking. The agent coordinated fresh specification, test-writing,
+implementation and independent-review sessions. Student now joins app-api with a
+SessionPrincipal-only shared actor adapter, and creation/cancellation use the
+existing core lifecycle with strict request validation, safe errors and owned
+response projections. Browsing and booking views were preserved. The canonical
+Student/Integration specs and plans, factual Auth/Admin status text and backend
+README were refreshed; the Auth registration/revocation summary was corrected.
+Evidence and handoffs are in the c2/c4/c5 change records and c5 evidence directory.
+The full Gradle test postgresTest bootJar run passed 237 tests with no failures,
+errors or skips and built the JAR. A fresh reviewer returned PASS and independently
+reran all 18 cancellation/real-auth tests successfully. The agent verified final
+hashes and diff whitespace and stopped the disposable test database it started.
+No code/test changes followed the successful full run; later edits were factual
+specification metadata and review evidence. Frontend, AI, my manual acceptance and
+affected-owner merge review remain pending. No commit, push or deployment was made.
+Verification: pending Phuc's review.
+
+
+## Codex GPT-6: Remove heading dates
+I asked to remove dates from phuc.md. The agent removed dates from 25 entry
+headings while preserving the remaining content. The heading check and
+git diff --check passed.
 Verification: pending Phuc's review.

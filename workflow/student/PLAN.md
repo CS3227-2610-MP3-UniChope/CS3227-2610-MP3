@@ -1,6 +1,6 @@
 # Student Implementation Plan
 
-Status: Draft execution plan; every task is pending. Writing this plan does not
+Status: Backend C1/C3 reads and C5/C2/C4 auth/booking/cancellation implemented locally; verification and pending review are recorded in their change records. Writing this plan does not
 indicate team approval or authorize changes to other roles' code.
 Owner: Phuc (Student role owner)
 Date: 22 October 2026
@@ -60,13 +60,26 @@ Done by Huanghao on `main` (PRs #1-#4): Gradle/Boot backend, `postgresTest`, and
 backend CI. Student adds `src/backend/compose.test.yaml` for a local disposable
 PostgreSQL 17. No frontend scaffold exists yet.
 
+### C5: Integrate Student with shared authentication
+
+Change record: [changes/stu-c5-auth-integration.md](changes/stu-c5-auth-integration.md).
+
+- [x] Add student-api to app-api; supply authenticated SessionPrincipal-only platform.auth actor adapter.
+- [x] Real runtime PostgreSQL tests C5-RUN-1, C5-AUTH-1/2, C5-REV-1, C5-CSRF-1, C5-STATE-1. Focused C5/C2/C4 run: 33 tests, zero failures/errors/skips. C5-REG-1 full regression evidence is recorded in the implementation handoff; independent/human acceptance remains pending.
+- [ ] Affected Auth/web/core owner review before merge; no code approval is implied.
+
+Implementation order: C5 runtime foundation, C2 creation, C4 cancellation. Existing
+c1/c3 read foundations already exist. Fresh test writing may cover all boundaries
+together now; combined journey cases become green after C2/C4, not before. No
+implemented-upstream prerequisite is imposed on writing executable failing tests.
+
 ### AI1: Gateway and fake provider
 
 - [ ] Tests: gateway delegates to the configured provider; fake outputs are
   deterministic per task; test double simulates timeout, error, malformed, HTML,
   oversized, and empty responses; production profile with `fake` fails at startup;
   `disabled` returns UNAVAILABLE with zero calls.
-- [ ] Implement `AiGateway`, `AiRequest`, `AiResult`, `AiTask`, `AiTaskPolicy`,
+- [ ] Reconcile existing provisional AiGateway/Tutor/Admin consumers before implementing the future proposal; implement `AiGateway`, `AiRequest`, `AiResult`, `AiTask`, `AiTaskPolicy`,
   `FakeProvider`, provider selection config, and `platform/web` failure mapping.
 - [ ] Publish fake examples so Tutor and Admin can integrate without waiting for AI2.
 
@@ -104,10 +117,11 @@ Requirements: STU-SLOT-01, AUTH-02, SEC-01.
 
 Change record: [changes/stu-c2-book-slot.md](changes/stu-c2-book-slot.md).
 
-- [ ] Tests: S-BOOK-1 to S-BOOK-5 including both concurrency races on real
-  PostgreSQL, unique-violation mapping, CSRF; React confirmation and conflict refresh.
-- [ ] Implement `POST /bookings` through the existing, unchanged
-  `ConsultationLifecycle.bookAvailableSlot` (analyst-2 F2-01) and the booking dialog.
+- [x] Backend tests: S-BOOK-1 to S-BOOK-5 including both concurrency races on real
+  PostgreSQL, unique-violation mapping and CSRF (15 focused C2 tests passing).
+- [x] Implement `POST /bookings` through the existing, unchanged
+  `ConsultationLifecycle.bookAvailableSlot` (analyst-2 F2-01).
+- [ ] React booking dialog, confirmation and conflict refresh.
 
 Depends on: S2 (stu-c1) and the stu-c3 `StudentBooking` projection and
 `GET /bookings/{id}` used by the response and its `Location`. Requirements:
@@ -119,10 +133,11 @@ Change records: [changes/stu-c3-my-bookings.md](changes/stu-c3-my-bookings.md),
 [changes/stu-c4-cancel-booking.md](changes/stu-c4-cancel-booking.md). Backend
 only for now; React pages wait for the frontend scaffold.
 
-- [ ] Tests: S-LIST-1, S-CANC-1 to S-CANC-3 (race with tutor completion), fixed-clock
-  `cancellable`, `GET /bookings/{id}` wrong-owner 404; React tabs, filters,
-  confirmation, keyboard flow.
-- [ ] Implement list, detail, and cancel endpoints and the My bookings page.
+- [x] Backend list/detail already implemented; cancellation tests S-CANC-1 to S-CANC-3
+  include the tutor-completion race, boundary clock, ownership, input/security and
+  committed-response failure cases (11 focused C4 tests passing).
+- [x] Implement list, detail, and cancel endpoints; cancellation uses unchanged core lifecycle.
+- [ ] My bookings React page, tabs, filters, confirmation and keyboard flow.
 
 Depends on (analyst-2 F2-01): stu-c3 (list/detail) depends only on stu-c1 and runs
 before stu-c2; stu-c4 (cancel, via the existing `cancelActiveBooking`) depends on
@@ -193,7 +208,7 @@ npm run test -- --run
 npm run build
 ```
 
-None of these exist or have been run yet. Record actual command, revision, exit
+Backend Gradle commands exist; frontend work is pending. This spec session ran no tests. Record actual command, revision, exit
 code, and relevant output in each task's handoff record.
 
 Analyst-2 correction (F2-01): the backend scaffold now exists, and the command above
@@ -210,3 +225,15 @@ after `docker compose -f compose.test.yaml up -d --wait`):
 
 Focused runs may add `--tests` filters to both tasks; the final check runs the full
 command so existing Tutor and core suites stay green.
+
+## 4. Current booking increment (22 October 2026)
+
+Direct source: Phuc's request "Update the spec and intergrate with new auth,
+implement student booking". Backend only: C5 auth composition -> C2 creation -> C4
+cancellation. Tests may be authored as one combined executable packet before
+implementation, with per-change acceptance mappings/handoffs. Existing C2 tests
+must be refreshed against current hashes and preserved, not duplicated or weakened.
+Use the existing c1/c3 code; do not reimplement browsing/list/detail. Frontend and
+AI remain pending, not silently removed. Real runtime tests use db/migration V1-V4;
+isolated fake actors continue as focused seam tests only. Full regression includes
+Auth, Admin, Tutor, Student and core tests plus bootJar.

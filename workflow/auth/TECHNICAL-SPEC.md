@@ -8,8 +8,8 @@ References: [Product](PRODUCT-SPEC.md), [shared](../SHARED-TECHNICAL-SPEC.md),
 
 Keep /api,64KiB JSON body bound, shared error envelope and existing exact actor DTO.
 Do not introduce /api/v1, persistent/multi-replica sessions, blanket version columns,
-a second user table or independently chosen throttle. Current core User includes
-passwordHash; do not move it into a credentials table without reviewed core migration.
+a second user table or independently chosen throttle. Current internal account storage includes
+passwordHash; public core User remains credential-free; do not move it into a credentials table without reviewed core migration.
 platform/auth owns hashing/authentication logic, core owns physical user storage.
 Collaborator interface for atomic credential-bearing user creation is agreed with
 Huanghao before implementation. Platform must not import Admin role classes.
@@ -78,8 +78,9 @@ registration/provision G1/P1 unique race/rollback/migration tests; I1 bootstrap 
 T1 fixed clock counter admission/expiry/capacity tests. Assert safe DTO/error/log
 fields, exact inactive403 then401, cross-role/forced actor rejection. PostgreSQL
 Testcontainers for real transaction rules; no mock substitutes for races. Backend
-restart signs out but retains committed data. No test command exists before app
-scaffold; plan must establish actual commands/results then.
+restart signs out but retains committed data. Backend scaffold and Gradle test /
+postgresTest tasks now exist; see src/backend/README.md. Current acceptance requires
+reproducible command-output evidence, never interaction logs.
 Assess MP2 AuthenticationService/Argon2PasswordHasher and tests without copying
 data/default credentials. Verify exact source revision/diff; measure reused/adapted/
 new lines, document changed desktop/session policies. No reuse measured or tests run.
@@ -104,8 +105,8 @@ pool independently of request arrivals so abandoned hashing cannot exhaust resou
 
 ## Selected credential storage
 
-Keep passwordHash on the existing core User record, as defined by the shared data
-model; do not create a second credentials/user table. Auth owns validation and
+Keep passwordHash on the existing users storage record, as defined by the shared data
+model; public User remains credential-free; do not create a second credentials/user table. Auth owns validation and
 Argon2id hashing; core provides the parameterized storage operation. Registration
 and Admin provisioning insert the user and hash in one transaction, with normalized
 email uniqueness enforced by PostgreSQL. A failed insert commits neither account
@@ -140,3 +141,13 @@ password_hash/session_generation on users consistently with existing core storag
 bootstrapAdmin uses the separate bootstrap_state marker and advisory lock. Sessions
 and throttles stay in memory on one replica; counter reset on restart is intentional.
 Read src/backend/README.md for profiles and startup, not the old no-scaffold text.
+
+
+## Student runtime integration increment ? 22 October 2026
+
+Phuc's direct request authorizes Student app-api composition and the existing
+platform.auth.CurrentActorProvider adapter over authenticated SessionPrincipal.
+Shared CurrentAccountFilter keeps generation/current-state validation before
+controller validation. Preserve existing Auth/Admin/Tutor contracts and Tutor's
+separate actor seam. See Student Technical sections 3.2/9 and change stu-c5 for
+acceptance. This records authorized scope, not teammate review or test success.

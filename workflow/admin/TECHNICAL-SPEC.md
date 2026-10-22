@@ -109,12 +109,13 @@ Case U1: atomic credentials/unique races; U2/M1/A1: service rules and full Postg
 races with booking/slot creation; B1: full MockMvc-to-DB safe DTO/filter/SGT cases;
 S1: identity/empty/rebooking/statement-snapshot cases; R1: fake call counter, exact
 permitted input fields, rejection before an AI request, output failures/deadline/quota and zero domain writes.
-Independent security review plus actual SoC synthetic evaluation later; no executed
-results yet. Backend commands/test paths established by real scaffold, not invented.
+Independent security review plus actual SoC synthetic evaluation remain separate
+verification gates. Backend source/tests and Gradle commands exist at a9dd650;
+this specification refresh does not rerun or accept earlier test/review claims.
 Assess MP2 AdminService/AdminQueries/tests as candidates; verify revision and local
 diff, record original/destination paths, unchanged/adapted/new line counts with
 method, carried tests and reasons. Do not copy broad snapshots, shared mutable authenticated-user state,
-Java-only guard, private data or default credentials. No code imported now.
+Java-only guard, private data or default credentials. Existing Admin code is present; reuse measurements are not established here.
 
 
 
