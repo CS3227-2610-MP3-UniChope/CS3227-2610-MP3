@@ -26,7 +26,10 @@ Inputs: [Tutor Product](PRODUCT-SPEC.md), [Tutor Technical](TECHNICAL-SPEC.md),
 - Start with fake-backed AI. The real SoC API link/key/model can be supplied later;
   only provider activation and real evaluation depend on them.
 - No existing SDD toolkit supplies this process. Specialized agents use the team's
-  own scoped instructions and handoff records. No task below has been executed.
+  own scoped instructions and handoff records. P5 manual notes and P6 fake-backed
+  Tutor AI have implementation records. P4 is implemented and its scoped independent
+  review is recorded; human acceptance is pending. P7 has an additional focused approval-text check;
+  see its security-verification handoff.
 
 ## 2. Specialized-Agent Workflow
 
@@ -116,21 +119,23 @@ be cancelled; no booking survives attached to a cancelled slot; CSRF is enforced
 
 ### P4: Bookings, completion, and history
 
-- [ ] Test filters, owner scoping, completion atomicity/rollback/repetition, history.
-- [ ] Implement booking queries, completion transition, and independent UI filters.
+- [x] Test filters, owner scoping, completion atomicity/rollback/repetition, and history.
+- [x] Implement booking queries, completion transition, confirmation, and independent booking/history UI filters.
 
 Depends on: P3 and shared booking fixture/contract. Requirements: TUT-BOOK-01, TUT-BOOK-02,
 TUT-HIST-01. Verify: two statuses update together, repeated completion conflicts,
-early completion follows the reviewed rule, history selection does not alter notes.
+early completion follows the specified product rule, history selection does not alter
+notes. Implementation and verification evidence are recorded in the P4 developer
+handoffs; scoped independent review is complete, and human acceptance remains pending.
 
 ### P5: Manual notes and version conflicts
 
-- [ ] Test completed-only load/save, version 0/1/update, Unicode/blank limits,
+- [x] Test completed-only load/save, version 0/1/update, Unicode/blank limits,
   competing first saves and stale updates, and retained content after failure.
-- [ ] Implement note API, conditional persistence, editor, conflict handling, and timestamps.
-- [ ] Keep NoteService, PrivateNoteRepository, and PostgresPrivateNoteRepository
+- [x] Implement note API, conditional persistence, editor, conflict handling, and timestamps.
+- [x] Keep NoteService, PrivateNoteRepository, and PostgresPrivateNoteRepository
   within `unichope.tutor`; use shared locking support without reverse platform imports.
-- [ ] Test restart/reload persistence and private DTO boundaries.
+- [x] Test restart/reload persistence and private DTO boundaries.
 
 Depends on: P4. Requirements: TUT-NOTE-01. Verify: stale saves never overwrite newer
 notes; explicit save persists; other roles/tutors cannot load or change private notes.
@@ -166,11 +171,18 @@ work. This task needs no real LLM link, key, or external provider access.
 
 - [ ] Reviewer independently inspects auth/ownership/CSRF, unsafe text, note versions,
   quota accounting, prompt/data separation, logs, configuration, and MP2 reuse claims.
-- [ ] Run direct/indirect injection fixtures with fake canary secrets and no real data.
-- [ ] Test generated "approval" cannot trigger saving or grant permissions.
+- [x] Verify direct injection with a fake canary; no indirect retrieval channel exists.
+  Add its tests if retrieval or tool access is introduced.
+- [x] Test generated "approval" cannot trigger saving or grant permissions.
 - [ ] Evaluate development agents against malicious issue/handoff text and false
   test claims, recording visible actions and independently checked evidence.
 - [ ] Fix scoped findings, rerun affected checks, retain honest unresolved limitations.
+
+The approval-text test and scope record are in
+[`AI-SECURITY-VERIFICATION-SPEC.md`](AI-SECURITY-VERIFICATION-SPEC.md),
+[`AI-SECURITY-VERIFICATION-MATRIX.md`](AI-SECURITY-VERIFICATION-MATRIX.md), and the
+[P7 handoff](../handoffs/2026-10-23-tutor-ai-security-verification.md). The existing
+agent-security evaluation is recorded separately; this increment does not repeat it.
 
 Depends on: P6. Verify: sanitized evaluation records include revision, fixture,
 expected/observed outcomes, commands, reviewer, and human verification. Fake-provider

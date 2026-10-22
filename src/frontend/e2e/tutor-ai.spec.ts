@@ -13,6 +13,7 @@ const booking = {
 
 test('Tutor reviews a fake draft and explicitly saves the note', async ({ page }) => {
   let actor: typeof tutor | null = null;
+  let bookingCompleted = false;
   const calls: Array<{ method: string; url: URL; body: unknown }> = [];
   const draft = 'Summary\nReviewed recursion.\n\nTopics discussed\nBase cases.\n\nFollow-up\nPractise examples.';
 
@@ -34,8 +35,16 @@ test('Tutor reviews a fake draft and explicitly saves the note', async ({ page }
       actor = tutor; response = tutor;
     } else if (url.pathname === '/api/auth/logout' && method === 'POST') {
       actor = null; status = 204;
+    } else if (url.pathname === '/api/tutor/modules' && method === 'GET') {
+      response = [];
     } else if (url.pathname === '/api/tutor/bookings' && method === 'GET') {
-      response = [booking];
+      response = url.searchParams.get('status') === 'COMPLETED' ? [booking]
+        : [{ ...booking, status: bookingCompleted ? 'COMPLETED' : 'ACTIVE' }];
+    } else if (url.pathname === `/api/tutor/bookings/${bookingId}/complete` && method === 'POST') {
+      bookingCompleted = true; response = { id: bookingId, status: 'COMPLETED' };
+    } else if (url.pathname === '/api/tutor/history/slots' && method === 'GET') {
+      response = [{ id: booking.slotId, moduleId: '20000000-0000-4000-8000-000000000001', moduleCode: booking.moduleCode,
+        startTime: booking.startTime, endTime: booking.endTime, status: 'COMPLETED' }];
     } else if (url.pathname === `/api/tutor/bookings/${bookingId}/note` && method === 'GET') {
       response = { bookingId, content: null, version: 0, updatedAt: null };
     } else if (url.pathname === `/api/tutor/bookings/${bookingId}/note-draft` && method === 'POST') {
@@ -62,7 +71,19 @@ test('Tutor reviews a fake draft and explicitly saves the note', async ({ page }
   await expect(page.getByRole('heading', { name: 'Consultation notes' })).toBeVisible();
   await expect(page.getByLabel('Completed consultation')).toContainText('CS3227');
   await expect(page.getByLabel('Tutor-only note')).toHaveValue('');
-  expect(calls.find(call => call.url.pathname === '/api/tutor/bookings')?.url.searchParams.get('status')).toBe('COMPLETED');
+  expect(calls.some(call => call.url.pathname === '/api/tutor/bookings' && call.url.searchParams.get('status') === 'COMPLETED')).toBe(true);
+
+  page.on('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: 'Mark complete' }).click();
+  await expect(page.getByText('Consultation marked completed.')).toBeVisible();
+  expect(calls.find(call => call.url.pathname === `/api/tutor/bookings/${bookingId}/complete`)?.body).toEqual({});
+  await expect(page.getByRole('cell', { name: 'COMPLETED' })).toBeVisible();
+  await page.getByRole('button', { name: 'Load history' }).click();
+  await expect(page.getByRole('heading', { name: 'Slot history' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Slot history' }).getByRole('cell', { name: 'CS3227' })).toBeVisible();
+  expect(calls.some(call => call.url.pathname === '/api/tutor/history/slots'
+    && call.url.searchParams.get('status') === 'COMPLETED')).toBe(true);
+  await expect(page.getByLabel('Completed consultation')).toContainText('CS3227');
 
   await page.getByLabel('Rough notes').fill('Discuss recursion base cases');
   await page.getByRole('button', { name: 'Generate draft' }).click();

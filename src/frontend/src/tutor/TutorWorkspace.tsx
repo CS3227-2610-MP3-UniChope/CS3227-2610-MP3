@@ -9,6 +9,9 @@ type CompletedBooking = {
   startTime: string;
   endTime: string;
 };
+type BookingRow = CompletedBooking & { status: 'ACTIVE' | 'CANCELLED' | 'COMPLETED' };
+type TutorModule = { id: string; code: string; name: string };
+type HistorySlot = { id: string; moduleId: string; moduleCode: string; startTime: string; endTime: string; status: 'CANCELLED' | 'COMPLETED' };
 type TutorNote = { bookingId: string; content: string | null; version: number; updatedAt: string | null };
 type DraftResponse = { bookingId: string; draft: string; requiresReview: boolean; providerMode: 'fake' | 'soc' };
 
@@ -32,9 +35,28 @@ function failureMessage(error: unknown) {
   };
   return messages[code] ?? 'We could not complete that action. Your unsaved text is still here.';
 }
+function bookingFailureMessage(error: unknown) {
+  if (error instanceof ApiError && error.code === 'INVALID_STATE') return 'This booking can no longer be completed. Refresh the list.';
+  if (error instanceof ApiError && error.code === 'NOT_FOUND') return 'This booking is no longer available. Refresh the list.';
+  return failureMessage(error);
+}
 
 export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: Actor }) {
   const [bookings, setBookings] = useState<CompletedBooking[]>([]);
+  const [bookingRows, setBookingRows] = useState<BookingRow[]>([]);
+  const [modules, setModules] = useState<TutorModule[]>([]);
+  const [bookingModule, setBookingModule] = useState('');
+  const [bookingDate, setBookingDate] = useState('');
+  const [bookingStatus, setBookingStatus] = useState('');
+  const [bookingLoadState, setBookingLoadState] = useState<'loading' | 'ready' | 'failed'>('loading');
+  const [bookingError, setBookingError] = useState('');
+  const [bookingNotice, setBookingNotice] = useState('');
+  const [completingId, setCompletingId] = useState('');
+  const [history, setHistory] = useState<HistorySlot[]>([]);
+  const [historyStatus, setHistoryStatus] = useState<'CANCELLED' | 'COMPLETED'>('COMPLETED');
+  const [historyDate, setHistoryDate] = useState('');
+  const [historyLoadState, setHistoryLoadState] = useState<'idle' | 'loading' | 'ready' | 'failed'>('idle');
+  const [historyError, setHistoryError] = useState('');
   const [bookingId, setBookingId] = useState('');
   const [listState, setListState] = useState<'loading' | 'ready' | 'failed'>('loading');
   const [listAttempt, setListAttempt] = useState(0);
@@ -50,8 +72,73 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const draftSequence = useRef(0);
+  const bookingFiltersRef = useRef({ moduleId: bookingModule, date: bookingDate, status: bookingStatus });
+  const bookingRequestSequence = useRef(0);
+  const historyRequestSequence = useRef(0);
   const selectedBookingRef = useRef(bookingId);
   selectedBookingRef.current = bookingId;
+
+  async function loadBookingRows(moduleId = bookingModule, date = bookingDate, status = bookingStatus) {
+    const requestSequence = ++bookingRequestSequence.current;
+    bookingFiltersRef.current = { moduleId, date, status };
+    const query = new URLSearchParams();
+    if (moduleId) query.set('moduleId', moduleId);
+    if (date) query.set('date', date);
+    if (status) query.set('status', status);
+    setBookingLoadState('loading'); setBookingError(''); setBookingNotice('');
+    try {
+      const rows = await api.request<BookingRow[]>(`/api/tutor/bookings${query.size ? `?${query}` : ''}`);
+      if (requestSequence !== bookingRequestSequence.current) return false;
+      setBookingRows(rows); setBookingLoadState('ready'); return true;
+    } catch (cause) {
+      if (requestSequence !== bookingRequestSequence.current) return false;
+      if (!(cause instanceof StaleRequest)) setBookingError(bookingFailureMessage(cause));
+      setBookingLoadState('failed'); return false;
+    }
+  }
+
+  async function loadHistory(status = historyStatus, date = historyDate) {
+    const requestSequence = ++historyRequestSequence.current;
+    const query = new URLSearchParams({ status });
+    if (date) query.set('date', date);
+    setHistoryLoadState('loading'); setHistoryError('');
+    try {
+      const rows = await api.request<HistorySlot[]>(`/api/tutor/history/slots?${query}`);
+      if (requestSequence !== historyRequestSequence.current) return;
+      setHistory(rows);
+      setHistoryLoadState('ready');
+    } catch (cause) {
+      if (requestSequence !== historyRequestSequence.current) return;
+      if (!(cause instanceof StaleRequest)) setHistoryError(failureMessage(cause));
+      setHistoryLoadState('failed');
+    }
+  }
+
+  async function completeBooking(item: BookingRow) {
+    if (item.status !== 'ACTIVE' || completingId) return;
+    if (!window.confirm('Mark this consultation as completed? This updates the booking and slot together.')) return;
+    setCompletingId(item.bookingId); setBookingError(''); setBookingNotice('');
+    try {
+      await api.request(`/api/tutor/bookings/${item.bookingId}/complete`, {});
+      const filters = bookingFiltersRef.current;
+      const refreshed = await loadBookingRows(filters.moduleId, filters.date, filters.status);
+      if (refreshed) setBookingNotice('Consultation marked completed.');
+    } catch (cause) {
+      if (!(cause instanceof StaleRequest)) {
+        const message = bookingFailureMessage(cause);
+        const filters = bookingFiltersRef.current;
+        await loadBookingRows(filters.moduleId, filters.date, filters.status);
+        setBookingError(message);
+      }
+    } finally { setCompletingId(''); }
+  }
+
+  useEffect(() => {
+    let current = true;
+    void api.request<TutorModule[]>('/api/tutor/modules').then(value => { if (current) setModules(value); }).catch(() => {});
+    void loadBookingRows();
+    return () => { current = false; };
+  }, [api, actor.id]);
 
   useEffect(() => {
     let current = true;
@@ -158,6 +245,52 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   const selected = bookings.find(item => item.bookingId === bookingId);
   return <main id="main-content" className="tutor-workspace">
     <div className="tutor-page-heading"><span className="eyebrow">TUTOR WORKSPACE</span><h1>Consultation notes</h1><p>Review completed consultations, prepare a draft, and save your notes when ready.</p></div>
+    <section className="tutor-panel" aria-labelledby="tutor-bookings-heading">
+      <h2 id="tutor-bookings-heading">Bookings</h2>
+      <form className="tutor-list-filters" onSubmit={event => { event.preventDefault(); void loadBookingRows(bookingModule, bookingDate, bookingStatus); }}>
+        <label>Module<select className="form-select" value={bookingModule} onChange={event => setBookingModule(event.target.value)}>
+          <option value="">All modules</option>{modules.map(item => <option key={item.id} value={item.id}>{item.code}</option>)}
+        </select></label>
+        <label>Start date<input className="form-control" type="date" value={bookingDate} onChange={event => setBookingDate(event.target.value)} /></label>
+        <label>Status<select className="form-select" value={bookingStatus} onChange={event => setBookingStatus(event.target.value)}>
+          <option value="">All statuses</option><option value="ACTIVE">Active</option><option value="CANCELLED">Cancelled</option><option value="COMPLETED">Completed</option>
+        </select></label>
+        <button className="btn btn-outline-secondary" type="submit">Apply filters</button>
+      </form>
+      {bookingError && <p role="alert" className="tutor-alert">{bookingError}</p>}
+      {bookingNotice && <p role="status" className="tutor-notice">{bookingNotice}</p>}
+      {bookingLoadState === 'loading' && <Loading label="Loading Tutor bookings" />}
+      {bookingLoadState === 'failed' && <button className="btn btn-outline-secondary" onClick={() => void loadBookingRows()}>Retry bookings</button>}
+      {bookingLoadState === 'ready' && bookingRows.length === 0 && <p>No bookings match these filters.</p>}
+      {bookingLoadState === 'ready' && bookingRows.length > 0 && <div className="table-responsive"><table className="table">
+        <thead><tr><th>Module</th><th>Consultation time (Singapore)</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>{bookingRows.map(item => <tr key={item.bookingId}>
+          <td>{item.moduleCode}</td><td>{dateLabel(item.startTime)} – {dateLabel(item.endTime)}</td><td>{item.status}</td>
+          <td>{item.status === 'ACTIVE' && <button className="btn btn-sm btn-outline-secondary" disabled={completingId !== ''} onClick={() => void completeBooking(item)}>
+            {completingId === item.bookingId ? 'Completing…' : 'Mark complete'}
+          </button>}</td>
+        </tr>)}</tbody>
+      </table></div>}
+    </section>
+    <section className="tutor-panel" aria-labelledby="tutor-history-heading">
+      <h2 id="tutor-history-heading">Slot history</h2>
+      <form className="tutor-list-filters" onSubmit={event => { event.preventDefault(); void loadHistory(historyStatus, historyDate); }}>
+        <label>Status<select className="form-select" value={historyStatus} onChange={event => setHistoryStatus(event.target.value as 'CANCELLED' | 'COMPLETED')}>
+          <option value="CANCELLED">Cancelled</option><option value="COMPLETED">Completed</option>
+        </select></label>
+        <label>Start date<input className="form-control" type="date" value={historyDate} onChange={event => setHistoryDate(event.target.value)} /></label>
+        <button className="btn btn-outline-secondary" type="submit">Load history</button>
+      </form>
+      {historyError && <p role="alert" className="tutor-alert">{historyError}</p>}
+      {historyLoadState === 'idle' && <p className="muted">Choose a status and load your cancelled or completed slots.</p>}
+      {historyLoadState === 'loading' && <Loading label="Loading slot history" />}
+      {historyLoadState === 'failed' && <button className="btn btn-outline-secondary" onClick={() => void loadHistory()}>Retry history</button>}
+      {historyLoadState === 'ready' && history.length === 0 && <p>No historical slots match these filters.</p>}
+      {historyLoadState === 'ready' && history.length > 0 && <div className="table-responsive"><table className="table">
+        <thead><tr><th>Module</th><th>Consultation time (Singapore)</th><th>Status</th></tr></thead>
+        <tbody>{history.map(item => <tr key={item.id}><td>{item.moduleCode}</td><td>{dateLabel(item.startTime)} – {dateLabel(item.endTime)}</td><td>{item.status}</td></tr>)}</tbody>
+      </table></div>}
+    </section>
     {listState === 'loading' && <Loading label="Loading completed consultations" />}
     {listState === 'failed' && <section className="tutor-panel"><p role="alert">We could not load your completed consultations.</p><button className="btn btn-outline-secondary" onClick={() => setListAttempt(value => value + 1)}>Try again</button></section>}
     {listState === 'ready' && bookings.length === 0 && <section className="tutor-panel"><h2>No completed consultations yet</h2><p>Completed consultations will appear here for note taking.</p></section>}

@@ -54,6 +54,7 @@ Specification: [Tutor AI increment](TUTOR-AI-INCREMENT-SPEC.md).
 | TAI-28 | Generation fails or regeneration would replace edited draft text | Rough input and edited draft remain; replacement requires confirmation; no automatic retry | React Testing Library with deterministic fake API responses |
 | TAI-29 | Tutor changes consultation while work or generation is pending | Unsaved work requires confirmation; late responses cannot appear under a different booking; rough-note limit counts Unicode code points | React Testing Library with deferred response and synthetic Unicode input |
 | TAI-30 | Start `app-api,local` with `unichope.ai.mode=fake` and a positive local output bound; Tutor signs in, selects a completed booking, generates, reviews, and explicitly saves | Real HTTP session, CSRF, PostgreSQL ownership/state, fake-labeled draft, and versioned note save succeed; no real provider call | Local PostgreSQL + application runtime + browser; deterministic fake only |
+| TAI-31 | Fake output says it is approved and orders the application to save or grant admin access | Output remains inert review text; no note save, completion, admin, or permission request occurs without Tutor action | `tutor.test.tsx`: approval-looking provider output causes no mutation or privileged request |
 
 ## Review boundaries and prerequisites
 

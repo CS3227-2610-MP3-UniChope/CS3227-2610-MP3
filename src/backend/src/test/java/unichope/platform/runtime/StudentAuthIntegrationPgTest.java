@@ -109,6 +109,31 @@ class StudentAuthIntegrationPgTest {
         error(request(get("/api/student/modules"), tutorBrowser), 403, "FORBIDDEN");
     }
 
+    @Test void p4TutorCompletionUsesRealSessionCsrfAndSharedLifecycle() throws Exception {
+        JsonNode created = body(ok(book(), login("student"), 201));
+        UUID booking = UUID.fromString(created.get("id").asString());
+        Browser anonymous = token(null);
+        error(request(complete(booking), anonymous), 401, "UNAUTHENTICATED");
+        Browser studentBrowser = login("student");
+        error(request(complete(booking), studentBrowser), 403, "FORBIDDEN");
+        assertEquals("ACTIVE", db.sql("SELECT status FROM bookings WHERE id=:id").param("id", booking).query(String.class).single());
+        assertEquals("BOOKED", db.sql("SELECT status FROM slots WHERE id=:id").param("id", slot).query(String.class).single());
+
+        JsonNode completed = body(ok(complete(booking), login("tutor"), 200));
+        assertEquals(Set.of("id", "slotId", "moduleId", "moduleCode", "studentName", "startTime", "endTime", "status"),
+                Set.copyOf(completed.propertyNames()));
+        assertEquals(booking.toString(), completed.get("id").asString());
+        assertEquals(slot.toString(), completed.get("slotId").asString());
+        assertEquals(module.toString(), completed.get("moduleId").asString());
+        assertEquals("CS3227", completed.get("moduleCode").asString());
+        assertEquals("student", completed.get("studentName").asString());
+        assertEquals("COMPLETED", completed.get("status").asString());
+        assertFalse(completed.toString().contains("@example.edu"));
+        assertEquals("COMPLETED", db.sql("SELECT status FROM bookings WHERE id=:id").param("id", booking).query(String.class).single());
+        assertEquals("COMPLETED", db.sql("SELECT status FROM slots WHERE id=:id").param("id", slot).query(String.class).single());
+        error(request(complete(booking), login("tutor")), 409, "INVALID_STATE");
+    }
+
     @Test void c5Auth1RegistrationLoginRotationOldCsrfFailsFreshCsrfBooksReadsAndCancels() throws Exception {
         Browser anonymous = token(null);
         String beforeId = anonymous.session().getId();
@@ -276,6 +301,9 @@ class StudentAuthIntegrationPgTest {
     private MockHttpServletRequestBuilder book() { return post(ROOT).contentType("application/json").content("{\"slotId\":\"" + slot + "\"}"); }
     private MockHttpServletRequestBuilder draft(UUID booking) {
         return post("/api/tutor/bookings/" + booking + "/note-draft").contentType("application/json").content("{\"roughNotes\":\"Reviewed recursion\"}");
+    }
+    private MockHttpServletRequestBuilder complete(UUID booking) {
+        return post("/api/tutor/bookings/" + booking + "/complete").contentType("application/json").content("{}");
     }
     private MockHttpServletRequestBuilder cancel(UUID id) { return post(ROOT + "/" + id + "/cancel").contentType("application/json").content("{}"); }
     private UUID completedBooking() {

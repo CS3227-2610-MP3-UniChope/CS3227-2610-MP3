@@ -16,6 +16,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import unichope.platform.web.ApiFailure;
 import unichope.platform.core.model.consultation.BookingStatus;
+import unichope.platform.core.model.consultation.SlotStatus;
 
 /** Adapter-local strict parsing, bounded by actual bytes rather than declared length. */
 public final class TutorApiInput {
@@ -28,6 +29,7 @@ public final class TutorApiInput {
     public record NoteDraft(String roughNotes) {}
     public record BookingFilter(Optional<UUID> moduleId, Optional<LocalDate> date,
                                 Optional<BookingStatus> status) {}
+    public record HistoryFilter(SlotStatus status, Optional<LocalDate> date) {}
 
     public static Create create(HttpServletRequest request) throws IOException {
         JsonNode object=object(request);
@@ -35,7 +37,7 @@ public final class TutorApiInput {
         for(String field:object.propertyNames())if(!object.get(field).isString())throw invalid();
         return new Create(id(object.get("moduleId").stringValue()),instant(object.get("startTime").stringValue()),instant(object.get("endTime").stringValue()));
     }
-    public static void cancel(HttpServletRequest request) throws IOException { if(!object(request).isEmpty())throw invalid(); }
+    public static void emptyObject(HttpServletRequest request) throws IOException { if(!object(request).isEmpty())throw invalid(); }
     public static NoteSave noteSave(HttpServletRequest request) throws IOException {
         JsonNode body=object(request);
         if(!Set.copyOf(body.propertyNames()).equals(Set.of("content","expectedVersion")))throw invalid();
@@ -73,6 +75,18 @@ public final class TutorApiInput {
             catch (IllegalArgumentException error) { throw invalid(); }
         }
         return new BookingFilter(module, date, status);
+    }
+    public static HistoryFilter historyQuery(HttpServletRequest request) {
+        var parameters=request.getParameterMap();
+        if(parameters.keySet().stream().anyMatch(key->!Set.of("status","date").contains(key)))throw invalid();
+        for(String key:parameters.keySet())if(request.getParameterValues(key).length!=1)throw invalid();
+        if(!parameters.containsKey("status"))throw invalid();
+        SlotStatus status;
+        try { status=SlotStatus.valueOf(request.getParameter("status")); }
+        catch(IllegalArgumentException error) { throw invalid(); }
+        if(status!=SlotStatus.CANCELLED&&status!=SlotStatus.COMPLETED)throw invalid();
+        Optional<LocalDate> date=parameters.containsKey("date")?Optional.of(parseDate(request.getParameter("date"))):Optional.empty();
+        return new HistoryFilter(status,date);
     }
     public static void noQuery(HttpServletRequest request) { if(!request.getParameterMap().isEmpty())throw invalid(); }
     public static UUID id(String value) {

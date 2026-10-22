@@ -23,6 +23,7 @@ import unichope.platform.core.ConsultationLifecycle;
 import unichope.platform.core.repository.ModuleRepository;
 import unichope.platform.core.repository.BookingRepository;
 import unichope.platform.core.repository.SlotRepository;
+import unichope.platform.core.repository.UserRepository;
 import unichope.platform.auth.CurrentActorProvider;
 import unichope.platform.auth.AuthenticationService;
 import unichope.platform.ai.AiGateway;
@@ -67,7 +68,8 @@ public class TutorApiConfiguration implements WebMvcConfigurer {
 
     @Bean TutorAccess tutorAccess(CurrentActorProvider actor,TutorReadRepository repository) { return new TutorAccess(actor,repository); }
     @Bean TutorReadService tutorReadService(CurrentActorProvider actor,TutorReadRepository repository,Clock clock) { return new TutorReadService(actor,repository,clock); }
-    @Bean TutorHttpService tutorHttpService(TutorAccess access,ConsultationLifecycle lifecycle,ModuleRepository modules) { return new TutorHttpService(access,lifecycle,modules); }
+    @Bean TutorHttpService tutorHttpService(TutorAccess access,ConsultationLifecycle lifecycle,ModuleRepository modules,
+            SlotRepository slots,UserRepository users) { return new TutorHttpService(access,lifecycle,modules,slots,users); }
     @Bean TutorNoteService tutorNoteService(TutorAccess access,BookingRepository bookings,SlotRepository slots,
             ConsultationLifecycle lifecycle,DataSource source) {
         return new TutorNoteService(access,bookings,slots,new PostgresTutorNoteRepository(JdbcClient.create(source)),lifecycle,source);

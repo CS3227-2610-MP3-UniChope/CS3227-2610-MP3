@@ -36,6 +36,11 @@ public class TutorController {
     public List<ModuleOption> modules(HttpServletRequest request) { TutorApiInput.noQuery(request);return reads.activeAssignedModules(); }
     @GetMapping("/slots")
     public List<SlotView> slots(HttpServletRequest request) { return TutorApiInput.date(request).map(reads::upcomingSlots).orElseGet(reads::upcomingSlots); }
+    @GetMapping("/history/slots")
+    public List<SlotView> historySlots(HttpServletRequest request) {
+        var filter=TutorApiInput.historyQuery(request);
+        return reads.historySlots(filter.status(),filter.date());
+    }
     @GetMapping("/slots/{id}")
     public SlotView detail(@PathVariable("id") String id,HttpServletRequest request) { TutorApiInput.noQuery(request);return reads.slotDetail(TutorApiInput.id(id)); }
     @PostMapping("/slots")
@@ -48,9 +53,13 @@ public class TutorController {
         var filter = TutorApiInput.bookingsQuery(request);
         return reads.bookings(filter.moduleId(), filter.date(), filter.status());
     }
+    @PostMapping("/bookings/{id}/complete")
+    public unichope.tutor.TutorCompletedBookingView completeBooking(@PathVariable("id") String id,HttpServletRequest request) throws IOException {
+        TutorApiInput.noQuery(request);var bookingId=TutorApiInput.id(id);TutorApiInput.emptyObject(request);return writes.complete(bookingId);
+    }
     @PostMapping("/slots/{id}/cancel")
     public SlotView cancel(@PathVariable("id") String id,HttpServletRequest request) throws IOException {
-        TutorApiInput.noQuery(request);var slotId=TutorApiInput.id(id);TutorApiInput.cancel(request);return writes.cancel(slotId);
+        TutorApiInput.noQuery(request);var slotId=TutorApiInput.id(id);TutorApiInput.emptyObject(request);return writes.cancel(slotId);
     }
     @GetMapping("/bookings/{id}/note")
     public unichope.tutor.TutorNote note(@PathVariable("id") String id,HttpServletRequest request) {

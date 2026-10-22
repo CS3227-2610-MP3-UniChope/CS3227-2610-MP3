@@ -42,6 +42,7 @@ import unichope.platform.core.model.consultation.ConsultationSlot;
 import unichope.platform.core.model.module.Module;
 import unichope.platform.core.model.module.TutorModule;
 import unichope.platform.core.repository.ModuleRepository;
+import unichope.platform.core.repository.UserRepository;
 import unichope.platform.ai.AiGateway;
 import unichope.platform.auth.AuthenticationService;
 import unichope.platform.auth.SessionPrincipal;
@@ -137,6 +138,112 @@ class TutorRestPgTest extends LifecyclePgFixture {
         error(ok(get("/api/tutor/bookings").param("status","COMPLETED"),null,401),401,"UNAUTHENTICATED");
         error(ok(get("/api/tutor/bookings").param("status","COMPLETED"),session(S1,"ROLE_TUTOR"),403),403,"FORBIDDEN");
         error(ok(get("/api/tutor/bookings").param("status","COMPLETED").param("actorId",T2.toString()),session(T1),400),400,"VALIDATION_FAILED");
+    }
+
+    @Test
+    void historySlotsAreTutorScopedFilteredByStatusAndSgtDateAndOrdered() throws Exception {
+        UUID previousDay=slot(T1,Instant.parse("2026-10-20T15:59:59Z"),Instant.parse("2026-10-20T16:30:00Z"),"COMPLETED");
+        UUID first=slot(T1,Instant.parse("2026-10-20T16:00:00Z"),Instant.parse("2026-10-20T17:00:00Z"),"COMPLETED");
+        UUID tied=slot(T1,Instant.parse("2026-10-20T16:00:00Z"),Instant.parse("2026-10-20T17:00:00Z"),"COMPLETED");
+        UUID cancelled=slot(T1,Instant.parse("2026-10-20T17:00:00Z"),Instant.parse("2026-10-20T18:00:00Z"),"CANCELLED");
+        slot(T2,Instant.parse("2026-10-20T16:00:00Z"),Instant.parse("2026-10-20T17:00:00Z"),"COMPLETED");
+        slot(T1,Instant.parse("2026-10-20T16:00:00Z"),Instant.parse("2026-10-20T17:00:00Z"),"BOOKED");
+
+        JsonNode completed=body(ok(get("/api/tutor/history/slots").param("status","COMPLETED"),session(T1),200));
+        var tiedIds=List.of(first,tied).stream().sorted().map(UUID::toString).toList();
+        assertEquals(List.of(previousDay.toString(),tiedIds.get(0),tiedIds.get(1)),List.of(
+                completed.get(0).get("id").asString(),completed.get(1).get("id").asString(),completed.get(2).get("id").asString()));
+        for(JsonNode item:completed){exactSlot(item);assertEquals("COMPLETED",item.get("status").asString());}
+        JsonNode sgtDate=body(ok(get("/api/tutor/history/slots").param("status","COMPLETED").param("date","2026-10-21"),session(T1),200));
+        assertEquals(2,sgtDate.size());assertFalse(List.of(sgtDate.get(0).get("id").asString(),sgtDate.get(1).get("id").asString()).contains(previousDay.toString()));
+        JsonNode cancelledResult=body(ok(get("/api/tutor/history/slots").param("status","CANCELLED"),session(T1),200));
+        assertEquals(1,cancelledResult.size());assertEquals(cancelled.toString(),cancelledResult.get(0).get("id").asString());
+        assertEquals(0,body(ok(get("/api/tutor/history/slots").param("status","CANCELLED").param("date","2026-10-22"),session(T1),200)).size());
+        error(ok(get("/api/tutor/history/slots").param("status","COMPLETED"),null,401),401,"UNAUTHENTICATED");
+        error(ok(get("/api/tutor/history/slots").param("status","COMPLETED"),session(S1,"ROLE_TUTOR"),403),403,"FORBIDDEN");
+        for(String[] invalid:new String[][]{{},{"status","AVAILABLE"},{"status","CANCELLED","status","COMPLETED"},{"status","COMPLETED","actorId",T2.toString()}}) {
+            var request=get("/api/tutor/history/slots");
+            for(int i=0;i<invalid.length;i+=2)request.param(invalid[i],invalid[i+1]);
+            error(ok(request,session(T1),400),400,"VALIDATION_FAILED");
+        }
+    }
+
+    @Test
+    void completionEndpointUsesSharedLifecycleAndReturnsExactCompletedBooking() throws Exception {
+        UUID slot=slot(T1,START,END,"BOOKED"),booking=booking(S1,slot,"ACTIVE");
+        var completed=body(ok(complete(booking),session(T1),200));
+        assertEquals(Set.of("id","slotId","moduleId","moduleCode","studentName","startTime","endTime","status"),
+                Set.copyOf(completed.propertyNames()));
+        assertEquals(booking.toString(),completed.get("id").asString());
+        assertEquals(slot.toString(),completed.get("slotId").asString());
+        assertEquals(M.toString(),completed.get("moduleId").asString());
+        assertEquals("CS10",completed.get("moduleCode").asString());
+        assertEquals("Synthetic",completed.get("studentName").asString());
+        assertEquals(START.toString(),completed.get("startTime").asString());
+        assertEquals(END.toString(),completed.get("endTime").asString());
+        assertEquals("COMPLETED",completed.get("status").asString());
+        assertFalse(completed.toString().contains("@example.edu"));
+        assertEquals("COMPLETED",bookingStatus(booking));assertEquals("COMPLETED",slotStatus(slot));
+
+        String beforeRepeat=snapshot();
+        error(okRaw(complete(booking),session(T1)),409,"INVALID_STATE");
+        assertEquals(beforeRepeat,snapshot());
+    }
+
+    @Test
+    void completionEndpointEnforcesTutorOwnerCsrfAndStrictEmptyObject() throws Exception {
+        UUID ownSlot=slot(T1,START,END,"BOOKED"),ownBooking=booking(S1,ownSlot,"ACTIVE");
+        UUID foreignSlot=slot(T2,END,END.plusSeconds(1800),"BOOKED"),foreignBooking=booking(S1,foreignSlot,"ACTIVE");
+        UUID cancelledSlot=slot(T1,END.plusSeconds(1800),END.plusSeconds(3600),"CANCELLED");
+        UUID cancelledBooking=booking(S1,cancelledSlot,"CANCELLED");
+        UUID inconsistentSlot=slot(T1,END.plusSeconds(3600),END.plusSeconds(5400),"AVAILABLE");
+        UUID inconsistentBooking=booking(S1,inconsistentSlot,"ACTIVE");
+        String before=snapshot();
+        var foreign=error(okRaw(complete(foreignBooking),session(T1)),404,"NOT_FOUND");
+        var missing=error(okRaw(complete(id(999)),session(T1)),404,"NOT_FOUND");
+        assertEquals(foreign.get("message").asString(),missing.get("message").asString());
+        error(okRaw(complete(ownBooking),session(S1,"ROLE_TUTOR")),403,"FORBIDDEN");
+        error(okRaw(complete(ownBooking),session(ADMIN,"ROLE_TUTOR")),403,"FORBIDDEN");
+        error(okRaw(complete(cancelledBooking),session(T1)),409,"INVALID_STATE");
+        error(okRaw(complete(inconsistentBooking),session(T1)),409,"INVALID_STATE");
+        error(okRaw(post("/api/tutor/bookings/"+ownBooking+"/complete").contentType("application/json")
+                .content("{}"),session(T1)),403,"CSRF_INVALID");
+        error(okRaw(complete(ownBooking),null),401,"UNAUTHENTICATED");
+        error(okRaw(post("/api/tutor/bookings/"+ownBooking+"/complete").contentType("application/json")
+                .content("{}").with(csrf().asHeader().useInvalidToken()),session(T1)),403,"CSRF_INVALID");
+        for(String body:List.of("","null","[]","1","{} {}","{\"tutorId\":\""+T2+"\"}")) {
+            error(okRaw(post("/api/tutor/bookings/"+ownBooking+"/complete").contentType("application/json")
+                    .content(body).with(csrf().asHeader()),session(T1)),400,"VALIDATION_FAILED");
+        }
+        error(okRaw(post("/api/tutor/bookings/not-a-uuid/complete").contentType("application/json")
+                .content("{}").with(csrf().asHeader()),session(T1)),400,"VALIDATION_FAILED");
+        MockHttpSession inactive=session(T1);
+        db.sql("UPDATE users SET active=false WHERE id=:id").param("id",T1).update();
+        error(okRaw(complete(ownBooking),inactive),403,"ACCOUNT_INACTIVE");
+        assertTrue(inactive.isInvalid());
+        assertEquals(before,snapshot());
+    }
+
+    @Test
+    void completionEndpointRollsBackBothStatusesIfSlotUpdateFails() throws Exception {
+        UUID slot=slot(T1,START,END,"BOOKED"),booking=booking(S1,slot,"ACTIVE");
+        String before=snapshot();
+        db.sql("""
+                CREATE FUNCTION reject_completion_slot() RETURNS trigger LANGUAGE plpgsql AS $$
+                BEGIN IF NEW.status='COMPLETED' THEN RAISE EXCEPTION 'synthetic completion rollback'; END IF; RETURN NEW; END $$
+                """).update();
+        db.sql("CREATE TRIGGER reject_completion_slot BEFORE UPDATE ON slots FOR EACH ROW EXECUTE FUNCTION reject_completion_slot()").update();
+        error(okRaw(complete(booking),session(T1)),500,"INTERNAL_ERROR");
+        assertEquals(before,snapshot());
+    }
+
+    @Test
+    void completionProjectionFailureIsReportedWithoutClaimingTheMutationRolledBack() throws Exception {
+        UUID slot=slot(T1,START,END,"BOOKED"),booking=booking(S1,slot,"ACTIVE");
+        modules.fail=true;
+        error(okRaw(complete(booking),session(T1)),500,"INTERNAL_ERROR");
+        modules.fail=false;
+        assertEquals("COMPLETED",bookingStatus(booking));assertEquals("COMPLETED",slotStatus(slot));
     }
 
     @Test
@@ -385,6 +492,7 @@ class TutorRestPgTest extends LifecyclePgFixture {
         factory.registerSingleton("tutorReads",tutorReads);
         factory.registerSingleton("bookingReads",new PostgresBookingRepository(db));
         factory.registerSingleton("slotReads",new PostgresSlotRepository(db));
+        factory.registerSingleton("userReads",new PostgresUserRepository(db));
         factory.registerSingleton("dataSource",source);
         factory.registerSingleton("moduleReads",modules);factory.registerSingleton("consultationLifecycle",writes);
         factory.registerSingleton("clock",clock);
@@ -579,6 +687,11 @@ class TutorRestPgTest extends LifecyclePgFixture {
         String escaped=content.replace("\\","\\\\").replace("\"","\\\"");
         return put("/api/tutor/bookings/"+booking+"/note").contentType("application/json")
                 .content("{\"content\":\""+escaped+"\",\"expectedVersion\":"+version+"}").with(csrf().asHeader());
+    }
+
+    private MockHttpServletRequestBuilder complete(UUID booking) {
+        return post("/api/tutor/bookings/"+booking+"/complete").contentType("application/json")
+                .content("{}").with(csrf().asHeader());
     }
 
     private Connection bookingHolder(UUID booking) throws Exception {

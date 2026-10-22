@@ -33,6 +33,19 @@ public final class TutorReadService {
         return upcomingSlots(Optional.of(date));
     }
 
+    public List<SlotView> historySlots(SlotStatus status, Optional<LocalDate> date) {
+        UUID tutorId=requireActiveTutor();
+        return reads.findSlotsByTutor(tutorId).stream()
+                .filter(slot->slot.slot().tutorId().equals(tutorId))
+                .filter(slot->slot.slot().status()==status)
+                .filter(slot->date.isEmpty()||slot.slot().startTime().atZone(SINGAPORE).toLocalDate().equals(date.get()))
+                .sorted(Comparator.comparing((TutorSlot projection)->projection.slot().startTime())
+                        .thenComparing(projection->projection.slot().id()))
+                .map(slot->new SlotView(slot.slot().id(),slot.slot().moduleId(),slot.moduleCode(),
+                        slot.slot().startTime(),slot.slot().endTime(),slot.slot().status()))
+                .toList();
+    }
+
     private List<SlotView> upcomingSlots(Optional<LocalDate> date) {
         UUID tutorId = requireActiveTutor();
         var now = clock.instant();
