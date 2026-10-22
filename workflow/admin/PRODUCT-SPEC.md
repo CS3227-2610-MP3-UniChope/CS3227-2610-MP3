@@ -61,3 +61,11 @@ Fake reports are explicitly local; production defaults to AI_UNAVAILABLE. Comple
 a live SoC report depends on the Student-owned shared provider and durable quota
 infrastructure. No frontend or deployment is claimed. Verification results are
 recorded in logs/kokseng.md after checks complete.
+
+## Frontend increment — 23 October 2026
+
+The user has now assigned Admin and remaining authentication frontend work to
+Kok Seng. The earlier statements leaving frontend outside this scope describe the
+previous allocation. See [frontend specification](FRONTEND-SPEC.md) for the current
+scope, acceptance cases and plan. Real SoC integration remains a shared-provider
+dependency; frontend implementation does not resolve it.

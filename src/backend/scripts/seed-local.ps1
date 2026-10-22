@@ -10,6 +10,8 @@
 
   Prerequisites: the backend is running with --spring.profiles.active=app-api,local
   and the initial Admin was created with `gradlew bootstrapAdmin`.
+  start-local-test.ps1 already bootstraps admin@example.edu using the supplied
+  test password. This script reuses that Admin; it does not create another one.
 
   Creates (all synthetic, example.edu addresses):
     modules  CS2030, CS2040, MA1521
@@ -27,7 +29,7 @@
 #>
 param(
     [string]$BaseUrl = 'http://127.0.0.1:8080',
-    [Parameter(Mandatory = $true)][string]$AdminEmail,
+    [string]$AdminEmail = 'admin@example.edu',
     [string]$AdminPassword,
     [string]$SeedPassword
 )

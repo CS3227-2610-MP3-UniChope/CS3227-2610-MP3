@@ -162,7 +162,8 @@ on port 5173, and seeds through the real HTTP APIs. Open
 
 Sample accounts (all use the supplied password):
 
-- `admin@example.edu`
+- `admin@example.edu` (created once through the existing `bootstrapAdmin` task;
+  also the default Admin email for `seed-local.ps1`)
 - `student1@example.edu` (upcoming booking and cancellation history)
 - `student2@example.edu` (no bookings initially)
 - `tutor1@example.edu` and `tutor2@example.edu`

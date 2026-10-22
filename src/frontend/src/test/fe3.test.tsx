@@ -154,7 +154,7 @@ test.each(['login', 'restoring', 'restore-failure', 'not-found', 'slots', 'booki
   else if (page === 'not-found') await screen.findByRole('heading', { name: /not found/i });
   else if (page !== 'restoring') await screen.findByRole('button', { name: /sign out/i });
   landmarks();
-  if (page === 'TUTOR' || page === 'ADMIN') {
+  if (page === 'TUTOR') {
     const banner = screen.getByRole('banner');
     expect(banner).toHaveTextContent('UniChope');
     expect(within(banner).getByRole('button', { name: 'Dark theme' })).toBeVisible();
@@ -164,6 +164,10 @@ test.each(['login', 'restoring', 'restore-failure', 'not-found', 'slots', 'booki
     expect(within(banner).queryAllByRole('link').length).toBeLessThanOrEqual(1);
     expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
     expect(banner).not.toHaveTextContent(student.name);
+  }
+  if (page === 'ADMIN') {
+    expect(screen.getByRole('banner')).toHaveTextContent(student.name);
+    expect(screen.getByRole('navigation', { name: /admin/i })).toBeVisible();
   }
   if (page === 'slots' || page === 'bookings') {
     expect(screen.getByRole('banner')).toHaveTextContent(student.name);
