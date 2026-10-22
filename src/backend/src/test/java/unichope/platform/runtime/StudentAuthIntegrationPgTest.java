@@ -86,6 +86,14 @@ class StudentAuthIntegrationPgTest {
         assertEquals(slot.toString(), slots.get(0).get("id").asString());
         assertEquals(0, body(ok(get(ROOT), b, 200)).size());
         error(request(get(ROOT + "/" + UUID.randomUUID()), b), 404, "NOT_FOUND");
+
+        Browser tutorBrowser = login("tutor");
+        assertInstanceOf(SessionPrincipal.class, authentication(tutorBrowser.session()).getPrincipal());
+        JsonNode tutorModules = body(ok(get("/api/tutor/modules"), tutorBrowser, 200));
+        assertEquals(1, tutorModules.size());
+        assertEquals(module.toString(), tutorModules.get(0).get("id").asString());
+        error(request(get("/api/tutor/modules"), b), 403, "FORBIDDEN");
+        error(request(get("/api/student/modules"), tutorBrowser), 403, "FORBIDDEN");
     }
 
     @Test void c5Auth1RegistrationLoginRotationOldCsrfFailsFreshCsrfBooksReadsAndCancels() throws Exception {

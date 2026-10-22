@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import unichope.platform.auth.CurrentActorProvider;
 import unichope.platform.core.model.consultation.SlotStatus;
 import unichope.platform.core.LifecycleFailure;
 

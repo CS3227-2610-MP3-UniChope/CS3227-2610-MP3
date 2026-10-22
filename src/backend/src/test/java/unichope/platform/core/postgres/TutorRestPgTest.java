@@ -40,7 +40,7 @@ import unichope.platform.core.model.module.Module;
 import unichope.platform.core.model.module.TutorModule;
 import unichope.platform.core.repository.ModuleRepository;
 import unichope.platform.web.ApiSecurityConfiguration;
-import unichope.tutor.CurrentActorProvider;
+import unichope.platform.auth.CurrentActorProvider;
 import unichope.tutor.PostgresTutorReadRepository;
 import unichope.tutor.http.TutorApiConfiguration;
 

@@ -19,7 +19,7 @@ import unichope.platform.core.ConsultationLifecycle;
 import unichope.platform.core.repository.ModuleRepository;
 import unichope.platform.core.repository.BookingRepository;
 import unichope.platform.core.repository.SlotRepository;
-import unichope.tutor.CurrentActorProvider;
+import unichope.platform.auth.CurrentActorProvider;
 import unichope.tutor.TutorAccess;
 import unichope.tutor.TutorReadRepository;
 import unichope.tutor.TutorReadService;
