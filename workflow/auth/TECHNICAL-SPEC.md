@@ -16,6 +16,11 @@ Huanghao before implementation. Platform must not import Admin role classes.
 
 ## HTTP contract
 
+Frontend FE1 consumes this unchanged HTTP contract; see
+[frontend design](../student/FRONTEND-DESIGN.md) for restoration/routing, in-memory
+CSRF, error distinctions and logout/late-response behavior. It changes no backend
+policy, provisioning or token/cookie format. Same-origin Vite proxy remains required.
+
 Existing endpoints are normative proposals in Integration section2:
 GET /api/auth/csrf ->{headerName,token}; POST /api/auth/login {email,password}
 ->200{id,name,role}; GET /api/auth/me ->same; POST /api/auth/logout ->204.

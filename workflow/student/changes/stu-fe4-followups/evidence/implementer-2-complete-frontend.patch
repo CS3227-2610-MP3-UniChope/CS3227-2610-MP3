@@ -1,0 +1,817 @@
+diff --git a/src/frontend/src/App.tsx b/src/frontend/src/App.tsx
+index 20d38e0..51b82aa 100644
+--- a/src/frontend/src/App.tsx
++++ b/src/frontend/src/App.tsx
+@@ -10,17 +10,18 @@ export default function App() {
+   const [actor, setActor] = useState<Actor | null>(null); const [restoring, setRestoring] = useState(true);
+   const [message, setMessage] = useState(''); const [logoutFailed, setLogoutFailed] = useState(false);
+   const [signingOut, setSigningOut] = useState(false);
+-  const [restoreFailed, setRestoreFailed] = useState(false); const location = useLocation();
++  const [restoreFailed, setRestoreFailed] = useState(false); const [restoreAttempt, setRestoreAttempt] = useState(0); const location = useLocation();
+   api.onSessionError = error => { api.reset(); setActor(null); setMessage(error.code === 'ACCOUNT_INACTIVE' ? 'Your account is inactive. Please sign in again or contact your administrator.' : 'Your session expired. Please sign in again.'); navigate('/login', true); };
+   useEffect(() => {
+     let active = true;
++    setRestoring(true); setRestoreFailed(false); setMessage('');
+     void api.request<unknown>('/api/auth/me', undefined, false).then(value => { if (!isActor(value)) throw new ApiError(); if (active) setActor(value); }).catch(error => {
+       if (!active || error instanceof StaleRequest) return;
+-      if (error instanceof ApiError && (error.status === 401 || error.code === 'ACCOUNT_INACTIVE')) { if (error.code === 'ACCOUNT_INACTIVE') setMessage('Your account is inactive. Please sign in again.'); if (['/', '/login', '/tutor', '/admin', '/student/slots', '/student/bookings'].includes(window.location.pathname)) navigate('/login', true); }
+-      else { setRestoreFailed(true); setMessage('We could not check your session. Please retry.'); }
++      if (error instanceof ApiError && (error.status === 401 || (error.status === 403 && error.code === 'ACCOUNT_INACTIVE'))) { if (error.code === 'ACCOUNT_INACTIVE') setMessage('Your account is inactive. Please sign in again.'); if (['/', '/login', '/tutor', '/admin', '/student/slots', '/student/bookings'].includes(window.location.pathname)) navigate('/login', true); }
++      else { setRestoreFailed(true); setMessage("We can't reach the server right now"); }
+     }).finally(() => { if (active) setRestoring(false); });
+     return () => { active = false; api.reset(); };
+-  }, [api]);
++  }, [api, restoreAttempt]);
+   useEffect(() => {
+     if (restoring || restoreFailed) return;
+     const path = window.location.pathname;
+@@ -38,13 +39,20 @@ export default function App() {
+   }
+   async function logout() {
+     if (signingOut) return; setSigningOut(true); setActor(null); setMessage(''); setLogoutFailed(false); api.reset(); navigate('/login', true);
+-    try { await api.request('/api/auth/logout', {}, false); api.reset(); await api.csrf(); }
+-    catch (error) { if (!(error instanceof StaleRequest)) { setLogoutFailed(true); setMessage('Server sign-out could not be confirmed. Retry sign out to close your session.'); } } finally { setSigningOut(false); }
++    try {
++      await api.request('/api/auth/logout', {}, false);
++      api.reset();
++      // The server has confirmed sign-out. Anonymous token refresh is best effort;
++      // Login will acquire a fresh token on submit if this attempt fails.
++      try { await api.csrf(); } catch { /* Keep the confirmed sign-out state. */ }
++    }
++    catch (error) { if (error instanceof ApiError && (error.status === 401 || (error.status === 403 && error.code === 'ACCOUNT_INACTIVE'))) { api.reset(); } else if (!(error instanceof StaleRequest)) { setLogoutFailed(true); setMessage('Server sign-out could not be confirmed. Retry sign out to close your session.'); } } finally { setSigningOut(false); }
+   }
+   const unknown = !['/', '/login', '/tutor', '/admin', '/student/slots', '/student/bookings'].includes(window.location.pathname);
+   return <><a className="skip-link" href="#main-content">Skip to content</a>
+-    {restoring ? <main id="main-content" className="restore-screen"><Brand /><h1>Opening your workspace</h1><Loading label="Checking your session" /></main> : restoreFailed ? <main id="main-content" className="restore-screen"><Brand /><h1>Unable to open your workspace</h1><p role="alert">{message}</p><button className="btn btn-primary" onClick={() => window.location.reload()}>Retry</button></main> : unknown ? <main id="main-content" className="restore-screen"><Brand /><h1>Page not found</h1><p>This page could not be found.</p><Link href={actor ? home(actor) : '/login'}>Back to home</Link></main> : !actor ? <Login login={login} message={message} signingOut={signingOut} retryLogout={logoutFailed ? () => void logout() : undefined} /> : <>
+-      <header className="app-header"><Link href={home(actor)} className="brand-link"><Brand /></Link><span className="header-caption">CONSULTATION PLANNER</span><div className="account"><span><strong>{actor.name}</strong><small>{actor.role.charAt(0) + actor.role.slice(1).toLowerCase()}</small></span><button className="btn sign-out" onClick={() => void logout()}><Icon name="logout" />Sign out</button></div></header>
++    {(restoring || restoreFailed || unknown) && <header className="app-header"><Brand /></header>}
++    {restoring ? <main id="main-content" className="restore-screen"><h1>Opening your workspace</h1><Loading label="Checking your session" /></main> : restoreFailed ? <main id="main-content" className="restore-screen"><h1>Unable to open your workspace</h1><p role="alert">{message}</p><button className="btn btn-primary" onClick={() => setRestoreAttempt(value => value + 1)}>Try again</button></main> : unknown ? <main id="main-content" className="restore-screen"><h1>Page not found</h1><p>This page could not be found.</p><Link href={actor ? home(actor) : '/login'}>Back to home</Link></main> : !actor ? <Login login={login} message={message} signingOut={signingOut} retryLogout={logoutFailed ? () => void logout() : undefined} /> : <>
++      <header className="app-header"><Link href={home(actor)} className="brand-link"><Brand /></Link>{actor.role === 'STUDENT' && <span className="header-caption">CONSULTATION PLANNER</span>}<div className="account">{actor.role === 'STUDENT' && <span><strong>{actor.name}</strong><small>{actor.role.charAt(0) + actor.role.slice(1).toLowerCase()}</small></span>}<button className="btn sign-out" onClick={() => void logout()}><Icon name="logout" />Sign out</button></div></header>
+       {actor.role === 'STUDENT' ? <StudentWorkspace key={actor.id} api={api} location={location} signOut={() => void logout()} /> : <main id="main-content" tabIndex={-1} className="placeholder-page"><div className="placeholder-icon"><Icon name="book" /></div><span className="eyebrow">YOUR UNICHOPE WORKSPACE</span><h1>{actor.role === 'TUTOR' ? 'Tutor' : 'Admin'} home</h1><p>Your workspace is not ready yet.</p><p className="muted">This space is being prepared for you. Please check back later.</p></main>}
+     </>}
+   </>;
+diff --git a/src/frontend/src/Login.tsx b/src/frontend/src/Login.tsx
+index 17dce0a..48aad8a 100644
+--- a/src/frontend/src/Login.tsx
++++ b/src/frontend/src/Login.tsx
+@@ -9,12 +9,12 @@ export default function Login({ login, message, retryLogout, signingOut = false
+     setPending(true); setError(''); setCsrfFailed(false);
+     try { await login(email, password); } catch (e) {
+       const failure = e instanceof ApiError ? e : new ApiError();
+-      setError(failure.code === 'INVALID_CREDENTIALS' ? 'The email or password is incorrect. Please try again.' : failure.code === 'AUTH_RATE_LIMITED' ? `Too many sign-in attempts. Please wait${/^\d+$/.test(failure.retryAfter) ? ` ${Math.min(Number(failure.retryAfter), 86400)} seconds` : ' a little'} before trying again.` : 'Sign in is temporarily unavailable. Please try again.');
++      setError((failure.status === 401 && failure.code !== 'INVALID_CREDENTIALS') || (failure.status === 403 && ['ACCOUNT_INACTIVE', 'CSRF_INVALID'].includes(failure.code)) ? 'Please try again.' : failure.code === 'INVALID_CREDENTIALS' ? 'The email or password is incorrect. Please try again.' : failure.code === 'AUTH_RATE_LIMITED' ? `Too many sign-in attempts. Please wait${/^\d+$/.test(failure.retryAfter) ? ` ${Math.min(Number(failure.retryAfter), 86400)} seconds` : ' a little'} before trying again.` : 'Sign in is temporarily unavailable. Please try again.');
+       setCsrfFailed(true);
+     } finally { setPassword(''); setPending(false); }
+   }
+   return <div className="login-page"><header className="login-header"><Brand /><span className="quiet">Your time, well spent.</span></header>
+-    <main id="main-content" tabIndex={-1} className="login-main"><div className="login-intro"><span className="eyebrow">A LITTLE TIME. A LOT OF CLARITY.</span><h2>Make room for<br />your next question.</h2><p>Find a consultation, choose a time, and keep your learning moving.</p><div className="login-note"><Icon name="calendar" /><span>A simpler way to connect<br /><strong>One consultation at a time.</strong></span></div></div>
++    <main id="main-content" tabIndex={-1} className="login-main"><div className="login-intro"><span className="eyebrow">A LITTLE TIME. A LOT OF CLARITY.</span><p className="login-intro-title">Make room for<br />your next question.</p><p>Find a consultation, choose a time, and keep your learning moving.</p><div className="login-note"><Icon name="calendar" /><span>A simpler way to connect<br /><strong>One consultation at a time.</strong></span></div></div>
+       <section className="login-form-panel" aria-labelledby="login-title"><span className="eyebrow">WELCOME TO UNICHOPE</span><h1 id="login-title">Sign in</h1><p className="muted">Your next conversation starts here.</p>
+         {(error || message) && <div role="alert" className="notice error">{error || message}</div>}
+         {retryLogout && <button className="btn btn-outline-secondary mb-3" onClick={retryLogout}>Retry sign out</button>}
+diff --git a/src/frontend/src/api.ts b/src/frontend/src/api.ts
+index 7017e16..8346ae9 100644
+--- a/src/frontend/src/api.ts
++++ b/src/frontend/src/api.ts
+@@ -6,6 +6,9 @@ export class ApiError extends Error {
+   constructor(public status = 0, public code = 'UNAVAILABLE', public retryAfter = '') { super(code); }
+ }
+ export class StaleRequest extends Error {}
++export class PreflightError extends ApiError {
++  constructor() { super(0, 'NOTHING_SENT'); }
++}
+ export const isActor = (value: unknown): value is Actor => {
+   const a = value as Actor | null;
+   return !!a && typeof a.id === 'string' && typeof a.name === 'string' && ['STUDENT', 'TUTOR', 'ADMIN'].includes(a.role);
+@@ -47,7 +50,11 @@ export class ApiClient {
+           this.onSessionError(error);
+           if (generation !== this.generation) throw new StaleRequest();
+         }
+-        throw error;
++        if (!protectedRequest && error instanceof ApiError && (error.status === 401 || (error.status === 403 && error.code === 'ACCOUNT_INACTIVE'))) {
++          this.clearToken();
++          throw error;
++        }
++        throw new PreflightError();
+       }
+     }
+     if (generation !== this.generation) throw new StaleRequest();
+@@ -83,6 +90,7 @@ export class ApiClient {
+   }
+ }
+ export function safeError(error: unknown, mutation = false) {
++  if (error instanceof PreflightError) return 'Nothing was changed. Please try again.';
+   const e = error instanceof ApiError ? error : new ApiError();
+   if (e.code === 'CSRF_INVALID') return 'Your security token expired. Retry with a fresh token to continue.';
+   if (e.code === 'FORBIDDEN') return 'Access denied. You do not have permission to view this resource.';
+diff --git a/src/frontend/src/student/StudentWorkspace.tsx b/src/frontend/src/student/StudentWorkspace.tsx
+index b4feebf..ca1f71f 100644
+--- a/src/frontend/src/student/StudentWorkspace.tsx
++++ b/src/frontend/src/student/StudentWorkspace.tsx
+@@ -1,5 +1,5 @@
+-﻿import { useCallback, useEffect, useState } from 'react';
+-import { ApiClient, ApiError, StaleRequest, safeError, type Booking, type Module, type Slot } from '../api';
++﻿import { useCallback, useEffect, useRef, useState } from 'react';
++import { ApiClient, ApiError, PreflightError, StaleRequest, safeError, type Booking, type Module, type Slot } from '../api';
+ import { Icon, Link, Loading } from '../components';
+ import { navigate } from '../navigation';
+ import Confirmation from './Confirmation';
+@@ -13,6 +13,7 @@ export default function StudentWorkspace({ api, location, signOut }: { api: ApiC
+   const [revision, setRevision] = useState(0); const [invalid, setInvalid] = useState(false);
+   const [selection, setSelection] = useState<Slot | Booking | null>(null); const [pending, setPending] = useState(false);
+   const [notice, setNotice] = useState(''); const [error, setError] = useState<unknown>(null); const [retryItem, setRetryItem] = useState<Slot | Booking | null>(null);
++  const normalizedLocation = useRef<string | null>(null);
+   const [mobile, setMobile] = useState(window.innerWidth < 1024);
+   useEffect(() => { const resize = () => setMobile(window.innerWidth < 1024); window.addEventListener('resize', resize); return () => window.removeEventListener('resize', resize); }, []);
+   const modules = useRead<Module>(api, '/api/student/modules', 'modules', revision);
+@@ -22,15 +23,26 @@ export default function StudentWorkspace({ api, location, signOut }: { api: ApiC
+   if (f.date) query.set('date', f.date);
+   const dataPath = `/api/student/${bookings ? 'bookings' : 'slots'}${query.size ? `?${query}` : ''}`;
+   const data = useRead<Booking | Slot>(api, dataPath, bookings ? 'bookings' : 'slots', revision);
++  const unknownModule = !bookings && !!f.moduleId && !modules.loading && !modules.error && !modules.data.some(module => module.id === f.moduleId);
+   useEffect(() => {
+-    if (f.invalid) { setInvalid(true); const suffix = f.clean.toString(); navigate(`${bookings ? '/student/bookings' : '/student/slots'}${suffix ? `?${suffix}` : ''}`, true); }
+-  }, [location]);
++    if (f.invalid || unknownModule) {
++      setInvalid(true);
++      if (unknownModule) f.clean.delete('moduleId');
++      const suffix = f.clean.toString();
++      normalizedLocation.current = `${bookings ? '/student/bookings' : '/student/slots'}${suffix ? `?${suffix}` : ''}`;
++      navigate(normalizedLocation.current, true);
++    } else {
++      if (normalizedLocation.current !== location) setInvalid(false);
++      normalizedLocation.current = null;
++    }
++  }, [location, unknownModule]);
+   useEffect(() => { setPending(false); setSelection(null); setNotice(''); setError(null); setRetryItem(null); }, [location]);
+   // An unmounted workspace or a changed filter must not accept an old mutation completion.
+   const [lifecycle] = useState(() => ({ current: 0, active: true }));
+   useEffect(() => { lifecycle.active = true; lifecycle.current++; return () => { lifecycle.active = false; lifecycle.current++; }; }, [location, lifecycle]);
+   const close = useCallback(() => setSelection(null), []);
+   function change(values: Record<string, string>) {
++    setInvalid(false);
+     const next = new URLSearchParams(window.location.search);
+     Object.entries(values).forEach(([key, value]) => value ? next.set(key, value) : next.delete(key));
+     navigate(`${bookings ? '/student/bookings' : '/student/slots'}${next.size ? `?${next}` : ''}`);
+@@ -49,21 +61,24 @@ export default function StudentWorkspace({ api, location, signOut }: { api: ApiC
+     } catch (failure) {
+       if (!lifecycle.active || lifecycle.current !== generation || failure instanceof StaleRequest) return;
+       setError(failure); setSelection(null);
+-      if (failure instanceof ApiError && failure.code === 'CSRF_INVALID') setRetryItem(item);
++      if (failure instanceof PreflightError || (failure instanceof ApiError && failure.code === 'CSRF_INVALID')) setRetryItem(item);
+       if (failure instanceof ApiError && [404, 409].includes(failure.status)) setRevision(value => value + 1);
+     } finally { if (lifecycle.active && lifecycle.current === generation) setPending(false); }
+   }
+   useEffect(() => { if (!data.loading && notice && document.activeElement === document.body) document.querySelector<HTMLElement>('h1')?.focus(); }, [data.loading, notice]);
+-  const readError = data.error || modules.error;
+-  const denied = [readError, error].some(e => e instanceof ApiError && e.code === 'FORBIDDEN');
++  const moduleDenied = modules.error instanceof ApiError && (modules.error.status === 401 || ['ACCOUNT_INACTIVE', 'FORBIDDEN'].includes(modules.error.code));
++  const moduleUnavailable = !!modules.error && !moduleDenied;
++  const readError = data.error || (moduleDenied ? modules.error : null);
++  const deniedError = [data.error, modules.error, error].find(e => e instanceof ApiError && e.code === 'FORBIDDEN');
++  const denied = !!deniedError;
+   const slots = bookings ? [] : (data.data as Slot[]).filter(slot => { const date = sgtDate(slot.startTime); return date >= f.week && date <= f.end; });
+   return <div className="student-layout"><nav className="workspace-nav" aria-label="Student navigation"><span className="nav-caption">MY WORKSPACE</span><Link href="/student/slots" current={!bookings}><Icon name="calendar" /><span>Find a consultation</span></Link><Link href="/student/bookings" current={bookings}><Icon name="book" /><span>My bookings</span></Link><div className="nav-footnote"><span className="tiny-dot" />All times in Singapore time<span className="nav-timezone">SGT · UTC +08:00</span></div></nav>
+     <main id="main-content" tabIndex={-1} className="workspace-main"><div className="page-heading"><div><span className="eyebrow">{bookings ? 'YOUR TIME, ORGANIZED' : 'A GOOD QUESTION DESERVES A CONVERSATION'}</span><h1 tabIndex={-1}>{bookings ? 'My bookings' : 'Find a consultation'}</h1><p className="muted">{bookings ? 'Keep track of your consultations, past and upcoming.' : 'Find the right time to work through it together.'}</p></div><button className="btn btn-outline-secondary refresh-button" onClick={() => setRevision(value => value + 1)}>Refresh</button></div>
+       {invalid && <div className="notice error" role="alert">Invalid filters were removed. Please check your filter selections.</div>}
+       {notice && <div className="notice success" role="status"><Icon name="check" />{notice}</div>}
+-      {Boolean(error || readError) && <div className="notice error" role="alert">{safeError(error || readError, !!error)}{denied ? <Link href="/student/slots">Back to home</Link> : retryItem ? <button className="text-button" onClick={() => { setSelection(retryItem); setError(null); }}>Retry</button> : !error ? <button className="text-button" onClick={() => setRevision(value => value + 1)}>Retry</button> : null}</div>}
++      {Boolean(error || readError) && <div className="notice error" role="alert">{safeError(deniedError || error || readError, !!error)}{denied ? <Link href="/student/slots">Back to home</Link> : retryItem ? <button className="text-button" onClick={() => { setSelection(retryItem); setError(null); }}>Retry</button> : !error ? <button className="text-button" onClick={() => setRevision(value => value + 1)}>Retry</button> : null}</div>}
+       {!denied && <>{bookings && <div className="booking-tabs" aria-label="Booking view"><button className={f.view === 'upcoming' ? 'active' : ''} onClick={() => change({ view: 'upcoming', status: '' })}>Upcoming</button><button className={f.view === 'history' ? 'active' : ''} onClick={() => change({ view: 'history' })}>History</button></div>}
+-        <div className="browse-layout"><aside className="filter-sidebar" aria-label="Consultation filters"><div className="filter-heading"><h2>Refine by</h2><button className="text-button" onClick={() => change({ moduleId: '', date: '', status: '' })}>Reset</button></div>{!bookings && <><label htmlFor="module-filter">Module</label>{modules.loading ? <p role="status" className="muted small">Loading modules…</p> : <select id="module-filter" className="form-select" value={f.moduleId} onChange={event => change({ moduleId: event.target.value })}><option value="">All modules</option>{modules.data.map(module => <option key={module.id} value={module.id}>{module.code} · {module.name}</option>)}</select>}</>}
++        <div className="browse-layout"><aside className="filter-sidebar" aria-label="Consultation filters"><div className="filter-heading"><h2>Refine by</h2><button className="text-button" onClick={() => change({ moduleId: '', date: '', status: '' })}>Reset</button></div>{!bookings && <><label htmlFor="module-filter">Module</label>{modules.loading ? <p role="status" className="muted small">Loading modules…</p> : <select id="module-filter" className="form-select" disabled={moduleUnavailable} value={f.moduleId} onChange={event => change({ moduleId: event.target.value })}><option value="">All modules</option>{moduleUnavailable && f.moduleId && <option value={f.moduleId}>Selected module (filter unavailable)</option>}{modules.data.map(module => <option key={module.id} value={module.id}>{module.code} · {module.name}</option>)}</select>}{moduleUnavailable && <p className="muted small" role="status">Module filter unavailable right now.</p>}</>}
+           <label htmlFor="date-filter">{bookings ? 'Consultation date' : 'Specific date'}</label><input className="form-control" id="date-filter" type="date" value={f.date} onChange={event => change(bookings ? { date: event.target.value } : { date: event.target.value, week: event.target.value ? monday(event.target.value) : f.week })} />
+           {bookings && f.view === 'history' && <><label htmlFor="status-filter">Status</label><select id="status-filter" className="form-select" value={f.status} onChange={event => change({ status: event.target.value })}><option value="">All history</option><option value="CANCELLED">Cancelled</option><option value="COMPLETED">Completed</option></select></>}
+           <div className="filter-tip"><Icon name="clock" /><p>All consultation times are shown in <strong>Singapore time (SGT)</strong>.</p></div></aside>
+diff --git a/src/frontend/src/styles.css b/src/frontend/src/styles.css
+index 8ac2cc4..9612646 100644
+--- a/src/frontend/src/styles.css
++++ b/src/frontend/src/styles.css
+@@ -1,6 +1,6 @@
+-﻿:root {
++:root {
+   --ink: #252d3a; --muted: #657084; --surface: #ffffff; --canvas: #f5f6f8;
+-  --line: #dde1e7; --soft-line: #e9ecf0; --accent: #b44320; --accent-hover: #943418;
++  --control-line: #7b8493; --line: #dde1e7; --soft-line: #e9ecf0; --accent: #b44320; --accent-hover: #943418;
+   --accent-soft: #fff2eb; --success: #276442; --danger: #96352c;
+   --radius: .25rem; --bs-body-color: var(--ink); --bs-body-bg: var(--surface);
+   --bs-link-color: var(--accent); --bs-link-hover-color: var(--accent-hover);
+@@ -25,9 +25,9 @@ h3 { font-size: .875rem; font-weight: 600; }
+ .brand-mark { background: var(--accent); color: white; width: 2rem; height: 2rem; display: inline-flex; align-items: center; justify-content: center; border-radius: .375rem; }
+ .brand-link { text-decoration: none; }.btn { border-radius: var(--radius); font-size: .8125rem; font-weight: 600; padding: .5rem .875rem; line-height: 1.4; }
+ .btn-primary { --bs-btn-bg: var(--accent); --bs-btn-border-color: var(--accent); --bs-btn-hover-bg: var(--accent-hover); --bs-btn-hover-border-color: var(--accent-hover); --bs-btn-active-bg: var(--accent-hover); --bs-btn-active-border-color: var(--accent-hover); --bs-btn-disabled-bg: var(--accent); --bs-btn-disabled-border-color: var(--accent); }
+-.btn-outline-secondary { --bs-btn-color: var(--ink); --bs-btn-border-color: #cbd1da; --bs-btn-hover-bg: var(--canvas); --bs-btn-hover-color: var(--ink); --bs-btn-hover-border-color: #adb5c2; --bs-btn-active-bg: var(--canvas); --bs-btn-active-color: var(--ink); background: var(--surface); }
++.btn-outline-secondary { --bs-btn-color: var(--ink); --bs-btn-border-color: var(--control-line); --bs-btn-hover-bg: var(--canvas); --bs-btn-hover-color: var(--ink); --bs-btn-hover-border-color: var(--control-line); --bs-btn-active-bg: var(--canvas); --bs-btn-active-color: var(--ink); background: var(--surface); }
+ .text-button { padding: 0; background: none; border: 0; color: var(--accent); font-weight: 600; font-size: .75rem; text-decoration: underline; text-underline-offset: .2em; }
+-.form-control,.form-select { font-size: .8125rem; border-radius: var(--radius); border-color: #cbd1da; min-height: 2.5rem; color: var(--ink); }
++.form-control,.form-select { font-size: .8125rem; border-radius: var(--radius); border-color: var(--control-line); min-height: 2.5rem; color: var(--ink); }
+ .form-control:focus,.form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 .2rem #b443201a; }
+ label { font-size: .75rem; font-weight: 650; display: block; margin: 1.25rem 0 .5rem; }
+ .notice { display: flex; align-items: center; flex-wrap: wrap; gap: .75rem; padding: .875rem 1rem; border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 1.25rem; font-size: .8125rem; }
+@@ -47,14 +47,20 @@ label { font-size: .75rem; font-weight: 650; display: block; margin: 1.25rem 0 .
+ .browse-layout { display: grid; grid-template-columns: 11.5rem minmax(0,1fr); gap: 1.5rem; align-items: start; }.filter-sidebar { border-top: 2px solid var(--ink); padding-top: 1rem; min-width: 0; }.filter-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }.filter-heading h2 { font-size: .875rem; margin: 0; }.filter-heading button { font-size: .625rem; }.filter-sidebar label { margin-top: 1.5rem; }.filter-sidebar .form-select { padding-left: .625rem; }.filter-tip { display: flex; align-items: flex-start; gap: .5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); }.filter-tip .line-icon { width: 1rem; height: 1rem; margin-top: .125rem; }.filter-tip p { font-size: .6875rem; line-height: 1.7; }.filter-tip strong { font-weight: 600; }
+ .results { min-width: 0; }.week-toolbar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: 1.25rem; min-height: 3rem; }.week-toolbar h2 { font-size: 1rem; letter-spacing: -.02em; margin: 0 0 .25rem; }.week-toolbar .small { font-size: .6875rem; }.week-controls { display: flex; gap: .375rem; flex-shrink: 0; }.week-controls .btn { font-size: .6875rem; padding: .375rem .625rem; }.week-controls button:first-child,.week-controls button:last-child { font-size: 1rem; line-height: 1; }
+ .desktop-timetable { border: 1px solid #d2d8e1; border-radius: var(--radius); overflow: hidden; }.timetable-head,.time-band { display: grid; grid-template-columns: 2.75rem repeat(7,minmax(0,1fr)); }.timetable-head { background: var(--canvas); border-bottom: 1px solid #d2d8e1; }.zone-label { font-size: .5rem; color: var(--muted); align-self: end; padding: .75rem .375rem; }.day-header { border-left: 1px solid var(--line); padding: .75rem .25rem; text-align: center; font-size: .625rem; min-width: 0; }.day-header span { display: block; }.day-header strong { font-size: .6875rem; font-weight: 650; }.day-header.today { color: var(--accent); background: var(--accent-soft); }.time-band { min-height: 3rem; border-bottom: 1px solid var(--soft-line); }.time-band:last-child { border-bottom: 0; }.time-band:nth-child(odd) { background: #f7f8fa; }.time-label { padding: .375rem .25rem; font-size: .5625rem; color: var(--muted); }.day-cell { border-left: 1px solid var(--soft-line); padding: .25rem; min-width: 0; }
+-.consultation { padding: .625rem .5rem; background: #fff4eb; border: 1px solid #ebc5af; border-left: 3px solid var(--accent); border-radius: .1875rem; margin-bottom: .375rem; overflow-wrap: anywhere; }.consultation:last-child { margin-bottom: 0; }.module-code { color: var(--accent); font-size: .6875rem; font-weight: 750; letter-spacing: .025em; }.consultation h3 { font-size: .625rem; line-height: 1.5; margin: .25rem 0 .5rem; font-weight: 550; }.tutor-name { margin-bottom: .5rem; font-size: .625rem; }.consultation-time { display: flex; align-items: flex-start; gap: .375rem; margin: .5rem 0 .75rem; font-size: .5625rem; line-height: 1.6; }.consultation .consultation-time .line-icon { display: none; }.consultation-time .line-icon { width: 1rem; height: 1rem; margin-top: .125rem; }.btn-book { background: white; color: var(--accent); border: 1px solid #d99d7f; padding: .25rem .5rem; font-size: .625rem; width: 100%; }.btn-book:hover { color: white; background: var(--accent); border-color: var(--accent); }
++.consultation { padding: .625rem .5rem; background: #fff4eb; border: 1px solid #ebc5af; border-left: 3px solid var(--accent); border-radius: .1875rem; margin-bottom: .375rem; overflow-wrap: anywhere; }.consultation:last-child { margin-bottom: 0; }.module-code { color: var(--accent); font-size: .6875rem; font-weight: 750; letter-spacing: .025em; }.consultation h3 { font-size: .625rem; line-height: 1.5; margin: .25rem 0 .5rem; font-weight: 550; }.tutor-name { margin-bottom: .5rem; font-size: .625rem; }.consultation-time { display: flex; align-items: flex-start; gap: .375rem; margin: .5rem 0 .75rem; font-size: .5625rem; line-height: 1.6; }.consultation .consultation-time .line-icon { display: none; }.consultation-time .line-icon { width: 1rem; height: 1rem; margin-top: .125rem; }.btn-book { background: white; color: var(--accent); border: 1px solid var(--accent); padding: .25rem .5rem; font-size: .625rem; width: 100%; }.btn-book:hover { color: white; background: var(--accent); border-color: var(--accent); }
+ .booking-tabs { display: flex; border-bottom: 1px solid var(--line); margin-bottom: 2rem; gap: 1.75rem; }.booking-tabs button { background: none; border: 0; padding: .5rem 0 .875rem; color: var(--muted); font-size: .8125rem; border-bottom: 2px solid transparent; }.booking-tabs button.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 650; }.booking-list { border-top: 1px solid var(--line); }.booking-row { padding: 1.5rem .25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }.booking-row h3 { font-size: 1rem; margin: .25rem 0 .5rem; }.booking-row .tutor-name { font-size: .8125rem; }.booking-row .consultation-time { font-size: .75rem; margin-bottom: 0; }.booking-row .module-code { font-size: .75rem; }.booking-row .consultation-action { display: flex; flex-direction: column; align-items: flex-end; gap: .75rem; flex-shrink: 0; }.booking-status { display: inline-block; font-size: .625rem; padding: .125rem .5rem; border: 1px solid var(--line); border-radius: 1rem; color: var(--muted); background: var(--canvas); }.booking-status.active { color: var(--success); border-color: #c5decc; background: #f1f8f3; }
+ .empty-state { padding: 4rem 1.5rem; text-align: center; border: 1px dashed #cbd1da; border-radius: var(--radius); background: #fafbfc; }.empty-state>.line-icon { width: 2rem; height: 2rem; color: var(--muted); margin-bottom: 1rem; }.empty-state h2 { font-size: 1rem; }.empty-state p { color: var(--muted); font-size: .8125rem; max-width: 24rem; margin: 0 auto; }.loading-state { padding: 2rem; background: #fafbfc; border: 1px solid var(--soft-line); }.loading-state p { color: var(--muted); font-size: .8125rem; margin: 1rem 0 0; }.skeleton { display: block; width: 80%; height: .875rem; background: #e7eaf0; margin-bottom: .75rem; border-radius: .125rem; }.skeleton.short { width: 50%; }
+ .dialog-backdrop { position: fixed; inset: 0; background: #17212e80; z-index: 1050; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto; }.confirmation { width: 30rem; max-width: 100%; max-height: calc(100dvh - 2rem); overflow-y: auto; background: var(--surface); padding: 2rem; border-radius: .375rem; box-shadow: 0 .75rem 3rem #15203020; overflow-wrap: anywhere; }.confirmation h2 { font-size: 1.5rem; letter-spacing: -.035em; margin-bottom: .75rem; }.confirmation>p { font-size: .8125rem; color: var(--muted); }.confirmation-details { margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-left: 3px solid var(--accent); background: #fafbfc; }.confirmation-details h3 { font-size: 1rem; margin: .25rem 0 .75rem; }.confirmation-details p { font-size: .8125rem; margin-bottom: .75rem; }.confirmation-details p:last-child { margin: 0; }.dialog-actions { display: flex; justify-content: flex-end; gap: .75rem; }.dialog-actions .btn { padding: .625rem .875rem; }
+ .placeholder-page { max-width: 40rem; margin: 6rem auto; padding: 2rem; text-align: center; }.placeholder-icon { color: var(--accent); width: 4rem; height: 4rem; background: var(--accent-soft); display: grid; place-items: center; margin: 0 auto 2rem; border-radius: .5rem; }.placeholder-icon .line-icon { width: 2rem; height: 2rem; }.placeholder-page h1 { margin-bottom: 1.5rem; }.restore-screen { padding: 4rem 1.5rem; margin: auto; max-width: 40rem; }.restore-screen h1 { margin-top: 3rem; }
+-.login-page { min-height: 100dvh; background: #fafaf9; display: flex; flex-direction: column; }.login-header { padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); background: var(--surface); }.login-header .quiet { font-size: .75rem; }.login-main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 5rem; width: min(100%,64rem); margin: auto; padding: 4rem 2rem; }.login-intro { max-width: 26rem; }.login-intro .eyebrow { color: var(--accent); }.login-intro h2 { font-size: 2.875rem; line-height: 1.15; letter-spacing: -.055em; font-weight: 600; margin: 1.25rem 0 1.5rem; }.login-intro>p { font-size: 1rem; line-height: 1.8; color: var(--muted); max-width: 23rem; }.login-note { display: flex; gap: 1rem; align-items: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: .6875rem; color: var(--muted); }.login-note .line-icon { color: var(--accent); width: 1.75rem; height: 1.75rem; }.login-note strong { color: var(--ink); font-weight: 550; }.login-form-panel { background: var(--surface); padding: 2.5rem; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius); }.login-form-panel h1 { font-size: 1.875rem; }.login-form-panel>.muted { margin-bottom: 2rem; font-size: .8125rem; }.login-form-panel label { margin-top: 1.25rem; }.login-form-panel .form-control { min-height: 2.75rem; }.login-submit { margin-top: 1.75rem; width: 100%; display: flex; align-items: center; justify-content: space-between; min-height: 2.75rem; }.login-help { margin: 1.5rem 0 0; font-size: .6875rem; color: var(--muted); text-align: center; }.login-footer { text-align: center; color: var(--muted); font-size: .625rem; padding: 1.5rem; border-top: 1px solid var(--soft-line); }
++.login-page { min-height: 100dvh; background: #fafaf9; display: flex; flex-direction: column; }.login-header { padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); background: var(--surface); }.login-header .quiet { font-size: .75rem; }.login-main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 5rem; width: min(100%,64rem); margin: auto; padding: 4rem 2rem; }.login-intro { max-width: 26rem; }.login-intro .eyebrow { color: var(--accent); }.login-intro .login-intro-title { color: var(--ink); max-width: none; font-size: 2.875rem; line-height: 1.15; letter-spacing: -.055em; font-weight: 600; margin: 1.25rem 0 1.5rem; }.login-intro>p { font-size: 1rem; line-height: 1.8; color: var(--muted); max-width: 23rem; }.login-note { display: flex; gap: 1rem; align-items: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: .6875rem; color: var(--muted); }.login-note .line-icon { color: var(--accent); width: 1.75rem; height: 1.75rem; }.login-note strong { color: var(--ink); font-weight: 550; }.login-form-panel { background: var(--surface); padding: 2.5rem; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius); }.login-form-panel h1 { font-size: 1.875rem; }.login-form-panel>.muted { margin-bottom: 2rem; font-size: .8125rem; }.login-form-panel label { margin-top: 1.25rem; }.login-form-panel .form-control { min-height: 2.75rem; }.login-submit { margin-top: 1.75rem; width: 100%; display: flex; align-items: center; justify-content: space-between; min-height: 2.75rem; }.login-help { margin: 1.5rem 0 0; font-size: .6875rem; color: var(--muted); text-align: center; }.login-footer { text-align: center; color: var(--muted); font-size: .625rem; padding: 1.5rem; border-top: 1px solid var(--soft-line); }
+ @media (max-width: 1199px) { .student-layout { grid-template-columns: 10.5rem minmax(0,1fr); }.workspace-main { padding: 2rem 1.25rem; }.workspace-nav { padding: 2rem .625rem; }.browse-layout { grid-template-columns: 9.5rem minmax(0,1fr); gap: 1rem; }.day-header span { font-size: .5625rem; }.timetable-head,.time-band { grid-template-columns: 2.25rem repeat(7,minmax(0,1fr)); }.consultation { padding: .5rem .25rem; }.page-heading h1 { font-size: 1.625rem; } }
+-@media (max-width: 1023px) { .app-header { padding: 1rem 1.5rem; }.header-caption { display: none; }.student-layout { display: block; }.workspace-nav { padding: .5rem 1.5rem; flex-direction: row; border-right: 0; border-bottom: 1px solid var(--line); }.nav-caption,.nav-footnote { display: none; }.workspace-nav>a { padding: .625rem .75rem; }.workspace-main { padding: 2rem 1.5rem; }.browse-layout { grid-template-columns: 12rem minmax(0,1fr); gap: 1.5rem; }.day-list { margin-bottom: 1.5rem; }.day-list>h2 { font-size: .75rem; color: var(--muted); background: var(--canvas); padding: .75rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }.consultation { padding: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .75rem; }.consultation h3 { font-size: .8125rem; margin: .25rem 0 .75rem; }.consultation .module-code { font-size: .75rem; }.consultation .tutor-name { font-size: .75rem; }.consultation .consultation-time { font-size: .6875rem; margin-bottom: 0; }.consultation .consultation-time .line-icon { display: block; }.btn-book { width: auto; padding: .5rem .875rem; font-size: .75rem; }.login-main { gap: 2rem; }.login-intro h2 { font-size: 2.375rem; }.login-form-panel { padding: 2rem; } }
++@media (max-width: 1023px) { .app-header { padding: 1rem 1.5rem; }.header-caption { display: none; }.student-layout { display: block; }.workspace-nav { padding: .5rem 1.5rem; flex-direction: row; border-right: 0; border-bottom: 1px solid var(--line); }.nav-caption,.nav-footnote { display: none; }.workspace-nav>a { padding: .625rem .75rem; }.workspace-main { padding: 2rem 1.5rem; }.browse-layout { grid-template-columns: 12rem minmax(0,1fr); gap: 1.5rem; }.day-list { margin-bottom: 1.5rem; }.day-list>h2 { font-size: .75rem; color: var(--muted); background: var(--canvas); padding: .75rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }.consultation { padding: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .75rem; }.consultation h3 { font-size: .8125rem; margin: .25rem 0 .75rem; }.consultation .module-code { font-size: .75rem; }.consultation .tutor-name { font-size: .75rem; }.consultation .consultation-time { font-size: .6875rem; margin-bottom: 0; }.consultation .consultation-time .line-icon { display: block; }.btn-book { width: auto; padding: .5rem .875rem; font-size: .75rem; }.login-main { gap: 2rem; }.login-intro .login-intro-title { font-size: 2.375rem; }.login-form-panel { padding: 2rem; } }
+ @media (max-width: 767px) { .app-header { padding: 1rem; gap: .75rem; }.brand { font-size: 1.125rem; gap: .5rem; }.brand-mark { width: 1.75rem; height: 1.75rem; }.account { gap: .5rem; }.account>span { max-width: 7rem; }.account strong { font-size: .625rem; }.sign-out { padding: .375rem .25rem .375rem .625rem; font-size: .625rem; gap: .25rem; }.sign-out .line-icon { width: 1rem; height: 1rem; }.workspace-nav { padding: .5rem; gap: .25rem; }.workspace-nav>a { font-size: .6875rem; padding: .5rem; gap: .375rem; }.workspace-nav .line-icon { width: 1rem; height: 1rem; }.workspace-main { padding: 1.5rem 1rem; }.page-heading { align-items: flex-start; margin-bottom: 1.5rem; }.page-heading .eyebrow { font-size: .5rem; max-width: 15rem; }.page-heading h1 { font-size: 1.5rem; }.page-heading p { font-size: .75rem; }.refresh-button { padding: .375rem .5rem; font-size: .6875rem; }.browse-layout { display: block; }.filter-sidebar { margin-bottom: 1.5rem; padding: 1rem; background: #fafbfc; border: 1px solid var(--line); border-radius: var(--radius); }.filter-sidebar label { margin-top: 1rem; }.filter-tip { display: none; }.filter-heading h2 { font-size: .8125rem; }.week-toolbar { align-items: flex-start; flex-direction: column; gap: .875rem; }.week-toolbar h2 { font-size: 1rem; }.week-controls { width: 100%; }.week-controls .btn:nth-child(2) { flex: 1; }.consultation { padding: .875rem; gap: .75rem; }.consultation h3 { font-size: .75rem; }.consultation .tutor-name { font-size: .6875rem; }.btn-book { padding: .5rem .625rem; }.booking-row { align-items: flex-start; flex-direction: column; padding: 1.25rem 0; }.booking-row .consultation-action { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }.booking-tabs { margin-bottom: 1.5rem; }.confirmation { padding: 1.25rem; }.confirmation h2 { font-size: 1.25rem; }.confirmation-details { padding: 1rem; }.dialog-actions { flex-direction: column-reverse; }.dialog-actions .btn { width: 100%; }.login-header { padding: 1.25rem; }.login-header .quiet { display: none; }.login-main { display: block; padding: 2rem 1rem; max-width: 28rem; }.login-intro { display: none; }.login-form-panel { padding: 1.5rem; }.login-form-panel h1 { font-size: 1.75rem; }.login-form-panel>.muted { margin-bottom: 1.5rem; }.placeholder-page { margin: 3rem auto; padding: 1.5rem; }.notice { padding: .75rem; }.empty-state { padding: 3rem 1rem; } }
+ @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+ 
++
++/* Keep keyboard indicators stronger than Bootstrap's translucent focus shadow. */
++.btn:focus-visible, .form-control:focus-within, .form-select:focus { outline: 3px solid var(--accent); outline-offset: 3px; box-shadow: none; }
++.sign-out { border: 1px solid var(--control-line); }
++.workspace-nav>a[aria-current] { box-shadow: inset 3px 0 var(--accent); border-left: 3px solid var(--accent); }
++.day-header.today { border-top: 3px solid var(--accent); }
+diff --git a/src/frontend/src/test/auth.test.tsx b/src/frontend/src/test/auth.test.tsx
+index 8de7841..d9d8ab8 100644
+--- a/src/frontend/src/test/auth.test.tsx
++++ b/src/frontend/src/test/auth.test.tsx
+@@ -149,7 +149,7 @@ test('FE1-LOGOUT network failure clears identity immediately and offers server s
+ test('FE1-PRIVACY no private browser-storage writes and untrusted actor names remain text', async () => {
+   const local = vi.spyOn(Storage.prototype, 'setItem');
+   const name = '<img src=x onerror="window.syntheticXss=true">';
+-  apiFixture({ ...student, name, role: 'ADMIN' });
++  apiFixture({ ...student, name });
+   window.history.replaceState({}, '', '/admin');
+   render(<App />);
+   await screen.findByText(name);
+diff --git a/src/frontend/src/test/student.test.tsx b/src/frontend/src/test/student.test.tsx
+index 95931c5..3f86585 100644
+--- a/src/frontend/src/test/student.test.tsx
++++ b/src/frontend/src/test/student.test.tsx
+@@ -326,7 +326,8 @@ test('FE1-LOGOUT/PRIVACY FE2-RACE late mutation cannot resurrect old actor after
+   expect(screen.queryByText(/booking confirmed/i)).not.toBeInTheDocument();
+   expect(screen.queryByText(slot.tutorName)).not.toBeInTheDocument();
+   expect(api.requests('/api/student/slots')).toHaveLength(reads);
+-  expect(screen.getByText('New Admin')).toBeVisible();
++  expect(screen.getByRole('heading', { level: 1, name: /admin/i })).toBeVisible();
++  expect(screen.queryByText(student.name)).not.toBeInTheDocument();
+ });
+ 
+ test('FE2-UI no unfinished AI route/actions are exposed in booking workspace', async () => {
+diff --git a/src/frontend/e2e/contrast-audit.ts b/src/frontend/e2e/contrast-audit.ts
+new file mode 100644
+index 0000000..04e5e6a
+--- /dev/null
++++ b/src/frontend/e2e/contrast-audit.ts
+@@ -0,0 +1,64 @@
++import type { Page } from '@playwright/test';
++
++// Measure actual browser-computed colors. Alpha backgrounds are composited through
++// ancestors (including the modal backdrop), rather than assuming a white canvas.
++export async function audit(page: Page, mode: 'text' | 'controls' | 'focus') {
++  return page.evaluate(mode => {
++    type Color = [number, number, number, number];
++    const parse = (value: string): Color => {
++      const parts = value.match(/[\d.]+/g)?.map(Number) ?? [];
++      if (parts.length < 3) throw new Error(`Unsupported computed color: ${value}`);
++      return [parts[0], parts[1], parts[2], parts[3] ?? 1];
++    };
++    const over = (a: Color, b: Color): Color => {
++      const alpha = a[3] + b[3] * (1 - a[3]);
++      return [0, 1, 2].map(i => (a[i] * a[3] + b[i] * b[3] * (1 - a[3])) / alpha).concat(alpha) as Color;
++    };
++    const background = (element: Element | null): Color => element ? over(parse(getComputedStyle(element).backgroundColor), background(element.parentElement)) : [255, 255, 255, 1];
++    const lum = (c: Color) => c.slice(0, 3).map(v => { const x = v / 255; return x <= .04045 ? x / 12.92 : ((x + .055) / 1.055) ** 2.4; }).reduce((s, x, i) => s + x * [.2126, .7152, .0722][i], 0);
++    const ratio = (a: Color, b: Color) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
++    const visible = (el: HTMLElement) => el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }) && el.getBoundingClientRect().width > 0 && !el.closest('[inert],[aria-hidden="true"]');
++    const label = (el: HTMLElement) => `${el.tagName.toLowerCase()} ${el.getAttribute('aria-label') || el.textContent?.trim().slice(0, 65) || el.id}`;
++    const failures: string[] = []; let checked = 0;
++    const check = (el: HTMLElement, kind: string, actual: number, threshold: number) => {
++      checked++; if (actual + .01 < threshold) failures.push(`${label(el)} ${kind}: ${actual.toFixed(2)} < ${threshold}`);
++    };
++    const dialog = document.querySelector('[role="dialog"]');
++    const all = Array.from((dialog ?? document.body).querySelectorAll<HTMLElement>('*')).filter(visible);
++    if (mode === 'text') for (const el of all) {
++      if (el.matches('option,script,style,svg,svg *') || el.matches(':disabled') || el.closest(':disabled')) continue;
++      const directText = Array.from(el.childNodes).some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim());
++      if (!directText && !el.matches('input,select,textarea')) continue;
++      const s = getComputedStyle(el); const bg = background(el);
++      const large = parseFloat(s.fontSize) >= 24 || (parseFloat(s.fontSize) >= 18.67 && Number(s.fontWeight) >= 700);
++      check(el, 'text', ratio(over(parse(s.color), bg), bg), large ? 3 : 4.5);
++    }
++    if (mode === 'controls') for (const el of all) {
++      if (el.matches(':disabled') || el.closest(':disabled')) continue;
++      const s = getComputedStyle(el), outside = background(el.parentElement), inside = background(el);
++      if (el.matches('input,select,textarea,button') && (el.matches('input,select,textarea') || parseFloat(s.borderTopWidth) > 0)) {
++        const border = over(parse(s.borderTopColor), inside);
++        // A filled control may establish its boundary through its fill instead.
++        check(el, 'boundary', Math.max(ratio(border, outside), ratio(inside, outside)), 3);
++      }
++      if (el.matches('[aria-current="page"],.booking-tabs .active,.day-header.today')) {
++        const borderRatios = ['Top', 'Right', 'Bottom', 'Left'].map(side => {
++          const style = s as unknown as Record<string, string>;
++          return parseFloat(style[`border${side}Width`]) > 0 ? ratio(over(parse(style[`border${side}Color`]), inside), outside) : 1;
++        });
++        check(el, 'selected indicator', Math.max(ratio(inside, outside), ...borderRatios), 3);
++      }
++    }
++    if (mode === 'focus') {
++      const el = document.activeElement as HTMLElement;
++      if (!el || el === document.body || el.matches(':disabled')) return { checked: 0, failures: [] };
++      const s = getComputedStyle(el); const adjacent = background(el.parentElement);
++      const outline = s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) >= 1 ? ratio(over(parse(s.outlineColor), adjacent), adjacent) : 1;
++      const shadowColors = s.boxShadow.match(/rgba?\([^)]+\)/g) ?? [];
++      const shadow = shadowColors.map(c => ratio(over(parse(c), adjacent), adjacent));
++      check(el, 'keyboard focus indicator', Math.max(outline, ...shadow), 3);
++    }
++    return { checked, failures };
++  }, mode);
++}
++
+diff --git a/src/frontend/e2e/contrast.spec.ts b/src/frontend/e2e/contrast.spec.ts
+new file mode 100644
+index 0000000..42b05f6
+--- /dev/null
++++ b/src/frontend/e2e/contrast.spec.ts
+@@ -0,0 +1,46 @@
++import { expect, test, type Page } from '@playwright/test';
++import { audit } from './contrast-audit';
++
++const moduleId = '20000000-0000-4000-8000-000000000001';
++const slot = { id: '30000000-0000-4000-8000-000000000001', moduleId, moduleCode: 'CS3227', moduleName: 'Software Architecture', tutorName: 'Contrast Synthetic Tutor', startTime: '2026-10-21T02:00:00Z', endTime: '2026-10-21T03:00:00Z' };
++async function fixture(page: Page, state: string) {
++  await page.route('**/api/**', async route => {
++    const path = new URL(route.request().url()).pathname;
++    let status = 200; let body: unknown;
++    if (path === '/api/auth/me') {
++      status = state === 'login' ? 401 : state === 'failure' ? 503 : 200;
++      body = status === 200 ? { id: '10000000-0000-4000-8000-000000000001', name: 'Contrast Synthetic Student', role: state === 'tutor' ? 'TUTOR' : state === 'admin' ? 'ADMIN' : 'STUDENT' } : { code: status === 401 ? 'UNAUTHENTICATED' : 'TEMPORARILY_UNAVAILABLE', requestId: 'contrast' };
++    } else if (path === '/api/auth/csrf') body = { headerName: 'X-TEST', token: 'test-only' };
++    else if (path === '/api/student/modules') body = [{ id: moduleId, code: slot.moduleCode, name: slot.moduleName }];
++    else if (path === '/api/student/slots') body = [slot];
++    else if (path === '/api/student/bookings') body = [{ ...slot, id: '40000000-0000-4000-8000-000000000001', slotId: slot.id, status: 'ACTIVE', cancellable: true }];
++    else { status = 404; body = { code: 'NOT_FOUND' }; }
++    await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
++  });
++}
++for (const [state, width] of [['login',1440],['slots',1440],['slots',320],['bookings',1440],['dialog',1440],['tutor',1440],['admin',1440],['failure',1440],['notfound',1440]] as const) {
++  test(`FE-UI-CONTRAST ${state} ${width}px text, controls, selected and keyboard focus`, async ({ page }) => {
++    await page.emulateMedia({ reducedMotion: 'reduce' });
++    await page.setViewportSize({ width, height: 1000 }); await fixture(page, state);
++    const path = state === 'login' ? '/login' : state === 'tutor' || state === 'admin' ? '/' + state : state === 'notfound' ? '/unknown' : state === 'bookings' ? '/student/bookings' : '/student/slots?week=2026-10-19';
++    await page.goto(path); await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
++    if (state === 'slots' || state === 'dialog') await expect(page.getByText(slot.tutorName)).toBeVisible();
++    if (state === 'bookings') await expect(page.getByRole('button', { name: /^cancel(?: booking)?$/i })).toBeVisible();
++    if (state === 'failure') await expect(page.getByRole('alert')).toBeVisible();
++    if (state === 'dialog') { await page.getByRole('button', { name: /^book$/i }).click(); await expect(page.getByRole('dialog')).toBeVisible(); }
++    const text = await audit(page, 'text'); expect(text.checked).toBeGreaterThan(0); expect.soft(text.failures, 'all visible text').toEqual([]);
++    const controls = await audit(page, 'controls'); expect.soft(controls.failures, 'control and selected boundaries').toEqual([]);
++    // Visit the complete keyboard cycle, including the skip link; dialog cycling
++    // is scoped by its focus trap. Audit text again in each focus-visible state.
++    const count = await page.locator(state === 'dialog' ? '[role="dialog"] button' : 'a[href],button,input,select,textarea').count();
++    let focused = 0;
++    for (let index = 0; index < count + 1; index++) {
++      await page.keyboard.press('Tab');
++      const focus = await audit(page, 'focus'); focused += focus.checked;
++      expect.soft(focus.failures, 'keyboard focus').toEqual([]);
++      expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
++    }
++    expect(focused).toBeGreaterThan(0);
++  });
++}
++
+diff --git a/src/frontend/src/test/fe3.test.tsx b/src/frontend/src/test/fe3.test.tsx
+new file mode 100644
+index 0000000..e43f4e3
+--- /dev/null
++++ b/src/frontend/src/test/fe3.test.tsx
+@@ -0,0 +1,225 @@
++import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
++import userEvent from '@testing-library/user-event';
++import { afterEach, beforeEach, expect, test, vi } from 'vitest';
++import App from '../App';
++import { apiFixture, deferred, failure, ids, json, slot, student } from './api-fixture';
++
++beforeEach(() => window.history.replaceState({}, '', '/student/slots?week=2026-10-19'));
++afterEach(() => vi.unstubAllGlobals());
++const cases = ['503', 'network', 'malformed', 'unexpected'] as const;
++function bad(kind: typeof cases[number]) {
++  if (kind === 'network') throw new TypeError('Synthetic private diagnostic');
++  if (kind === '503') return failure(503, 'TEMPORARILY_UNAVAILABLE');
++  if (kind === 'unexpected') return json({}, 202);
++  return json({ token: 4 });
++}
++const operations = ['book', 'cancel'] as const;
++function mutationPath(operation: typeof operations[number]) {
++  return operation === 'book' ? '/api/student/bookings' : `/api/student/bookings/${ids.booking}/cancel`;
++}
++async function open(operation: typeof operations[number], user: ReturnType<typeof userEvent.setup>) {
++  await user.click(await screen.findByRole('button', { name: operation === 'book' ? /^book$/i : /^cancel(?: booking)?$/i }));
++  const dialog = await screen.findByRole('dialog');
++  expect(dialog).toHaveTextContent(slot.tutorName);
++  return within(dialog).getByRole('button', { name: /confirm/i });
++}
++for (const operation of operations) {
++  test.each(cases)('FE2-NOTHING-SENT S1/S2 ' + operation + ' CSRF %s sends nothing and retries through confirmation', async kind => {
++    const api = apiFixture(student);
++    api.on('GET', '/api/auth/csrf', () => bad(kind));
++    if (operation === 'cancel') window.history.replaceState({}, '', '/student/bookings');
++    render(<App />);
++    const user = userEvent.setup();
++    await user.click(await open(operation, user));
++    expect(api.requests(mutationPath(operation), 'POST')).toHaveLength(0);
++    expect(await screen.findByRole('alert')).toHaveTextContent(/^Nothing was changed\. Please try again\./);
++    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
++    expect(document.body).not.toHaveTextContent(/may have completed|check My bookings/i);
++    expect(document.body).not.toHaveTextContent('Synthetic private diagnostic');
++    api.on('GET', '/api/auth/csrf', () => json({ headerName: 'X-FRESH-CSRF', token: 'fresh-retry-token' }));
++    await user.click(screen.getByRole('button', { name: /^retry$/i }));
++    const dialog = await screen.findByRole('dialog');
++    expect(dialog).toHaveTextContent(slot.moduleCode);
++    expect(dialog).toHaveTextContent(slot.tutorName);
++    expect(api.requests(mutationPath(operation), 'POST')).toHaveLength(0);
++    await user.click(within(dialog).getByRole('button', { name: /confirm/i }));
++    await screen.findByText(operation === 'book' ? /booking confirmed/i : /booking cancelled/i);
++    const posts = api.requests(mutationPath(operation), 'POST');
++    expect(posts).toHaveLength(1);
++    expect(posts[0].headers.get('X-FRESH-CSRF')).toBe('fresh-retry-token');
++    expect(posts[0].body).toEqual(operation === 'book' ? { slotId: ids.slot } : {});
++    expect(api.requests('/api/auth/csrf')).toHaveLength(2);
++  });
++
++  test.each(['network', '503', 'malformed'] as const)('FE2-NOTHING-SENT S3 ' + operation + ' sent POST %s remains uncertain without replay', async kind => {
++    const api = apiFixture(student);
++    api.on('POST', mutationPath(operation), () => kind === 'malformed' ? json({}) : bad(kind));
++    if (operation === 'cancel') window.history.replaceState({}, '', '/student/bookings');
++    render(<App />);
++    const user = userEvent.setup();
++    await user.click(await open(operation, user));
++    expect(await screen.findByRole('alert')).toHaveTextContent(/may have completed.*Refresh and check My bookings/i);
++    expect(document.body).not.toHaveTextContent('Nothing was changed.');
++    expect(api.requests(mutationPath(operation), 'POST')).toHaveLength(1);
++    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
++  });
++
++  test.each([[401, 'UNAUTHENTICATED'], [403, 'ACCOUNT_INACTIVE']] as const)('FE1-DENIAL-CACHED ' + operation + ' POST %s %s clears both private pages without replay', async (status, code) => {
++    const api = apiFixture();
++    window.history.replaceState({}, '', '/login');
++    render(<App />);
++    const user = userEvent.setup();
++    await user.type(await screen.findByLabelText(/^email$/i), 'synthetic@example.test');
++    await user.type(screen.getByLabelText(/^password$/i), 'Synthetic-password-12');
++    await user.click(screen.getByRole('button', { name: /^sign in$/i }));
++    // Login rotates and acquires the protected token, exercising the cached POST path.
++    await screen.findByRole('button', { name: /^book$/i });
++    await user.click(screen.getByRole('link', { name: /my bookings/i }));
++    await screen.findByRole('button', { name: /^cancel(?: booking)?$/i });
++    if (operation === 'book') await user.click(screen.getByRole('link', { name: /find a consultation/i }));
++    const tokenReads = api.requests('/api/auth/csrf').length;
++    api.on('POST', mutationPath(operation), () => failure(status, code));
++    await user.click(await open(operation, user));
++    await screen.findByLabelText(/^email$/i);
++    expect(await screen.findByRole('alert')).toHaveTextContent(code === 'ACCOUNT_INACTIVE' ? /inactive/i : /session expired/i);
++    expect(screen.getByRole('alert')).not.toHaveTextContent(code === 'ACCOUNT_INACTIVE' ? /session expired/i : /inactive/i);
++    expect(screen.queryByText(student.name)).not.toBeInTheDocument();
++    expect(screen.queryByText(slot.tutorName)).not.toBeInTheDocument();
++    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
++    expect(screen.queryByRole('button', { name: /^book$|^cancel(?: booking)?$/i })).not.toBeInTheDocument();
++    expect(api.requests(mutationPath(operation), 'POST')).toHaveLength(1);
++    expect(api.requests('/api/auth/csrf')).toHaveLength(tokenReads);
++    expect(api.requests('/api/auth/me')).toHaveLength(1);
++  });
++}
++
++for (const role of ['STUDENT', 'TUTOR', 'ADMIN'] as const) {
++  test.each(['503', 'network', 'malformed'] as const)('FE1-LOGOUT-CONFIRMED S1/S2 ' + role + ' anonymous CSRF %s cannot undo 204', async kind => {
++    const api = apiFixture({ ...student, role });
++    let signedOut = false;
++    api.on('GET', '/api/auth/csrf', () => signedOut ? bad(kind) : json({ headerName: 'X-TEST-CSRF', token: 'logout-token' }));
++    api.on('POST', '/api/auth/logout', () => { signedOut = true; return new Response(null, { status: 204 }); });
++    render(<App />);
++    const user = userEvent.setup();
++    await user.click(await screen.findByRole('button', { name: /sign out/i }));
++    await waitFor(() => expect(screen.getByRole('button', { name: /^sign in$/i })).toBeEnabled());
++    expect(api.requests('/api/auth/logout', 'POST')).toHaveLength(1);
++    expect(api.requests('/api/auth/csrf')).toHaveLength(2);
++    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
++    expect(screen.queryByRole('button', { name: /retry.*sign.out/i })).not.toBeInTheDocument();
++    expect(screen.queryByText(student.name)).not.toBeInTheDocument();
++    expect(screen.queryByText(slot.tutorName)).not.toBeInTheDocument();
++    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
++    api.on('GET', '/api/auth/csrf', () => json({ headerName: 'X-FRESH-CSRF', token: 'fresh-login-token' }));
++    await user.type(screen.getByLabelText(/^email$/i), 'synthetic@example.test');
++    await user.type(screen.getByLabelText(/^password$/i), 'Synthetic-password-12');
++    await user.click(screen.getByRole('button', { name: /^sign in$/i }));
++    await screen.findByRole('button', { name: /sign out/i });
++    const post = api.requests('/api/auth/login', 'POST');
++    expect(post).toHaveLength(1);
++    expect(post[0].headers.get('X-FRESH-CSRF')).toBe('fresh-login-token');
++    expect(api.calls.indexOf(api.requests('/api/auth/csrf')[2])).toBeLessThan(api.calls.indexOf(post[0]));
++    expect(api.requests('/api/auth/me')).toHaveLength(1);
++  });
++}
++
++test.each(['network', '503', 'malformed', 'unexpected', 'csrf-invalid'] as const)('FE1-LOGOUT-CONFIRMED S3 logout POST %s remains unconfirmed and retryable', async kind => {
++  const api = apiFixture(student);
++  api.on('POST', '/api/auth/logout', () => kind === 'csrf-invalid' ? failure(403, 'CSRF_INVALID') : kind === 'malformed' ? new Response('broken', { status: 200 }) : bad(kind));
++  render(<App />);
++  const user = userEvent.setup();
++  await user.click(await screen.findByRole('button', { name: /sign out/i }));
++  expect(await screen.findByRole('alert')).toHaveTextContent(/server sign-out could not be confirmed/i);
++  expect(screen.getByRole('button', { name: /retry sign out/i })).toBeEnabled();
++  expect(screen.queryByText(student.name)).not.toBeInTheDocument();
++  expect(api.requests('/api/auth/me')).toHaveLength(1);
++  expect(api.requests('/api/auth/logout', 'POST')).toHaveLength(1);
++});
++
++function landmarks() {
++  expect(screen.getAllByRole('banner')).toHaveLength(1);
++  expect(screen.getByRole('banner')).toHaveTextContent('UniChope');
++  expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
++  expect(screen.getByRole('link', { name: /skip/i })).toHaveAttribute('href', '#main-content');
++}
++test.each(['login', 'restoring', 'restore-failure', 'not-found', 'slots', 'bookings', 'TUTOR', 'ADMIN'] as const)('FE1-UI-LANDMARKS S1/S2/S4 %s has one banner, h1 and skip link', async page => {
++  const api = apiFixture(page === 'login' ? null : { ...student, role: page === 'TUTOR' || page === 'ADMIN' ? page : 'STUDENT' });
++  if (page === 'restoring') api.on('GET', '/api/auth/me', () => deferred<Response>().promise);
++  if (page === 'restore-failure') api.on('GET', '/api/auth/me', () => failure(503, 'TEMPORARILY_UNAVAILABLE'));
++  const path = page === 'not-found' ? '/missing' : page === 'bookings' ? '/student/bookings' : page === 'login' ? '/login' : page === 'TUTOR' || page === 'ADMIN' ? `/${page.toLowerCase()}` : '/student/slots?week=2026-10-19';
++  window.history.replaceState({}, '', path);
++  render(<App />);
++  if (page === 'login') await screen.findByLabelText(/^email$/i);
++  else if (page === 'restore-failure') await screen.findByRole('alert');
++  else if (page === 'not-found') await screen.findByRole('heading', { name: /not found/i });
++  else if (page !== 'restoring') await screen.findByRole('button', { name: /sign out/i });
++  landmarks();
++  if (page === 'TUTOR' || page === 'ADMIN') {
++    const banner = screen.getByRole('banner');
++    expect(banner.textContent?.replace(/\s+/g, '')).toBe('UniChopeSignout');
++    expect(within(banner).getAllByRole('button')).toHaveLength(1);
++    expect(within(banner).getByRole('button', { name: /^sign out$/i })).toBeVisible();
++    expect(within(banner).queryAllByRole('link').length).toBeLessThanOrEqual(1);
++    expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
++    expect(banner).not.toHaveTextContent(student.name);
++  }
++  if (page === 'slots' || page === 'bookings') {
++    expect(screen.getByRole('banner')).toHaveTextContent(student.name);
++    expect(screen.getByRole('banner')).toHaveTextContent('Student');
++    expect(screen.getByRole('navigation', { name: /student/i })).toBeVisible();
++  }
++});
++test('FE1-UI-LANDMARKS S3 Login begins with Sign in h1 without skipped heading levels', async () => {
++  apiFixture();
++  window.history.replaceState({}, '', '/login');
++  render(<App />);
++  await screen.findByLabelText(/^email$/i);
++  const headings = screen.getAllByRole('heading');
++  expect(headings[0]).toHaveTextContent(/^Sign in$/);
++  expect(headings[0].tagName).toBe('H1');
++  for (let index = 1; index < headings.length; index++) expect(Number(headings[index].tagName[1])).toBeLessThanOrEqual(Number(headings[index - 1].tagName[1]) + 1);
++});
++
++const notice = /Invalid filters were removed/i;
++async function visit(path: string) {
++  await act(async () => {
++    window.history.pushState({}, '', path);
++    window.dispatchEvent(new PopStateEvent('popstate'));
++  });
++}
++test.each(['module', 'date', 'previous', 'this', 'next', 'reset', 'status', 'upcoming', 'history', 'page', 'popstate'] as const)('FE2-NOTICE-CLEAR S1/S2/S4 %s clears normalization notice and later invalid navigation restores it', async action => {
++  apiFixture(student);
++  const bookingPage = ['status', 'upcoming', 'history'].includes(action);
++  const path = bookingPage ? '/student/bookings?view=history&status=wrong' : '/student/slots?week=2026-10-19&bad=1';
++  window.history.replaceState({}, '', path);
++  render(<App />);
++  await screen.findByText(notice);
++  await screen.findByText(slot.tutorName);
++  await waitFor(() => expect(window.location.search).not.toMatch(/bad=|wrong/));
++  expect(screen.getByText(notice)).toBeVisible();
++  const user = userEvent.setup();
++  if (action === 'module') await user.selectOptions(screen.getByRole('combobox', { name: /^module$/i }), ids.module);
++  else if (action === 'date') fireEvent.change(screen.getByLabelText(/specific date/i), { target: { value: '2026-10-21' } });
++  else if (action === 'status') await user.selectOptions(screen.getByRole('combobox', { name: /^status$/i }), 'CANCELLED');
++  else if (action === 'page') await user.click(screen.getByRole('link', { name: /my bookings/i }));
++  else if (action === 'popstate') await visit('/student/slots?week=2026-10-26');
++  else await user.click(screen.getByRole('button', { name: action === 'reset' ? /^reset$/i : action === 'upcoming' ? /^upcoming$/i : action === 'history' ? /^history$/i : new RegExp(`${action} week`, 'i') }));
++  await waitFor(() => expect(screen.queryByText(notice)).not.toBeInTheDocument());
++  await visit(path);
++  expect(await screen.findByText(notice)).toBeVisible();
++});
++test.each(['Refresh', 'Retry'])('FE2-NOTICE-CLEAR S3 read %s keeps normalization notice', async action => {
++  const api = apiFixture(student);
++  if (action === 'Retry') api.on('GET', '/api/student/slots', () => failure(503, 'TEMPORARILY_UNAVAILABLE'));
++  window.history.replaceState({}, '', '/student/slots?week=2026-10-19&bad=1');
++  render(<App />);
++  await screen.findByText(notice);
++  if (action === 'Retry') await screen.findByRole('button', { name: /^retry$/i });
++  else await screen.findByText(slot.tutorName);
++  const count = api.requests('/api/student/slots').length;
++  api.on('GET', '/api/student/slots', () => json([slot]));
++  await userEvent.setup().click(screen.getByRole('button', { name: new RegExp(`^${action}$`, 'i') }));
++  await waitFor(() => expect(api.requests('/api/student/slots').length).toBeGreaterThan(count));
++  await screen.findByText(slot.tutorName);
++  expect(screen.getByText(notice)).toBeVisible();
++});
+diff --git a/src/frontend/src/test/fe4.test.tsx b/src/frontend/src/test/fe4.test.tsx
+new file mode 100644
+index 0000000..a29a4e0
+--- /dev/null
++++ b/src/frontend/src/test/fe4.test.tsx
+@@ -0,0 +1,197 @@
++import { act, render, screen, waitFor } from '@testing-library/react';
++import userEvent from '@testing-library/user-event';
++import { afterEach, beforeEach, expect, test, vi } from 'vitest';
++import App from '../App';
++import { apiFixture, deferred, failure, ids, json, moduleOption, slot, student } from './api-fixture';
++
++beforeEach(() => window.history.replaceState({}, '', '/student/slots?week=2026-10-19'));
++afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); });
++function bad(kind: string): Response {
++  if (kind === 'network') throw new TypeError('Synthetic private diagnostic');
++  if (kind === 'malformed') return json({ invalid: true });
++  return failure(Number(kind), 'TEMPORARILY_UNAVAILABLE');
++}
++async function submit(user: ReturnType<typeof userEvent.setup>) {
++  await user.type(await screen.findByLabelText(/^email$/i), 'synthetic@example.test');
++  await user.type(screen.getByLabelText(/^password$/i), 'Synthetic-password-12');
++  await user.click(screen.getByRole('button', { name: /^sign in$/i }));
++}
++test.each(['503', 'network', 'malformed', '500', '403'])('FE1-RESTORE-UNREACHABLE S1: %s keeps URL and safe retry screen', async kind => {
++  const api = apiFixture();
++  api.on('GET', '/api/auth/me', () => bad(kind));
++  render(<App />);
++  expect(await screen.findByRole('alert')).toHaveTextContent("We can't reach the server right now");
++  expect(window.location.pathname + window.location.search).toBe('/student/slots?week=2026-10-19');
++  expect(screen.queryByLabelText(/^email$/i)).not.toBeInTheDocument();
++  expect(screen.queryByText(student.name)).not.toBeInTheDocument();
++  expect(screen.getByRole('button', { name: /^try again$/i })).toBeEnabled();
++  expect(api.requests('/api/auth/me')).toHaveLength(1);
++});
++for (const outcome of ['student', 'tutor', 'admin', '401', 'inactive', '503']) {
++  test('FE1-RESTORE-UNREACHABLE S2 retry to ' + outcome, async () => {
++    const api = apiFixture();
++    api.on('GET', '/api/auth/me', () => bad('503'));
++    render(<App />);
++    const retry = await screen.findByRole('button', { name: /^try again$/i });
++    const marker = document.documentElement;
++    api.on('GET', '/api/auth/me', () => outcome === '401' ? failure(401, 'UNAUTHENTICATED') : outcome === 'inactive' ? failure(403, 'ACCOUNT_INACTIVE') : outcome === '503' ? bad('503') : json({ ...student, role: outcome.toUpperCase() }));
++    await userEvent.setup().click(retry);
++    await waitFor(() => expect(api.requests('/api/auth/me')).toHaveLength(2));
++    expect(document.documentElement).toBe(marker);
++    if (outcome === '503') expect(await screen.findByRole('alert')).toHaveTextContent("We can't reach the server right now");
++    else if (outcome === '401' || outcome === 'inactive') {
++      await screen.findByLabelText(/^email$/i);
++      if (outcome === 'inactive') expect(screen.getByRole('alert')).toHaveTextContent(/inactive/i);
++      else expect(screen.queryByRole('alert')).not.toBeInTheDocument();
++    } else await screen.findByRole('heading', { level: 1, name: outcome === 'student' ? /find a consultation/i : new RegExp(outcome, 'i') });
++  });
++}
++test.each([[401, 'UNAUTHENTICATED'], [403, 'ACCOUNT_INACTIVE']] as const)('FE1-RESTORE-UNREACHABLE S3 initial %s', async (status, code) => {
++  const api = apiFixture(); api.on('GET', '/api/auth/me', () => failure(status, code)); render(<App />);
++  await screen.findByLabelText(/^email$/i);
++  if (status === 401) expect(screen.queryByRole('alert')).not.toBeInTheDocument();
++  else expect(screen.getByRole('alert')).toHaveTextContent(/inactive/i);
++});
++for (const source of ['csrf401', 'csrfInactive', 'loginInvalid']) {
++  test('FE1-LOGIN-STALE S1-S3 ' + source + ' clears password and explicitly retries with fresh token', async () => {
++    const api = apiFixture(); window.history.replaceState({}, '', '/login');
++    if (source !== 'loginInvalid') api.on('GET', '/api/auth/csrf', () => failure(source === 'csrf401' ? 401 : 403, source === 'csrf401' ? 'UNAUTHENTICATED' : 'ACCOUNT_INACTIVE'));
++    else api.on('POST', '/api/auth/login', () => failure(403, 'CSRF_INVALID'));
++    render(<App />); const user = userEvent.setup(); await submit(user);
++    expect(await screen.findByRole('alert')).toHaveTextContent(/^Please try again\.$/);
++    expect(screen.getByLabelText(/^password$/i)).toHaveValue('');
++    expect(screen.getByRole('button', { name: /^sign in$/i })).toBeEnabled();
++    expect(api.requests('/api/auth/login', 'POST')).toHaveLength(source === 'loginInvalid' ? 1 : 0);
++    expect(api.requests('/api/auth/me')).toHaveLength(1);
++    const count = api.requests('/api/auth/csrf').length;
++    api.on('GET', '/api/auth/csrf', () => json({ headerName: 'X-FRESH', token: 'fresh-token' }));
++    api.on('POST', '/api/auth/login', () => json(student));
++    // Email survives, password is deliberately entered again by the user.
++    await user.type(screen.getByLabelText(/^password$/i), 'Synthetic-password-12');
++    await user.click(screen.getByRole('button', { name: /^sign in$/i }));
++    await screen.findByRole('button', { name: /sign out/i });
++    expect(api.requests('/api/auth/csrf').length).toBeGreaterThan(count);
++    const posts = api.requests('/api/auth/login', 'POST');
++    expect(posts).toHaveLength(source === 'loginInvalid' ? 2 : 1);
++    expect(posts.at(-1)!.headers.get('X-FRESH')).toBe('fresh-token');
++  });
++}
++for (const source of ['csrf', 'post']) for (const [status, code] of [[401, 'UNAUTHENTICATED'], [403, 'ACCOUNT_INACTIVE']] as const) {
++  test(`FE1-LOGOUT-ENDED ${source} ${code} clears private state silently and refreshes token on later login`, async () => {
++    const api = apiFixture(student);
++    api.on(source === 'csrf' ? 'GET' : 'POST', source === 'csrf' ? '/api/auth/csrf' : '/api/auth/logout', () => failure(status, code));
++    render(<App />); const user = userEvent.setup(); await screen.findByText(slot.tutorName);
++    await user.click(screen.getByRole('button', { name: /sign out/i }));
++    await screen.findByLabelText(/^email$/i);
++    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
++    expect(screen.queryByRole('button', { name: /retry.*sign.out/i })).not.toBeInTheDocument();
++    expect(screen.queryByText(slot.tutorName)).not.toBeInTheDocument(); expect(screen.queryByText(student.name)).not.toBeInTheDocument();
++    expect(api.requests('/api/auth/me')).toHaveLength(1);
++    expect(api.requests('/api/auth/logout', 'POST')).toHaveLength(source === 'csrf' ? 0 : 1);
++    const count = api.requests('/api/auth/csrf').length;
++    api.on('GET', '/api/auth/csrf', () => json({ headerName: 'X-FRESH', token: 'new-login-token' }));
++    await submit(user); await screen.findByRole('button', { name: /sign out/i });
++    expect(api.requests('/api/auth/csrf').length).toBeGreaterThan(count);
++    expect(api.requests('/api/auth/login', 'POST')[0].headers.get('X-FRESH')).toBe('new-login-token');
++  });
++}
++const unknown = '20000000-0000-4000-8000-000000000099';
++test('FE2-UNKNOWN-MODULE S1 normalizes by replacement and rejects late removed-module results', async () => {
++  const api = apiFixture(student); const old = deferred<Response>();
++  const replace = vi.spyOn(window.history, 'replaceState');
++  api.on('GET', '/api/student/slots', call => call.url.searchParams.has('moduleId') ? old.promise : json([slot]));
++  window.history.replaceState({}, '', `/student/slots?moduleId=${unknown}&week=2026-10-19&date=2026-10-21`);
++  render(<App />);
++  await waitFor(() => expect(window.location.search).not.toContain('moduleId'));
++  expect(window.location.search).toContain('week=2026-10-19'); expect(window.location.search).toContain('date=2026-10-21');
++  expect(replace.mock.calls.some(call => String(call[2]).includes('week=2026-10-19') && !String(call[2]).includes('moduleId'))).toBe(true);
++  expect(await screen.findByRole('alert')).toHaveTextContent(/Invalid filters were removed/);
++  await screen.findByText(slot.tutorName);
++  expect(screen.getByRole('combobox', { name: /module/i })).toHaveValue('');
++  expect(api.requests('/api/student/slots').at(-1)!.url.searchParams.has('moduleId')).toBe(false);
++  await act(async () => old.resolve(json([{ ...slot, tutorName: 'Stale unknown-module tutor' }])));
++  expect(screen.queryByText('Stale unknown-module tutor')).not.toBeInTheDocument();
++  await userEvent.setup().click(screen.getByRole('button', { name: /next week/i }));
++  expect(screen.queryByText(/Invalid filters were removed/)).not.toBeInTheDocument();
++  replace.mockRestore();
++});
++test('FE2-UNKNOWN-MODULE S2 listed module stays selected', async () => {
++  const api = apiFixture(student); window.history.replaceState({}, '', `/student/slots?moduleId=${ids.module}&week=2026-10-19`);
++  render(<App />); await screen.findByText(slot.tutorName);
++  expect(screen.getByRole('combobox', { name: /module/i })).toHaveValue(ids.module);
++  expect(api.requests('/api/student/slots').at(-1)!.url.searchParams.get('moduleId')).toBe(ids.module);
++  expect(screen.queryByRole('alert')).not.toBeInTheDocument();
++});
++for (const active of [false, true]) test.each(['503', 'network', 'malformed', '500'])('FE2-MODULES-DEGRADED S1-S3 active=' + active + ' modules %s leaves slots usable and Refresh recovers', async kind => {
++  const api = apiFixture(student); api.on('GET', '/api/student/modules', () => bad(kind));
++  if (active) window.history.replaceState({}, '', `/student/slots?moduleId=${unknown}&week=2026-10-19`);
++  render(<App />);
++  await screen.findByRole('button', { name: /^book$/i });
++  const control = screen.getByRole('combobox', { name: /module/i }); expect(control).toBeDisabled();
++  expect(screen.getByRole('status')).toHaveTextContent(/module filter.*unavailable/i);
++  expect(screen.queryByRole('alert')).not.toBeInTheDocument(); expect(screen.queryByRole('button', { name: /^retry$/i })).not.toBeInTheDocument();
++  if (active) {
++    expect(window.location.search).toContain(unknown);
++    expect(api.requests('/api/student/slots').at(-1)!.url.searchParams.get('moduleId')).toBe(unknown);
++    expect((control as HTMLSelectElement).selectedOptions[0]?.textContent).not.toBe('All modules');
++  }
++  api.on('GET', '/api/student/modules', () => json([moduleOption, { ...moduleOption, id: unknown }]));
++  await userEvent.setup().click(screen.getByRole('button', { name: /^refresh$/i }));
++  await waitFor(() => expect(screen.getByRole('combobox', { name: /module/i })).toBeEnabled());
++  expect(screen.queryByText(/module filter.*unavailable/i)).not.toBeInTheDocument();
++});
++test.each([[401, 'UNAUTHENTICATED'], [403, 'ACCOUNT_INACTIVE'], [403, 'FORBIDDEN']] as const)('FE2-MODULES-DEGRADED S4 modules %s %s retains denial handling', async (status, code) => {
++  const api = apiFixture(student); api.on('GET', '/api/student/modules', () => failure(status, code)); render(<App />);
++  if (code !== 'FORBIDDEN') await screen.findByLabelText(/^email$/i); else await screen.findByRole('alert');
++  expect(screen.queryByRole('button', { name: /^book$/i })).not.toBeInTheDocument();
++  expect(screen.queryByText(/module filter.*unavailable/i)).not.toBeInTheDocument();
++});
++test('FE2-MODULES-DEGRADED S4 slot failure remains a read error', async () => {
++  const api = apiFixture(student); api.on('GET', '/api/student/slots', () => bad('503')); render(<App />);
++  await screen.findByRole('alert'); expect(screen.getByRole('button', { name: /^retry$/i })).toBeEnabled();
++  expect(screen.queryByRole('button', { name: /^book$/i })).not.toBeInTheDocument();
++});
++for (const kind of ['503', 'malformed']) for (const first of ['modules', 'slots']) {
++  test(`FE4-R1 FE2-MODULES-DEGRADED S4 modules FORBIDDEN with slots ${kind}, ${first} completes first`, async () => {
++    const api = apiFixture(student);
++    const modules = deferred<Response>(); const slots = deferred<Response>();
++    api.on('GET', '/api/student/modules', () => modules.promise);
++    api.on('GET', '/api/student/slots', () => slots.promise);
++    render(<App />);
++    await waitFor(() => {
++      expect(api.requests('/api/student/modules')).toHaveLength(1);
++      expect(api.requests('/api/student/slots')).toHaveLength(1);
++    });
++    function expectDenied() {
++      expect.soft(screen.getByRole('alert')).toHaveTextContent(/Access denied/i);
++      expect.soft(screen.queryByRole('link', { name: /^back to home$/i })).toHaveAttribute('href', '/student/slots');
++      expect.soft(screen.queryByRole('button', { name: /^retry$/i })).not.toBeInTheDocument();
++      expect.soft(screen.queryByRole('complementary', { name: /consultation filters/i })).not.toBeInTheDocument();
++      expect.soft(screen.queryByLabelText(/^module$/i)).not.toBeInTheDocument();
++      expect.soft(screen.queryByRole('region', { name: /available consultations/i })).not.toBeInTheDocument();
++      expect.soft(screen.queryByRole('button', { name: /^book$/i })).not.toBeInTheDocument();
++    }
++    if (first === 'modules') {
++      await act(async () => modules.resolve(failure(403, 'FORBIDDEN')));
++      expectDenied();
++      await act(async () => slots.resolve(bad(kind)));
++    } else {
++      await act(async () => slots.resolve(bad(kind)));
++      expect(screen.getByRole('button', { name: /^retry$/i })).toBeEnabled();
++      await act(async () => modules.resolve(failure(403, 'FORBIDDEN')));
++    }
++    expectDenied();
++    expect(screen.getByRole('button', { name: /sign out/i })).toBeEnabled();
++    expect(screen.queryByLabelText(/^email$/i)).not.toBeInTheDocument();
++    expect(api.requests('/api/auth/me')).toHaveLength(1);
++    expect(api.calls.filter(call => call.method === 'POST')).toHaveLength(0);
++  });
++}
++test.each([320, 1440])('FE2-BROWSE-MIDNIGHT %spx shows one slot with next-day end date and 00:30 SGT', async width => {
++  vi.stubGlobal('innerWidth', width); const api = apiFixture(student);
++  api.givenSlots([{ ...slot, startTime: '2026-10-25T15:30:00Z', endTime: '2026-10-25T16:30:00Z' }]); render(<App />);
++  await screen.findByText(slot.tutorName);
++  expect(screen.getAllByText(slot.tutorName)).toHaveLength(1);
++  expect(document.body).toHaveTextContent(/26 Oct/); expect(document.body).toHaveTextContent('00:30'); expect(document.body).toHaveTextContent('SGT');
++});
++

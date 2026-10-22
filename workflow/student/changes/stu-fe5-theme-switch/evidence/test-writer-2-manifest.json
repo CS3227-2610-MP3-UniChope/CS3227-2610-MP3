@@ -1,0 +1,30 @@
+﻿[
+    {
+        "sha256":  "61BDCC49168B3F955A2352D7F3F81460290EA6A5C1875A9C06AE61B628691579",
+        "path":  "src/frontend/e2e/theme.spec.ts"
+    },
+    {
+        "sha256":  "028810513FB2D252717CB4E35A12D2B531773F75F858A7362B315832A144062D",
+        "path":  "src/frontend/index.html"
+    },
+    {
+        "sha256":  "23B97C1A859B7155DAE00B97DDB3598F5DD51B508DC874467B463E8A2195DDD6",
+        "path":  "src/frontend/public/theme.js"
+    },
+    {
+        "sha256":  "765790E7645195639C69D088A67F64E6F024072FF790BFFA14059AF5AE7F6DC2",
+        "path":  "workflow/student/FRONTEND-DESIGN.md"
+    },
+    {
+        "sha256":  "B4189ACD5BBA4470796A6D59DD110EFBD037E9C73916800CB094E43C50CAEEF2",
+        "path":  "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-2-red.txt"
+    },
+    {
+        "sha256":  "7A4E232801695EF9C4B083D77ECBE98B6453D9015F25218C47921FA787EB0969",
+        "path":  "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-2-focused.txt"
+    },
+    {
+        "sha256":  "5BA86A9F93CC31D7E21EE8B8370E1185DEED97A6A30EE4CA199B3106DEF3F433",
+        "path":  "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-2-served.html"
+    }
+]

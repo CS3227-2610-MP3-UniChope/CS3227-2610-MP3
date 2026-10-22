@@ -1,0 +1,314 @@
+[
+  {
+    "path": "src/frontend/.gitignore",
+    "sha256": "06D5BA5CE22AC4879D200B2F8F3BCDBCCA30515884B0FDB45E940EB88E81FCAD"
+  },
+  {
+    "path": "src/frontend/README.md",
+    "sha256": "C2C2D7521C9F950EEBE53FC07706CAA52A95980DE9EC9D95CD8A35285C9FC450"
+  },
+  {
+    "path": "src/frontend/e2e/contrast-audit.ts",
+    "sha256": "A3B790FFFB230E28A9F45EE1C078530387C549E238171FF511B0DB4D8FDA2747"
+  },
+  {
+    "path": "src/frontend/e2e/contrast.spec.ts",
+    "sha256": "10610EDAFDE8BED32FAA60DAB61F16495359A15B44D10B72184C10AEE427C3C3"
+  },
+  {
+    "path": "src/frontend/e2e/shell.spec.ts",
+    "sha256": "8AEBD9CA0541CFBA26F1C18D845A9316A5361EC3F16F04C41758FECFEA4FB44C"
+  },
+  {
+    "path": "src/frontend/e2e/theme-fixture.ts",
+    "sha256": "6FDE213D8DAADCB6AA8677CF41A991C73D3A581B9C86FE259F1871F311A1E3B3"
+  },
+  {
+    "path": "src/frontend/e2e/theme.spec.ts",
+    "sha256": "61BDCC49168B3F955A2352D7F3F81460290EA6A5C1875A9C06AE61B628691579"
+  },
+  {
+    "path": "src/frontend/e2e/workspace.spec.ts",
+    "sha256": "9E630157C1E661BF0FB7E71736805EAF2DEDD0723A42482274EF706A97C6EF49"
+  },
+  {
+    "path": "src/frontend/index.html",
+    "sha256": "028810513FB2D252717CB4E35A12D2B531773F75F858A7362B315832A144062D"
+  },
+  {
+    "path": "src/frontend/package-lock.json",
+    "sha256": "0919D0FBF333ACB37D603AD492967CF2FFCDCE93DD32387CA9BAE03BFDB25914"
+  },
+  {
+    "path": "src/frontend/package.json",
+    "sha256": "CED7505D8394B8686986817668344F3FE6AF50C759EBFD464977DA0D269F8333"
+  },
+  {
+    "path": "src/frontend/playwright.config.ts",
+    "sha256": "43420952CAA0108B01DB99B3CAC7F6BCC0DB5C9FA43171FC07444817714FBBB6"
+  },
+  {
+    "path": "src/frontend/public/theme.js",
+    "sha256": "23B97C1A859B7155DAE00B97DDB3598F5DD51B508DC874467B463E8A2195DDD6"
+  },
+  {
+    "path": "src/frontend/src/App.tsx",
+    "sha256": "210076B79DEC3E9A0357E80AC9C6B05C37CCB51D69B4F08BAEDACE177769C6CF"
+  },
+  {
+    "path": "src/frontend/src/Login.tsx",
+    "sha256": "D65D56470EB06F2CC96E77B23CCD67E6172266FB7218E7B1E31ADE4A26BAB5D1"
+  },
+  {
+    "path": "src/frontend/src/api.ts",
+    "sha256": "FC3809078E4D8A152FA202149F373210F73B8AA34EEE8AF3D8AF8726380860DC"
+  },
+  {
+    "path": "src/frontend/src/components.tsx",
+    "sha256": "029297EC58D65A1E502E7EF5E7A97C714A97AC6D236A63D2D46CD662C4D77CAE"
+  },
+  {
+    "path": "src/frontend/src/main.tsx",
+    "sha256": "1A8BE36EE9E3F69D5AE336F6F29DDFE9925C4C260687A2C445DF078D8203727B"
+  },
+  {
+    "path": "src/frontend/src/navigation.ts",
+    "sha256": "941CDD5DFFEB00519131074CDD85AFE17BAEF1F2ACF12B5CA198A2D69253CFA7"
+  },
+  {
+    "path": "src/frontend/src/student/Confirmation.tsx",
+    "sha256": "67833E98EA2FAF774C6D88FC5F9D8CF10290309607EC1D5BB7CCD1C401E87BE1"
+  },
+  {
+    "path": "src/frontend/src/student/Consultations.tsx",
+    "sha256": "43CE97D9FD8E496CE47B8F330C46FB2EBF82E20CD8ED94E49BE3BCAB3147D4CA"
+  },
+  {
+    "path": "src/frontend/src/student/StudentWorkspace.tsx",
+    "sha256": "B48A78DDD251DA0DB7B03531EC6602087BBC34868B6F2284030E91C9D6A78B9B"
+  },
+  {
+    "path": "src/frontend/src/student/data.ts",
+    "sha256": "F3A7883425D38814D0ACA05A22385A95DF8F4BE70B6C1472653F8546E87FA4D7"
+  },
+  {
+    "path": "src/frontend/src/student/dates.ts",
+    "sha256": "11B1DA2667247D37428B6EB69218DFB671AB58E5AEB843E197321E1C67F30820"
+  },
+  {
+    "path": "src/frontend/src/student/filters.ts",
+    "sha256": "1A1DF2AE2C132B7F06D956FE7C7C5B1A2CEF2B891F142B892F96E3C873CA5EED"
+  },
+  {
+    "path": "src/frontend/src/styles.css",
+    "sha256": "ED26A10E4893D0BEE7A441E59262EF61ACB47FC963EEFDAF59118141260BD658"
+  },
+  {
+    "path": "src/frontend/src/test/api-fixture.ts",
+    "sha256": "C0224CFFB555D508E34962F5AFCFF0B05CEB60F3FC0D55E03491B9EE06D5D37E"
+  },
+  {
+    "path": "src/frontend/src/test/auth.test.tsx",
+    "sha256": "2B5FE5A3346EDB1F7A6B3D75A35FE3D2F2BE3E6423B505DD634CADB7FB1A93BD"
+  },
+  {
+    "path": "src/frontend/src/test/fe3.test.tsx",
+    "sha256": "E47AC9DF5BC9E926E8EAB38B9F1F009A3957670781BA62B5DB7222A21E54FF4A"
+  },
+  {
+    "path": "src/frontend/src/test/fe4.test.tsx",
+    "sha256": "E8E365AA7CA0C19EBA1935DD988061A371A2035DC841FDC61C57E0DC126F9090"
+  },
+  {
+    "path": "src/frontend/src/test/harness.test.tsx",
+    "sha256": "5428AFC01B69F16BA455E718D152310E44F8D4B158C5BB083E60B2FAB6DD943E"
+  },
+  {
+    "path": "src/frontend/src/test/setup.ts",
+    "sha256": "A9E0C79DEE4B6E44ADA4F185337866E41959EE6960F004578388636D914E913D"
+  },
+  {
+    "path": "src/frontend/src/test/student.test.tsx",
+    "sha256": "6121F6DA916F2F3D1B5A5B401DC95DF6BE1AD4E718CBC539E252084AC992A367"
+  },
+  {
+    "path": "src/frontend/src/test/theme.test.tsx",
+    "sha256": "44251D35D0C27F2C963E4B3E22600ED36E269D2DD6D8B4E5B9C4AF3CB7C43D25"
+  },
+  {
+    "path": "src/frontend/src/theme.tsx",
+    "sha256": "720D64C25D691AF3C6803B8970C91436479F0D7FD34F6A9E4A297489B5D25CF9"
+  },
+  {
+    "path": "src/frontend/src/vite-env.d.ts",
+    "sha256": "424FAF9241DD699DDA995B367ED36665732DA1E6EC1F33B2FD40394488ECAC92"
+  },
+  {
+    "path": "src/frontend/tsconfig.json",
+    "sha256": "F368A53EF1332F3AC9723A169B0FCC7D48D47BC8D4F02238CE2182072DFF7249"
+  },
+  {
+    "path": "src/frontend/vite.config.ts",
+    "sha256": "DB3DDEFA5AD6194AE8228009C8BDA0CC4C0CED68748E59087FFA402B0C8C69A2"
+  },
+  {
+    "path": "src/frontend/vitest.config.ts",
+    "sha256": "20C5C3FC57104261EDE0D64C94986A396B6079203BAE1627E4447CA7052B21A1"
+  },
+  {
+    "path": "workflow/student/FRONTEND-DESIGN.md",
+    "sha256": "765790E7645195639C69D088A67F64E6F024072FF790BFFA14059AF5AE7F6DC2"
+  },
+  {
+    "path": "workflow/student/HANDOFF.md",
+    "sha256": "5594B343C530CCB81111EA4F8008356369B65CE8927108E8B4163D0D369F5CA6"
+  },
+  {
+    "path": "workflow/student/NOTE.md",
+    "sha256": "333031E4BA3A4DAF09DD29ABB5E1C3ADF21F675D8B8916DEB11CD5FA8882F981"
+  },
+  {
+    "path": "workflow/student/PLAN.md",
+    "sha256": "919BD0A2EB8B66453F54B67CCE8B55F222B6678FE41DAAD969FD0788D0851FAE"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe3-review-fixes.md",
+    "sha256": "F8D9CB79DC34032655155A752B9C79FB4B0B1909D3E7CF084521C04908C93BD8"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe4-followups.md",
+    "sha256": "2FE675C46D47AF215ECC1C1004D9C9C0ED1E2E6C010AC1EBDCDA55089F91FA84"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe4-followups/evidence/implementer-2-manifest.json",
+    "sha256": "B24E7CD0AFBBB50713F845C669AA82E911DD5BF9FF5A49AFC5ADA0C13047B6E0"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe4-followups/evidence/reviewer-2-verification.json",
+    "sha256": "7C5CB80593F8461681CFF435648B7502CD3EA72D09EDB3776B5A582AD874360A"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/analyst-current-manifest.json",
+    "sha256": "7864376780A756E09D3EE6DFAE72C6F39C96ECBDECBE936D9B831FA418176CDA"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-browser-before-oracle-fix.txt",
+    "sha256": "8279F01B0AD00329778223459347EDBAEE4C4EB42466C09F642EC582DC98AD32"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-browser-initial.txt",
+    "sha256": "61E324FA106BBFD4923692656AC42C9DCFED5A943E5C696134F970A4AB6A8A31"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-browser.txt",
+    "sha256": "8A6044873F7816E69EACF1A708BF1F26324323698185AB79100A6D52069C2985"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-build.txt",
+    "sha256": "73B9D52FE64FFF115FCE8C928C79808F5751D49E4B9F5CBFB0FFFD5D048C3152"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-complete-frontend.patch",
+    "sha256": "B76F9AFC1D9A0CA52E79162926B7EB5AB6C4276BB2983E49D27C3B07F7EA2BFF"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-dark-1440.png",
+    "sha256": "93D67CC019667EF51E96F28C712926BF30BDA150E51DB7E3959943A7EFB073D8"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-dark-320.png",
+    "sha256": "4C587050FF6FEBFF55EE1B7EFB75AC25C8C4BDF2B786F5E12A345BE61EAEE33A"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-light-1440.png",
+    "sha256": "15DFDC1F5639794ADD6DB3E26132F576A6AFDF86D48925D0D9DF343C8ACAADE3"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-light-320.png",
+    "sha256": "F486577D2D4F75FC155655C650E3BF14166C06DFBF89721F9EB52BFE0D38FA63"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-preview.mjs",
+    "sha256": "0D92C5C81317AD8E82BC4D37623B7EC76EC96FC2CF62FB93E4385A919B66BAF8"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-preview.txt",
+    "sha256": "69C296C4DD069543B7D6352C258A09FCCBD637019C108F0E732A6B624083BBD5"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-production-observations.json",
+    "sha256": "56A420EB1C8E0BFA59E0AA30F1F042C14A9B18A6073A35FB07AB73FF6EDE69C8"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-scoped.patch",
+    "sha256": "AFFD4BFB8DBB0F1137B5CED30DFE9669ACE32D7CB2BCCA5D5297B55C57CB3333"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-unit.json",
+    "sha256": "428B47C113E4CF5E0622F87DA2C0C6652187ECA76B2F48BBA601B06F8B43EA0B"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-unit.txt",
+    "sha256": "63F2E4F73E7237E496301342612890E1261973A779B1576BE91E3EA5006F2470"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-verification.json",
+    "sha256": "25D05784621D5CDC77CB3C9CF7E4839BAF59DD5BE2163CF1D587131E5D2CD33D"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-2-focused.txt",
+    "sha256": "7A4E232801695EF9C4B083D77ECBE98B6453D9015F25218C47921FA787EB0969"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-2-manifest.json",
+    "sha256": "2610051AC2B5E4705263867B1801C353D91A0CCBA423230DE3F1447F7F97F759"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-2-red.txt",
+    "sha256": "B4189ACD5BBA4470796A6D59DD110EFBD037E9C73916800CB094E43C50CAEEF2"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-2-served.html",
+    "sha256": "5BA86A9F93CC31D7E21EE8B8370E1185DEED97A6A30EE4CA199B3106DEF3F433"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-browser-final.txt",
+    "sha256": "BC6B87F7550C357F846676149051A13B642068FF915BCE9455E42CCECC9397FF"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-browser.txt",
+    "sha256": "780D6E2F29FEE8326A40C9EAEAF00EB2818F0A365842221A896366EFAE19EC4E"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-build.txt",
+    "sha256": "FDC31A03E8D8AADADBCDB4C458C31C9CA2E0B6AB04CE464150D8C040441A550B"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-manifest.json",
+    "sha256": "24A110734A773D6C836DC3B5ED7F9D9AC6593A35EEA6BA982E5B1517E501CF3A"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-unit-final.json",
+    "sha256": "D70D76E48B41B96043AF464DD432DCC4E4447BB4B0BF86EE0F42502D48B5651C"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-unit-final.txt",
+    "sha256": "2A555EC6DAB5F9D9E48D770C75C24035A105CB103009F3E3E8272546665003E8"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-unit-full.json",
+    "sha256": "611E882B69C810BCC0414ED2B1C21DE53744622F30A20D70CD41B429E4768614"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-unit-full.txt",
+    "sha256": "264E1967BEDE29D4A8BA50A4DC097679EF5FB033E44B101BC807014C4753B0E7"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-unit.json",
+    "sha256": "EF6B098CE738EE2451A70CF9F48D277B898ADA4CDFA91BC54560A9662991FEF2"
+  },
+  {
+    "path": "workflow/student/changes/stu-fe5-theme-switch/evidence/test-writer-unit.txt",
+    "sha256": "DC19633D386818FDD9ADD3DA6A7F76430DD46FF8B183764C76A6219FD5771260"
+  }
+]

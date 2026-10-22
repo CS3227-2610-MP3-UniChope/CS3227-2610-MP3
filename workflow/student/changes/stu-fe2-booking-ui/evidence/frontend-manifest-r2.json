@@ -1,0 +1,162 @@
+﻿[
+    {
+        "path":  "src/frontend/src/api.ts",
+        "sha256":  "25F8CDBD4A545DEE968695983C926F49DE78D32B3D24B2B8CB33FB503C0237F6"
+    },
+    {
+        "path":  "src/frontend/src/App.tsx",
+        "sha256":  "11FD37E757FC4904A0A81D7B0FD04043A2E3CA78218F8D7CA8098ADD480A4911"
+    },
+    {
+        "path":  "src/frontend/src/components.tsx",
+        "sha256":  "B23D6F0CE1907CC218D49A2106EC4BB2FCE5E72DCEC8DF5536AF30CCAF05224C"
+    },
+    {
+        "path":  "src/frontend/src/Login.tsx",
+        "sha256":  "272CF4BCA9D09BD21F9BC253FADEB853A5FDFB9C957EFAD50C84D8E4AB0BE005"
+    },
+    {
+        "path":  "src/frontend/src/main.tsx",
+        "sha256":  "BA6B140C8A74A56B5F0A0E6280E5AB36CE941568595775B5C8A1DB2C958BA684"
+    },
+    {
+        "path":  "src/frontend/src/navigation.ts",
+        "sha256":  "30691ACEEF5519F515BBBB084FC12BF3F4F3CCB25ED366632315338FB05CD9E1"
+    },
+    {
+        "path":  "src/frontend/src/styles.css",
+        "sha256":  "03707F240963675587C05D233EE57B96F79E86C13B08F9483D14EAF19F265D11"
+    },
+    {
+        "path":  "src/frontend/src/vite-env.d.ts",
+        "sha256":  "65996936FBB042915F7B74A200FCDDE7E410F32A669B1AB9597CFAA4B0FADDB5"
+    },
+    {
+        "path":  "src/frontend/src/student/Confirmation.tsx",
+        "sha256":  "F69937B16CDA1BF16BC618489E556F555AF99EA885603271117BEA90A8BC144B"
+    },
+    {
+        "path":  "src/frontend/src/student/Consultations.tsx",
+        "sha256":  "1AB2702504138F501F9C28A1A5077F04B5C59CC5B04D51C31ABC53C09C4FE4BD"
+    },
+    {
+        "path":  "src/frontend/src/student/data.ts",
+        "sha256":  "D429DD8218603C0E22F85194166BA47F7AF983B7BC8C6485AAD2E1074DBFC089"
+    },
+    {
+        "path":  "src/frontend/src/student/dates.ts",
+        "sha256":  "3628A3EEE3AD068A5041FE8E03E0F6A2713005EA671DB82F827BF70FAA0429F5"
+    },
+    {
+        "path":  "src/frontend/src/student/filters.ts",
+        "sha256":  "9A05C9ADC0A395689AC7DA76F0B31281CBBA5C93F8B8335CD6378A53F1F52E8D"
+    },
+    {
+        "path":  "src/frontend/src/student/StudentWorkspace.tsx",
+        "sha256":  "FE2661B8A979D430D02EA77F4F33D7624DE08940D5BE3D9A3E2F1B67CF5A9A99"
+    },
+    {
+        "path":  "src/frontend/src/test/api-fixture.ts",
+        "sha256":  "6DB9A97AAD01B4CF14AE22834FA20F1F14B1D50253B4FD0F4F8E24CEE7DD48D7"
+    },
+    {
+        "path":  "src/frontend/src/test/auth.test.tsx",
+        "sha256":  "2E5DBA750D82F53A9B5C331D6E294FCFE191D62C989F74475336DE0D12E803D3"
+    },
+    {
+        "path":  "src/frontend/src/test/harness.test.tsx",
+        "sha256":  "39EE66143D4C0B16CE6903AB96F643BF4ED06B3410F9A9B3459C2BE17809DDED"
+    },
+    {
+        "path":  "src/frontend/src/test/setup.ts",
+        "sha256":  "268E7200D092DAA3225EB06790ED72842E5D3234A53980C90FF463D7B81528D3"
+    },
+    {
+        "path":  "src/frontend/src/test/student.test.tsx",
+        "sha256":  "38BFC6CCC5B312A08FE5D37D97C5EA3DF6F2B245F8D7A99341889CA0C6AC5B88"
+    },
+    {
+        "path":  "src/frontend/e2e/shell.spec.ts",
+        "sha256":  "18F36AD0CE5881EE4C04821EED444E9FBDADFD72C0770D046E1DE5705D98A593"
+    },
+    {
+        "path":  "src/frontend/e2e/workspace.spec.ts",
+        "sha256":  "9D579B62B509162EC04B1B57336D0238DA6FAD691157AD1CC77F2D6EDC3D7711"
+    },
+    {
+        "path":  "src/frontend/.gitignore",
+        "sha256":  "463B5F9362420AAA6BBF70C200B7CEF361AF47F34E60E6767851406F3091A39A"
+    },
+    {
+        "path":  "src/frontend/index.html",
+        "sha256":  "EFDFEF6716C05E6E591EE9B25CF79433C2551FE6CAEB852BBAA66A644E719C24"
+    },
+    {
+        "path":  "src/frontend/package-lock.json",
+        "sha256":  "522E3BC0CCCF79F4B90AF1EE534B0DD58BCCEA5CC64723C124A8E2E7C09464E9"
+    },
+    {
+        "path":  "src/frontend/package.json",
+        "sha256":  "7D1443F243169FC0636318D59DCFD44B5633A1DE1848CF0C91084EAB97CB95A5"
+    },
+    {
+        "path":  "src/frontend/playwright.config.ts",
+        "sha256":  "8165F9FB3562F611B9E13CDCD29CCE0E4920E19F7726AFBA8867D8F9031DA300"
+    },
+    {
+        "path":  "src/frontend/README.md",
+        "sha256":  "11654DAEFCC4C0A7CD357E4FFB6A383A30F10F142FA70E524AA5594C8EC62B16"
+    },
+    {
+        "path":  "src/frontend/tsconfig.json",
+        "sha256":  "A3F2DFA3B5973773567BB4CB9A712FE1F83751205CCEAF9D12F628DB8834487E"
+    },
+    {
+        "path":  "src/frontend/vite.config.ts",
+        "sha256":  "842071AEBDDA1ED54A07200061C9EB2A73C3EA60E36CEFFF2F04E48BE1806BE3"
+    },
+    {
+        "path":  "src/frontend/vitest.config.ts",
+        "sha256":  "E00BC5927BE93AC5E5D3DAA131AE51B4DAD309EF4053047D507020F56F074387"
+    },
+    {
+        "path":  "workflow/student/FRONTEND-DESIGN.md",
+        "sha256":  "3917AF4CD2709934383E03754A302ABA15D543A913B82EAA15A25B8F9D3F80DE"
+    },
+    {
+        "path":  "workflow/student/PRODUCT-SPEC.md",
+        "sha256":  "750433038415D5AF0832D4E506FB669C1D08A9A583FF388C4DEFC4F9FD690B86"
+    },
+    {
+        "path":  "workflow/student/TECHNICAL-SPEC.md",
+        "sha256":  "97C2B915682BEC9EEC61BF29CCE665EF2088458C7DDE78E349CC47A88366F698"
+    },
+    {
+        "path":  "workflow/student/PLAN.md",
+        "sha256":  "9C5EECA85D36CDFED9D6F5ABD89176905F40556727F01AC9303D2C4EC4716FA5"
+    },
+    {
+        "path":  "workflow/auth/PRODUCT-SPEC.md",
+        "sha256":  "BE2F2F59B4E0ABEF49081A614DC77FA2DFB5BFDEB114C4A3B49AC38D2A73A637"
+    },
+    {
+        "path":  "workflow/auth/TECHNICAL-SPEC.md",
+        "sha256":  "91949EC9793C1747F99C87D86FF74C941700BB9D0133F6204582B0C529E689E9"
+    },
+    {
+        "path":  "workflow/auth/PLAN.md",
+        "sha256":  "5F40F9BE474C96FB0D22C89523367F20E8586AF59062B6DF278C43F6C1CD6ACB"
+    },
+    {
+        "path":  "workflow/SHARED-TECHNICAL-SPEC.md",
+        "sha256":  "5F92FF1F89B0171232BF3FF49C8517A9743EAEF2602B27F1C5D38EAFDE9912A5"
+    },
+    {
+        "path":  "workflow/INTEGRATION-SPEC.md",
+        "sha256":  "F7893269A4F5C3F1F4E106F3C62225DD3E8D3B4E3C0C31B6CA4A5CE61FAD0604"
+    },
+    {
+        "path":  "workflow/student/changes/stu-fe2-booking-ui/CLAUDE-REVIEW-HANDOFF.md",
+        "sha256":  "6377AFA10719E3DD4E36622C35CA4340F98918EDDCF43D1DF366F54EF49C8241"
+    }
+]

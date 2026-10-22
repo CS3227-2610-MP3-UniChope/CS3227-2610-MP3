@@ -1,0 +1,84 @@
+{
+  "environment": "isolated disposable PostgreSQL and actual backend, synthetic fixtures only",
+  "steps": [
+    "Actual login page rendered",
+    "Real Student session and eligible slots loaded through Vite proxy",
+    "Real booking committed after explicit confirmation",
+    "Real cancellation committed",
+    "Cancelled booking retained in History",
+    "Real Student sign-out cleared workspace",
+    "Actual Tutor login routed to honest placeholder",
+    "Actual Admin login routed to honest placeholder",
+    "No private browser storage persisted"
+  ],
+  "accessibility": [
+    {
+      "name": "login",
+      "violations": []
+    },
+    {
+      "name": "student-timetable",
+      "violations": []
+    },
+    {
+      "name": "student-mobile",
+      "violations": []
+    },
+    {
+      "name": "booking-confirmation",
+      "violations": []
+    },
+    {
+      "name": "my-bookings",
+      "violations": []
+    },
+    {
+      "name": "tutor-placeholder",
+      "violations": []
+    },
+    {
+      "name": "admin-placeholder",
+      "violations": []
+    }
+  ],
+  "mutations": [
+    {
+      "operation": "book",
+      "status": 201,
+      "bodyKeys": [
+        "slotId"
+      ],
+      "csrfPresent": true
+    },
+    {
+      "operation": "cancel",
+      "status": 200,
+      "bodyKeys": [],
+      "csrfPresent": true
+    }
+  ],
+  "errors": [],
+  "overflow": [
+    {
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "storage": {
+    "local": 0,
+    "session": 0
+  },
+  "passed": true
+}

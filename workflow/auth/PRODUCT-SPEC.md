@@ -45,6 +45,13 @@ address is unavailable; Kok Seng decides this tradeoff.
 
 ## Decisions and integration
 
+The authorized frontend-only FE1 increment implements Login, session restoration,
+sign-out and stored-role routing under the existing policies above. Canonical UI
+acceptance is [Student frontend design](../student/FRONTEND-DESIGN.md), FE1 IDs.
+Tutor/Admin destinations are honest placeholders, not new role functionality.
+Registration/reset UI and Auth policy changes are excluded. Kok Seng's affected
+Auth review remains a merge gate; no teammate approval is claimed here.
+
 Kok Seng decides authentication policies, validation, limits and account flows.
 Coordinate shared storage and session interfaces with their consumers. Independent
 code/security review does not transfer feature decision ownership.

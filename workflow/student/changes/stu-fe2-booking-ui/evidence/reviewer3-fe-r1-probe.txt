@@ -1,0 +1,17 @@
+# Reviewer-3 (Claude Opus 5.5, Claude Code) evidence, 22 Oct 2026
+# cwd: src/frontend; base commit e277e583f1319320ed5f44e1944ac85296bb7d15 + uncommitted worktree matching frontend-manifest-r2.json (40/40 hashes verified)
+# Node v24.21.0, npm 12.0.2, Windows PowerShell 5.1 (npm stderr notices appear as NativeCommandError text; process exit codes recorded below)
+# command: node --experimental-transform-types evidence/reviewer3-fe-r1-probe.mts file:///<repo>/src/frontend/src/api.ts  (synthetic fetch, actual api.ts 25F8CDBD...)
+
+{"label":"protected book, csrf 401","sessionErrors":1,"posts":0,"outcome":"StaleRequest","calls":["GET /api/auth/csrf"]}
+{"label":"protected book, csrf 403 inactive","sessionErrors":1,"posts":0,"outcome":"StaleRequest","calls":["GET /api/auth/csrf"]}
+{"label":"protected cancel, csrf 401","sessionErrors":1,"posts":0,"outcome":"StaleRequest","calls":["GET /api/auth/csrf"]}
+{"label":"protected cancel, csrf 403 inactive","sessionErrors":1,"posts":0,"outcome":"StaleRequest","calls":["GET /api/auth/csrf"]}
+{"label":"protected book, csrf 503","sessionErrors":0,"posts":0,"outcome":"ApiError(503,TEMPORARILY_UNAVAILABLE)","calls":["GET /api/auth/csrf"]}
+{"label":"protected book, csrf 403 FORBIDDEN","sessionErrors":0,"posts":0,"outcome":"ApiError(403,FORBIDDEN)","calls":["GET /api/auth/csrf"]}
+{"label":"anonymous login, csrf 401","sessionErrors":0,"posts":0,"outcome":"ApiError(401,UNAUTHENTICATED)","calls":["GET /api/auth/csrf"]}
+{"label":"anonymous login, csrf 403 inactive","sessionErrors":0,"posts":0,"outcome":"ApiError(403,ACCOUNT_INACTIVE)","calls":["GET /api/auth/csrf"]}
+{"label":"anonymous logout, csrf 403 inactive","sessionErrors":0,"posts":0,"outcome":"ApiError(403,ACCOUNT_INACTIVE)","calls":["GET /api/auth/csrf"]}
+{"label":"protected book, POST 401 (token ok)","sessionErrors":1,"posts":1,"outcome":"StaleRequest","calls":["GET /api/auth/csrf","POST /api/student/bookings"]}
+{"label":"protected book, POST 403 CSRF_INVALID","sessionErrors":0,"posts":1,"outcome":"ApiError(403,CSRF_INVALID)","calls":["GET /api/auth/csrf","POST /api/student/bookings"]}
+EXIT_PROBE=0

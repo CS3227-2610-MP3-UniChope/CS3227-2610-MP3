@@ -1,0 +1,83 @@
+﻿{
+    "head":  "7e79a74fb05c838fcce447105f81257163cbac7b",
+    "checkedHashes":  [
+                          {
+                              "sha256":  "B48A78DDD251DA0DB7B03531EC6602087BBC34868B6F2284030E91C9D6A78B9B",
+                              "path":  "src/frontend/src/student/StudentWorkspace.tsx"
+                          },
+                          {
+                              "sha256":  "E8E365AA7CA0C19EBA1935DD988061A371A2035DC841FDC61C57E0DC126F9090",
+                              "path":  "src/frontend/src/test/fe4.test.tsx"
+                          },
+                          {
+                              "sha256":  "DBA3D9A321D93BD54798F34A20EA23DD97E4931EE19DBC2F2DFE30A201513089",
+                              "path":  "workflow/student/FRONTEND-DESIGN.md"
+                          },
+                          {
+                              "sha256":  "919BD0A2EB8B66453F54B67CCE8B55F222B6678FE41DAAD969FD0788D0851FAE",
+                              "path":  "workflow/student/PLAN.md"
+                          },
+                          {
+                              "sha256":  "B24E7CD0AFBBB50713F845C669AA82E911DD5BF9FF5A49AFC5ADA0C13047B6E0",
+                              "path":  "workflow/student/changes/stu-fe4-followups/evidence/implementer-2-manifest.json"
+                          },
+                          {
+                              "sha256":  "A4A68F9398B35CA201B885561E465BB77DFA3F29ED02B1B97467FAD36E4F4434",
+                              "path":  "workflow/student/changes/stu-fe4-followups/evidence/implementer-2-scoped.patch"
+                          },
+                          {
+                              "sha256":  "22257586274AFB2C6186900E8967BC516FC319D41581C6E4486BE40D08AD01EA",
+                              "path":  "workflow/student/changes/stu-fe4-followups/evidence/implementer-2-complete-frontend.patch"
+                          },
+                          {
+                              "sha256":  "85F971A6FD4F42D4B3263D2B8AFB403F633C7EDC28F7046DDCAB3EB1B134CD45",
+                              "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-2-unit.json"
+                          },
+                          {
+                              "sha256":  "3F4C9A3FE7639084A2F8A91304EA8A7C8C18085227850F4C16FD8922C2813DBC",
+                              "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-2-unit.txt"
+                          },
+                          {
+                              "sha256":  "F52A74EA3745A85BCED765DF86481087CFD2114CF3C2D47327B464B4B0864380",
+                              "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-2-build.txt"
+                          },
+                          {
+                              "sha256":  "16842E2F273E94CC24F970B34D82E8DA07BF5556D484C577BF4B5DB34B52FF10",
+                              "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-2-browser.txt"
+                          },
+                          {
+                              "sha256":  "6B625AEE6887B07189DBD891372D19ECAA8A60AC4EDF0F16BE6A1E17C800512F",
+                              "path":  "workflow/student/changes/stu-fe4-followups/evidence/reviewer-2-merged-error-probe.txt"
+                          }
+                      ],
+    "unit":  {
+                 "passed":  143,
+                 "total":  143,
+                 "exit":  0
+             },
+    "originalProbe":  {
+                          "moduleFilter":  0,
+                          "scenarios":  3,
+                          "retry":  0,
+                          "homeLink":  1,
+                          "exit":  0
+                      },
+    "browser":  {
+                    "passed":  16,
+                    "total":  16,
+                    "exit":  0
+                },
+    "build":  {
+                  "modules":  27,
+                  "exit":  0
+              },
+    "status":  "READY_FOR_HUMAN",
+    "verdict":  "PASS",
+    "scope":  "FE4-R1 correction and unchanged FE4 reviewed baseline",
+    "reviewer":  "Codex GPT-6",
+    "mismatches":  [
+
+                   ],
+    "date":  "2026-10-22",
+    "manifestEntries":  84
+}

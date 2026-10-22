@@ -1,0 +1,51 @@
+﻿{
+    "reviewer":  "Codex GPT-6",
+    "date":  "2026-10-22",
+    "base":  "e277e583f1319320ed5f44e1944ac85296bb7d15",
+    "checkedManifest":  "workflow/student/changes/stu-fe3-review-fixes/evidence/implementer-manifest.json",
+    "manifestEntries":  55,
+    "manifestMismatches":  [
+
+                           ],
+    "changedFrontendFromReviewedFE2":  [
+                                           "src/frontend/src/api.ts",
+                                           "src/frontend/src/App.tsx",
+                                           "src/frontend/src/Login.tsx",
+                                           "src/frontend/src/styles.css",
+                                           "src/frontend/src/student/StudentWorkspace.tsx",
+                                           "src/frontend/src/test/auth.test.tsx",
+                                           "src/frontend/src/test/student.test.tsx"
+                                       ],
+    "checkedHashes":  [
+                          {
+                              "Path":  "D:\\cs3227\\CS3227-2610-MP3\\workflow\\student\\FRONTEND-DESIGN.md",
+                              "Hash":  "DBA3D9A321D93BD54798F34A20EA23DD97E4931EE19DBC2F2DFE30A201513089"
+                          },
+                          {
+                              "Path":  "D:\\cs3227\\CS3227-2610-MP3\\workflow\\student\\PLAN.md",
+                              "Hash":  "919BD0A2EB8B66453F54B67CCE8B55F222B6678FE41DAAD969FD0788D0851FAE"
+                          },
+                          {
+                              "Path":  "D:\\cs3227\\CS3227-2610-MP3\\workflow\\student\\changes\\stu-fe3-review-fixes\\evidence\\implementer-manifest.json",
+                              "Hash":  "ADC5BCFDD404A5B246B6C6D4E2FA72C1758F7D3494359FEC4056B5694AA6D35B"
+                          },
+                          {
+                              "Path":  "D:\\cs3227\\CS3227-2610-MP3\\workflow\\student\\changes\\stu-fe3-review-fixes\\evidence\\implementer-frontend.patch",
+                              "Hash":  "A030CFEC6DD8FD1CE2A7CD0E3EEC2CB14D8924BDEA1C16CC71BAC4805A2C27B6"
+                          },
+                          {
+                              "Path":  "D:\\cs3227\\CS3227-2610-MP3\\workflow\\student\\changes\\stu-fe3-review-fixes\\evidence\\implementer-source-delta.patch",
+                              "Hash":  "A8A5C507A98BFC0CA9608258A0DCB0D1E66B239438005EAAE29F0478E2EA2B4C"
+                          },
+                          {
+                              "Path":  "D:\\cs3227\\CS3227-2610-MP3\\workflow\\student\\changes\\stu-fe3-review-fixes\\evidence\\reviewer-unit.json",
+                              "Hash":  "A574DC0F4B48645BED7A3DA752D90250F6E2AD59C3D3AA6FA6F8E8E0A5A5D2EC"
+                          }
+                      ],
+    "results":  [
+                    "npm.cmd test -- --reporter=json --outputFile=../../workflow/student/changes/stu-fe3-review-fixes/evidence/reviewer-unit.json: exit 0, 103/103 pass",
+                    "npm.cmd run build: exit 0, 27 modules, TypeScript and Vite",
+                    "npm.cmd run test:browser: exit 0, 7/7 pass, Edge",
+                    "git diff --check -- src/frontend workflow/student/changes/stu-fe3-review-fixes.md: exit 0, CRLF notices only"
+                ]
+}

@@ -1,0 +1,24 @@
+# Reviewer-3 (Claude Opus 5.5, Claude Code) evidence, 22 Oct 2026
+# cwd: src/frontend; base commit e277e583f1319320ed5f44e1944ac85296bb7d15 + uncommitted worktree matching frontend-manifest-r2.json (40/40 hashes verified)
+# Node v24.21.0, npm 12.0.2, Windows PowerShell 5.1 (npm stderr notices appear as NativeCommandError text; process exit codes recorded below)
+# command: npm.cmd run build
+
+﻿npm.cmd : npm notice run unichope-frontend@0.0.0 build
+At line:1 char:603
++ ... t "$o\unit.txt" -Tail 20; npm.cmd run build *> "$o\build.txt"; "EXIT_ ...
++                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm notice run ...end@0.0.0 build:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm notice run tsc --noEmit && vite build
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 27 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.44 kB │ gzip:  0.28 kB
+dist/assets/index-7lGPAxz_.css  246.69 kB │ gzip: 34.50 kB
+dist/assets/index-Bw9ixST-.js   247.40 kB │ gzip: 77.02 kB
+
+✓ built in 420ms
+EXIT_BUILD=0

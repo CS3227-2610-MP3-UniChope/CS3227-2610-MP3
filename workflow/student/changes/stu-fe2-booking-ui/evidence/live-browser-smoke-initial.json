@@ -1,0 +1,68 @@
+{
+  "environment": "isolated disposable PostgreSQL and actual backend, synthetic fixtures only",
+  "steps": [
+    "Actual login page rendered",
+    "Real Student session and eligible slots loaded through Vite proxy",
+    "Real booking committed after explicit confirmation",
+    "Real cancellation committed"
+  ],
+  "accessibility": [
+    {
+      "name": "login",
+      "violations": []
+    },
+    {
+      "name": "student-timetable",
+      "violations": []
+    },
+    {
+      "name": "student-mobile",
+      "violations": []
+    },
+    {
+      "name": "booking-confirmation",
+      "violations": []
+    },
+    {
+      "name": "my-bookings",
+      "violations": []
+    }
+  ],
+  "mutations": [
+    {
+      "operation": "book",
+      "status": 201,
+      "bodyKeys": [
+        "slotId"
+      ],
+      "csrfPresent": true
+    },
+    {
+      "operation": "cancel",
+      "status": 200,
+      "bodyKeys": [],
+      "csrfPresent": true
+    }
+  ],
+  "errors": [],
+  "overflow": [
+    {
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "passed": false,
+  "failure": "expect(locator).toBeVisible() failed\n\nLocator: getByText(/^Cancelled$/)\nExpected: visible\nError: strict mode violation: getByText(/^Cancelled$/) resolved to 2 elements:\n    1) <option value=\"CANCELLED\">Cancelled</option> aka getByLabel('Status')\n    2) <span class=\"booking-status cancelled\">Cancelled</span> aka getByRole('region', { name: 'Your bookings' }).getByText('Cancelled')\n\nCall log:\n  - Expect \"toBeVisible\" getByText(/^Cancelled$/) with timeout 5000ms\n  - waiting for getByText(/^Cancelled$/)\n    2 × locator resolved to <option value=\"CANCELLED\">Cancelled</option>\n      - unexpected value \"hidden\"\n"
+}
