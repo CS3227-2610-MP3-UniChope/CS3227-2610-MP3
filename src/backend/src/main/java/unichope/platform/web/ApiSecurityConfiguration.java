@@ -28,6 +28,7 @@ public class ApiSecurityConfiguration {
       ObjectProvider<AuthenticationService> authentication)
       throws Exception {
     boolean tutor = environment.matchesProfiles("tutor-api");
+    boolean student = environment.matchesProfiles("student-api");
     boolean auth = environment.matchesProfiles("auth-api");
     boolean admin = environment.matchesProfiles("admin-api");
     http.authorizeHttpRequests(
@@ -50,6 +51,7 @@ public class ApiSecurityConfiguration {
             if (auth) authorize.requestMatchers("/api/tutor/**").hasRole("TUTOR");
             else authorize.requestMatchers("/api/tutor/**").authenticated();
           }
+          if (student) authorize.requestMatchers("/api/student/**").authenticated();
           authorize.anyRequest().denyAll();
         });
     http.csrf(csrf -> csrf.csrfTokenRepository(tokens));

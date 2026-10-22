@@ -1,0 +1,16 @@
+[
+    {
+        "Suite":  "unichope.platform.core.postgres.StudentCancelBookingPgTest",
+        "Tests":  11,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    },
+    {
+        "Suite":  "unichope.platform.runtime.StudentAuthIntegrationPgTest",
+        "Tests":  7,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0
+    }
+]

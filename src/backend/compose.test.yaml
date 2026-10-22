@@ -1,0 +1,24 @@
+# Disposable PostgreSQL 17 for the `postgresTest` task. Local test use only.
+# Data lives in tmpfs and disappears when the container stops; never point this
+# configuration at shared or production data. The password is a local placeholder.
+#
+#   docker compose -f compose.test.yaml up -d --wait
+#   ./gradlew test postgresTest -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55432/mp3_test \
+#       -Dcore.test.user=mp3_test -Dcore.test.password=mp3_test_local
+#   docker compose -f compose.test.yaml down
+services:
+  postgres-test:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: mp3_test
+      POSTGRES_USER: mp3_test
+      POSTGRES_PASSWORD: mp3_test_local
+    ports:
+      - "127.0.0.1:55432:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mp3_test -d mp3_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 30

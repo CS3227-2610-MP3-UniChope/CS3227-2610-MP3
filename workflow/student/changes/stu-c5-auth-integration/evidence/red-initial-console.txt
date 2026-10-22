@@ -1,0 +1,170 @@
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if "Windows_NT" == "Windows_NT" setlocal
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set DIRNAME=D:\cs3227\CS3227-2610-MP3\src\backend\ 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if "D:\cs3227\CS3227-2610-MP3\src\backend\" == "" set DIRNAME=. 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set APP_BASE_NAME=gradlew 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set APP_HOME=D:\cs3227\CS3227-2610-MP3\src\backend\ 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>for %i in ("D:\cs3227\CS3227-2610-MP3\src\backend\") do set APP_HOME=%~fi 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set APP_HOME=D:\cs3227\CS3227-2610-MP3\src\backend\ 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m" 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if defined JAVA_HOME goto findJavaFromJavaHome 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set JAVA_HOME=D:\Java 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set JAVA_EXE=D:\Java/bin/java.exe 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if exist "D:\Java/bin/java.exe" goto execute 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>"D:\Java/bin/java.exe" "-Xmx64m" "-Xms64m"   "-Dorg.gradle.appname=gradlew" -jar "D:\cs3227\CS3227-2610-MP3\src\backend\\gradle\wrapper\gradle-wrapper.jar" postgresTest --tests *StudentBookSlotPgTest --tests *StudentCancelBookingPgTest --tests *StudentAuthIntegrationPgTest -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55432/mp3_test -Dcore.test.user=mp3_test -Dcore.test.password=<synthetic-disposable-password> --console=plain 
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+
+> Task :postgresTest
+
+StudentBookSlotPgTest > sBook4SameSlotRaceHasExactlyOneWinner() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:274
+
+StudentBookSlotPgTest > c2In3ActorHeaderIsIgnored() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:723
+
+StudentBookSlotPgTest > c2ActStudentApiWithoutConsultationLifecycleFailsStartup() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:635
+
+StudentBookSlotPgTest > c2In1RejectsEveryNonExactBodyAndAnyQueryBeforeTheActorCheck() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > sBook2EveryUnavailableCauseSharesOneConflictAndChangesNothing() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > c2Acc1AccessMatrixAndCsrfDenyWithoutAnyChange() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > sBook5RebookingAfterCancellationCreatesNewBookingAndKeepsHistory() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:723
+
+StudentBookSlotPgTest > c2In2MediaTypeAndStreamedBodySizeLimits() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > sBook4OverlappingSlotsRaceForOneStudentHasExactlyOneWinner() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:302
+
+StudentBookSlotPgTest > sBook1BooksEligibleSlotWithLocationExactProjectionAndAtomicRows() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:723
+
+StudentBookSlotPgTest > sBook3OverlapWithOwnActiveBookingIsRejectedAndAdjacentIsAllowed() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > c2Err2LifecycleAccessDeniedRerunsTheAccessCheck() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > c2Prec1UnavailableWinsOverOverlap() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > c2Err3ProjectionFailureAfterCommitIs500AndKeepsTheBookingOnce() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentBookSlotPgTest > c2Err1LifecycleOutcomesMapToSafeStudentErrors() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookSlotPgTest.java:750
+
+StudentCancelBookingPgTest > c4In1ExactEmptyObjectCanonicalPathNoQueriesAndStreamedSize() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:252
+
+StudentCancelBookingPgTest > sCanc1CancelsAtomicallyReturnsExactProjectionReleasesSlotAndRepeatConflicts() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:247
+
+StudentCancelBookingPgTest > c4Err1SafeLifecycleMappingsAndNoMutation() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:252
+
+StudentCancelBookingPgTest > c4Acc1CsrfAndStoredActorMatrixRejectWithoutLifecycleCalls() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:252
+
+StudentCancelBookingPgTest > sCanc3DoubleHttpCancelHasOneSuccessAndOneConflict() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:151
+
+StudentCancelBookingPgTest > c4Bnd1OneSecondBeforeStartIsAllowedExactStartIsConflict() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:247
+
+StudentCancelBookingPgTest > sCanc2ForeignMissingStartedHistoryAndUnbookedSlotNeverChangeRows() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:252
+
+StudentCancelBookingPgTest > c4Err1AccessDeniedRechecksInactiveDeletedChangedRoleAndStillValidActor() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:252
+
+StudentCancelBookingPgTest > sCanc3CompletionAndHttpCancellationRaceKeepConsistentStates() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:136
+
+StudentCancelBookingPgTest > c4Elig1CancellationIgnoresTutorModuleAndAssignmentIneligibility() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:247
+
+StudentCancelBookingPgTest > c4Err1ProjectionFailureAfterCommitKeepsCancellationAndDoesNotRetry() FAILED
+    org.opentest4j.AssertionFailedError at StudentCancelBookingPgTest.java:252
+
+StudentAuthIntegrationPgTest > c5Rev1TwoSessionsAdminDeactivationAndReactivationNeverReviveOldGeneration() FAILED
+    org.opentest4j.AssertionFailedError at StudentAuthIntegrationPgTest.java:224
+
+StudentAuthIntegrationPgTest > c5Run1AppApiIncludesStudentWithRealRuntimeMigrationsAndSharedActor() FAILED
+    org.opentest4j.AssertionFailedError at StudentAuthIntegrationPgTest.java:78
+
+StudentAuthIntegrationPgTest > c5Auth1RegistrationLoginRotationOldCsrfFailsFreshCsrfBooksReadsAndCancels() FAILED
+    org.opentest4j.AssertionFailedError at StudentAuthIntegrationPgTest.java:224
+
+StudentAuthIntegrationPgTest > c5Csrf1MissingInvalidTokensLogoutCookieRepeatAndFreshLogin() FAILED
+    org.opentest4j.AssertionFailedError at StudentAuthIntegrationPgTest.java:224
+
+StudentAuthIntegrationPgTest > c5Auth2MissingAccountWinsMalformedSyntaxAndInvalidatesSession() FAILED
+    org.opentest4j.AssertionFailedError at StudentAuthIntegrationPgTest.java:224
+
+StudentAuthIntegrationPgTest > c5Auth2AnonymousWrongRoleCachedAuthoritiesAndUntrustedPrincipalsCannotChooseActor() FAILED
+    org.opentest4j.AssertionFailedError at StudentAuthIntegrationPgTest.java:228
+
+StudentAuthIntegrationPgTest > c5State1LogoutThenDifferentLoginRetainsNoActorOrBookingState() FAILED
+    org.opentest4j.AssertionFailedError at StudentAuthIntegrationPgTest.java:224
+.\gradlew.bat : 
+At line:2 char:1
++ .\gradlew.bat postgresTest --tests '*StudentBookSlotPgTest' --tests ' ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+33 tests completed, 33 failed
+
+> Task :postgresTest FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':postgresTest'.
+> There were failing tests. See the report at: 
+file:///D:/cs3227/CS3227-2610-MP3/src/backend/build/reports/tests/postgresTest/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 1m 1s
+4 actionable tasks: 1 executed, 3 up-to-date
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if 1 EQU 0 goto mainEnd 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>rem Set variable GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>rem the _cmd.exe /c_ return code! 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set EXIT_CODE=1 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if 1 EQU 0 set EXIT_CODE=1 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if not "" == "" exit 1 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>exit /b 1 

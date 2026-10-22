@@ -1,0 +1,30 @@
+[
+    {
+        "path":  "src\\backend\\src\\main\\java\\unichope\\student\\http\\StudentApiConfiguration.java",
+        "Hash":  "CE0E189CA94CC16DA6E3F23CBE1181F2032F61AA4924187ADA526289D8863102"
+    },
+    {
+        "path":  "src\\backend\\src\\main\\java\\unichope\\student\\http\\StudentApiInput.java",
+        "Hash":  "9D48FD8684BAD59ED28ACE75827962374FBF8018E123C06F13BBFAE83FC25991"
+    },
+    {
+        "path":  "src\\backend\\src\\main\\java\\unichope\\student\\http\\StudentController.java",
+        "Hash":  "E2C2DCA45CEBC46148E364151FFF3510C5967DD312A5C5C5EAD268916C9EA385"
+    },
+    {
+        "path":  "src\\backend\\src\\main\\java\\unichope\\student\\http\\StudentExceptionHandler.java",
+        "Hash":  "06C671C13212FDAEBED90B581AF1840F1E3D90737A8A742A0781203D48A2F29C"
+    },
+    {
+        "path":  "src\\backend\\src\\main\\java\\unichope\\student\\http\\StudentHttpService.java",
+        "Hash":  "5AF6CD609E473AC04300C7F9C97078D71754A014D7B482AB5C49D76DBF8A7AB0"
+    },
+    {
+        "path":  "src\\backend\\src\\main\\java\\unichope\\platform\\runtime\\ApplicationConfiguration.java",
+        "Hash":  "841AC323E396F3D56DF424F00B75EA3774382BDD438D5BDF4BD4C8BF8FBA7CC1"
+    },
+    {
+        "path":  "src\\backend\\src\\main\\resources\\application.properties",
+        "Hash":  "BF9EB7FAAC820DCEDA3675808D9ADF7DA57D80C60C1CC354A3A0BF848DD78E5C"
+    }
+]

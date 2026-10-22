@@ -12,6 +12,7 @@ import unichope.platform.core.*;
 import unichope.platform.core.postgres.*;
 import unichope.platform.core.repository.*;
 import unichope.tutor.*;
+import unichope.tutor.CurrentActorProvider;
 
 /** Explicit application wiring; default profile remains closed and database-free. */
 @Configuration
@@ -90,6 +91,19 @@ public class ApplicationConfiguration {
   CurrentActorProvider tutorActor() {
     return () ->
         java.util.Optional.ofNullable(AuthController.principal()).map(SessionPrincipal::userId);
+  }
+
+  @Bean
+  unichope.platform.auth.CurrentActorProvider sharedActor() {
+    return () -> {
+      var authentication = org.springframework.security.core.context.SecurityContextHolder
+          .getContext().getAuthentication();
+      if (authentication == null || !authentication.isAuthenticated()
+          || !(authentication.getPrincipal() instanceof SessionPrincipal principal)) {
+        return java.util.Optional.empty();
+      }
+      return java.util.Optional.of(principal.userId());
+    };
   }
 
   @Bean

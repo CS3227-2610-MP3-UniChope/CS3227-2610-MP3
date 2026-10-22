@@ -1,0 +1,54 @@
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if "Windows_NT" == "Windows_NT" setlocal
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set DIRNAME=D:\cs3227\CS3227-2610-MP3\src\backend\ 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if "D:\cs3227\CS3227-2610-MP3\src\backend\" == "" set DIRNAME=. 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set APP_BASE_NAME=gradlew 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set APP_HOME=D:\cs3227\CS3227-2610-MP3\src\backend\ 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>for %i in ("D:\cs3227\CS3227-2610-MP3\src\backend\") do set APP_HOME=%~fi 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set APP_HOME=D:\cs3227\CS3227-2610-MP3\src\backend\ 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m" 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if defined JAVA_HOME goto findJavaFromJavaHome 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set JAVA_HOME=D:\Java 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>set JAVA_EXE=D:\Java/bin/java.exe 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if exist "D:\Java/bin/java.exe" goto execute 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>"D:\Java/bin/java.exe" "-Xmx64m" "-Xms64m"   "-Dorg.gradle.appname=gradlew" -jar "D:\cs3227\CS3227-2610-MP3\src\backend\\gradle\wrapper\gradle-wrapper.jar" test postgresTest bootJar -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55432/mp3_test -Dcore.test.user=mp3_test -Dcore.test.password=<disposable-password> --console=plain 
+> Task :compileJava
+> Task :processResources UP-TO-DATE
+> Task :classes
+> Task :resolveMainClassName
+> Task :bootJar
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+.\gradlew.bat : Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because 
+bootstrap classpath has been appended
+At line:2 char:1
++ .\gradlew.bat test postgresTest bootJar '-Dcore.test.jdbcUrl=jdbc:pos ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Java HotSpot(TM...s been appended:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+2026-10-22T19:08:57.137+08:00 DEBUG 21256 --- [ionShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@36681447, started on Thu Oct 22 19:08:47 GMT+08:00 2026
+> Task :test
+> Task :postgresTest
+
+BUILD SUCCESSFUL in 4m 16s
+7 actionable tasks: 5 executed, 2 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if 0 EQU 0 goto mainEnd 
+
+D:\cs3227\CS3227-2610-MP3\src\backend>if "Windows_NT" == "Windows_NT" endlocal
+

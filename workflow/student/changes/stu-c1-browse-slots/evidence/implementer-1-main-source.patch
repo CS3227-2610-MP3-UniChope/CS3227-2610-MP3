@@ -1,0 +1,578 @@
+diff --git a/src/backend/src/main/java/unichope/platform/web/ApiSecurityConfiguration.java b/src/backend/src/main/java/unichope/platform/web/ApiSecurityConfiguration.java
+index 9c1aa78..8415fdd 100644
+--- a/src/backend/src/main/java/unichope/platform/web/ApiSecurityConfiguration.java
++++ b/src/backend/src/main/java/unichope/platform/web/ApiSecurityConfiguration.java
+@@ -17,8 +17,10 @@ public class ApiSecurityConfiguration {
+     @Bean
+     SecurityFilterChain apiSecurity(HttpSecurity http,Environment environment) throws Exception {
+         boolean enabled=environment.matchesProfiles("tutor-api");
++        boolean studentEnabled=environment.matchesProfiles("student-api");
+         http.authorizeHttpRequests(authorize->{
+             if(enabled) authorize.requestMatchers("/api/tutor/**").authenticated();
++            if(studentEnabled) authorize.requestMatchers("/api/student/**").authenticated();
+             authorize.anyRequest().denyAll();
+         });
+         http.csrf(csrf->csrf.csrfTokenRepository(new HttpSessionCsrfTokenRepository()));
+diff --git a/src/backend/src/main/java/unichope/platform/auth/CurrentActorProvider.java b/src/backend/src/main/java/unichope/platform/auth/CurrentActorProvider.java
+new file mode 100644
+index 0000000..73ae2f1
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/platform/auth/CurrentActorProvider.java
+@@ -0,0 +1,16 @@
++package unichope.platform.auth;
++
++import java.util.Optional;
++import java.util.UUID;
++
++/**
++ * Supplies the actor authenticated by the server-side session for the current request.
++ *
++ * <p>Shared seam for every role (Student TECH §2). The authentication owner supplies the real
++ * implementation; there is deliberately no main-source, anonymous or fallback implementation.
++ * Callers must re-read the stored account for role and active state on every request.
++ */
++public interface CurrentActorProvider {
++    /** The session-authenticated actor ID, or empty when the request has no usable actor. */
++    Optional<UUID> currentActorId();
++}
+diff --git a/src/backend/src/main/java/unichope/student/BookableSlot.java b/src/backend/src/main/java/unichope/student/BookableSlot.java
+new file mode 100644
+index 0000000..54c86f4
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/BookableSlot.java
+@@ -0,0 +1,17 @@
++package unichope.student;
++
++import java.time.Instant;
++import java.util.UUID;
++
++/**
++ * Student {@code BookableSlot} JSON (TECH §3): exactly these fields. {@code tutorName} is the
++ * tutor's display name only; no email or tutor ID is exposed.
++ */
++public record BookableSlot(
++        UUID id,
++        UUID moduleId,
++        String moduleCode,
++        String moduleName,
++        String tutorName,
++        Instant startTime,
++        Instant endTime) {}
+diff --git a/src/backend/src/main/java/unichope/student/ModuleOption.java b/src/backend/src/main/java/unichope/student/ModuleOption.java
+new file mode 100644
+index 0000000..acb7736
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/ModuleOption.java
+@@ -0,0 +1,6 @@
++package unichope.student;
++
++import java.util.UUID;
++
++/** Student {@code ModuleOption} JSON: exactly {@code id, code, name} (TECH §3). */
++public record ModuleOption(UUID id, String code, String name) {}
+diff --git a/src/backend/src/main/java/unichope/student/PostgresStudentReadRepository.java b/src/backend/src/main/java/unichope/student/PostgresStudentReadRepository.java
+new file mode 100644
+index 0000000..e2a18f8
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/PostgresStudentReadRepository.java
+@@ -0,0 +1,80 @@
++package unichope.student;
++
++import java.time.Instant;
++import java.time.OffsetDateTime;
++import java.time.ZoneOffset;
++import java.util.List;
++import java.util.Optional;
++import java.util.UUID;
++import org.springframework.jdbc.core.simple.JdbcClient;
++import unichope.platform.core.model.user.Role;
++
++/**
++ * Parameterized, lock-free reads of core tables (TECH §4). Persistence only: the actor and
++ * authorization are decided by {@link StudentAccess}. Never writes.
++ */
++public final class PostgresStudentReadRepository implements StudentReadRepository {
++    private static final String BOOKABLE_SLOTS = """
++            SELECT s.id, s.module_id, m.code, m.name, t.name AS tutor_name, s.start_time, s.end_time
++            FROM slots s
++            JOIN users t ON t.id = s.tutor_id
++            JOIN modules m ON m.id = s.module_id
++            WHERE s.status = 'AVAILABLE'
++              AND s.start_time > :now
++              AND t.active AND t.role = 'TUTOR'
++              AND m.active
++              AND EXISTS (SELECT 1 FROM tutor_modules tm WHERE tm.tutor_id = s.tutor_id AND tm.module_id = s.module_id)
++            """;
++    private static final String MODULE_FILTER = "  AND s.module_id = :moduleId\n";
++    private static final String START_RANGE_FILTER = "  AND s.start_time >= :from AND s.start_time < :to\n";
++    private static final String SLOT_ORDER = "ORDER BY s.start_time, s.id";
++
++    private final JdbcClient jdbc;
++
++    public PostgresStudentReadRepository(JdbcClient jdbc) {
++        this.jdbc = jdbc;
++    }
++
++    @Override
++    public Optional<StudentAccount> findAccount(UUID actorId) {
++        return jdbc.sql("SELECT id, role, active FROM users WHERE id = :id")
++                .param("id", actorId)
++                .query((row, index) -> new StudentAccount(row.getObject("id", UUID.class),
++                        Role.valueOf(row.getString("role")), row.getBoolean("active")))
++                .optional();
++    }
++
++    @Override
++    public List<ModuleOption> findActiveModules() {
++        return jdbc.sql("SELECT id, code, name FROM modules WHERE active ORDER BY code, id")
++                .query((row, index) -> new ModuleOption(row.getObject("id", UUID.class),
++                        row.getString("code"), row.getString("name")))
++                .list();
++    }
++
++    @Override
++    public List<BookableSlot> findBookableSlots(Instant now, Optional<UUID> moduleId, Optional<StartRange> startRange) {
++        // Only fixed SQL fragments are appended; every value is a bound parameter.
++        StringBuilder sql = new StringBuilder(BOOKABLE_SLOTS);
++        if (moduleId.isPresent()) sql.append(MODULE_FILTER);
++        if (startRange.isPresent()) sql.append(START_RANGE_FILTER);
++        sql.append(SLOT_ORDER);
++        JdbcClient.StatementSpec statement = jdbc.sql(sql.toString()).param("now", utc(now));
++        if (moduleId.isPresent()) statement = statement.param("moduleId", moduleId.get());
++        if (startRange.isPresent()) {
++            statement = statement.param("from", utc(startRange.get().from())).param("to", utc(startRange.get().to()));
++        }
++        return statement.query((row, index) -> new BookableSlot(
++                row.getObject("id", UUID.class),
++                row.getObject("module_id", UUID.class),
++                row.getString("code"),
++                row.getString("name"),
++                row.getString("tutor_name"),
++                row.getObject("start_time", OffsetDateTime.class).toInstant(),
++                row.getObject("end_time", OffsetDateTime.class).toInstant())).list();
++    }
++
++    private static OffsetDateTime utc(Instant instant) {
++        return instant.atOffset(ZoneOffset.UTC);
++    }
++}
+diff --git a/src/backend/src/main/java/unichope/student/StudentAccess.java b/src/backend/src/main/java/unichope/student/StudentAccess.java
+new file mode 100644
+index 0000000..65347ac
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/StudentAccess.java
+@@ -0,0 +1,31 @@
++package unichope.student;
++
++import java.util.UUID;
++import unichope.platform.auth.CurrentActorProvider;
++import unichope.platform.core.model.user.Role;
++
++/**
++ * Resolves the session actor and re-reads the stored account on every call (TECH §3.2).
++ * Stored role and active state are authoritative; session authorities are ignored.
++ */
++public final class StudentAccess {
++    private final CurrentActorProvider actor;
++    private final StudentReadRepository reads;
++
++    public StudentAccess(CurrentActorProvider actor, StudentReadRepository reads) {
++        this.actor = actor;
++        this.reads = reads;
++    }
++
++    /** Returns the current actor ID if it is an existing, active STUDENT; otherwise throws. */
++    public UUID requireActiveStudent() {
++        UUID id = actor.currentActorId()
++                .orElseThrow(() -> new StudentAccessDeniedException(StudentAccessDeniedException.Reason.NO_ACTOR));
++        StudentAccount account = reads.findAccount(id)
++                .filter(found -> found.id().equals(id))
++                .orElseThrow(() -> new StudentAccessDeniedException(StudentAccessDeniedException.Reason.UNKNOWN_ACCOUNT));
++        if (!account.active()) throw new StudentAccessDeniedException(StudentAccessDeniedException.Reason.INACTIVE);
++        if (account.role() != Role.STUDENT) throw new StudentAccessDeniedException(StudentAccessDeniedException.Reason.FORBIDDEN);
++        return id;
++    }
++}
+diff --git a/src/backend/src/main/java/unichope/student/StudentAccessDeniedException.java b/src/backend/src/main/java/unichope/student/StudentAccessDeniedException.java
+new file mode 100644
+index 0000000..58e059b
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/StudentAccessDeniedException.java
+@@ -0,0 +1,28 @@
++package unichope.student;
++
++/** Student access check failure; the HTTP adapter maps each reason per TECH §3.2. */
++public final class StudentAccessDeniedException extends RuntimeException {
++    private static final long serialVersionUID = 1L;
++
++    public enum Reason {
++        /** The provider returned no actor: 401, session left as is. */
++        NO_ACTOR,
++        /** The actor ID is not in {@code users}: 401 and session invalidated. */
++        UNKNOWN_ACCOUNT,
++        /** The stored account is inactive: 403 ACCOUNT_INACTIVE and session invalidated. */
++        INACTIVE,
++        /** Active account whose stored role is not STUDENT: 403 FORBIDDEN. */
++        FORBIDDEN
++    }
++
++    private final Reason reason;
++
++    public StudentAccessDeniedException(Reason reason) {
++        super("An active student account is required");
++        this.reason = reason;
++    }
++
++    public Reason reason() {
++        return reason;
++    }
++}
+diff --git a/src/backend/src/main/java/unichope/student/StudentAccount.java b/src/backend/src/main/java/unichope/student/StudentAccount.java
+new file mode 100644
+index 0000000..8d7382a
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/StudentAccount.java
+@@ -0,0 +1,7 @@
++package unichope.student;
++
++import java.util.UUID;
++import unichope.platform.core.model.user.Role;
++
++/** Stored account state used for the per-request Student access check. */
++public record StudentAccount(UUID id, Role role, boolean active) {}
+diff --git a/src/backend/src/main/java/unichope/student/StudentReadRepository.java b/src/backend/src/main/java/unichope/student/StudentReadRepository.java
+new file mode 100644
+index 0000000..fbf23c0
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/StudentReadRepository.java
+@@ -0,0 +1,27 @@
++package unichope.student;
++
++import java.time.Instant;
++import java.util.List;
++import java.util.Optional;
++import java.util.UUID;
++
++/** Read-only boundary over core tables for the Student role (TECH §4, decision D3). */
++public interface StudentReadRepository {
++    /** Stored account state for the access check. */
++    Optional<StudentAccount> findAccount(UUID actorId);
++
++    /** Active modules ordered by code, then ID. */
++    List<ModuleOption> findActiveModules();
++
++    /**
++     * Bookable slots: AVAILABLE, starting after {@code now}, active TUTOR owner, active module and
++     * an existing tutor-module assignment; ordered by start time, then ID.
++     *
++     * @param moduleId optional module filter
++     * @param startRange optional half-open start-time range {@code [from, to)}
++     */
++    List<BookableSlot> findBookableSlots(Instant now, Optional<UUID> moduleId, Optional<StartRange> startRange);
++
++    /** Half-open start-time range {@code [from, to)}. */
++    record StartRange(Instant from, Instant to) {}
++}
+diff --git a/src/backend/src/main/java/unichope/student/StudentReadService.java b/src/backend/src/main/java/unichope/student/StudentReadService.java
+new file mode 100644
+index 0000000..5fe5153
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/StudentReadService.java
+@@ -0,0 +1,40 @@
++package unichope.student;
++
++import java.time.Clock;
++import java.time.LocalDate;
++import java.time.ZoneId;
++import java.util.List;
++import java.util.Optional;
++import java.util.UUID;
++
++/** Student read operations. Every call checks the current actor before reading any resource. */
++public final class StudentReadService {
++    private static final ZoneId SINGAPORE = ZoneId.of("Asia/Singapore");
++
++    private final StudentAccess access;
++    private final StudentReadRepository reads;
++    private final Clock clock;
++
++    public StudentReadService(StudentAccess access, StudentReadRepository reads, Clock clock) {
++        this.access = access;
++        this.reads = reads;
++        this.clock = clock;
++    }
++
++    /** Active modules (assigned or not), ordered by code then ID. */
++    public List<ModuleOption> activeModules() {
++        access.requireActiveStudent();
++        return reads.findActiveModules();
++    }
++
++    /**
++     * Bookable future slots, optionally filtered by module and by SGT start date. Slots that
++     * overlap the student's own ACTIVE bookings stay listed (PRODUCT §10 A2).
++     */
++    public List<BookableSlot> bookableSlots(Optional<UUID> moduleId, Optional<LocalDate> sgtDate) {
++        access.requireActiveStudent();
++        Optional<StudentReadRepository.StartRange> range = sgtDate.map(date -> new StudentReadRepository.StartRange(
++                date.atStartOfDay(SINGAPORE).toInstant(), date.plusDays(1).atStartOfDay(SINGAPORE).toInstant()));
++        return reads.findBookableSlots(clock.instant(), moduleId, range);
++    }
++}
+diff --git a/src/backend/src/main/java/unichope/student/http/StudentApiConfiguration.java b/src/backend/src/main/java/unichope/student/http/StudentApiConfiguration.java
+new file mode 100644
+index 0000000..24b624c
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/http/StudentApiConfiguration.java
+@@ -0,0 +1,84 @@
++package unichope.student.http;
++
++import java.io.IOException;
++import java.io.UncheckedIOException;
++import java.time.Clock;
++import java.util.List;
++import javax.sql.DataSource;
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++import org.springframework.context.annotation.Import;
++import org.springframework.context.annotation.Profile;
++import org.springframework.jdbc.core.simple.JdbcClient;
++import org.springframework.web.HttpMediaTypeNotAcceptableException;
++import org.springframework.web.HttpMediaTypeNotSupportedException;
++import org.springframework.web.HttpRequestMethodNotSupportedException;
++import org.springframework.web.servlet.HandlerExceptionResolver;
++import org.springframework.web.servlet.ModelAndView;
++import org.springframework.web.servlet.NoHandlerFoundException;
++import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
++import org.springframework.web.servlet.resource.NoResourceFoundException;
++import unichope.platform.auth.CurrentActorProvider;
++import unichope.platform.web.ApiErrors;
++import unichope.student.PostgresStudentReadRepository;
++import unichope.student.StudentAccess;
++import unichope.student.StudentReadRepository;
++import unichope.student.StudentReadService;
++
++/**
++ * Student HTTP wiring, active only with profile {@code student-api} (TECH §2). Missing
++ * {@link CurrentActorProvider}, {@link DataSource} or {@link Clock} beans fail startup; there is
++ * no anonymous, fallback or main-source test actor.
++ */
++@Configuration
++@Profile("student-api")
++@Import({StudentController.class, StudentExceptionHandler.class})
++public class StudentApiConfiguration implements WebMvcConfigurer {
++    private static final String STUDENT_PATH = "/api/student/";
++
++    @Override
++    public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
++        // Framework failures may have no selected controller or an incompatible Accept header.
++        // Write safe error JSON directly for Student paths only; other role paths are untouched.
++        resolvers.add(0, (request, response, handler, failure) -> {
++            String path = request.getRequestURI().substring(request.getContextPath().length());
++            if (!path.startsWith(STUDENT_PATH)) return null;
++            int status;
++            String code;
++            String message;
++            if (failure instanceof HttpRequestMethodNotSupportedException method) {
++                status = 405; code = "METHOD_NOT_ALLOWED"; message = "Request method is not allowed";
++                if (method.getSupportedMethods() != null) response.setHeader("Allow", String.join(", ", method.getSupportedMethods()));
++            } else if (failure instanceof HttpMediaTypeNotSupportedException) {
++                status = 415; code = "UNSUPPORTED_MEDIA_TYPE"; message = "JSON content type is required";
++            } else if (failure instanceof HttpMediaTypeNotAcceptableException) {
++                status = 406; code = "NOT_ACCEPTABLE"; message = "A JSON response is required";
++            } else if (failure instanceof NoHandlerFoundException || failure instanceof NoResourceFoundException) {
++                status = 404; code = "NOT_FOUND"; message = "Resource not found";
++            } else {
++                return null;
++            }
++            try {
++                ApiErrors.write(request, response, status, code, message);
++            } catch (IOException error) {
++                throw new UncheckedIOException(error);
++            }
++            return new ModelAndView();
++        });
++    }
++
++    @Bean
++    StudentReadRepository studentReadRepository(DataSource source) {
++        return new PostgresStudentReadRepository(JdbcClient.create(source));
++    }
++
++    @Bean
++    StudentAccess studentAccess(CurrentActorProvider actor, StudentReadRepository studentReadRepository) {
++        return new StudentAccess(actor, studentReadRepository);
++    }
++
++    @Bean
++    StudentReadService studentReadService(StudentAccess studentAccess, StudentReadRepository studentReadRepository, Clock clock) {
++        return new StudentReadService(studentAccess, studentReadRepository, clock);
++    }
++}
+diff --git a/src/backend/src/main/java/unichope/student/http/StudentApiInput.java b/src/backend/src/main/java/unichope/student/http/StudentApiInput.java
+new file mode 100644
+index 0000000..8429510
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/http/StudentApiInput.java
+@@ -0,0 +1,64 @@
++package unichope.student.http;
++
++import java.time.LocalDate;
++import java.time.format.DateTimeParseException;
++import java.util.Map;
++import java.util.Optional;
++import java.util.Set;
++import java.util.UUID;
++import java.util.regex.Pattern;
++import jakarta.servlet.http.HttpServletRequest;
++import unichope.platform.web.ApiFailure;
++
++/** Adapter-local strict query parsing (TECH §3.1); every violation is 400 VALIDATION_FAILED. */
++public final class StudentApiInput {
++    private static final Pattern UUID_TEXT =
++            Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
++    private static final Pattern DATE_TEXT = Pattern.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}");
++    private static final Set<String> SLOT_PARAMETERS = Set.of("moduleId", "date");
++
++    private StudentApiInput() {}
++
++    /** Parsed {@code GET /slots} filters. */
++    public record SlotFilter(Optional<UUID> moduleId, Optional<LocalDate> date) {}
++
++    /** Rejects any query parameter. */
++    public static void noQuery(HttpServletRequest request) {
++        if (!request.getParameterMap().isEmpty()) throw invalid();
++    }
++
++    /** {@code GET /slots}: only {@code moduleId} and {@code date}, each at most once. */
++    public static SlotFilter slotFilter(HttpServletRequest request) {
++        Map<String, String[]> parameters = request.getParameterMap();
++        if (!SLOT_PARAMETERS.containsAll(parameters.keySet())) throw invalid();
++        return new SlotFilter(single(parameters, "moduleId").map(StudentApiInput::id),
++                single(parameters, "date").map(StudentApiInput::date));
++    }
++
++    /** Canonical 8-4-4-4-12 hexadecimal UUID text. */
++    public static UUID id(String value) {
++        if (value == null || !UUID_TEXT.matcher(value).matches()) throw invalid();
++        return UUID.fromString(value);
++    }
++
++    /** Exactly {@code YYYY-MM-DD} and a real calendar date. */
++    public static LocalDate date(String value) {
++        if (value == null || !DATE_TEXT.matcher(value).matches()) throw invalid();
++        try {
++            return LocalDate.parse(value);
++        } catch (DateTimeParseException error) {
++            throw invalid();
++        }
++    }
++
++    private static Optional<String> single(Map<String, String[]> parameters, String name) {
++        String[] values = parameters.get(name);
++        if (values == null) return Optional.empty();
++        if (values.length != 1) throw invalid();
++        return Optional.of(values[0]);
++    }
++
++    private static ApiFailure invalid() {
++        return new ApiFailure(400, "VALIDATION_FAILED", "Request validation failed");
++    }
++}
+diff --git a/src/backend/src/main/java/unichope/student/http/StudentController.java b/src/backend/src/main/java/unichope/student/http/StudentController.java
+new file mode 100644
+index 0000000..2bd7acc
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/http/StudentController.java
+@@ -0,0 +1,38 @@
++package unichope.student.http;
++
++import java.util.List;
++import jakarta.servlet.http.HttpServletRequest;
++import org.springframework.context.annotation.Profile;
++import org.springframework.web.bind.annotation.GetMapping;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++import unichope.student.BookableSlot;
++import unichope.student.ModuleOption;
++import unichope.student.StudentReadService;
++
++/**
++ * Student browse routes. Request syntax is validated before the actor check (TECH §3.2
++ * evaluation order), so a syntax error never reads data or invalidates a session.
++ */
++@RestController("studentController")
++@Profile("student-api")
++@RequestMapping("/api/student")
++public class StudentController {
++    private final StudentReadService reads;
++
++    public StudentController(StudentReadService reads) {
++        this.reads = reads;
++    }
++
++    @GetMapping("/modules")
++    public List<ModuleOption> modules(HttpServletRequest request) {
++        StudentApiInput.noQuery(request);
++        return reads.activeModules();
++    }
++
++    @GetMapping("/slots")
++    public List<BookableSlot> slots(HttpServletRequest request) {
++        StudentApiInput.SlotFilter filter = StudentApiInput.slotFilter(request);
++        return reads.bookableSlots(filter.moduleId(), filter.date());
++    }
++}
+diff --git a/src/backend/src/main/java/unichope/student/http/StudentExceptionHandler.java b/src/backend/src/main/java/unichope/student/http/StudentExceptionHandler.java
+new file mode 100644
+index 0000000..8876888
+--- /dev/null
++++ b/src/backend/src/main/java/unichope/student/http/StudentExceptionHandler.java
+@@ -0,0 +1,47 @@
++package unichope.student.http;
++
++import jakarta.servlet.http.HttpServletRequest;
++import jakarta.servlet.http.HttpServletResponse;
++import org.springframework.context.annotation.Profile;
++import org.springframework.security.core.context.SecurityContextHolder;
++import org.springframework.web.bind.annotation.ExceptionHandler;
++import org.springframework.web.bind.annotation.RestControllerAdvice;
++import unichope.platform.web.ApiErrors;
++import unichope.platform.web.ApiFailure;
++import unichope.student.StudentAccessDeniedException;
++
++/**
++ * Maps Student controller failures to the shared error envelope (TECH §3.2, §3.3). Errors are
++ * written as JSON even when {@code Accept} excludes JSON; messages are fixed safe text.
++ */
++@RestControllerAdvice(assignableTypes = StudentController.class)
++@Profile("student-api")
++public class StudentExceptionHandler {
++    @ExceptionHandler(Exception.class)
++    public void handle(Exception failure, HttpServletRequest request, HttpServletResponse response) throws Exception {
++        int status = 500;
++        String code = "INTERNAL_ERROR";
++        String message = "The request could not be completed";
++        if (failure instanceof ApiFailure api) {
++            status = api.status();
++            code = api.code();
++            message = api.getMessage();
++        } else if (failure instanceof StudentAccessDeniedException access) {
++            switch (access.reason()) {
++                case NO_ACTOR -> { status = 401; code = "UNAUTHENTICATED"; message = "Authentication is required"; }
++                case UNKNOWN_ACCOUNT -> { status = 401; code = "UNAUTHENTICATED"; message = "Authentication is required"; invalidate(request); }
++                case INACTIVE -> { status = 403; code = "ACCOUNT_INACTIVE"; message = "Account is inactive"; invalidate(request); }
++                case FORBIDDEN -> { status = 403; code = "FORBIDDEN"; message = "Access is forbidden"; }
++            }
++        }
++        // A committed transport response cannot be replaced with a new safe status and body.
++        if (response.isCommitted()) throw failure;
++        ApiErrors.write(request, response, status, code, message);
++    }
++
++    private static void invalidate(HttpServletRequest request) {
++        SecurityContextHolder.clearContext();
++        var session = request.getSession(false);
++        if (session != null) session.invalidate();
++    }
++}

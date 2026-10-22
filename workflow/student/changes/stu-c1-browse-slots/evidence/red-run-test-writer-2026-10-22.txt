@@ -1,0 +1,189 @@
+Pre-implementation red run of the stu-c1 C1-T1..C1-T4 tests (test writer)
+
+Date: 22 October 2026
+Revision: 459fd6ef7108c2d08aeaa0f92ae0bccc054158b5 (branch_student) plus three untracked test-only files:
+  9e70e1ee9d7a69e99c496823879825a3965674f9975de9dffd2664f631f853e9 *src/backend/src/test/java/unichope/student/StudentTestActors.java
+  15d137587581fd2e96ad33cf859fb66d15cb624593e31ea1d32deecde2547ae9 *src/backend/src/test/java/unichope/student/http/StudentActivationTest.java
+  39206a32ecfc81f9f2939bac69ee36e0b897654c708faf233af24be56ce21624 *src/backend/src/test/java/unichope/platform/core/postgres/StudentBrowsePgTest.java
+  No main source and no existing test changed (`git diff --stat -- src/` is empty).
+Working directory: src/backend
+Environment: Windows 11, Git Bash, Java 25 toolchain, Docker 29.9.2
+Prerequisite: docker compose -f compose.test.yaml up -d --wait  (postgres:17, 127.0.0.1:55432, tmpfs)
+Command:
+  ./gradlew test postgresTest --continue -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55432/mp3_test \
+      -Dcore.test.user=mp3_test -Dcore.test.password=<local placeholder from compose.test.yaml> --console=plain
+  (--continue so postgresTest still runs after the unit task fails; build/test-results was deleted first)
+Exit code: 1 (BUILD FAILED; expected)
+Compilation: compileTestJava succeeded (-Xlint:all). The new tests reference no unimplemented type at
+  compile time, so this is a behavioral red, not a compile or setup failure.
+
+Totals (from build/test-results/*/TEST-*.xml):
+test: tests=28 failures=1 errors=0 skipped=0
+postgresTest: tests=123 failures=20 errors=0 skipped=0
+-- per class --
+postgresTest unichope.platform.core.postgres.PostgresAccountConcurrencyTest tests=9 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresAccountFailureTest tests=5 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresAccountStorageTest tests=7 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresAuthMigrationTest tests=2 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresCoreReadTest tests=4 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresLifecycleConcurrencyTest tests=11 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresLifecycleTest tests=19 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresPrivateNoteLockTest tests=13 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.StudentBrowsePgTest tests=20 failures=20 errors=0
+postgresTest unichope.platform.core.postgres.TutorRestPgTest tests=31 failures=0 errors=0
+postgresTest unichope.tutor.PostgresTutorReadTest tests=2 failures=0 errors=0
+test unichope.UnichopeApplicationTest tests=1 failures=0 errors=0
+test unichope.platform.ai.AiGatewayTest tests=5 failures=0 errors=0
+test unichope.platform.core.model.DomainTest tests=3 failures=0 errors=0
+test unichope.platform.core.postgres.AccountInputTest tests=2 failures=0 errors=0
+test unichope.platform.core.postgres.LifecycleInputTest tests=1 failures=0 errors=0
+test unichope.student.http.StudentActivationTest tests=2 failures=1 errors=0
+test unichope.tutor.TutorNoteInputTest tests=4 failures=0 errors=0
+test unichope.tutor.TutorReadServiceTest tests=4 failures=0 errors=0
+test unichope.tutor.http.TutorActivationTest tests=2 failures=0 errors=0
+test unichope.tutor.http.TutorApiInputTest tests=4 failures=0 errors=0
+
+Classification:
+  Existing suites: 26 unit + 103 PostgreSQL tests, all passing (equal to the pre-change baseline).
+  New tests: 22, with 21 failing and 1 passing. All 21 failures are org.opentest4j.AssertionFailedError
+  (0 errors), and none comes from the database, test discovery or compilation.
+  Expected reason: no Student wiring and no unichope.platform.auth.CurrentActorProvider exist, so under
+  student-api the unchanged deny-all chain answers 403 FORBIDDEN (or 401 when anonymous) instead
+  of serving Student routes. A student-api context and Boot app also start successfully instead of
+  failing closed without the provider.
+  Passing now (existing behavior, recorded as baseline rather than manufactured red):
+    StudentActivationTest.c1Act1DefaultStartupHasNoStudentHandlersAndDeniesStudentRoutes (C1-ACT-1).
+
+Per-test outcome and assertion message:
+  unichope.student.http.StudentActivationTest
+    PASS c1Act1DefaultStartupHasNoStudentHandlersAndDeniesStudentRoutes()
+    FAIL c1Act3ActorSeamIsSharedPlatformAuthInterface() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: unichope.platform.auth.CurrentActorProvider does not exist ==> expected: <true> but was: <false>
+  unichope.platform.core.postgres.StudentBrowsePgTest
+    FAIL c1Acc1MissingPrincipalOrProviderActorIsUnauthenticated() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"a6ec693b-2f9d-4b9e-b622-1db5b63b220a"} resolved=null ==> expected: <401> but was: <403>
+    FAIL c1Act4BothProfilesServeTutorAndStudentAndUnknownRoutesAre404Json() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"c80edbdd-bc39-4416-b388-8539cde56be8"} ==> expected: <200> but was: <403>
+    FAIL c1Act3BootStudentProfileWithoutTestProviderFailsClosed() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: Boot started student-api without a CurrentActorProvider: a main-source or fallback actor exists, or no Student wiring ==> Expected java.lang.RuntimeException to be thrown, but nothing was thrown.
+    FAIL c1Out2ModulesAreActiveExactOrderedAndEmpty() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"4ba0ef61-dcce-44f8-8939-02b876c64776"} resolved=null ==> expected: <200> but was: <403>
+    FAIL c1Act4StudentOnlyProfileDoesNotExposeTutorRoutes() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"8d09af6d-e373-450e-b9db-4424488a113b"} ==> expected: <200> but was: <403>
+    FAIL c1In4ControllerErrorsWithHtmlAcceptKeepJsonCodes() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"10dac3cb-2118-4bc7-a628-5226b9635f5f"} resolved=null ==> expected: <400> but was: <403>
+    FAIL sSlot1OnlyBookableFutureEligibleSlotsOrderedByStartThenId() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"c04266fc-61a9-425a-9b4e-a829bf2b8b86"} resolved=null ==> expected: <200> but was: <403>
+    FAIL c1In3FrameworkErrorsAreSafeJson() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"449ad781-fd96-4a2b-ba41-68d067da0f67"} resolved=null ==> expected: <405> but was: <403>
+    FAIL c1Prec1SyntaxErrorPrecedesActorCheckAndDoesNotInvalidate() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"513d175d-56a2-4c2c-8a38-224adb54179e"} resolved=null ==> expected: <400> but was: <403>
+    FAIL c1Out1BookableSlotHasExactSafeFields() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"c5d4f917-d15b-4ad4-8d0c-43b0f6b0ac2b"} resolved=null ==> expected: <200> but was: <403>
+    FAIL sSlot2SgtDateBoundaryModuleFilterIntersectionAndUnmatched() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"9e189efa-ebb8-4cc3-bf9e-62af9c07348c"} resolved=null ==> expected: <200> but was: <403>
+    FAIL c1Ovl1SlotOverlappingOwnActiveBookingIsStillListed() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"23cbf3e2-6af9-4927-a9c9-3c4cdb8bcc49"} resolved=null ==> expected: <200> but was: <403>
+    FAIL c1Acc3InactiveStudentIsDeniedAndSessionInvalidated() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: expected: <ACCOUNT_INACTIVE> but was: <FORBIDDEN>
+    FAIL c1In2SlotsRejectsUnknownRepeatedAndMalformedFilters() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"0b5a3a3d-32a7-43bd-ad94-bb3e38b56a77"} resolved=null ==> expected: <400> but was: <403>
+    FAIL c1In1ModulesRejectsAnyQueryParameter() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"8f0b33ec-9d49-42f0-8500-8c19331995e5"} resolved=null ==> expected: <400> but was: <403>
+    FAIL c1Acc2DeletedActorIsUnauthenticatedAndSessionInvalidated() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"c6a17baa-0a1c-46c4-9f6d-9d5eb08c90dd"} resolved=null ==> expected: <401> but was: <403>
+    FAIL c1Out3NoStoreAndServerGeneratedRequestIds() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"fd9e1f3d-3be6-47b2-acad-0da246e585dc"} resolved=null ==> expected: <200> but was: <403>
+    FAIL c1Acc4StoredRoleWinsOverSessionAuthorities() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"dcb95cb3-db8c-46e0-8fc8-f333e761612f"} resolved=null ==> expected: <200> but was: <403>
+    FAIL c1Acc5InterleavedSessionsResolveTheirOwnActor() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: {"code":"FORBIDDEN","message":"Access is forbidden","requestId":"c3b9505f-a69c-49e5-933e-ad8738c9cf0c"} resolved=null ==> expected: <200> but was: <403>
+    FAIL c1Act2MissingRequiredBeanFailsStartupWithoutFallback() | org.opentest4j.AssertionFailedError | org.opentest4j.AssertionFailedError: student-api context started without provider ==> Expected java.lang.RuntimeException to be thrown, but nothing was thrown.
+
+Gradle console output (stack-frame lines removed; otherwise verbatim):
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+> Task :test
+
+StudentActivationTest > c1Act3ActorSeamIsSharedPlatformAuthInterface() FAILED
+    org.opentest4j.AssertionFailedError at StudentActivationTest.java:63
+
+28 tests completed, 1 failed
+
+> Task :test FAILED
+> Task :postgresTest
+
+StudentBrowsePgTest > c1Acc1MissingPrincipalOrProviderActorIsUnauthenticated() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:484
+
+StudentBrowsePgTest > c1Act4BothProfilesServeTutorAndStudentAndUnknownRoutesAre404Json() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:370
+
+StudentBrowsePgTest > c1Act3BootStudentProfileWithoutTestProviderFailsClosed() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:354
+
+StudentBrowsePgTest > c1Out2ModulesAreActiveExactOrderedAndEmpty() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:467
+
+StudentBrowsePgTest > c1Act4StudentOnlyProfileDoesNotExposeTutorRoutes() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:391
+
+StudentBrowsePgTest > c1In4ControllerErrorsWithHtmlAcceptKeepJsonCodes() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:484
+
+StudentBrowsePgTest > sSlot1OnlyBookableFutureEligibleSlotsOrderedByStartThenId() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:467
+
+StudentBrowsePgTest > c1In3FrameworkErrorsAreSafeJson() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:484
+
+StudentBrowsePgTest > c1Prec1SyntaxErrorPrecedesActorCheckAndDoesNotInvalidate() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:484
+
+StudentBrowsePgTest > c1Out1BookableSlotHasExactSafeFields() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:467
+
+StudentBrowsePgTest > sSlot2SgtDateBoundaryModuleFilterIntersectionAndUnmatched() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:467
+
+StudentBrowsePgTest > c1Ovl1SlotOverlappingOwnActiveBookingIsStillListed() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:467
+
+StudentBrowsePgTest > c1Acc3InactiveStudentIsDeniedAndSessionInvalidated() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:490
+
+StudentBrowsePgTest > c1In2SlotsRejectsUnknownRepeatedAndMalformedFilters() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:484
+
+StudentBrowsePgTest > c1In1ModulesRejectsAnyQueryParameter() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:484
+
+StudentBrowsePgTest > c1Acc2DeletedActorIsUnauthenticatedAndSessionInvalidated() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:484
+
+StudentBrowsePgTest > c1Out3NoStoreAndServerGeneratedRequestIds() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:467
+
+StudentBrowsePgTest > c1Acc4StoredRoleWinsOverSessionAuthorities() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:467
+
+StudentBrowsePgTest > c1Acc5InterleavedSessionsResolveTheirOwnActor() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:467
+
+StudentBrowsePgTest > c1Act2MissingRequiredBeanFailsStartupWithoutFallback() FAILED
+    org.opentest4j.AssertionFailedError at StudentBrowsePgTest.java:341
+
+123 tests completed, 20 failed
+
+> Task :postgresTest FAILED
+
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///D:/cs3227/CS3227-2610-MP3/src/backend/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':postgresTest'.
+> There were failing tests. See the report at: file:///D:/cs3227/CS3227-2610-MP3/src/backend/build/reports/tests/postgresTest/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+==============================================================================
+
+BUILD FAILED in 3m 4s
+5 actionable tasks: 2 executed, 3 up-to-date

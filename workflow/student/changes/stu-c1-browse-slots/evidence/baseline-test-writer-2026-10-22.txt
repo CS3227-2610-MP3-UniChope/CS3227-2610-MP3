@@ -1,0 +1,53 @@
+Existing-suite baseline rerun before writing the C1 tests (test writer, stu-c1)
+
+Date: 22 October 2026
+Revision: 459fd6ef7108c2d08aeaa0f92ae0bccc054158b5 (branch_student). `git diff HEAD -- src/` is empty and
+  there are no untracked files under src/. Only workflow documents are modified.
+Working directory: src/backend
+Environment: Windows 11, Git Bash, Java 25 toolchain, Docker 29.9.2
+Prerequisite: docker compose -f compose.test.yaml up -d --wait  (postgres:17, 127.0.0.1:55432, tmpfs)
+Command:
+  ./gradlew test postgresTest -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55432/mp3_test \
+      -Dcore.test.user=mp3_test -Dcore.test.password=<local placeholder from compose.test.yaml> --console=plain
+  (build/test-results was deleted first so that only this run's XML is counted)
+Exit code: 0 (BUILD SUCCESSFUL)
+Results (from build/test-results/*/TEST-*.xml):
+test: tests=26 failures=0 errors=0 skipped=0
+postgresTest: tests=103 failures=0 errors=0 skipped=0
+-- per class --
+postgresTest unichope.platform.core.postgres.PostgresAccountConcurrencyTest tests=9 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresAccountFailureTest tests=5 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresAccountStorageTest tests=7 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresAuthMigrationTest tests=2 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresCoreReadTest tests=4 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresLifecycleConcurrencyTest tests=11 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresLifecycleTest tests=19 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.PostgresPrivateNoteLockTest tests=13 failures=0 errors=0
+postgresTest unichope.platform.core.postgres.TutorRestPgTest tests=31 failures=0 errors=0
+postgresTest unichope.tutor.PostgresTutorReadTest tests=2 failures=0 errors=0
+test unichope.UnichopeApplicationTest tests=1 failures=0 errors=0
+test unichope.platform.ai.AiGatewayTest tests=5 failures=0 errors=0
+test unichope.platform.core.model.DomainTest tests=3 failures=0 errors=0
+test unichope.platform.core.postgres.AccountInputTest tests=2 failures=0 errors=0
+test unichope.platform.core.postgres.LifecycleInputTest tests=1 failures=0 errors=0
+test unichope.tutor.TutorNoteInputTest tests=4 failures=0 errors=0
+test unichope.tutor.TutorReadServiceTest tests=4 failures=0 errors=0
+test unichope.tutor.http.TutorActivationTest tests=2 failures=0 errors=0
+test unichope.tutor.http.TutorApiInputTest tests=4 failures=0 errors=0
+
+Gradle console output (verbatim):
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :test
+> Task :postgresTest
+
+BUILD SUCCESSFUL in 1m 57s
+5 actionable tasks: 2 executed, 3 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html
+
+Scope: existing core and Tutor suites only. No Student code or Student tests exist at this revision.

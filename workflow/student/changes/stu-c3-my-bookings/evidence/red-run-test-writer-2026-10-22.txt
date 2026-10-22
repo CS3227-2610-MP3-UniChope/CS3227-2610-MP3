@@ -1,0 +1,130 @@
+stu-c3-my-bookings: pre-implementation red run (test writer, 22 October 2026)
+Working directory: src/backend
+Revision: HEAD 459fd6ef7108c2d08aeaa0f92ae0bccc054158b5 + uncommitted stu-c1 working tree (unchanged) + new test file
+  src/backend/src/test/java/unichope/platform/core/postgres/StudentBookingsPgTest.java SHA-256 a38b995071d69aa06955c24dec3dac481d08d71fab89f0bdb11235d8647fbb67
+Prerequisite: docker compose -f compose.test.yaml up -d --wait (exit 0); stopped afterwards with docker compose -f compose.test.yaml down (exit 0)
+Compile check: ./gradlew compileTestJava --console=plain -> exit 0, no -Xlint:all warnings from test sources
+Command: ./gradlew clean test postgresTest -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55432/mp3_test -Dcore.test.user=mp3_test -Dcore.test.password=<local placeholder from compose.test.yaml> --console=plain --continue
+Exit code: 1 (expected: only the new C3 tests fail)
+
+Interpretation: every failure is an AssertionFailedError in StudentBookingsPgTest. The C3 routes do not
+exist yet, so each first request reaches the c1 Student resolver and answers 404 NOT_FOUND
+(NoHandlerFoundException: No endpoint GET /api/student/bookings) instead of the specified 200/400/401.
+No compile, discovery or database failure. Existing 28 unit + 123 PostgreSQL tests (incl. c1) pass.
+
+== JUnit XML summary ==
+[test] total tests=28 failures=0 errors=0 skipped=0
+  unichope.UnichopeApplicationTest: tests=1 failures=0 errors=0 skipped=0
+  unichope.platform.ai.AiGatewayTest: tests=5 failures=0 errors=0 skipped=0
+  unichope.platform.core.model.DomainTest: tests=3 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.AccountInputTest: tests=2 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.LifecycleInputTest: tests=1 failures=0 errors=0 skipped=0
+  unichope.student.http.StudentActivationTest: tests=2 failures=0 errors=0 skipped=0
+  unichope.tutor.TutorNoteInputTest: tests=4 failures=0 errors=0 skipped=0
+  unichope.tutor.TutorReadServiceTest: tests=4 failures=0 errors=0 skipped=0
+  unichope.tutor.http.TutorActivationTest: tests=2 failures=0 errors=0 skipped=0
+  unichope.tutor.http.TutorApiInputTest: tests=4 failures=0 errors=0 skipped=0
+[postgresTest] total tests=132 failures=9 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresAccountConcurrencyTest: tests=9 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresAccountFailureTest: tests=5 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresAccountStorageTest: tests=7 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresAuthMigrationTest: tests=2 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresCoreReadTest: tests=4 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresLifecycleConcurrencyTest: tests=11 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresLifecycleTest: tests=19 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.PostgresPrivateNoteLockTest: tests=13 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.StudentBookingsPgTest: tests=9 failures=9 errors=0 skipped=0
+  unichope.platform.core.postgres.StudentBrowsePgTest: tests=20 failures=0 errors=0 skipped=0
+  unichope.platform.core.postgres.TutorRestPgTest: tests=31 failures=0 errors=0 skipped=0
+  unichope.tutor.PostgresTutorReadTest: tests=2 failures=0 errors=0 skipped=0
+[postgresTest] failing cases:
+  FAILURE StudentBookingsPgTest.c3Flt1StatusFilterSelectsUpcomingHistoryAndAll(): org.opentest4j.AssertionFailedError: org.opentest4j.AssertionFailedError: {"code":"NOT_FOUND","message":"Resource not found","requestId":"94f95f6c-d3a6-4b2d-b6e1-af747176762d"} resolved=org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /api/student/bookings. ==> expected: <200> but was: <404>
+  FAILURE StudentBookingsPgTest.c3Acc1AccessMatrixOnListAndDetail(): org.opentest4j.AssertionFailedError: org.opentest4j.AssertionFailedError: {"code":"NOT_FOUND","message":"Resource not found","requestId":"a04b7b12-1d7c-4d6e-8974-6086fa1198fa"} resolved=org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /api/student/bookings. ==> expected: <401> but was: <404>
+  FAILURE StudentBookingsPgTest.c3Flt3CancellableFollowsInjectedClockStrictlyBeforeStart(): org.opentest4j.AssertionFailedError: org.opentest4j.AssertionFailedError: {"code":"NOT_FOUND","message":"Resource not found","requestId":"e88520df-449b-437d-8d42-2c755ca05c20"} resolved=org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /api/student/bookings. ==> expected: <200> but was: <404>
+  FAILURE StudentBookingsPgTest.c3Own1DetailReturnsOwnBookingInAnyStatusAndHidesOthersAsNotFound(): org.opentest4j.AssertionFailedError: org.opentest4j.AssertionFailedError: {"code":"NOT_FOUND","message":"Resource not found","requestId":"3890b66a-c8e7-43c0-85ff-14e2236ddded"} resolved=org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /api/student/bookings. ==> expected: <200> but was: <404>
+  FAILURE StudentBookingsPgTest.c3Out1StudentBookingHasExactSafeFields(): org.opentest4j.AssertionFailedError: org.opentest4j.AssertionFailedError: {"code":"NOT_FOUND","message":"Resource not found","requestId":"5584105c-e359-4f6a-a310-8a3a58160994"} resolved=org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /api/student/bookings. ==> expected: <200> but was: <404>
+  FAILURE StudentBookingsPgTest.c3Elig1OwnBookingsStayVisibleAfterTutorOrModuleIneligibility(): org.opentest4j.AssertionFailedError: org.opentest4j.AssertionFailedError: {"code":"NOT_FOUND","message":"Resource not found","requestId":"df7226dc-26c7-4a71-8d50-3cefa70b70fc"} resolved=org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /api/student/bookings. ==> expected: <200> but was: <404>
+  FAILURE StudentBookingsPgTest.sList1OnlyOwnBookingsAllStatusesOrderedBySlotStartThenBookingId(): org.opentest4j.AssertionFailedError: org.opentest4j.AssertionFailedError: {"code":"NOT_FOUND","message":"Resource not found","requestId":"d92b025f-2b38-46d6-9841-fcbe79627b50"} resolved=org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /api/student/bookings. ==> expected: <200> but was: <404>
+  FAILURE StudentBookingsPgTest.c3Flt2SgtStartDateFilterAcrossBoundaryIntersectsStatus(): org.opentest4j.AssertionFailedError: org.opentest4j.AssertionFailedError: {"code":"NOT_FOUND","message":"Resource not found","requestId":"572d8a88-153e-4687-aa49-f234220e3b06"} resolved=org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /api/student/bookings. ==> expected: <200> but was: <404>
+  FAILURE StudentBookingsPgTest.c3In1BookingsRejectsUnknownInvalidRepeatedAndMalformedInput(): org.opentest4j.AssertionFailedError: org.opentest4j.AssertionFailedError: {"code":"NOT_FOUND","message":"Resource not found","requestId":"d27fa461-69fc-4a6d-9b36-1acd5cea0153"} resolved=org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /api/student/bookings. ==> expected: <400> but was: <404>
+
+== Gradle console output (sanitized: password replaced) ==
+> Task :clean
+
+> Task :compileJava
+D:\cs3227\CS3227-2610-MP3\src\backend\src\main\java\unichope\platform\ai\AiGateway.java:50: warning: [serial] serializable class Failure has no definition of serialVersionUID
+    final class Failure extends RuntimeException {
+          ^
+1 warning
+
+> Task :processResources
+> Task :classes
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :test
+> Task :postgresTest
+
+StudentBookingsPgTest > c3Flt1StatusFilterSelectsUpcomingHistoryAndAll() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookingsPgTest.java:499
+
+StudentBookingsPgTest > c3Acc1AccessMatrixOnListAndDetail() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookingsPgTest.java:532
+
+StudentBookingsPgTest > c3Flt3CancellableFollowsInjectedClockStrictlyBeforeStart() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookingsPgTest.java:499
+
+StudentBookingsPgTest > c3Own1DetailReturnsOwnBookingInAnyStatusAndHidesOthersAsNotFound() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookingsPgTest.java:499
+
+StudentBookingsPgTest > c3Out1StudentBookingHasExactSafeFields() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookingsPgTest.java:499
+
+StudentBookingsPgTest > c3Elig1OwnBookingsStayVisibleAfterTutorOrModuleIneligibility() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookingsPgTest.java:499
+
+StudentBookingsPgTest > sList1OnlyOwnBookingsAllStatusesOrderedBySlotStartThenBookingId() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookingsPgTest.java:499
+
+StudentBookingsPgTest > c3Flt2SgtStartDateFilterAcrossBoundaryIntersectsStatus() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookingsPgTest.java:499
+
+StudentBookingsPgTest > c3In1BookingsRejectsUnknownInvalidRepeatedAndMalformedInput() FAILED
+    org.opentest4j.AssertionFailedError at StudentBookingsPgTest.java:532
+
+132 tests completed, 9 failed
+
+> Task :postgresTest FAILED
+
+[Incubating] Problems report is available at: file:///D:/cs3227/CS3227-2610-MP3/src/backend/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':postgresTest'.
+> There were failing tests. See the report at: file:///D:/cs3227/CS3227-2610-MP3/src/backend/build/reports/tests/postgresTest/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 3m 15s
+6 actionable tasks: 6 executed
+exit=1
+
+== Test-validity check (test writer; throwaway code outside the repository) ==
+Purpose: make sure the new tests can pass and are not failing because of a test defect. No repository main
+source was changed.
+Method: a disposable copy of src/backend (without build/ and bin/) in the session scratch directory got a
+minimal prototype (StudentBooking record, owner-scoped bookings SQL per TECH §4, strict status/date/path
+parsing, cancellable = ACTIVE && start.isAfter(clock)). The copy was deleted afterwards.
+Command (in the copy): ./gradlew postgresTest --tests 'unichope.platform.core.postgres.StudentBookingsPgTest'
+  --tests 'unichope.platform.core.postgres.StudentBrowsePgTest' -Dcore.test.*=<same as above> --console=plain
+Result: exit 0; StudentBookingsPgTest 9/0/0, StudentBrowsePgTest 20/0/0.
+Seeded defects (one at a time), each detected by the intended test (exit 1, single failing case):
+  M1 order by s.start_time, s.id instead of b.id      -> sList1OnlyOwnBookingsAllStatusesOrderedBySlotStartThenBookingId
+  M2 cancellable when start >= now                     -> c3Flt3CancellableFollowsInjectedClockStrictlyBeforeStart
+  M3 detail without the owner condition                -> c3Own1DetailReturnsOwnBookingInAnyStatusAndHidesOthersAsNotFound
+  M4 slot-eligibility filters copied into bookings SQL -> c3Elig1OwnBookingsStayVisibleAfterTutorOrModuleIneligibility
+  M5 UTC instead of SGT date range                     -> c3Flt2SgtStartDateFilterAcrossBoundaryIntersectsStatus
+This shows only that the oracles are satisfiable and discriminate these defects; it is not implementation evidence.
