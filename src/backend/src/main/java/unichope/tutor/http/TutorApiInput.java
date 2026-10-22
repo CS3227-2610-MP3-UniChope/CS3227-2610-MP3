@@ -15,6 +15,7 @@ import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import unichope.platform.web.ApiFailure;
+import unichope.platform.core.model.consultation.BookingStatus;
 
 /** Adapter-local strict parsing, bounded by actual bytes rather than declared length. */
 public final class TutorApiInput {
@@ -24,6 +25,9 @@ public final class TutorApiInput {
     private TutorApiInput() {}
     public record Create(UUID moduleId,Instant startTime,Instant endTime) {}
     public record NoteSave(String content,long expectedVersion) {}
+    public record NoteDraft(String roughNotes) {}
+    public record BookingFilter(Optional<UUID> moduleId, Optional<LocalDate> date,
+                                Optional<BookingStatus> status) {}
 
     public static Create create(HttpServletRequest request) throws IOException {
         JsonNode object=object(request);
@@ -40,17 +44,44 @@ public final class TutorApiInput {
         try { return new NoteSave(content.stringValue(),version.bigIntegerValue().longValueExact()); }
         catch(ArithmeticException error) { throw invalid(); }
     }
+    public static NoteDraft noteDraft(HttpServletRequest request) throws IOException {
+        JsonNode body=object(request);
+        if(!Set.copyOf(body.propertyNames()).equals(Set.of("roughNotes")))throw invalid();
+        JsonNode roughNotes=body.get("roughNotes");
+        if(roughNotes==null||!roughNotes.isString())throw invalid();
+        String value=roughNotes.stringValue();
+        if(value.strip().isEmpty()||value.codePointCount(0,value.length())>8000)throw invalid();
+        return new NoteDraft(value);
+    }
     public static Optional<LocalDate> date(HttpServletRequest request) {
         if(request.getParameterMap().isEmpty())return Optional.empty();
         if(request.getParameterMap().size()!=1||!request.getParameterMap().containsKey("date")||request.getParameterValues("date").length!=1)throw invalid();
-        String raw=request.getParameter("date");
-        if(!raw.matches("\\d{4}-\\d{2}-\\d{2}"))throw invalid();
-        try { return Optional.of(LocalDate.parse(raw)); } catch(DateTimeParseException error) { throw invalid(); }
+        return Optional.of(parseDate(request.getParameter("date")));
+    }
+    public static BookingFilter bookingsQuery(HttpServletRequest request) {
+        var parameters = request.getParameterMap();
+        if (parameters.keySet().stream().anyMatch(key -> !Set.of("moduleId", "date", "status").contains(key))) throw invalid();
+        for (String key : parameters.keySet()) if (request.getParameterValues(key).length != 1) throw invalid();
+        Optional<UUID> module = Optional.ofNullable(request.getParameter("moduleId")).map(TutorApiInput::id);
+        Optional<LocalDate> date = Optional.empty();
+        if (parameters.containsKey("date")) {
+            date = Optional.of(parseDate(request.getParameter("date")));
+        }
+        Optional<BookingStatus> status = Optional.empty();
+        if (parameters.containsKey("status")) {
+            try { status = Optional.of(BookingStatus.valueOf(request.getParameter("status"))); }
+            catch (IllegalArgumentException error) { throw invalid(); }
+        }
+        return new BookingFilter(module, date, status);
     }
     public static void noQuery(HttpServletRequest request) { if(!request.getParameterMap().isEmpty())throw invalid(); }
     public static UUID id(String value) {
         if(value==null||!value.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"))throw invalid();
         return UUID.fromString(value);
+    }
+    private static LocalDate parseDate(String raw) {
+        if(!raw.matches("\\d{4}-\\d{2}-\\d{2}"))throw invalid();
+        try { return LocalDate.parse(raw); } catch(DateTimeParseException error) { throw invalid(); }
     }
     private static Instant instant(String value) {
         if(!value.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,9})?Z"))throw invalid();

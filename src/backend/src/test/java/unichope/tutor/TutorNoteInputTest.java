@@ -31,6 +31,29 @@ class TutorNoteInputTest {
     }
 
     @Test
+    void parsesRoughNotesWithoutTrimmingAndCountsUnicodeCodePoints() throws Exception {
+        var request=request("{\"roughNotes\":\"  Reviewed recursion 😀  \"}");
+        assertEquals(new TutorApiInput.NoteDraft("  Reviewed recursion 😀  "),TutorApiInput.noteDraft(request));
+        String exactLimit="{\"roughNotes\":\""+"😀".repeat(8000)+"\"}";
+        String parsed=TutorApiInput.noteDraft(request(exactLimit)).roughNotes();
+        assertEquals(8000,parsed.codePointCount(0,parsed.length()));
+    }
+
+    @Test
+    void rejectsInvalidRoughNotesShapeBlankAndOverLimit() {
+        for(String json:new String[]{"{}","{\"roughNotes\":null}","{\"roughNotes\":4}",
+                "{\"roughNotes\":\"   \",\"extra\":true}",
+                "{\"roughNotes\":\"x\",\"extra\":true}",
+                "{\"roughNotes\":\"x\",\"roughNotes\":\"y\"}",
+                "{\"roughNotes\":\"x\"} {}"}) {
+            assertEquals("VALIDATION_FAILED",assertThrows(ApiFailure.class,
+                    ()->TutorApiInput.noteDraft(request(json)),json).code(),json);
+        }
+        assertEquals("VALIDATION_FAILED",assertThrows(ApiFailure.class,
+                ()->TutorApiInput.noteDraft(request("{\"roughNotes\":\""+"😀".repeat(8001)+"\"}"))).code());
+    }
+
+    @Test
     void contentValidationCountsCodePointsAndUsesStringStrip() {
         assertEquals("x",TutorNoteService.normalizeContent("  x \n"));
         assertEquals("😀",TutorNoteService.normalizeContent("😀"));

@@ -15,11 +15,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.beans.factory.annotation.Value;
 import unichope.platform.core.ConsultationLifecycle;
 import unichope.platform.core.repository.ModuleRepository;
 import unichope.platform.core.repository.BookingRepository;
 import unichope.platform.core.repository.SlotRepository;
 import unichope.platform.auth.CurrentActorProvider;
+import unichope.platform.auth.AuthenticationService;
+import unichope.platform.ai.AiGateway;
+import unichope.platform.ai.AdmittedAiGateway;
+import unichope.tutor.TutorNoteDraftGateway;
+import unichope.tutor.TutorNoteDraftService;
 import unichope.tutor.TutorAccess;
 import unichope.tutor.TutorReadRepository;
 import unichope.tutor.TutorReadService;
@@ -62,5 +71,29 @@ public class TutorApiConfiguration implements WebMvcConfigurer {
     @Bean TutorNoteService tutorNoteService(TutorAccess access,BookingRepository bookings,SlotRepository slots,
             ConsultationLifecycle lifecycle,DataSource source) {
         return new TutorNoteService(access,bookings,slots,new PostgresTutorNoteRepository(JdbcClient.create(source)),lifecycle,source);
+    }
+
+    @Bean @ConditionalOnBean(AiGateway.class)
+    @ConditionalOnProperty(prefix="unichope.ai.tutor.note-draft",name="max-output-tokens")
+    TutorNoteDraftGateway tutorNoteDraftGateway(AiGateway gateway, Environment environment,
+            @Value("${unichope.ai.tutor.note-draft.max-output-tokens}") int maxOutputTokens) {
+        boolean local = environment.matchesProfiles("local");
+        AiGateway fakeGuard = request -> {
+            if (!local && !(gateway instanceof AdmittedAiGateway)) {
+                throw new AiGateway.Failure(AiGateway.FailureCode.UNAVAILABLE);
+            }
+            var result = gateway.generate(request);
+            if (result.providerMode() == AiGateway.ProviderMode.FAKE && !local) {
+                throw new AiGateway.Failure(AiGateway.FailureCode.UNAVAILABLE);
+            }
+            return result;
+        };
+        return new TutorNoteDraftGateway(fakeGuard,maxOutputTokens);
+    }
+
+    @Bean @ConditionalOnBean(TutorNoteDraftGateway.class)
+    TutorNoteDraftService tutorNoteDraftService(TutorAccess access,BookingRepository bookings,
+            SlotRepository slots,AuthenticationService authentication,TutorNoteDraftGateway drafts) {
+        return new TutorNoteDraftService(access,bookings,slots,authentication,drafts);
     }
 }

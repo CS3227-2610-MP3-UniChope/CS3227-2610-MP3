@@ -1,6 +1,7 @@
 package unichope.platform.core.postgres;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -12,6 +13,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -39,8 +42,16 @@ import unichope.platform.core.model.consultation.ConsultationSlot;
 import unichope.platform.core.model.module.Module;
 import unichope.platform.core.model.module.TutorModule;
 import unichope.platform.core.repository.ModuleRepository;
+import unichope.platform.ai.AiGateway;
+import unichope.platform.auth.AuthenticationService;
+import unichope.platform.auth.SessionPrincipal;
+import unichope.platform.core.model.user.Student;
+import unichope.platform.core.model.user.Tutor;
 import unichope.platform.web.ApiSecurityConfiguration;
 import unichope.platform.auth.CurrentActorProvider;
+import unichope.tutor.TutorAccess;
+import unichope.tutor.TutorNoteDraftGateway;
+import unichope.tutor.TutorNoteDraftService;
 import unichope.tutor.PostgresTutorReadRepository;
 import unichope.tutor.http.TutorApiConfiguration;
 
@@ -50,6 +61,9 @@ class TutorRestPgTest extends LifecyclePgFixture {
     private MockMvc mvc;
     private FaultingLifecycle writes;
     private ProjectionModules modules;
+    private AtomicInteger draftCalls;
+    private AtomicReference<AiGateway.Request> draftRequest;
+    private AuthenticationService draftAuthentication;
     private final JsonMapper json=JsonMapper.shared();
 
     @BeforeEach
@@ -89,6 +103,40 @@ class TutorRestPgTest extends LifecyclePgFixture {
         assertEquals(1,body(ok(get("/api/tutor/slots").param("date","2026-10-21"),session(T1),200)).size());
         assertEquals(2,body(ok(get("/api/tutor/slots").param("date","2026-10-22"),session(T1),200)).size());
         assertEquals(0,body(ok(get("/api/tutor/slots").param("date","2026-10-23"),session(T1),200)).size());
+    }
+
+    @Test
+    void bookingListsAreTutorScopedFilteredAndOrderedByStartTimeThenId() throws Exception {
+        UUID olderSlot=slot(T1,Instant.parse("2026-10-20T02:00:00Z"),Instant.parse("2026-10-20T03:00:00Z"),"COMPLETED");
+        UUID tiedSlot=slot(T1,Instant.parse("2026-10-20T02:00:00Z"),Instant.parse("2026-10-20T03:00:00Z"),"COMPLETED");
+        UUID newerSlot=slot(T1,M2,Instant.parse("2026-10-20T16:30:00Z"),Instant.parse("2026-10-20T17:00:00Z"),"COMPLETED");
+        UUID activeSlot=slot(T1,START,END,"BOOKED");
+        UUID foreignSlot=slot(T2,START,END,"COMPLETED");
+        UUID older=booking(S1,olderSlot,"COMPLETED"), tied=booking(S1,tiedSlot,"COMPLETED"), newer=booking(S1,newerSlot,"COMPLETED");
+        booking(S1,activeSlot,"ACTIVE"); booking(S1,foreignSlot,"COMPLETED");
+
+        JsonNode result=body(ok(get("/api/tutor/bookings").param("status","COMPLETED"),session(T1),200));
+        var tiedIds=List.of(older,tied).stream().sorted().map(UUID::toString).toList();
+        assertEquals(List.of(tiedIds.get(0),tiedIds.get(1),newer.toString()),List.of(
+                result.get(0).get("bookingId").asString(),result.get(1).get("bookingId").asString(),result.get(2).get("bookingId").asString()));
+        assertEquals(Set.of("bookingId","slotId","moduleCode","startTime","endTime","status"),
+                Set.copyOf(result.get(0).propertyNames()));
+        assertEquals("COMPLETED",result.get(0).get("status").asString());
+        assertTrue(result.get(0).get("startTime").asString().endsWith("Z"));
+        JsonNode all=body(ok(get("/api/tutor/bookings"),session(T1),200));
+        assertEquals(4,all.size());
+        JsonNode active=body(ok(get("/api/tutor/bookings").param("status","ACTIVE"),session(T1),200));
+        assertEquals(1,active.size());assertEquals("ACTIVE",active.get(0).get("status").asString());
+        JsonNode byDate=body(ok(get("/api/tutor/bookings").param("date","2026-10-21"),session(T1),200));
+        assertEquals(2,byDate.size());
+        assertTrue(List.of(byDate.get(0).get("bookingId").asString(),byDate.get(1).get("bookingId").asString()).contains(newer.toString()));
+        JsonNode previousSgtDate=body(ok(get("/api/tutor/bookings").param("date","2026-10-20"),session(T1),200));
+        assertEquals(2,previousSgtDate.size());
+        JsonNode byModule=body(ok(get("/api/tutor/bookings").param("moduleId",M2.toString()),session(T1),200));
+        assertEquals(1,byModule.size());assertEquals(newer.toString(),byModule.get(0).get("bookingId").asString());
+        error(ok(get("/api/tutor/bookings").param("status","COMPLETED"),null,401),401,"UNAUTHENTICATED");
+        error(ok(get("/api/tutor/bookings").param("status","COMPLETED"),session(S1,"ROLE_TUTOR"),403),403,"FORBIDDEN");
+        error(ok(get("/api/tutor/bookings").param("status","COMPLETED").param("actorId",T2.toString()),session(T1),400),400,"VALIDATION_FAILED");
     }
 
     @Test
@@ -283,6 +331,39 @@ class TutorRestPgTest extends LifecyclePgFixture {
     }
 
     @Test
+    void noteDraftEndpointUsesAuthenticatedTutorAndDoesNotWrite() throws Exception {
+        UUID completedSlot=slot(T1,START,END,"COMPLETED"),completedBooking=booking(S1,completedSlot,"COMPLETED");
+        String before=snapshot();
+        var response=body(ok(post("/api/tutor/bookings/"+completedBooking+"/note-draft")
+                .contentType("application/json").content("{\"roughNotes\":\"Reviewed recursion\"}")
+                .with(csrf().asHeader()),session(new SessionPrincipal(T1,7),"ROLE_TUTOR"),200));
+
+        assertEquals(Set.of("bookingId","draft","requiresReview","providerMode"),Set.copyOf(response.propertyNames()));
+        assertEquals(completedBooking.toString(),response.get("bookingId").asString());
+        assertEquals("fake",response.get("providerMode").asString());assertTrue(response.get("requiresReview").booleanValue());
+        assertTrue(response.get("draft").asString().contains("Reviewed recursion"));
+        assertEquals(before,snapshot());assertEquals(0,count("private_notes"));assertEquals(1,draftCalls.get());
+        assertEquals(T1,draftRequest.get().actorId());assertEquals("tutor.note-draft.v1",draftRequest.get().task());
+        assertEquals("Reviewed recursion",draftRequest.get().input());
+    }
+
+    @Test
+    void noteDraftEndpointRejectsCsrfForeignOwnerAndIncompleteBookingBeforeGateway() throws Exception {
+        UUID ownActiveSlot=slot(T1,END,END.plusSeconds(1800),"BOOKED"),ownActive=booking(S1,ownActiveSlot,"ACTIVE");
+        UUID foreignSlot=slot(T2,END,END.plusSeconds(3600),"COMPLETED"),foreign=booking(S1,foreignSlot,"COMPLETED");
+        var tutorSession=session(new SessionPrincipal(T1,7),"ROLE_TUTOR");
+        String body="{\"roughNotes\":\"synthetic notes\"}";
+
+        error(okRaw(post("/api/tutor/bookings/"+ownActive+"/note-draft").contentType("application/json")
+                .content(body).with(csrf().asHeader()),tutorSession),409,"INVALID_STATE");
+        error(okRaw(post("/api/tutor/bookings/"+foreign+"/note-draft").contentType("application/json")
+                .content(body).with(csrf().asHeader()),tutorSession),404,"NOT_FOUND");
+        error(okRaw(post("/api/tutor/bookings/"+foreign+"/note-draft").contentType("application/json")
+                .content(body),tutorSession),403,"CSRF_INVALID");
+        assertEquals(0,draftCalls.get());assertEquals(0,count("private_notes"));
+    }
+
+    @Test
     void rt18InactiveHtmlErrorStillInvalidatesOriginalSession() throws Exception {
         MockHttpSession original=session(T2);
         db.sql("UPDATE users SET active=false WHERE id=:id").param("id",T2).update();
@@ -300,16 +381,36 @@ class TutorRestPgTest extends LifecyclePgFixture {
     }
 
     private void registerDependencies(org.springframework.beans.factory.config.ConfigurableListableBeanFactory factory) {
-        factory.registerSingleton("tutorReads",new PostgresTutorReadRepository(new PostgresUserRepository(db),db));
+        var tutorReads=new PostgresTutorReadRepository(new PostgresUserRepository(db),db);
+        factory.registerSingleton("tutorReads",tutorReads);
         factory.registerSingleton("bookingReads",new PostgresBookingRepository(db));
         factory.registerSingleton("slotReads",new PostgresSlotRepository(db));
         factory.registerSingleton("dataSource",source);
         factory.registerSingleton("moduleReads",modules);factory.registerSingleton("consultationLifecycle",writes);
         factory.registerSingleton("clock",clock);
-        factory.registerSingleton("currentActorProvider",(CurrentActorProvider)()->{
+        CurrentActorProvider actorProvider=()->{
             var auth=SecurityContextHolder.getContext().getAuthentication();
-            return auth!=null&&auth.isAuthenticated()&&auth.getPrincipal() instanceof UUID id?Optional.of(id):Optional.empty();
+            if(auth==null||!auth.isAuthenticated())return Optional.empty();
+            Object principal=auth.getPrincipal();
+            if(principal instanceof UUID id)return Optional.of(id);
+            if(principal instanceof SessionPrincipal sessionPrincipal)return Optional.of(sessionPrincipal.userId());
+            return Optional.empty();
+        };
+        factory.registerSingleton("currentActorProvider",actorProvider);
+        draftCalls=new AtomicInteger();draftRequest=new AtomicReference<>();
+        draftAuthentication=mock(AuthenticationService.class);
+        when(draftAuthentication.current(any(SessionPrincipal.class))).thenAnswer(invocation->{
+            SessionPrincipal principal=invocation.getArgument(0);
+            if(principal.userId().equals(T1)||principal.userId().equals(T2))
+                return new Tutor(principal.userId(),"Synthetic tutor",principal.userId()+"@example.edu",true);
+            return new Student(principal.userId(),"Synthetic student",principal.userId()+"@example.edu",true);
         });
+        AiGateway fake=request->{draftCalls.incrementAndGet();draftRequest.set(request);
+            return new AiGateway.Result("{\"summary\":\"Reviewed recursion\",\"topicsDiscussed\":\"Base cases\",\"followUp\":\"Practise examples\"}",AiGateway.ProviderMode.FAKE);};
+        var draftService=new TutorNoteDraftService(new TutorAccess(actorProvider,tutorReads),
+                new PostgresBookingRepository(db),new PostgresSlotRepository(db),draftAuthentication,
+                new TutorNoteDraftGateway(fake,256));
+        factory.registerSingleton("testTutorNoteDraftService",draftService);
     }
 
     @Test

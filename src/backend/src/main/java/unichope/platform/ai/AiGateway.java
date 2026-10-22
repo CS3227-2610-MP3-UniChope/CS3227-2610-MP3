@@ -1,11 +1,12 @@
 package unichope.platform.ai;
 
 import java.util.Objects;
+import java.time.Duration;
 import java.util.UUID;
 
 /**
  * Provisional server-side generation contract. Callers authorize and validate before
- * generation; production integration must add durable admission and deadlines.
+ * generation. Production callers must use the admitted gateway wrapper.
  * Generation returns untrusted text and never persists a note.
  */
 public interface AiGateway {
@@ -44,23 +45,48 @@ public interface AiGateway {
 
     enum ProviderMode { FAKE, SOC }
 
-    enum FailureCode { UNAVAILABLE, TIMEOUT, INVALID_OUTPUT }
+    enum FailureCode { BUSY, RATE_LIMITED, UNAVAILABLE, TIMEOUT, INVALID_OUTPUT }
 
     /** Infrastructure failures carry no upstream body, prompt or exception cause. */
     final class Failure extends RuntimeException {
+        private static final long serialVersionUID = 1L;
         private final FailureCode code;
+        private final Duration retryAfter;
 
         public Failure(FailureCode code) {
-            super(switch (Objects.requireNonNull(code)) {
+            this(code, null);
+        }
+
+        public Failure(FailureCode code, Duration retryAfter) {
+            super(safeMessage(Objects.requireNonNull(code)));
+            if (retryAfter != null && (retryAfter.isZero() || retryAfter.isNegative())) {
+                throw new IllegalArgumentException("Retry delay must be positive.");
+            }
+            if (retryAfter != null
+                    && code != FailureCode.BUSY
+                    && code != FailureCode.RATE_LIMITED) {
+                throw new IllegalArgumentException("Retry delay only applies to admission failures.");
+            }
+            this.code = code;
+            this.retryAfter = retryAfter;
+        }
+
+        private static String safeMessage(FailureCode code) {
+            return switch (code) {
+                case BUSY -> "AI generation is already in progress.";
+                case RATE_LIMITED -> "AI generation limit reached.";
                 case UNAVAILABLE -> "AI is currently unavailable.";
                 case TIMEOUT -> "AI generation timed out.";
                 case INVALID_OUTPUT -> "AI returned an invalid response.";
-            });
-            this.code = code;
+            };
         }
 
         public FailureCode code() {
             return code;
+        }
+
+        public java.util.Optional<Duration> retryAfter() {
+            return java.util.Optional.ofNullable(retryAfter);
         }
     }
 }

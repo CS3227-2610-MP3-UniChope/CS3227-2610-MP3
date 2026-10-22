@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import unichope.platform.core.model.consultation.ConsultationSlot;
+import unichope.platform.core.model.consultation.Booking;
+import unichope.platform.core.model.consultation.BookingStatus;
 import unichope.platform.core.model.consultation.SlotStatus;
 import unichope.platform.core.model.user.Role;
 
@@ -72,6 +74,26 @@ class TutorReadServiceTest {
     }
 
     @Test
+    void bookingQueryAppliesOwnerFiltersAndStableStartOrder() {
+        FakeReads reads = new FakeReads();
+        TutorReadService service = service(TUTOR, Role.TUTOR, true, reads);
+        reads.bookings.add(booking(id(10), TUTOR, "2026-09-20T00:00:00Z", BookingStatus.COMPLETED, SlotStatus.COMPLETED));
+        reads.bookings.add(booking(id(15), TUTOR, "2026-09-20T00:00:00Z", BookingStatus.COMPLETED, SlotStatus.COMPLETED));
+        reads.bookings.add(booking(id(11), TUTOR, "2026-09-22T00:00:00Z", BookingStatus.COMPLETED, SlotStatus.COMPLETED));
+        reads.bookings.add(booking(id(12), TUTOR, "2026-09-23T00:00:00Z", BookingStatus.ACTIVE, SlotStatus.BOOKED));
+        reads.bookings.add(booking(id(13), id(2), "2026-09-24T00:00:00Z", BookingStatus.COMPLETED, SlotStatus.COMPLETED));
+        reads.bookings.add(booking(id(14), TUTOR, "2026-09-24T00:00:00Z", BookingStatus.COMPLETED, SlotStatus.BOOKED));
+
+        assertEquals(List.of(id(10), id(15), id(11)), service.bookings(Optional.empty(), Optional.empty(),
+                Optional.of(BookingStatus.COMPLETED)).stream()
+                .map(TutorBookingView::bookingId).toList());
+        assertEquals(List.of(id(10), id(15), id(11)), service.bookings(Optional.of(id(99)), Optional.empty(),
+                Optional.of(BookingStatus.COMPLETED))
+                .stream().map(TutorBookingView::bookingId).toList());
+        assertEquals(TUTOR, reads.lastBookingTutor);
+    }
+
+    @Test
     void deniesMissingActorAccountNonTutorRolesAndInactiveTutor() {
         FakeReads reads = new FakeReads();
         assertThrows(TutorAccessDeniedException.class, () -> new TutorReadService(
@@ -95,6 +117,15 @@ class TutorReadServiceTest {
                 Instant.parse(start).plusSeconds(1800), status), "CS3227");
     }
 
+    private static TutorBooking booking(UUID bookingId, UUID owner, String start,
+            BookingStatus bookingStatus, SlotStatus slotStatus) {
+        Instant startTime = Instant.parse(start);
+        var slot = new ConsultationSlot(id((int) bookingId.getLeastSignificantBits()), owner, id(99),
+                startTime, startTime.plusSeconds(1800), slotStatus);
+        var booking = new Booking(bookingId, id(3), slot.id(), startTime, bookingStatus);
+        return new TutorBooking(booking, slot, "CS3227");
+    }
+
     private static UUID id(int value) {
         return new UUID(0, value);
     }
@@ -103,8 +134,10 @@ class TutorReadServiceTest {
         private Optional<TutorAccount> account = Optional.empty();
         private final List<TutorSlot> slots = new ArrayList<>();
         private final List<AssignedModule> modules = new ArrayList<>();
+        private final List<TutorBooking> bookings = new ArrayList<>();
         private UUID lastSlotTutor;
         private UUID lastModuleTutor;
+        private UUID lastBookingTutor;
 
         @Override
         public Optional<TutorAccount> findAccount(UUID actorId) {
@@ -121,6 +154,12 @@ class TutorReadServiceTest {
         public List<AssignedModule> findAssignedModulesByTutor(UUID tutorId) {
             lastModuleTutor = tutorId;
             return modules;
+        }
+
+        @Override
+        public List<TutorBooking> findBookingsByTutor(UUID tutorId) {
+            lastBookingTutor = tutorId;
+            return bookings;
         }
     }
 }

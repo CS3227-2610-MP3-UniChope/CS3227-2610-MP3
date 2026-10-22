@@ -6,6 +6,7 @@ import Register from './Register';
 import AdminWorkspace from './admin/AdminWorkspace';
 import { navigate, useLocation } from './navigation';
 import StudentWorkspace from './student/StudentWorkspace';
+import TutorWorkspace from './tutor/TutorWorkspace';
 import { ThemeProvider, ThemeSwitch } from './theme';
 const adminPaths = ['/admin', '/admin/overview', '/admin/users', '/admin/modules', '/admin/assignments', '/admin/bookings', '/admin/reports'];
 const knownPaths = ['/', '/login', '/register', '/tutor', '/student/slots', '/student/bookings', ...adminPaths];
@@ -68,7 +69,7 @@ function SessionApp() {
     {(restoring || restoreFailed || unknown) && <header className="app-header"><Brand /><div className="account"><ThemeSwitch /></div></header>}
     {restoring ? <main id="main-content" className="restore-screen"><h1>Opening your workspace</h1><Loading label="Checking your session" /></main> : restoreFailed ? <main id="main-content" className="restore-screen"><h1>Unable to open your workspace</h1><p role="alert">{message}</p><button className="btn btn-primary" onClick={() => setRestoreAttempt(value => value + 1)}>Try again</button></main> : unknown ? <main id="main-content" className="restore-screen"><h1>Page not found</h1><p>This page could not be found.</p><Link href={actor ? home(actor) : '/login'}>Back to home</Link></main> : !actor ? window.location.pathname === '/register' ? <Register register={register} onSuccess={registered} onSignIn={() => navigate('/login')} /> : <Login login={login} message={message} signingOut={signingOut} retryLogout={logoutFailed ? () => void logout() : undefined} /> : <>
       <header className="app-header"><Link href={home(actor)} className="brand-link"><Brand /></Link>{actor.role === 'STUDENT' && <span className="header-caption">CONSULTATION PLANNER</span>}<div className="account">{actor.role !== 'TUTOR' && <span><strong>{actor.name}</strong><small>{actor.role.charAt(0) + actor.role.slice(1).toLowerCase()}</small></span>}<ThemeSwitch /><button className="btn sign-out" onClick={() => void logout()}><Icon name="logout" />Sign out</button></div></header>
-      {actor.role === 'STUDENT' ? <StudentWorkspace key={actor.id} api={api} location={location} signOut={() => void logout()} /> : actor.role === 'ADMIN' ? <AdminWorkspace key={actor.id} api={api} location={location} /> : <main id="main-content" tabIndex={-1} className="placeholder-page"><div className="placeholder-icon"><Icon name="book" /></div><span className="eyebrow">YOUR UNICHOPE WORKSPACE</span><h1>{actor.role === 'TUTOR' ? 'Tutor' : 'Admin'} home</h1><p>Your workspace is not ready yet.</p><p className="muted">This space is being prepared for you. Please check back later.</p></main>}
+      {actor.role === 'STUDENT' ? <StudentWorkspace key={actor.id} api={api} location={location} signOut={() => void logout()} /> : actor.role === 'TUTOR' ? <TutorWorkspace key={actor.id} api={api} actor={actor} /> : <AdminWorkspace key={actor.id} api={api} location={location} />}
     </>}
   </>;
 }

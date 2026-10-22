@@ -1,14 +1,16 @@
 # Tutor Implementation Plan
 
-Status: Draft execution plan; every task is pending. Writing this plan does not
-indicate team approval or authorize deployment/changes to other roles by itself.
+Status: Partially implemented; consult the task checkboxes and dated handoffs for
+current progress. Checkboxes do not indicate team approval or authorize
+deployment/changes to other roles by themselves.
 Owner: Huanghao
 Date: 20 October 2026
 
-Scope: Tutor implementation plus shared AI infrastructure in `platform/ai`.
-This plan does not assign shared core/auth/deployment work to Huanghao or change
-teammates' responsibilities. The shared ownership proposal still needs alignment
-with the team; only Huanghao's contribution is recorded here.
+Scope: Tutor implementation, including the Tutor-specific prompt, request
+construction, output validation, and orchestration of its AI feature. The Student
+role owns generic shared AI transport, durable admission, and per-key quotas in
+`platform/ai`. This plan does not assign shared core/auth/deployment work to
+Huanghao or change teammates' responsibilities.
 
 Inputs: [Tutor Product](PRODUCT-SPEC.md), [Tutor Technical](TECHNICAL-SPEC.md),
 [Shared Technical](../SHARED-TECHNICAL-SPEC.md), [Integration](../INTEGRATION-SPEC.md).
@@ -56,9 +58,9 @@ Do not read or publish hidden reasoning or expose production resources to these 
 - [ ] Review team size, owners, privacy, active-account policy, early completion,
   note conflicts, draft limits, stack, role-first packages, and row-lock protocol.
 - [ ] Assign shared auth/schema/quota/deployment work; do not assume Huanghao owns it all.
-- [ ] Record Huanghao as Tutor and shared AI infrastructure owner; agree AiGateway
-  inputs/results/failures and quota integration with affected role owners. Do not
-  allocate core/auth/deployment work on teammates' behalf.
+- [ ] Record Huanghao as Tutor AI feature owner; agree the Tutor-to-shared-AiGateway
+  request/result/failure and quota integration with affected role owners. Do not
+  allocate shared platform, core/auth, or deployment work on teammates' behalf.
 - [ ] Review proposed maintainer/reviewer assignments in the shared technical spec;
   record actual agreement and keep Tutor-private notes within Tutor ownership.
 - [ ] Create team-authored agent instructions and an evaluation/handoff template.
@@ -134,19 +136,23 @@ Depends on: P4. Requirements: TUT-NOTE-01. Verify: stale saves never overwrite n
 notes; explicit save persists; other roles/tutors cannot load or change private notes.
 Manual note workflow must work before AI is introduced.
 
-### P6: Fake-backed AI and shared usage control
+### P6: Tutor fake-backed AI feature (depends on shared usage control)
 
-- [ ] Implement shared AiGateway and FakeProvider wiring with deterministic valid/error doubles.
-- [ ] Implement shared durable admission counters/reservations, account/provider
-  budgets, deadlines, and sanitized infrastructure failures as Huanghao's shared work.
-- [ ] Coordinate AI metadata migrations with the core maintainer and trusted actor
-  integration with the auth maintainer; keep consultation lifecycle code outside this scope.
-- [ ] Give other role owners the gateway contract and fake-provider examples so
-  they can implement their own prompts, context selection, validation, and UIs.
-- [ ] Test authorization-before-provider, invalid input, quota races, restart/expiry,
-  deadlines, invalid output, and sanitized errors before implementing those paths.
-- [ ] Implement versioned Tutor prompt/output parser and fake-backed draft endpoint.
-- [ ] Add rough-input/draft/editor separation, reviewed copy, explicit save,
+- [ ] Coordinate with the Student owner on the shared `AiGateway`, Tutor task
+  registration/key routing, durable admission, per-key quotas, error mapping,
+  deadline, and fake-provider contract; do not duplicate shared implementations.
+- [ ] Coordinate any shared AI metadata migration with the core maintainer and
+  trusted actor integration with the auth maintainer; keep consultation lifecycle
+  code outside this scope.
+- [x] Complete production AuthenticationService/account integration tests for
+  Tutor login, anonymous/wrong-role denial, session-generation revocation, and
+  inactive-account output discard during generation. PostgreSQL-backed MockMvc
+  endpoint tests separately cover CSRF, booking owner/state, response shape, and
+  no-write behavior with test-only auth. Shared quota tests are recorded separately.
+- [x] Implement the Tutor prompt, output parser, fake-backed request orchestration,
+  and draft endpoint. The HTTP route is unavailable until an approved shared gateway
+  bean and output-token configuration are wired.
+- [x] Add rough-input/draft/editor separation, reviewed copy, explicit save,
   confirmations, pending state, account/selection race protection, and fake label.
 
 Depends on: P5 and agreed shared quota contract for Tutor integration. The gateway,

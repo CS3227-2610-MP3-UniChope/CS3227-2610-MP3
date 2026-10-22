@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 import unichope.platform.auth.CurrentActorProvider;
 import unichope.platform.core.model.consultation.SlotStatus;
+import unichope.platform.core.model.consultation.BookingStatus;
 import unichope.platform.core.LifecycleFailure;
 
 public final class TutorReadService {
@@ -53,6 +54,23 @@ public final class TutorReadService {
                 .filter(AssignedModule::active)
                 .sorted(Comparator.comparing(AssignedModule::code).thenComparing(AssignedModule::id))
                 .map(module -> new ModuleOption(module.id(), module.code(), module.name()))
+                .toList();
+    }
+
+    public List<TutorBookingView> bookings(Optional<UUID> moduleId, Optional<LocalDate> date,
+            Optional<BookingStatus> status) {
+        UUID tutorId = requireActiveTutor();
+        return reads.findBookingsByTutor(tutorId).stream()
+                .filter(item -> item.slot().tutorId().equals(tutorId))
+                .filter(item -> moduleId.isEmpty() || item.slot().moduleId().equals(moduleId.get()))
+                .filter(item -> date.isEmpty() || item.slot().startTime().atZone(SINGAPORE).toLocalDate().equals(date.get()))
+                .filter(item -> status.isEmpty() || item.booking().status() == status.get())
+                .filter(item -> status.filter(value -> value == BookingStatus.COMPLETED).isEmpty()
+                        || item.slot().status() == SlotStatus.COMPLETED)
+                .sorted(Comparator.comparing((TutorBooking item) -> item.slot().startTime())
+                        .thenComparing(item -> item.booking().id()))
+                .map(item -> new TutorBookingView(item.booking().id(), item.slot().id(), item.moduleCode(),
+                        item.slot().startTime(), item.slot().endTime(), item.booking().status()))
                 .toList();
     }
 

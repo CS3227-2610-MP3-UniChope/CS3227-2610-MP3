@@ -39,6 +39,19 @@ class TutorApiInputTest {
     }
 
     @Test
+    void completedBookingQueryRequiresOneExactStatus() {
+        var validQuery=request("");validQuery.addParameter("status","COMPLETED");
+        assertEquals(unichope.platform.core.model.consultation.BookingStatus.COMPLETED,
+                TutorApiInput.bookingsQuery(validQuery).status().orElseThrow());
+        var invalidStatus=request("");invalidStatus.addParameter("status","DONE");
+        assertThrows(ApiFailure.class,()->TutorApiInput.bookingsQuery(invalidStatus));
+        var repeated=request("");repeated.addParameter("status","COMPLETED","COMPLETED");
+        assertThrows(ApiFailure.class,()->TutorApiInput.bookingsQuery(repeated));
+        var unknown=request("");unknown.addParameter("actorId",module);
+        assertThrows(ApiFailure.class,()->TutorApiInput.bookingsQuery(unknown));
+    }
+
+    @Test
     void rt13UtcZOnlyAndExactlyEmptyCancellationObject() throws Exception {
         assertEquals(Instant.parse("2026-10-21T01:00:00.123Z"),TutorApiInput.create(request(valid.replace("01:00:00Z","01:00:00.123Z"))).startTime());
         for(String time:new String[]{"2026-10-21T01:00:00+00:00","2026-10-21T09:00:00+08:00","2026-10-21T01:00:00","2026-02-30T01:00:00Z"}) assertThrows(ApiFailure.class,()->TutorApiInput.create(request(valid.replace("2026-10-21T01:00:00Z",time))));

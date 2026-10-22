@@ -10,6 +10,8 @@ public interface TutorReadRepository {
 
     List<TutorSlot> findSlotsByTutor(UUID tutorId);
 
+    List<TutorBooking> findBookingsByTutor(UUID tutorId);
+
     List<AssignedModule> findAssignedModulesByTutor(UUID tutorId);
 
     default Optional<TutorSlot> findSlotByTutor(UUID tutorId, UUID slotId) {

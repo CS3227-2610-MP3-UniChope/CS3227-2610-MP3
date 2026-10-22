@@ -1,0 +1,39 @@
+Tutor AI P6 final verification
+Date: 23 October 2026
+Branch: feat/tutor-ai-note-draft
+
+Backend environment:
+- PostgreSQL 17.11 disposable cluster under /private/tmp/cs3227-tutor-ai-p6-final-pg,
+  bound to 127.0.0.1:55435, database mp3_test, trust auth for this local test only.
+- Cluster stopped and its directory removed after verification.
+- No SoC key was configured or contacted.
+
+Backend command, from src/backend:
+./gradlew test postgresTest bootJar --rerun-tasks \
+  -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55435/mp3_test \
+  -Dcore.test.user=mp3_test -Dcore.test.password= --console=plain
+
+Backend result: BUILD SUCCESSFUL.
+- Unit suite: 91 tests across 25 suites; 0 failures, errors, or skips.
+- PostgreSQL suite: 192 tests across 18 suites; 0 failures, errors, or skips.
+- bootJar: succeeded.
+- JUnit XML: `src/backend/build/test-results/test` and
+  `src/backend/build/test-results/postgresTest`.
+
+Frontend commands, from src/frontend:
+npm run build
+npm run test -- --reporter=dot
+
+Frontend result:
+- TypeScript check and Vite production build succeeded.
+- Vitest: 193 tests across 7 files passed.
+- Playwright/browser tests were not run in this pass.
+
+UI coverage includes the completed-booking list, fake-result labeling, separation
+of rough/draft/saved-note buffers, explicit copy then versioned save, failure
+retention, replacement/selection confirmation, Unicode length checks, and
+discarding a late generation response after booking selection changes.
+
+Production provider transport, key routing, active admission migration, live SoC
+behavior, browser end-to-end behavior, and affected-owner/human acceptance are not
+verified by these runs.
