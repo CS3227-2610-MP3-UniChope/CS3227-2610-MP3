@@ -58,7 +58,7 @@ public class TutorApiConfiguration implements WebMvcConfigurer {
 
     @Bean TutorAccess tutorAccess(CurrentActorProvider actor,TutorReadRepository repository) { return new TutorAccess(actor,repository); }
     @Bean TutorReadService tutorReadService(CurrentActorProvider actor,TutorReadRepository repository,Clock clock) { return new TutorReadService(actor,repository,clock); }
-    @Bean TutorHttpService tutorHttpService(TutorAccess access,ConsultationLifecycle lifecycle,ModuleRepository modules) { return new TutorHttpService(access,lifecycle,modules); }
+    @Bean TutorHttpService tutorHttpService(TutorAccess access,ConsultationLifecycle lifecycle,ModuleRepository modules,TutorReadRepository reads) { return new TutorHttpService(access,lifecycle,modules,reads); }
     @Bean TutorNoteService tutorNoteService(TutorAccess access,BookingRepository bookings,SlotRepository slots,
             ConsultationLifecycle lifecycle,DataSource source) {
         return new TutorNoteService(access,bookings,slots,new PostgresTutorNoteRepository(JdbcClient.create(source)),lifecycle,source);

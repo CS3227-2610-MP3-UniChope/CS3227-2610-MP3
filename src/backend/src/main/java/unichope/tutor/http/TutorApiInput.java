@@ -7,6 +7,8 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import unichope.platform.core.model.consultation.BookingStatus;
+import unichope.platform.core.model.consultation.SlotStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import tools.jackson.core.JacksonException;
@@ -24,6 +26,8 @@ public final class TutorApiInput {
     private TutorApiInput() {}
     public record Create(UUID moduleId,Instant startTime,Instant endTime) {}
     public record NoteSave(String content,long expectedVersion) {}
+    public record BookingFilters(Optional<UUID> moduleId, Optional<LocalDate> date, Optional<BookingStatus> status) {}
+    public record HistoryFilters(SlotStatus status, Optional<LocalDate> date) {}
 
     public static Create create(HttpServletRequest request) throws IOException {
         JsonNode object=object(request);
@@ -47,6 +51,22 @@ public final class TutorApiInput {
         if(!raw.matches("\\d{4}-\\d{2}-\\d{2}"))throw invalid();
         try { return Optional.of(LocalDate.parse(raw)); } catch(DateTimeParseException error) { throw invalid(); }
     }
+    public static BookingFilters bookingFilters(HttpServletRequest request) {
+        var params=request.getParameterMap();
+        if(!Set.of("moduleId","date","status").containsAll(params.keySet()))throw invalid();
+        Optional<UUID> module=one(params,"moduleId").map(TutorApiInput::id);
+        Optional<LocalDate> date=one(params,"date").map(TutorApiInput::localDate);
+        Optional<BookingStatus> status=one(params,"status").map(value->enumValue(BookingStatus.class,value));
+        return new BookingFilters(module,date,status);
+    }
+    public static HistoryFilters historyFilters(HttpServletRequest request) {
+        var params=request.getParameterMap();
+        if(!Set.of("status","date").containsAll(params.keySet()))throw invalid();
+        String rawStatus=one(params,"status").orElseThrow(TutorApiInput::invalid);
+        SlotStatus status=enumValue(SlotStatus.class,rawStatus);
+        if(status!=SlotStatus.CANCELLED&&status!=SlotStatus.COMPLETED)throw invalid();
+        return new HistoryFilters(status,one(params,"date").map(TutorApiInput::localDate));
+    }
     public static void noQuery(HttpServletRequest request) { if(!request.getParameterMap().isEmpty())throw invalid(); }
     public static UUID id(String value) {
         if(value==null||!value.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"))throw invalid();
@@ -55,6 +75,19 @@ public final class TutorApiInput {
     private static Instant instant(String value) {
         if(!value.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,9})?Z"))throw invalid();
         try { return Instant.parse(value); } catch(DateTimeParseException error) { throw invalid(); }
+    }
+    private static Optional<String> one(java.util.Map<String,String[]> params,String key) {
+        if(!params.containsKey(key))return Optional.empty();
+        String[] values=params.get(key);
+        if(values==null||values.length!=1||values[0]==null||values[0].isBlank())throw invalid();
+        return Optional.of(values[0]);
+    }
+    private static LocalDate localDate(String raw) {
+        if(!raw.matches("\\d{4}-\\d{2}-\\d{2}"))throw invalid();
+        try { return LocalDate.parse(raw); } catch(DateTimeParseException error) { throw invalid(); }
+    }
+    private static <E extends Enum<E>> E enumValue(Class<E> type,String raw) {
+        try { return Enum.valueOf(type,raw); } catch(IllegalArgumentException error) { throw invalid(); }
     }
     private static JsonNode object(HttpServletRequest request) throws IOException {
         try {

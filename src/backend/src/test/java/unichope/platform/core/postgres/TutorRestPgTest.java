@@ -103,7 +103,7 @@ class TutorRestPgTest extends LifecyclePgFixture {
     @Test
     void rt05Rt06AllEndpointsUsePrincipalAndFreshStoredRoleInsteadOfAuthorities() throws Exception {
         UUID target=slot(T1,START,END,"AVAILABLE");
-        for(int op=0;op<5;op++) {
+        for(int op=0;op<8;op++) {
             error(call(op,target,null,true),401,"UNAUTHENTICATED");
             error(call(op,target,session("no-provider-actor","ROLE_TUTOR"),true),401,"UNAUTHENTICATED");
             error(call(op,target,session(id(999)),true),401,"UNAUTHENTICATED");
@@ -279,6 +279,176 @@ class TutorRestPgTest extends LifecyclePgFixture {
         error(okRaw(get("/api/tutor/slots/"+foreign).accept("text/html"),session(T1)),404,"NOT_FOUND");
         UUID booked=slot(T1,START,END,"BOOKED");String before=snapshot();
         error(okRaw(post("/api/tutor/slots/"+booked+"/cancel").contentType("application/json").content("{}").accept("text/html").with(csrf().asHeader()),session(T1)),409,"INVALID_STATE");
+        assertEquals(before,snapshot());
+    }
+
+    @Test
+    void bookingsAreOwnerScopedFilteredAndReturnOnlyApprovedFields() throws Exception {
+        UUID owned=slot(T1,M,START,END,"BOOKED");
+        UUID ownedBooking=booking(S1,owned,"ACTIVE");
+        UUID cancelledSlot=slot(T1,M,END,END.plusSeconds(1800),"CANCELLED");
+        UUID cancelledBooking=booking(S2,cancelledSlot,"CANCELLED");
+        UUID foreign=slot(T2,M,START,END,"BOOKED");booking(S2,foreign,"ACTIVE");
+        UUID otherModule=slot(T1,M2,END,END.plusSeconds(1800),"COMPLETED");
+        UUID completedBooking=booking(S2,otherModule,"COMPLETED");
+
+        JsonNode all=body(ok(get("/api/tutor/bookings"),session(T1),200));
+        assertEquals(3,all.size());
+        assertEquals(ownedBooking.toString(),all.get(0).get("id").asString());
+        assertEquals(Set.of("id","slotId","moduleId","moduleCode","studentName","startTime","endTime","status"),
+                Set.copyOf(all.get(0).propertyNames()));
+        assertEquals("Synthetic",all.get(0).get("studentName").asString());
+        JsonNode filtered=body(ok(get("/api/tutor/bookings").param("moduleId",M.toString())
+                .param("date","2026-10-21").param("status","ACTIVE"),session(T1),200));
+        assertEquals(1,filtered.size());assertEquals(ownedBooking.toString(),filtered.get(0).get("id").asString());
+        assertEquals(0,body(ok(get("/api/tutor/bookings").param("moduleId",M2.toString()).param("status","ACTIVE"),session(T1),200)).size());
+        for (var expected : List.of(java.util.Map.entry("ACTIVE",ownedBooking),
+                java.util.Map.entry("CANCELLED",cancelledBooking),java.util.Map.entry("COMPLETED",completedBooking))) {
+            JsonNode rows=body(ok(get("/api/tutor/bookings").param("status",expected.getKey()),session(T1),200));
+            assertEquals(1,rows.size(),"status filter: "+expected.getKey());
+            assertEquals(expected.getValue().toString(),rows.get(0).get("id").asString());
+            assertEquals(expected.getKey(),rows.get(0).get("status").asString());
+        }
+    }
+
+    @Test
+    void bookingAndHistoryReadsRequireActiveTutorSession() throws Exception {
+        UUID activeSlot=slot(T1,M,START,END,"BOOKED");booking(S1,activeSlot,"ACTIVE");
+        slot(T1,M,END,END.plusSeconds(1800),"CANCELLED");
+        UUID foreignSlot=slot(T2,M,START,END,"BOOKED");booking(S2,foreignSlot,"ACTIVE");
+        String before=snapshot();
+        var requests=List.of(get("/api/tutor/bookings"),get("/api/tutor/history/slots").param("status","CANCELLED"));
+        for(var request:requests) {
+            error(okRaw(request,null),401,"UNAUTHENTICATED");
+            error(okRaw(request,session(S1,"ROLE_TUTOR")),403,"FORBIDDEN");
+        }
+        db.sql("UPDATE users SET active=false WHERE id=:id").param("id",T1).update();
+        for(var request:requests) {
+            MockHttpSession inactive=session(T1);
+            error(okRaw(request,inactive),403,"ACCOUNT_INACTIVE");
+            assertTrue(inactive.isInvalid());
+        }
+        assertEquals(before,snapshot());
+    }
+
+    @Test
+    void bookingFiltersAndHistoryRejectInvalidAndRepeatedValues() throws Exception {
+        for(var request:List.of(get("/api/tutor/bookings").param("status","BOOKED"),
+                get("/api/tutor/bookings").param("date","2026-02-30"),
+                get("/api/tutor/bookings").param("moduleId","not-a-uuid"),
+                get("/api/tutor/bookings").param("moduleId",M.toString(),M2.toString()),
+                get("/api/tutor/bookings").param("status","ACTIVE","COMPLETED"),
+                get("/api/tutor/bookings").param("unknown","x"),
+                get("/api/tutor/history/slots"),
+                get("/api/tutor/history/slots").param("status","AVAILABLE"),
+                get("/api/tutor/history/slots").param("status","CANCELLED","COMPLETED"),
+                get("/api/tutor/history/slots").param("status","CANCELLED").param("date","2026-02-30"))) {
+            error(okRaw(request,session(T1)),400,"VALIDATION_FAILED");
+        }
+    }
+
+    @Test
+    void bookingAndHistoryDateFiltersUseSingaporeCalendarBoundaries() throws Exception {
+        UUID beforeBoundary=slot(T1,M,Instant.parse("2026-10-21T15:59:59Z"),Instant.parse("2026-10-21T16:30:00Z"),"BOOKED");
+        UUID beforeBooking=booking(S1,beforeBoundary,"ACTIVE");
+        UUID afterBoundary=slot(T1,M,Instant.parse("2026-10-21T16:00:00Z"),Instant.parse("2026-10-21T16:30:00Z"),"BOOKED");
+        booking(S2,afterBoundary,"ACTIVE");
+        UUID foreign=slot(T2,M,Instant.parse("2026-10-21T15:00:00Z"),Instant.parse("2026-10-21T15:30:00Z"),"BOOKED");
+        booking(S1,foreign,"ACTIVE");
+        var previousDate=body(ok(get("/api/tutor/bookings").param("date","2026-10-21").param("status","ACTIVE"),session(T1),200));
+        var nextDate=body(ok(get("/api/tutor/bookings").param("date","2026-10-22").param("status","ACTIVE"),session(T1),200));
+        assertEquals(List.of(beforeBooking.toString()),java.util.stream.StreamSupport.stream(previousDate.spliterator(),false)
+                .map(row->row.get("id").asString()).toList());
+        assertEquals(1,nextDate.size());assertEquals(afterBoundary.toString(),nextDate.get(0).get("slotId").asString());
+
+        UUID beforeHistory=slot(T1,M,Instant.parse("2026-10-21T15:59:59Z"),Instant.parse("2026-10-21T16:30:00Z"),"CANCELLED");
+        UUID afterHistory=slot(T1,M,Instant.parse("2026-10-21T16:00:00Z"),Instant.parse("2026-10-21T16:30:00Z"),"CANCELLED");
+        var previousHistory=body(ok(get("/api/tutor/history/slots").param("status","CANCELLED").param("date","2026-10-21"),session(T1),200));
+        var nextHistory=body(ok(get("/api/tutor/history/slots").param("status","CANCELLED").param("date","2026-10-22"),session(T1),200));
+        assertEquals(List.of(beforeHistory.toString()),java.util.stream.StreamSupport.stream(previousHistory.spliterator(),false)
+                .map(row->row.get("id").asString()).toList());
+        assertEquals(List.of(afterHistory.toString()),java.util.stream.StreamSupport.stream(nextHistory.spliterator(),false)
+                .map(row->row.get("id").asString()).toList());
+    }
+
+    @Test
+    void bookingAndHistoryRowsUseStableIdOrderForEqualStartTimes() throws Exception {
+        UUID bookingSlotA=slot(T1,M,START,END,"BOOKED"),bookingSlotB=slot(T1,M,START,END,"BOOKED");
+        db.sql("INSERT INTO bookings VALUES (:id,:student,:slot,:at,'ACTIVE')").param("id",id(21)).param("student",S1)
+                .param("slot",bookingSlotA).param("at",N.atOffset(java.time.ZoneOffset.UTC)).update();
+        db.sql("INSERT INTO bookings VALUES (:id,:student,:slot,:at,'ACTIVE')").param("id",id(20)).param("student",S2)
+                .param("slot",bookingSlotB).param("at",N.atOffset(java.time.ZoneOffset.UTC)).update();
+        UUID historyA=id(31),historyB=id(30);
+        db.sql("INSERT INTO slots VALUES (:id,:tutor,:module,:start,:end,'CANCELLED')").param("id",historyA).param("tutor",T1).param("module",M)
+                .param("start",START.atOffset(java.time.ZoneOffset.UTC)).param("end",END.atOffset(java.time.ZoneOffset.UTC)).update();
+        db.sql("INSERT INTO slots VALUES (:id,:tutor,:module,:start,:end,'CANCELLED')").param("id",historyB).param("tutor",T1).param("module",M)
+                .param("start",START.atOffset(java.time.ZoneOffset.UTC)).param("end",END.atOffset(java.time.ZoneOffset.UTC)).update();
+        JsonNode bookings=body(ok(get("/api/tutor/bookings"),session(T1),200));
+        assertEquals(List.of(id(20).toString(),id(21).toString()),
+                java.util.stream.StreamSupport.stream(bookings.spliterator(),false).map(row->row.get("id").asString()).toList());
+        JsonNode history=body(ok(get("/api/tutor/history/slots").param("status","CANCELLED"),session(T1),200));
+        assertEquals(List.of(historyB.toString(),historyA.toString()),
+                java.util.stream.StreamSupport.stream(history.spliterator(),false).map(row->row.get("id").asString()).toList());
+    }
+
+    @Test
+    void completionUsesSharedLifecycleAndHistoryShowsOwnedCancelledAndCompletedSlots() throws Exception {
+        UUID booked=slot(T1,START,END,"BOOKED"), active=booking(S1,booked,"ACTIVE");
+        UUID completedSlot=slot(T1,END,END.plusSeconds(1800),"COMPLETED");booking(S2,completedSlot,"COMPLETED");
+        UUID cancelled=slot(T1,END.plusSeconds(1800),END.plusSeconds(3600),"CANCELLED");
+        UUID foreign=slot(T2,END.plusSeconds(3600),END.plusSeconds(5400),"CANCELLED");
+
+        JsonNode result=body(ok(post("/api/tutor/bookings/"+active+"/complete").contentType("application/json")
+                .content("{}").with(csrf().asHeader()),session(T1),200));
+        assertEquals("COMPLETED",result.get("status").asString());
+        assertEquals("COMPLETED",bookingStatus(active));assertEquals("COMPLETED",slotStatus(booked));
+        JsonNode cancelledHistory=body(ok(get("/api/tutor/history/slots").param("status","CANCELLED"),session(T1),200));
+        assertEquals(List.of(cancelled.toString()),java.util.stream.StreamSupport.stream(cancelledHistory.spliterator(),false)
+                .map(row->row.get("id").asString()).toList());
+        JsonNode completedHistory=body(ok(get("/api/tutor/history/slots").param("status","COMPLETED"),session(T1),200));
+        assertTrue(java.util.stream.StreamSupport.stream(completedHistory.spliterator(),false)
+                .map(row->row.get("id").asString()).toList().containsAll(List.of(booked.toString(),completedSlot.toString())));
+        assertFalse(java.util.stream.StreamSupport.stream(cancelledHistory.spliterator(),false)
+                .anyMatch(row->row.get("id").asString().equals(foreign.toString())));
+    }
+
+    @Test
+    void completionRejectsSpoofedBodyAndForeignOrRepeatedBookingWithoutWrites() throws Exception {
+        UUID foreignSlot=slot(T2,START,END,"BOOKED"),foreignBooking=booking(S1,foreignSlot,"ACTIVE");
+        UUID ownedSlot=slot(T1,END,END.plusSeconds(1800),"BOOKED"),ownedBooking=booking(S1,ownedSlot,"ACTIVE");
+        String before=snapshot();
+        error(okRaw(post("/api/tutor/bookings/"+ownedBooking+"/complete").contentType("application/json")
+                .content("{\"actorId\":\""+T2+"\"}").with(csrf().asHeader()),session(T1)),400,"VALIDATION_FAILED");
+        assertEquals(before,snapshot());
+        var foreign=error(okRaw(post("/api/tutor/bookings/"+foreignBooking+"/complete").contentType("application/json")
+                .content("{}").with(csrf().asHeader()),session(T1)),404,"NOT_FOUND");
+        var missing=error(okRaw(post("/api/tutor/bookings/"+id(999)+"/complete").contentType("application/json")
+                .content("{}").with(csrf().asHeader()),session(T1)),404,"NOT_FOUND");
+        assertEquals(foreign.get("message"),missing.get("message"));assertEquals(before,snapshot());
+        ok(post("/api/tutor/bookings/"+ownedBooking+"/complete").contentType("application/json")
+                .content("{}").with(csrf().asHeader()),session(T1),200);
+        String completed=snapshot();
+        error(okRaw(post("/api/tutor/bookings/"+ownedBooking+"/complete").contentType("application/json")
+                .content("{}").with(csrf().asHeader()),session(T1)),409,"INVALID_STATE");
+        assertEquals(completed,snapshot());
+    }
+
+    @Test
+    void completionRequiresTutorSessionActiveAccountAndCsrfWithoutPersistedChanges() throws Exception {
+        UUID booked=slot(T1,START,END,"BOOKED"),active=booking(S1,booked,"ACTIVE");
+        String before=snapshot();
+        error(okRaw(post("/api/tutor/bookings/"+active+"/complete").contentType("application/json").content("{}")
+                .with(csrf().asHeader()),null),401,"UNAUTHENTICATED");
+        error(okRaw(post("/api/tutor/bookings/"+active+"/complete").contentType("application/json").content("{}")
+                .with(csrf().asHeader()),session(S1,"ROLE_TUTOR")),403,"FORBIDDEN");
+        error(okRaw(post("/api/tutor/bookings/"+active+"/complete").contentType("application/json").content("{}"),session(T1)),
+                403,"CSRF_INVALID");
+        assertEquals(before,snapshot());
+        MockHttpSession inactive=session(T1);
+        db.sql("UPDATE users SET active=false WHERE id=:id").param("id",T1).update();
+        error(okRaw(post("/api/tutor/bookings/"+active+"/complete").contentType("application/json").content("{}")
+                .with(csrf().asHeader()),inactive),403,"ACCOUNT_INACTIVE");
+        assertTrue(inactive.isInvalid());
         assertEquals(before,snapshot());
     }
 
@@ -487,8 +657,8 @@ class TutorRestPgTest extends LifecyclePgFixture {
     }
 
     private MvcResult call(int op,UUID target,MockHttpSession session,boolean token) throws Exception {
-        var request=switch(op){case 0->get("/api/tutor/modules");case 1->get("/api/tutor/slots");case 2->get("/api/tutor/slots/"+target);case 3->post("/api/tutor/slots").contentType("application/json").content(createBody(END,END.plusSeconds(1800)));case 4->post("/api/tutor/slots/"+target+"/cancel").contentType("application/json").content("{}");default->throw new IllegalArgumentException();};
-        if(op>=3&&token)request.with(csrf().asHeader());return okRaw(request,session);
+        var request=switch(op){case 0->get("/api/tutor/modules");case 1->get("/api/tutor/slots");case 2->get("/api/tutor/slots/"+target);case 3->post("/api/tutor/slots").contentType("application/json").content(createBody(END,END.plusSeconds(1800)));case 4->post("/api/tutor/slots/"+target+"/cancel").contentType("application/json").content("{}");case 5->get("/api/tutor/bookings");case 6->get("/api/tutor/history/slots").param("status","CANCELLED");case 7->post("/api/tutor/bookings/"+target+"/complete").contentType("application/json").content("{}");default->throw new IllegalArgumentException();};
+        if((op==3||op==4||op==7)&&token)request.with(csrf().asHeader());return okRaw(request,session);
     }
     private MockHttpSession session(UUID id) { return session(id,"ROLE_TUTOR"); }
     private MockHttpSession session(Object principal,String authority) {

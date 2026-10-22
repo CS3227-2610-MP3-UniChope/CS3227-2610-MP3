@@ -8,13 +8,17 @@ import unichope.platform.core.repository.ModuleRepository;
 import unichope.tutor.SlotView;
 import unichope.tutor.TutorAccess;
 import unichope.tutor.TutorAccessDeniedException;
+import unichope.tutor.TutorReadRepository;
+import unichope.tutor.TutorBooking;
+import unichope.platform.core.model.consultation.Booking;
 
 public final class TutorHttpService {
     private final TutorAccess access;
     private final ConsultationLifecycle lifecycle;
     private final ModuleRepository modules;
-    public TutorHttpService(TutorAccess access,ConsultationLifecycle lifecycle,ModuleRepository modules) {
-        this.access=access;this.lifecycle=lifecycle;this.modules=modules;
+    private final TutorReadRepository reads;
+    public TutorHttpService(TutorAccess access,ConsultationLifecycle lifecycle,ModuleRepository modules,TutorReadRepository reads) {
+        this.access=access;this.lifecycle=lifecycle;this.modules=modules;this.reads=reads;
     }
     public SlotView create(TutorApiInput.Create input) {
         var actor=access.requireActiveTutor();
@@ -24,7 +28,13 @@ public final class TutorHttpService {
         var actor=access.requireActiveTutor();
         return project(mutate(()->lifecycle.cancelAvailableSlot(actor,slotId)));
     }
-    private ConsultationSlot mutate(Supplier<ConsultationSlot> operation) {
+    public TutorBooking complete(java.util.UUID bookingId) {
+        var actor=access.requireActiveTutor();
+        Booking completed=mutate(()->lifecycle.completeActiveBooking(actor,bookingId));
+        return reads.findBookingByTutor(actor,completed.id())
+                .orElseThrow(()->new LifecycleFailure(LifecycleFailure.Code.NOT_FOUND));
+    }
+    private <T> T mutate(Supplier<T> operation) {
         try { return operation.get(); }
         catch(LifecycleFailure failure) {
             if(failure.code()!=LifecycleFailure.Code.ACCESS_DENIED)throw failure;

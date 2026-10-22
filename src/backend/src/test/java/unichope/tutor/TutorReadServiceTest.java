@@ -122,5 +122,19 @@ class TutorReadServiceTest {
             lastModuleTutor = tutorId;
             return modules;
         }
+
+        @Override
+        public List<TutorBooking> findBookingsByTutor(UUID tutorId, Optional<UUID> moduleId,
+                Optional<LocalDate> date, Optional<unichope.platform.core.model.consultation.BookingStatus> status) {
+            return List.of();
+        }
+
+        @Override
+        public Optional<TutorBooking> findBookingByTutor(UUID tutorId, UUID bookingId) { return Optional.empty(); }
+
+        @Override
+        public List<TutorSlot> findSlotHistoryByTutor(UUID tutorId, SlotStatus status, Optional<LocalDate> date) {
+            return List.of();
+        }
     }
 }

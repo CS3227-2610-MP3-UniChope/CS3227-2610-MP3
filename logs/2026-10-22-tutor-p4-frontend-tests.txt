@@ -1,0 +1,27 @@
+
+> unichope-frontend@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/tutor-bookings-p4/src/frontend
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  17:15:46
+   Duration  910ms (tests 42%, environment 40%, setup 12%, import 4%, transform 2%)
+
+
+> unichope-frontend@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 17 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.39 kB │ gzip:  0.26 kB
+dist/assets/index-CqLr8KVv.css  230.06 kB │ gzip: 30.68 kB
+dist/assets/index-CRxOAtPE.js   197.24 kB │ gzip: 61.92 kB
+
+✓ built in 446ms

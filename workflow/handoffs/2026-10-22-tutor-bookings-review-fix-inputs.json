@@ -1,0 +1,81 @@
+{
+  "format": 1,
+  "head": "4ed9d696db754d0d7982d75ec5a287b3a5229407",
+  "scope": [
+    "workflow/agents/common.md",
+    "workflow/agents/developer.md",
+    "workflow/handoffs/2026-10-22-review-tutor-bookings.md",
+    "workflow/handoffs/2026-10-22-developer-tutor-bookings.md",
+    "workflow/handoffs/2026-10-22-tutor-bookings-developer-inputs.json",
+    "workflow/tutor/BOOKING-INCREMENT-SPEC.md",
+    "workflow/tutor/BOOKING-TEST-MATRIX.md",
+    "src/backend/src/test/java/unichope/platform/core/postgres/TutorRestPgTest.java",
+    "src/frontend/src/pages/BookingsPage.test.tsx"
+  ],
+  "files": [
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/TutorRestPgTest.java",
+      "tracked": true,
+      "bytes": 51936,
+      "sha256": "17f6fa218b8ab29f7789222d6b775969ff9ce454e4f8a5e90ba978fe378603fb",
+      "executable": false
+    },
+    {
+      "path": "src/frontend/src/pages/BookingsPage.test.tsx",
+      "tracked": false,
+      "bytes": 4651,
+      "sha256": "70de9ce728dd852840299a446da6136acc39a3f58313e109871da731aa94c184",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/common.md",
+      "tracked": false,
+      "bytes": 6952,
+      "sha256": "ab059b67fa5210987ea0b8e3e5ff02e00e2f084165c66357b6426cac2f5c1564",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/developer.md",
+      "tracked": false,
+      "bytes": 1874,
+      "sha256": "1b86ef2d35d0bcc6db49831e52c5756c345f5b41d0141ac046ff13443d2e42e9",
+      "executable": false
+    },
+    {
+      "path": "workflow/handoffs/2026-10-22-developer-tutor-bookings.md",
+      "tracked": false,
+      "bytes": 8144,
+      "sha256": "be60ba614fe6502b43027ae208553fa649ca2dbdfe4ed071a38f5c30d2fa4570",
+      "executable": false
+    },
+    {
+      "path": "workflow/handoffs/2026-10-22-review-tutor-bookings.md",
+      "tracked": false,
+      "bytes": 5815,
+      "sha256": "11f9cc59c5673d26b3b2b362deea7b1f8c4dbb10305eb76e885dd8d272e69249",
+      "executable": false
+    },
+    {
+      "path": "workflow/handoffs/2026-10-22-tutor-bookings-developer-inputs.json",
+      "tracked": false,
+      "bytes": 26589,
+      "sha256": "1c3c5654648576fe85ef79f3951e4b987be655b1fac71e927e276b604b7be6de",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/BOOKING-INCREMENT-SPEC.md",
+      "tracked": false,
+      "bytes": 6112,
+      "sha256": "af3bbabdaba73fcd0beb0d75882011370a9461dbfa483a1e80bee3398c249db4",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/BOOKING-TEST-MATRIX.md",
+      "tracked": false,
+      "bytes": 5576,
+      "sha256": "8beed3df1a5ecec465b3ce0b44be89fb520b5d708155b718420ea6992aec979c",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}

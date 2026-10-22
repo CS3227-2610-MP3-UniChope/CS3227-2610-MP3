@@ -16,6 +16,7 @@ import unichope.tutor.ModuleOption;
 import unichope.tutor.SlotView;
 import unichope.tutor.TutorReadService;
 import unichope.tutor.TutorNoteService;
+import unichope.tutor.TutorBooking;
 
 @RestController("tutorController")
 @Profile("tutor-api")
@@ -29,6 +30,21 @@ public class TutorController {
     public List<ModuleOption> modules(HttpServletRequest request) { TutorApiInput.noQuery(request);return reads.activeAssignedModules(); }
     @GetMapping("/slots")
     public List<SlotView> slots(HttpServletRequest request) { return TutorApiInput.date(request).map(reads::upcomingSlots).orElseGet(reads::upcomingSlots); }
+    @GetMapping("/bookings")
+    public List<TutorBooking> bookings(HttpServletRequest request) {
+        var filters=TutorApiInput.bookingFilters(request);
+        return reads.bookings(filters.moduleId(),filters.date(),filters.status());
+    }
+    @GetMapping("/history/slots")
+    public List<SlotView> history(HttpServletRequest request) {
+        var filters=TutorApiInput.historyFilters(request);
+        return reads.slotHistory(filters.status(),filters.date());
+    }
+    @PostMapping("/bookings/{id}/complete")
+    public TutorBooking complete(@PathVariable("id") String id,HttpServletRequest request) throws IOException {
+        TutorApiInput.noQuery(request);var bookingId=TutorApiInput.id(id);TutorApiInput.cancel(request);
+        return writes.complete(bookingId);
+    }
     @GetMapping("/slots/{id}")
     public SlotView detail(@PathVariable("id") String id,HttpServletRequest request) { TutorApiInput.noQuery(request);return reads.slotDetail(TutorApiInput.id(id)); }
     @PostMapping("/slots")

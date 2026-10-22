@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import unichope.platform.core.model.consultation.SlotStatus;
+import unichope.platform.core.model.consultation.BookingStatus;
 import unichope.platform.core.LifecycleFailure;
 
 public final class TutorReadService {
@@ -62,6 +63,20 @@ public final class TutorReadService {
                 .orElseThrow(() -> new LifecycleFailure(LifecycleFailure.Code.NOT_FOUND));
         var slot = projection.slot();
         return new SlotView(slot.id(), slot.moduleId(), projection.moduleCode(), slot.startTime(), slot.endTime(), slot.status());
+    }
+
+    public List<TutorBooking> bookings(Optional<UUID> moduleId, Optional<LocalDate> date,
+            Optional<BookingStatus> status) {
+        UUID tutorId = requireActiveTutor();
+        return reads.findBookingsByTutor(tutorId, moduleId, date, status);
+    }
+
+    public List<SlotView> slotHistory(SlotStatus status, Optional<LocalDate> date) {
+        UUID tutorId = requireActiveTutor();
+        return reads.findSlotHistoryByTutor(tutorId, status, date).stream()
+                .map(slot -> new SlotView(slot.slot().id(), slot.slot().moduleId(), slot.moduleCode(),
+                        slot.slot().startTime(), slot.slot().endTime(), slot.slot().status()))
+                .toList();
     }
 
     private UUID requireActiveTutor() { return access.requireActiveTutor(); }

@@ -1,0 +1,15 @@
+> Task :compileJava
+> Task :processResources UP-TO-DATE
+> Task :classes
+> Task :resolveMainClassName
+> Task :bootJar
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :test
+> Task :postgresTest
+
+BUILD SUCCESSFUL in 56s
+7 actionable tasks: 6 executed, 1 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html
