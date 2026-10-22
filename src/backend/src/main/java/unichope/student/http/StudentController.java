@@ -1,11 +1,15 @@
 package unichope.student.http;
 
 import java.util.List;
+import java.io.IOException;
+import java.net.URI;
 import java.util.UUID;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import unichope.platform.web.ApiFailure;
@@ -15,17 +19,35 @@ import unichope.student.StudentBooking;
 import unichope.student.StudentReadService;
 
 /**
- * Student browse and own-booking read routes. Request syntax is validated before the actor check (TECH §3.2
- * evaluation order), so a syntax error never reads data or invalidates a session.
+ * Student browse and owned booking routes. After shared security filter admission, request syntax
+ * is validated before StudentAccess and resource work (TECH §3.2).
  */
 @RestController("studentController")
 @Profile("student-api")
 @RequestMapping("/api/student")
 public class StudentController {
     private final StudentReadService reads;
+    private final StudentHttpService writes;
 
-    public StudentController(StudentReadService reads) {
+    public StudentController(StudentReadService reads, StudentHttpService writes) {
         this.reads = reads;
+        this.writes = writes;
+    }
+
+    @PostMapping("/bookings")
+    public ResponseEntity<StudentBooking> book(HttpServletRequest request) throws IOException {
+        StudentApiInput.noQuery(request);
+        UUID slotId = StudentApiInput.book(request);
+        StudentBooking booking = writes.book(slotId);
+        return ResponseEntity.created(URI.create("/api/student/bookings/" + booking.id())).body(booking);
+    }
+
+    @PostMapping("/bookings/{id}/cancel")
+    public StudentBooking cancel(@PathVariable("id") String id, HttpServletRequest request) throws IOException {
+        StudentApiInput.noQuery(request);
+        UUID bookingId = StudentApiInput.id(id);
+        StudentApiInput.cancel(request);
+        return writes.cancel(bookingId);
     }
 
     @GetMapping("/modules")

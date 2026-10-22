@@ -94,6 +94,19 @@ public class ApplicationConfiguration {
   }
 
   @Bean
+  unichope.platform.auth.CurrentActorProvider sharedActor() {
+    return () -> {
+      var authentication = org.springframework.security.core.context.SecurityContextHolder
+          .getContext().getAuthentication();
+      if (authentication == null || !authentication.isAuthenticated()
+          || !(authentication.getPrincipal() instanceof SessionPrincipal principal)) {
+        return java.util.Optional.empty();
+      }
+      return java.util.Optional.of(principal.userId());
+    };
+  }
+
+  @Bean
   PasswordHasher passwordHasher() {
     return new Argon2PasswordHasher();
   }

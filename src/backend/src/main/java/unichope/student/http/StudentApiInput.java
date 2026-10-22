@@ -1,5 +1,6 @@
 package unichope.student.http;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.EnumSet;
@@ -9,11 +10,21 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.MediaType;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.StreamReadFeature;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import unichope.platform.core.model.consultation.BookingStatus;
 import unichope.platform.web.ApiFailure;
 
-/** Adapter-local strict query parsing (TECH §3.1); every violation is 400 VALIDATION_FAILED. */
+/** Adapter-local strict parsing (TECH §3.1), including streamed body bounds and media types. */
 public final class StudentApiInput {
+    private static final int MAX_BYTES = 65536;
+    private static final JsonMapper JSON = JsonMapper.builder()
+            .enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION)
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
     private static final Pattern UUID_TEXT =
             Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
     private static final Pattern DATE_TEXT = Pattern.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}");
@@ -23,6 +34,37 @@ public final class StudentApiInput {
             "ACTIVE", BookingStatus.ACTIVE, "CANCELLED", BookingStatus.CANCELLED, "COMPLETED", BookingStatus.COMPLETED);
 
     private StudentApiInput() {}
+
+    /** Exact booking body; identity is never accepted from request data. */
+    public static UUID book(HttpServletRequest request) throws IOException {
+        JsonNode body = object(request);
+        if (!Set.copyOf(body.propertyNames()).equals(Set.of("slotId"))
+                || !body.get("slotId").isString()) throw invalid();
+        return id(body.get("slotId").stringValue());
+    }
+
+    public static void cancel(HttpServletRequest request) throws IOException {
+        if (!object(request).isEmpty()) throw invalid();
+    }
+
+    private static JsonNode object(HttpServletRequest request) throws IOException {
+        try {
+            MediaType type = request.getContentType() == null ? null : MediaType.parseMediaType(request.getContentType());
+            if (type == null || !type.getType().equals("application") || !type.getSubtype().equals("json"))
+                throw new ApiFailure(415, "UNSUPPORTED_MEDIA_TYPE", "JSON content type is required");
+        } catch (org.springframework.http.InvalidMediaTypeException error) {
+            throw new ApiFailure(415, "UNSUPPORTED_MEDIA_TYPE", "JSON content type is required");
+        }
+        byte[] bytes = request.getInputStream().readNBytes(MAX_BYTES + 1);
+        if (bytes.length > MAX_BYTES) throw new ApiFailure(413, "PAYLOAD_TOO_LARGE", "Request body is too large");
+        try {
+            JsonNode body = JSON.readTree(bytes);
+            if (body == null || !body.isObject()) throw invalid();
+            return body;
+        } catch (JacksonException error) {
+            throw invalid();
+        }
+    }
 
     /** Parsed {@code GET /slots} filters. */
     public record SlotFilter(Optional<UUID> moduleId, Optional<LocalDate> date) {}

@@ -19,6 +19,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import unichope.platform.auth.CurrentActorProvider;
+import unichope.platform.core.ConsultationLifecycle;
 import unichope.platform.web.ApiErrors;
 import unichope.student.PostgresStudentReadRepository;
 import unichope.student.StudentAccess;
@@ -27,7 +28,7 @@ import unichope.student.StudentReadService;
 
 /**
  * Student HTTP wiring, active only with profile {@code student-api} (TECH §2). Missing
- * {@link CurrentActorProvider}, {@link DataSource} or {@link Clock} beans fail startup; there is
+ * {@link CurrentActorProvider}, {@link DataSource}, {@link ConsultationLifecycle} or {@link Clock} beans fail startup; there is
  * no anonymous, fallback or main-source test actor.
  */
 @Configuration
@@ -80,5 +81,10 @@ public class StudentApiConfiguration implements WebMvcConfigurer {
     @Bean
     StudentReadService studentReadService(StudentAccess studentAccess, StudentReadRepository studentReadRepository, Clock clock) {
         return new StudentReadService(studentAccess, studentReadRepository, clock);
+    }
+
+    @Bean
+    StudentHttpService studentHttpService(StudentAccess access, ConsultationLifecycle lifecycle, StudentReadService reads) {
+        return new StudentHttpService(access, lifecycle, reads);
     }
 }
