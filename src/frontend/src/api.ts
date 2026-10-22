@@ -38,9 +38,10 @@ export class ApiClient {
     }
     return this.tokenPromise;
   }
-  async request<T>(path: string, body?: object, protectedRequest = true): Promise<T> {
+  async request<T>(path: string, body?: object, protectedRequest = true, method = body === undefined ? 'GET' : 'POST'): Promise<T> {
     const generation = this.generation;
-    if (body !== undefined) {
+    const unsafe = !['GET', 'HEAD'].includes(method);
+    if (unsafe) {
       try { await this.csrf(); }
       catch (error) {
         if (generation !== this.generation) throw new StaleRequest();
@@ -63,12 +64,14 @@ export class ApiClient {
       const headers: Record<string, string> = { Accept: 'application/json' };
       if (body !== undefined) {
         headers['Content-Type'] = 'application/json';
-        headers[this.token!.headerName] = this.token!.token;
       }
-      const response = await fetch(path, { method: body === undefined ? 'GET' : 'POST', headers,
+      if (unsafe) headers[this.token!.headerName] = this.token!.token;
+      const response = await fetch(path, { method, headers,
         ...(body === undefined ? {} : { body: JSON.stringify(body) }), credentials: 'same-origin', cache: 'no-store', signal: controller.signal });
       if (generation !== this.generation) throw new StaleRequest();
-      const expectedStatus = body !== undefined && path === '/api/auth/logout' ? 204 : body !== undefined && path === '/api/student/bookings' ? 201 : 200;
+      const assignmentWrite = path.startsWith('/api/admin/assignments/') && ['PUT', 'DELETE'].includes(method);
+      const created = method === 'POST' && ['/api/student/bookings', '/api/auth/register', '/api/admin/users', '/api/admin/modules'].includes(path);
+      const expectedStatus = assignmentWrite || (method === 'POST' && path === '/api/auth/logout') ? 204 : created ? 201 : 200;
       if (response.ok && response.status !== expectedStatus) throw new ApiError();
       if (response.status === 204) return undefined as T;
       if (!response.headers.get('Content-Type')?.includes('application/json')) throw new ApiError();

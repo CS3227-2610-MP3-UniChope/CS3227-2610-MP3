@@ -42,3 +42,12 @@ PostgreSQL17 instance were used; Docker is not required by the current explicit
 PostgreSQL test task. Actual commands are gradlew.bat test postgresTest bootJar with
 core.test.jdbcUrl/user/password to a disposable database. Startup instructions are
 in src/backend/README.md. All commands/results in the log refer to actual checks.
+
+## Registration frontend — 23 October 2026
+
+Student registration is now included in Kok Seng's assigned frontend scope.
+The /register page sends the existing public contract with CSRF, clears password
+fields after submission and returns to Login without signing in automatically.
+Existing login, logout, session restoration and Student routing are retained.
+See [Admin and registration frontend specification](../admin/FRONTEND-SPEC.md).
+No password reset/change or forced-change feature is added.

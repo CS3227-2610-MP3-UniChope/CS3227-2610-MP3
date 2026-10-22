@@ -87,3 +87,38 @@ I requested a separate branch and pull request for this implementation, with a
 prominent note that Admin AI responses are mocked for now. Real SoC connection,
 shared durable quotas and real-model evaluation remain pending. The branch was
 updated with the latest main CI changes before preparing the contribution.
+
+## 23 October 2026 — Admin and registration frontend
+
+Verification status: this summary is awaiting my review.
+
+I started from the latest main revision 8bb8dc3 and kept the existing Student UI.
+I added Admin pages for user provisioning and activation, module management, tutor
+assignments, booking activity and statistics. I connected the activity report
+assistant to the existing API with a temporary plain-text draft, its source
+snapshot, a review reminder and an explicit mocked-provider label.
+
+I added public Student registration using the existing authentication contract.
+It returns to sign-in without automatic login. I did not add role selection,
+password reset, password change or forced password change.
+
+I extended the shared frontend client for CSRF-protected PUT/DELETE and the
+existing API statuses. Independent review identified an Overview route mismatch,
+an AI error-code mismatch, tablet navigation overflow and late login completion
+handling; these were corrected. Frontend CI now runs unit tests and builds.
+
+Local checks: 212 frontend unit tests passed with Node 24. TypeScript and the
+production frontend build passed. A local PostgreSQL-backed browser check verified
+Admin login, statistics, synthetic account creation, password-field clearing,
+confirmed account deactivation and a labelled fake activity report. Browser checks
+are recorded in the frontend specification after the final run completes.
+
+Real SoC evaluation remains dependent on the shared provider. A mocked report does
+not establish live model correctness. Production deployment and my acceptance
+remain pending. The existing backend API contracts were reused; no backend code
+was changed in this increment.
+
+Final browser verification: 82 tests passed using a fresh Vite server, including
+Admin320/768/1440px navigation, confirmation keyboard focus, explicit CSRF report
+submission, mock labels and plain-text rendering. The existing Student and theme
+browser checks also passed. These results do not imply my acceptance approval.

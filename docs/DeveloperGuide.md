@@ -27,7 +27,7 @@ Sign in with one of these synthetic accounts, using the password you supplied:
 | `student1@example.edu` | Upcoming booking and cancelled-booking history |
 | `student2@example.edu` | No bookings initially; browse and book consultations |
 | `tutor1@example.edu`, `tutor2@example.edu` | Tutor accounts; current web destinations are placeholders |
-| `admin@example.edu` | Administrator account; current web destination is a placeholder |
+| `admin@example.edu` | Admin workspace; created once by the existing bootstrap task |
 
 The sample includes three modules and about 20 consultation slots over the next
 seven days in Singapore time. Student pages support finding consultations,
@@ -112,3 +112,21 @@ specified web behavior and uses the teammate-provided core/Tutor interfaces. See
 REUSE.md for the line-count method and runtime SQL attribution. Framework APIs are
 Spring Boot/Security/JDBC, PostgreSQL/Flyway, Jackson and BouncyCastle. New code was
 AI-assisted; interaction summaries and independent verification are recorded honestly.
+
+
+### Admin and registration frontend
+
+The Admin workspace is available after Admin sign-in at `/admin`. It includes
+users, modules, tutor assignments, booking activity, all-time statistics and the
+activity report assistant. Public Student registration is at `/register`; successful
+registration returns to sign-in. Existing Student routes are unchanged.
+
+The assistant is read only and displays its source snapshot. Fake-provider
+responses are clearly labelled; the default unavailable AI mode leaves management
+and statistics usable. For a local mocked demonstration only, start the backend
+with profiles `app-api,local` and `--unichope.ai.mode=fake`. Real SoC remains a
+shared-provider dependency. No frontend secrets or provider keys are required.
+
+Frontend CI installs Node 24, runs unit tests and builds the frontend. Run browser
+checks locally with the frontend README commands; port 5173 must be free because
+the test configuration starts a fresh server rather than reusing another checkout.

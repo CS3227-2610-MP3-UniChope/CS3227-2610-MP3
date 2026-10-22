@@ -2,7 +2,7 @@
 
 React, TypeScript, Vite and Bootstrap. The application provides real session
 sign-in, role destinations and Student consultation browsing, booking and cancellation.
-Tutor and Admin destinations are honest placeholders for their owners' future work.
+Admin provides user/module management, tutor assignments, booking activity, all-time statistics and a read-only activity report assistant. Tutor remains a placeholder. Student registration is available at /register.
 
 Use Node 24 or newer (verified with Node 24.21.0 and npm 12.0.2). Dependencies
 are pinned in `package.json` and `package-lock.json`.
@@ -45,7 +45,7 @@ npm.cmd run test:browser
 React Testing Library. The test-only harness sentinel verifies real DOM keyboard
 events without implementing application behavior.
 
-Playwright starts an isolated Vite server on port 5173 and defaults to the
+Playwright starts a fresh Vite server on port 5173 using the current Node runtime and defaults to the
 installed Microsoft Edge channel (`msedge`). Close a conflicting development
 server before checking a clean build. On another machine, install Edge or install
 Playwright Chromium, then select that browser:
@@ -73,3 +73,20 @@ through Sunday in SGT; smaller screens show a chronological list. Booking and
 cancellation require explicit confirmation and wait for the server. After an
 uncertain response, refresh/check My bookings rather than automatically retrying.
 Private account data, credentials and CSRF tokens remain in memory only.
+
+## Admin workspace
+
+Sign in with an existing Admin account and open `/admin`. Navigation includes users,
+modules, tutor assignments, booking activity and the activity report assistant.
+Management actions use the existing guarded backend APIs. Uncertain submissions
+are not repeated automatically: refresh and check the records before resubmitting.
+
+The report assistant displays the returned statistics snapshot and a temporary
+plain-text draft. Review its claims before use. Local fake-provider responses are
+explicitly labelled as mocked; real SoC generation remains dependent on the shared
+provider. The default backend reports AI unavailable while management still works.
+For a local demonstration only, start the backend with the local profile and
+`--unichope.ai.mode=fake`. No provider key is needed for mocked responses.
+
+Registration creates a Student account and returns to sign-in. Resetting passwords,
+changing passwords and selecting roles at registration are excluded.
