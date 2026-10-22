@@ -47,7 +47,11 @@ test.each(['STUDENT', 'TUTOR', 'ADMIN'] as const)('FE1-RESTORE restored %s resol
   const target = role === 'STUDENT' ? '/student/slots' : `/${role.toLowerCase()}`;
   await waitFor(() => expect(window.location.pathname).toBe(target));
   expect(api.requests('/api/auth/me')).toHaveLength(1);
-  if (role !== 'STUDENT') {
+  if (role === 'ADMIN') {
+    expect(screen.getByRole('navigation', { name: /admin/i })).toBeVisible();
+    expect(screen.getByRole('banner')).toHaveTextContent(actor.name);
+    expect(api.calls.some(call => call.url.pathname.startsWith('/api/student'))).toBe(false);
+  } else if (role === 'TUTOR') {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(new RegExp(role, 'i'));
     expect(screen.getByText(/workspace is not ready yet/i)).toBeVisible();
     expect(api.calls.some(call => call.url.pathname.startsWith('/api/student'))).toBe(false);

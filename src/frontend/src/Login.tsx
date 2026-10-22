@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react';
 import { ApiError } from './api';
-import { Brand, Icon } from './components';
+import { Brand, Icon, Link } from './components';
 import { ThemeSwitch } from './theme';
 export default function Login({ login, message, retryLogout, signingOut = false }: { login: (email: string, password: string) => Promise<void>; message: string; retryLogout?: () => void; signingOut?: boolean }) {
   const [email, setEmail] = useState(''); const [password, setPassword] = useState('');
@@ -24,7 +24,7 @@ export default function Login({ login, message, retryLogout, signingOut = false 
           <label htmlFor="password">Password</label><input className="form-control" id="password" type="password" autoComplete="current-password" required value={password} onChange={event => setPassword(event.target.value)} disabled={pending || signingOut} />
           <button className="btn btn-primary login-submit" disabled={pending || signingOut} type="submit">{pending ? 'Signing in…' : 'Sign in'}<Icon name="arrow" /></button>
         </form>{csrfFailed && <button className="text-button mt-3" onClick={() => { setError(''); setCsrfFailed(false); document.getElementById('password')?.focus(); }}>Try again</button>}
-        <p className="login-help">Use your UniChope account to continue.</p>
+        <p className="login-help">Use your UniChope account to continue.</p>{!pending && !signingOut && <p><Link href="/register">Create a Student account</Link></p>}
       </section></main><footer className="login-footer">A dedicated space for better conversations.</footer></div>;
 }
 

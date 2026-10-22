@@ -35,3 +35,11 @@ acceptance is pending. Existing core account operations were reused. Admin-speci
 guarded module/assignment writes were implemented in Admin without changing shared
 ConsultationLifecycle. Tests include both orderings of module/assignment conflicts
 with Tutor slot creation. Results are recorded in logs/kokseng.md.
+
+## Frontend increment — 23 October 2026
+
+The user has now assigned Admin and remaining authentication frontend work to
+Kok Seng. The earlier statements leaving frontend outside this scope describe the
+previous allocation. See [frontend specification](FRONTEND-SPEC.md) for the current
+scope, acceptance cases and plan. Real SoC integration remains a shared-provider
+dependency; frontend implementation does not resolve it.
