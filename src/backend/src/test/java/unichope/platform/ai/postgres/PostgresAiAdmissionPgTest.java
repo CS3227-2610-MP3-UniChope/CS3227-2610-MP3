@@ -172,6 +172,19 @@ class PostgresAiAdmissionPgTest {
   }
 
   @Test
+  void missingProviderBudgetFailsBeforeCreatingReservation() {
+    PostgresAiAdmissionService studentOnly = new PostgresAiAdmissionService(source, clock, Map.of(
+        AiProviderKey.STUDENT, budget));
+    AiTaskPolicy tutor = policy("tutor.note-draft.v1", 3, 1, 100);
+
+    AiGateway.Failure failure = assertThrows(AiGateway.Failure.class,
+        () -> studentOnly.admit(attempt(ACTOR, tutor, 20), tutor));
+
+    assertEquals(AiGateway.FailureCode.UNAVAILABLE, failure.code());
+    assertEquals(0, db.sql("SELECT count(*) FROM ai_attempt").query(Long.class).single());
+  }
+
+  @Test
   void serializedAdmissionsAllowOnlyOneConcurrentRequestForActor() throws Exception {
     AiTaskPolicy policy = policy("tutor.note-draft.v1", 10, 1, 100);
     try (var executor = Executors.newFixedThreadPool(2)) {

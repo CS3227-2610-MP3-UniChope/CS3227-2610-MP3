@@ -190,6 +190,15 @@ tests establish boundaries, not real-model resistance or factual quality.
 
 ### P8: Connect and evaluate real SoC provider later
 
+- [x] Capture the public SoCLaaS base host, chat-completions route, Bearer-key
+  authentication, and model-catalogue discovery in the provider spec. The internal
+  reference remains NUS-network restricted; response/error compatibility and live
+  limits remain explicit verification items.
+- [x] Implement a bounded OpenAI-compatible Chat Completions adapter and local
+  loopback contract tests; see the P8 spec, matrix, and developer handoff.
+- [ ] Review the shared provider adapter with the Student AI owner before routing
+  any production role key through it. Keep the adapter unwired until runtime routing,
+  durable admission, migration, and environment configuration are accepted.
 - [ ] Supply real endpoint/model/auth details server-side and verify hosting access.
 - [ ] Confirm provider request/token limits and configure conservative shared budgets,
   input accounting, output caps, deadlines, and separate dev/prod team keys.
@@ -202,7 +211,10 @@ tests establish boundaries, not real-model resistance or factual quality.
 Depends on: P6, actual provider details, and P7 findings resolution. Requirements:
 AI-01, AI-02, TUT-AI-01, TUT-AI-02. Verify: real SoC responses reach the review UI; no secret is
 in browser/build/logs; quality errors are documented and fixed where feasible.
-Never mark fake output or an unverified external call as completing this task.
+Never mark fake output or an unverified external call as completing this task. The
+adapter is implemented but not wired; see
+[`SOCLAAS-PROVIDER-SPEC.md`](SOCLAAS-PROVIDER-SPEC.md) and
+[`SOCLAAS-PROVIDER-TEST-MATRIX.md`](SOCLAAS-PROVIDER-TEST-MATRIX.md).
 
 ### P9: Deployment, guides, and release evidence
 

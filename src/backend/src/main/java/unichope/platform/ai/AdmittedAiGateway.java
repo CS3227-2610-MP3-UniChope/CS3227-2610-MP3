@@ -59,6 +59,15 @@ public final class AdmittedAiGateway implements AiGateway, AutoCloseable {
       throw new ApiFailure(400, "VALIDATION_FAILED", "Request validation failed");
     }
 
+    AiGateway provider;
+    try {
+      provider = Objects.requireNonNull(providers.providerFor(policy.providerKey()));
+    } catch (AiGateway.Failure unavailable) {
+      throw unavailable;
+    } catch (RuntimeException unavailable) {
+      throw new AiGateway.Failure(FailureCode.UNAVAILABLE);
+    }
+
     var attempt =
         new AiAdmissionService.Attempt(
             request.actorId(), request.task(), policy.providerKey(), request.maxOutputTokens());
@@ -72,7 +81,6 @@ public final class AdmittedAiGateway implements AiGateway, AutoCloseable {
     }
     boolean retainLeaseUntilExpiry = false;
     try {
-      AiGateway provider = Objects.requireNonNull(providers.providerFor(policy.providerKey()));
       Future<Result> future;
       try {
         future = workers.submit(() -> provider.generate(request));

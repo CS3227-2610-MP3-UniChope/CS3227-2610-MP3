@@ -46,6 +46,68 @@ class AdmittedAiGatewayTest {
   }
 
   @Test
+  void resolvesConfiguredProviderBeforeAdmission() {
+    var order = new AtomicInteger();
+    AiAdmissionService admission = new AiAdmissionService() {
+      @Override
+      public Reservation admit(Attempt attempt, AiTaskPolicy policy) {
+        assertEquals(1, order.getAndIncrement());
+        return new Reservation(UUID.randomUUID());
+      }
+
+      @Override
+      public void complete(Reservation reservation) {
+      }
+    };
+    AiGateway provider = request -> new AiGateway.Result("draft", AiGateway.ProviderMode.FAKE);
+
+    try (var gateway = gateway(admission, key -> {
+      assertEquals(AiProviderKey.TUTOR, key);
+      assertEquals(0, order.getAndIncrement());
+      return provider;
+    }, policy(Duration.ofSeconds(1)))) {
+      assertEquals("draft", gateway.generate(REQUEST).text());
+    }
+
+    assertEquals(2, order.get());
+  }
+
+  @Test
+  void unavailableProviderRouteFailsBeforeAdmission() {
+    var admission = new RecordingAdmission();
+    AiProviderRouter missingTutorConfiguration = key -> {
+      assertEquals(AiProviderKey.TUTOR, key);
+      throw new AiGateway.Failure(AiGateway.FailureCode.UNAVAILABLE);
+    };
+
+    try (var gateway = gateway(admission, missingTutorConfiguration, policy(Duration.ofSeconds(1)))) {
+      var failure = assertThrows(AiGateway.Failure.class, () -> gateway.generate(REQUEST));
+      assertEquals(AiGateway.FailureCode.UNAVAILABLE, failure.code());
+    }
+
+    assertEquals(0, admission.admitted.get());
+    assertEquals(0, admission.completed.get());
+  }
+
+  @Test
+  void unexpectedProviderResolutionFailureIsSanitizedBeforeAdmission() {
+    var admission = new RecordingAdmission();
+    AiProviderRouter brokenConfiguration = key -> {
+      throw new IllegalStateException("private key configuration detail");
+    };
+
+    try (var gateway = gateway(admission, brokenConfiguration, policy(Duration.ofSeconds(1)))) {
+      var failure = assertThrows(AiGateway.Failure.class, () -> gateway.generate(REQUEST));
+      assertEquals(AiGateway.FailureCode.UNAVAILABLE, failure.code());
+      assertNull(failure.getCause());
+      assertFalse(failure.getMessage().contains("private key configuration detail"));
+    }
+
+    assertEquals(0, admission.admitted.get());
+    assertEquals(0, admission.completed.get());
+  }
+
+  @Test
   void admissionRejectionMakesZeroProviderCallsAndPreservesRetryDelay() {
     var admission = new RecordingAdmission();
     admission.failure = new AiGateway.Failure(AiGateway.FailureCode.RATE_LIMITED, Duration.ofSeconds(27));
@@ -166,7 +228,7 @@ class AdmittedAiGatewayTest {
   }
 
   private static AdmittedAiGateway gateway(
-      RecordingAdmission admission, AiProviderRouter router, AiTaskPolicy policy) {
+      AiAdmissionService admission, AiProviderRouter router, AiTaskPolicy policy) {
     return new AdmittedAiGateway(admission, router, Map.of(policy.task(), policy));
   }
 

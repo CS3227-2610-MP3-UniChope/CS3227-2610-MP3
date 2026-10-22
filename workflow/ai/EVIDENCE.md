@@ -74,3 +74,33 @@ its test contract at the final 23 October full run. Admission-specific source ha
 | `src/backend/src/test/java/unichope/platform/ai/postgres/PostgresAiAdmissionPgTest.java` | `19f57bc69315896b0df63a2888f747c11f432bc053f1419fa34a7ea679f38630` |
 | `workflow/ai/SHARED-GATEWAY-PROPOSAL.md` | `6469cf16b1cb92caa4d009ead11e3d9d258dc9bf9560d99f3c72dc2142c929da` |
 | `workflow/ai/ADMISSION-TEST-MATRIX.md` | `87f228d0b837f38c87fa530925d1fe02dc9ed111af5ac350d62127741855b5e4` |
+
+## 23 October routing-preflight follow-up
+
+The shared wrapper now resolves the configured route before calling admission.
+Provider resolution is required to be a local configuration lookup. If no provider
+is configured for the server-selected role alias, `AdmittedAiGateway` returns
+sanitized `UNAVAILABLE` without calling admission. The PostgreSQL admission service
+rejects a missing provider-key budget before opening its transaction. This prevents
+durable attempts and outbound provider calls for incomplete role configuration.
+
+Verification after this change:
+
+- `./gradlew test` — 106 tests across 26 JUnit XML reports; 0 failures, 0 errors,
+  0 skipped.
+- `./gradlew postgresTest -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55433/postgres -Dcore.test.user=huanghao -Dcore.test.password=` — 199 tests across 18 JUnit XML reports; 0 failures, 0 errors, 0 skipped. A disposable local PostgreSQL cluster under `/private/tmp` was used.
+- New wrapper cases: `resolvesConfiguredProviderBeforeAdmission` and
+  `unavailableProviderRouteFailsBeforeAdmission`, and
+  `unexpectedProviderResolutionFailureIsSanitizedBeforeAdmission`. New PostgreSQL case:
+  `missingProviderBudgetFailsBeforeCreatingReservation`.
+- `git diff --check` passed. No `bootJar` run or production provider activation
+  occurred.
+
+Updated source hashes for this follow-up:
+
+| File | SHA-256 |
+| --- | --- |
+| `src/backend/src/main/java/unichope/platform/ai/AdmittedAiGateway.java` | `9e1cde5a4041f05a3ac7ae19d5b29d87f8af12e150f9f95b8221fcb73372a678` |
+| `src/backend/src/main/java/unichope/platform/ai/AiProviderRouter.java` | `d9097e0e0ecbccf87886092e077dfa65fc3cb6eb3b77e00d135fa5185fc0c73f` |
+| `src/backend/src/test/java/unichope/platform/ai/AdmittedAiGatewayTest.java` | `812477436d33e0c50fa301903a61b7428c2b1808ffa00474520854ed00c31b18` |
+| `src/backend/src/test/java/unichope/platform/ai/postgres/PostgresAiAdmissionPgTest.java` | `a9b5b10099fb011ef2f35f3018040c1142fd4cf00c23ab04a92d754152d43da8` |

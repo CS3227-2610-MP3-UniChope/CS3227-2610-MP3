@@ -33,11 +33,14 @@ role-specific prompts or validators.
 - `AiProviderRouter` selects a configured provider using the server-owned role-key
   alias. Browser input never chooses a key, provider, or model. Role aliases are
   routing identifiers; credential values remain in deployment configuration.
-- `AdmittedAiGateway` validates registered task/input/token bounds, admits before
-  dispatch, enforces the configured call deadline, checks the returned UTF-8 text
-  size, and clears the in-flight lease after a known completion. It does not refund
-  admitted usage. On timeout/interruption it retains the lease for expiry because
-  provider completion is uncertain. It never retries.
+  Provider resolution is a local configuration lookup and happens before admission.
+  An unavailable route returns `UNAVAILABLE` without creating a quota reservation
+  or making an outbound provider call.
+- `AdmittedAiGateway` validates registered task/input/token bounds, resolves the
+  provider route, admits before dispatch, enforces the configured call deadline,
+  checks the returned UTF-8 text size, and clears the in-flight lease after a known
+  completion. It does not refund admitted usage. On timeout/interruption it retains
+  the lease for expiry because provider completion is uncertain. It never retries.
 - `AiGateway.Failure` includes BUSY and RATE_LIMITED with an optional positive
   `retryAfter`, plus UNAVAILABLE, TIMEOUT, and INVALID_OUTPUT. Failures carry no
   upstream body or exception cause.
@@ -68,6 +71,11 @@ closed as UNAVAILABLE to bound admission contention. PostgreSQL tests verify rol
 per-key reservations, concurrent admission, lease expiry, and fail-closed storage
 errors. Wrapper unit tests still cover routing, request bounds, output-size
 rejection, sanitized failures, and timeout/no-retry behavior.
+
+Provider resolution now runs before admission. If the router reports a missing role
+provider, the wrapper returns sanitized `UNAVAILABLE` without invoking the admission
+service; route resolution itself must remain a local configuration lookup. Wrapper
+tests verify the resolution order and that a missing route creates no reservation.
 
 ## Compatibility and activation gates
 

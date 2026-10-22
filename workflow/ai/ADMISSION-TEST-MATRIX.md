@@ -18,7 +18,9 @@ per case. No SoC credentials or provider calls are used.
 | ADM-08 | Missing quota state fails closed with a sanitized `UNAVAILABLE`. | `unavailableSchemaFailsClosedWithSanitizedFailure` |
 | ADM-09 | A locked singleton quota row cannot hold admission indefinitely; lock timeout fails closed without inserting an attempt. | `quotaLockWaitIsBoundedAndFailsClosed` |
 | ADM-10 | Role-key budgets are independent; exhausting the Tutor alias does not consume the Student alias budget. | `roleKeyBudgetsRemainIsolated` |
-| ADM-11 | The shared gateway admits before calling a provider, uses a server-owned route, and retains uncertain timed-out leases without retry. | `AdmittedAiGatewayTest` |
+| ADM-11 | The shared gateway resolves a server-owned route before admission, admits before provider generation, and retains uncertain timed-out leases without retry. | `AdmittedAiGatewayTest` |
+| ADM-12 | An unavailable or broken provider route returns sanitized `UNAVAILABLE` before admission; no quota reservation or provider generation occurs. | `unavailableProviderRouteFailsBeforeAdmission`; `unexpectedProviderResolutionFailureIsSanitizedBeforeAdmission` |
+| ADM-13 | Missing provider-key budget fails closed before a durable attempt is inserted. | `missingProviderBudgetFailsBeforeCreatingReservation` |
 
 ## Limits of the evidence
 
