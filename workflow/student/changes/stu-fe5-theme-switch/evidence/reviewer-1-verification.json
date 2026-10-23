@@ -1,0 +1,84 @@
+﻿{
+    "reviewer":  "Codex GPT-6",
+    "date":  "2026-10-22",
+    "head":  "2f05bdfa73fe51c7b13e8727021d8784a1ddc711",
+    "verdict":  "PASS",
+    "status":  "READY_FOR_HUMAN",
+    "inputManifestSha256":  "D2F1DCA1B5032773E48C6AFD4E7E96E66AA57DF2C946875115F355577897C359",
+    "inputCount":  78,
+    "initialMismatches":  0,
+    "finalInputDifferences":  [
+                                  {
+                                      "path":  "workflow/student/PLAN.md",
+                                      "sha256":  "919BD0A2EB8B66453F54B67CCE8B55F222B6678FE41DAAD969FD0788D0851FAE"
+                                  }
+                              ],
+    "planSha256":  "3E4E906B5FADB01954502D5A7E3F12F5A8B96554E7A23315D0CC6D926022A3D2",
+    "planChange":  "Status bookkeeping only, no acceptance or behavior change; no affected tests invalidated",
+    "commands":  [
+                     {
+                         "passed":  188,
+                         "failed":  0,
+                         "command":  "npm.cmd test -- --reporter=json --outputFile=../../workflow/student/changes/stu-fe5-theme-switch/evidence/reviewer-1-unit.json",
+                         "exit":  0,
+                         "skipped":  0,
+                         "cwd":  "src/frontend"
+                     },
+                     {
+                         "modules":  28,
+                         "command":  "npm.cmd run build",
+                         "cwd":  "src/frontend",
+                         "exit":  0
+                     },
+                     {
+                         "passed":  77,
+                         "command":  "npm.cmd run test:browser -- --workers=4",
+                         "cwd":  "src/frontend",
+                         "exit":  0
+                     },
+                     {
+                         "command":  "git diff --check -- src/frontend workflow/student/PLAN.md",
+                         "cwd":  "repository",
+                         "exit":  0
+                     }
+                 ],
+    "evidence":  [
+                     {
+                         "path":  "workflow/student/changes/stu-fe5-theme-switch/evidence/reviewer-1-unit.json",
+                         "sha256":  "5B406CE87C3FA6E96E60FC2C1E19CC43629DB24489AD24E51BF04776B1542847"
+                     },
+                     {
+                         "path":  "workflow/student/changes/stu-fe5-theme-switch/evidence/reviewer-1-unit.txt",
+                         "sha256":  "0B0BAF74D9310199C7C57CC3D74FF15AF7CDD92FF28EE4165A87EA7A0F53FF08"
+                     },
+                     {
+                         "path":  "workflow/student/changes/stu-fe5-theme-switch/evidence/reviewer-1-build.txt",
+                         "sha256":  "A2A9D5DF41731A5EB2F9B84C4FA4E4FDF55AFEBA8C762631E7E97A50F0C347C4"
+                     },
+                     {
+                         "path":  "workflow/student/changes/stu-fe5-theme-switch/evidence/reviewer-1-browser.txt",
+                         "sha256":  "2AEB88E51BA532119FD8D42E789DEC39379E129C896BE91757AF404C1454334C"
+                     }
+                 ],
+    "screenshotsInspected":  [
+                                 "implementer-dark-320.png",
+                                 "implementer-light-320.png",
+                                 "implementer-dark-1440.png",
+                                 "implementer-light-1440.png"
+                             ],
+    "extraRatios":  {
+                        "primaryHoverDark":  10.902,
+                        "primaryHoverLight":  7.599,
+                        "stripeDarkInk":  13.797,
+                        "stripeLightInk":  13.043,
+                        "stripeLightMuted":  4.701,
+                        "stripeDarkMuted":  7.969
+                    },
+    "limitations":  [
+                        "Synthetic HTTP fixtures only; no real backend or provider execution",
+                        "TH-NOFLASH S4 human-visible frame check pending; reviewed production held-bundle timeline is bounded automated evidence",
+                        "Phuc laptop/phone keyboard, 200% zoom/text-size and native date popup checks pending",
+                        "Shared-owner merge reviews pending"
+                    ],
+    "sourceOrTestEdits":  false
+}

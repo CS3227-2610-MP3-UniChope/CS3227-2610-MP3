@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import unichope.platform.core.LifecycleFailure;
 import unichope.platform.web.ApiErrors;
 import unichope.platform.web.ApiFailure;
+import unichope.platform.ai.AiGateway;
 import unichope.tutor.TutorAccessDeniedException;
 import unichope.tutor.TutorNoteFailure;
 
@@ -20,7 +21,10 @@ public class TutorExceptionHandler {
     @ExceptionHandler(Exception.class)
     public void handle(Exception failure,HttpServletRequest request,HttpServletResponse response) throws Exception {
         int status=500;String code="INTERNAL_ERROR",message="The request could not be completed";
-        if(failure instanceof ApiFailure api) { status=api.status();code=api.code();message=api.getMessage(); }
+        if(failure instanceof ApiFailure api) {
+            status=api.status();code=api.code();message=api.getMessage();
+            if(code.equals("UNAUTHENTICATED")||code.equals("ACCOUNT_INACTIVE"))invalidate(request);
+        }
         else if(failure instanceof TutorNoteFailure note) {
             switch(note.code()) {
                 case INVALID_CONTENT -> {status=400;code="VALIDATION_FAILED";message="Request validation failed";}
@@ -42,11 +46,24 @@ public class TutorExceptionHandler {
                 case ACCESS_DENIED -> {status=403;code="FORBIDDEN";message="Access is forbidden";}
                 default -> {status=409;code=lifecycle.code().name();message=lifecycle.getMessage();}
             }
+        } else if(failure instanceof AiGateway.Failure ai) {
+            switch(ai.code()) {
+                case BUSY -> {status=409;code="AI_BUSY";message="AI generation is already in progress";}
+                case RATE_LIMITED -> {status=429;code="AI_RATE_LIMITED";message="AI generation limit reached";}
+                case UNAVAILABLE -> {status=503;code="AI_UNAVAILABLE";message="AI is currently unavailable";}
+                case TIMEOUT -> {status=504;code="AI_TIMEOUT";message="AI generation timed out";}
+                case INVALID_OUTPUT -> {status=502;code="AI_INVALID_OUTPUT";message="AI returned an invalid response";}
+            }
         } else if(failure instanceof HttpMediaTypeNotSupportedException) {status=415;code="UNSUPPORTED_MEDIA_TYPE";message="JSON content type is required";}
         else if(failure instanceof HttpRequestMethodNotSupportedException) {status=405;code="METHOD_NOT_ALLOWED";message="Request method is not allowed";}
         // Errors have a fixed JSON contract even when Accept excludes successful JSON.
         // A committed transport response cannot be replaced with a new safe status/body.
         if(response.isCommitted())throw failure;
+        if(failure instanceof AiGateway.Failure ai && ai.retryAfter().isPresent()) {
+            var delay=ai.retryAfter().get();long seconds=delay.toSeconds();
+            if(!delay.minusSeconds(seconds).isZero())seconds++;
+            response.setHeader("Retry-After",Long.toString(Math.max(1,seconds)));
+        }
         ApiErrors.write(request,response,status,code,message);
     }
     private static void invalidate(HttpServletRequest request) {

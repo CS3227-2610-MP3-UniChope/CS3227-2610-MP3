@@ -28,6 +28,29 @@ class PostgresAccountStorageTest extends AccountPgFixture {
   denied(NOT_FOUND,()->accounts.setAccountActive(admin(),UUID.randomUUID(),false));
   denied(ACCESS_DENIED,()->accounts.setAccountActive(admin(),ADMIN,true));
  }
+ @Test void tutorProvisioningRequiresOneAtomicPasswordChangeAndRevokesOldGeneration() {
+  User created=accounts.provisionAccount(admin(),Role.TUTOR,"New tutor","new-tutor@local","synthetic-H2");
+  var first=accounts.findAccountState(created.id()).orElseThrow();
+  assertTrue(first.mustChangePassword());
+  var changed=accounts.changeTutorPassword(created.id(),first.sessionGeneration(),"synthetic-H3");
+  assertFalse(changed.mustChangePassword()); assertEquals(1,changed.sessionGeneration());
+  assertEquals("synthetic-H3",accounts.findCredentialByEmail(created.email()).orElseThrow().encodedHash());
+  denied(ACCESS_DENIED,()->accounts.changeTutorPassword(created.id(),0,"synthetic-H4"));
+  denied(ACCESS_DENIED,()->accounts.changeTutorPassword(S1,0,"synthetic-H4"));
+  assertFalse(accounts.findAccountState(S1).orElseThrow().mustChangePassword());
+ }
+ @Test void concurrentChangesCannotReuseTheInitialSessionGeneration() throws Exception {
+  User created=accounts.provisionAccount(admin(),Role.TUTOR,"New tutor","race-tutor@local","synthetic-H2");
+  var ready=new java.util.concurrent.CountDownLatch(2); var start=new java.util.concurrent.CountDownLatch(1);
+  var first=launch(()->{ready.countDown(); start.await(); return accounts.changeTutorPassword(created.id(),0,"synthetic-H3");});
+  var second=launch(()->{ready.countDown(); start.await(); return accounts.changeTutorPassword(created.id(),0,"synthetic-H4");});
+  assertTrue(ready.await(5,java.util.concurrent.TimeUnit.SECONDS)); start.countDown();
+  Object a=first.get(15,java.util.concurrent.TimeUnit.SECONDS), b=second.get(15,java.util.concurrent.TimeUnit.SECONDS);
+  assertEquals(1,java.util.stream.Stream.of(a,b).filter(AccountState.class::isInstance).count());
+  assertEquals(1,java.util.stream.Stream.of(a,b).filter(AccountFailure.class::isInstance).count());
+  var finalState=accounts.findAccountState(created.id()).orElseThrow();
+  assertFalse(finalState.mustChangePassword()); assertEquals(1,finalState.sessionGeneration());
+ }
  @Test void generationAndOverflow() {
   assertEquals(1,accounts.setAccountActive(admin(),S1,false).sessionGeneration());
   assertEquals(1,accounts.setAccountActive(admin(),S1,false).sessionGeneration());

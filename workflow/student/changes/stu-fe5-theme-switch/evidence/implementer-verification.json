@@ -1,0 +1,50 @@
+{
+  "head": "2f05bdfa73fe51c7b13e8727021d8784a1ddc711",
+  "environment": "Windows PowerShell; Node/npm locked harness; Edge; local synthetic HTTP only",
+  "sequentialCommands": [
+    {
+      "cwd": "src/frontend",
+      "command": "npm.cmd test -- --reporter=json --outputFile=../../workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-unit.json",
+      "exit": 0,
+      "total": 188,
+      "passed": 188,
+      "failed": 0,
+      "evidence": "implementer-unit.txt/json"
+    },
+    {
+      "cwd": "src/frontend",
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "result": "tsc --noEmit and Vite; 28 modules",
+      "evidence": "implementer-build.txt"
+    },
+    {
+      "cwd": "src/frontend",
+      "command": "npm.cmd run test:browser -- --workers=4",
+      "exit": 0,
+      "result": "77 passed (22.0s)",
+      "evidence": "implementer-browser.txt"
+    },
+    {
+      "cwd": ".",
+      "command": "git diff --check -- src/frontend",
+      "exit": 0
+    }
+  ],
+  "productionPreview": {
+    "command": "node workflow/student/changes/stu-fe5-theme-switch/evidence/implementer-preview.mjs",
+    "exit": 0,
+    "evidence": "implementer-preview.txt and implementer-production-observations.json",
+    "boundedObservation": "Built assets held: all three URLs dark root and color-scheme, zero headings. After release/reload mutation timelines contain only dark. Four actual screenshots at1440/320, both themes inspected with view_image; no horizontal overflow/clipping observed.",
+    "pending": "Human visual no-light-frame check TH-NOFLASH S4; real laptop/phone keyboard, 200% zoom/text size, native date popup; owner merge reviews and Phuc acceptance."
+  },
+  "scope": [
+    "src/frontend/index.html",
+    "src/frontend/src/App.tsx",
+    "src/frontend/src/Login.tsx",
+    "src/frontend/src/styles.css",
+    "src/frontend/src/theme.tsx",
+    "src/frontend/public/theme.js"
+  ],
+  "testOracleCorrection": "Independent test-writer-2 authored-source inline check, theme.spec.ts SHA61BDCC49168B3F955A2352D7F3F81460290EA6A5C1875A9C06AE61B628691579. Implementer changed no tests."
+}

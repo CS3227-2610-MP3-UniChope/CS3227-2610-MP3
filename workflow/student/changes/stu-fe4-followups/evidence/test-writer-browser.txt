@@ -1,0 +1,994 @@
+npm notice run unichope-frontend@0.0.0 test:browser
+npm notice run playwright test
+
+Running 16 tests using 12 workers
+
+(node:33408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:61228) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57972) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45256) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:62744) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:65760) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45892) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:65872) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:65904) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:63352) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:65944) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  5 e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST notfound 1440px text, controls, selected and keyboard focus (2.8s)
+  ok 11 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 768px all choices visible, no page/dialog horizontal overflow (3.1s)
+  ok  7 e2e\shell.spec.ts:3:1 › FE0-QA: browser loads the UniChope shell without runtime errors (3.3s)
+  ok  9 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 320px all choices visible, no page/dialog horizontal overflow (3.5s)
+  ok 16 e2e\workspace.spec.ts:87:1 › FE1-UI mobile Login labels, keyboard flow, one h1 and no overflow (1.1s)
+  ok 13 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 1024px all choices visible, no page/dialog horizontal overflow (2.8s)
+  ok 15 e2e\workspace.spec.ts:71:1 › FE2-UI confirmation traps Tab and Shift-Tab then restores focus on Escape (2.1s)
+  ok 14 e2e\workspace.spec.ts:31:3 › FE2-UI responsive 1440px all choices visible, no page/dialog horizontal overflow (2.3s)
+  x   1 e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST slots 1440px text, controls, selected and keyboard focus (5.3s)
+  x   4 e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST bookings 1440px text, controls, selected and keyboard focus (3.5s)
+  x  12 e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST tutor 1440px text, controls, selected and keyboard focus (3.6s)
+  x  10 e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST dialog 1440px text, controls, selected and keyboard focus (3.4s)
+  x   3 e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST login 1440px text, controls, selected and keyboard focus (2.9s)
+  x   6 e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST failure 1440px text, controls, selected and keyboard focus (3.8s)
+  x   8 e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST admin 1440px text, controls, selected and keyboard focus (2.8s)
+  x   2 e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST slots 320px text, controls, selected and keyboard focus (5.3s)
+
+
+  1) e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST login 1440px text, controls, selected and keyboard focus 
+
+    Error: control and selected boundaries
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 4
+
+    - Array []
+    + Array [
+    +   "input email boundary: 1.54 < 3",
+    +   "input password boundary: 1.54 < 3",
+    + ]
+
+      30 |     if (state === 'dialog') { await page.getByRole('button', { name: /^book$/i }).click(); await expect(page.getByRole('dialog')).toBeVisible(); }
+      31 |     const text = await audit(page, 'text'); expect(text.checked).toBeGreaterThan(0); expect.soft(text.failures, 'all visible text').toEqual([]);
+    > 32 |     const controls = await audit(page, 'controls'); expect.soft(controls.failures, 'control and selected boundaries').toEqual([]);
+         |                                                                                                                       ^
+      33 |     // Visit the complete keyboard cycle, including the skip link; dialog cycling
+      34 |     // is scoped by its focus trap. Audit text again in each focus-visible state.
+      35 |     const count = await page.locator(state === 'dialog' ? '[role="dialog"] button' : 'a[href],button,input,select,textarea').count();
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:32:119
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "input email keyboard focus indicator: 1.16 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "input password keyboard focus indicator: 1.16 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Sign in keyboard focus indicator: 1.84 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error Context: test-results\contrast-FE-UI-CONTRAST-lo-a1d15-selected-and-keyboard-focus\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\contrast-FE-UI-CONTRAST-lo-a1d15-selected-and-keyboard-focus\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\contrast-FE-UI-CONTRAST-lo-a1d15-selected-and-keyboard-focus\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST slots 1440px text, controls, selected and keyboard focus 
+
+    Error: control and selected boundaries
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 12
+
+    - Array []
+    + Array [
+    +   "button Sign out boundary: 1.00 < 3",
+    +   "a Find a consultation selected indicator: 1.10 < 3",
+    +   "button Refresh boundary: 1.54 < 3",
+    +   "select All modulesCS3227 · Software Architecture boundary: 1.54 < 3",
+    +   "input date-filter boundary: 1.54 < 3",
+    +   "button Previous week boundary: 1.54 < 3",
+    +   "button This week boundary: 1.54 < 3",
+    +   "button Next week boundary: 1.54 < 3",
+    +   "div Thursday22 Oct selected indicator: 1.21 < 3",
+    +   "button Book boundary: 2.14 < 3",
+    + ]
+
+      30 |     if (state === 'dialog') { await page.getByRole('button', { name: /^book$/i }).click(); await expect(page.getByRole('dialog')).toBeVisible(); }
+      31 |     const text = await audit(page, 'text'); expect(text.checked).toBeGreaterThan(0); expect.soft(text.failures, 'all visible text').toEqual([]);
+    > 32 |     const controls = await audit(page, 'controls'); expect.soft(controls.failures, 'control and selected boundaries').toEqual([]);
+         |                                                                                                                       ^
+      33 |     // Visit the complete keyboard cycle, including the skip link; dialog cycling
+      34 |     // is scoped by its focus trap. Audit text again in each focus-visible state.
+      35 |     const count = await page.locator(state === 'dialog' ? '[role="dialog"] button' : 'a[href],button,input,select,textarea').count();
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:32:119
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Sign out keyboard focus indicator: 1.00 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Refresh keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "select All modulesCS3227 · Software Architecture keyboard focus indicator: 1.16 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "input date-filter keyboard focus indicator: 1.16 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "input date-filter keyboard focus indicator: 1.00 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Previous week keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button This week keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Next week keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Book keyboard focus indicator: 1.00 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error Context: test-results\contrast-FE-UI-CONTRAST-sl-7e466-selected-and-keyboard-focus\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\contrast-FE-UI-CONTRAST-sl-7e466-selected-and-keyboard-focus\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\contrast-FE-UI-CONTRAST-sl-7e466-selected-and-keyboard-focus\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST slots 320px text, controls, selected and keyboard focus 
+
+    Error: control and selected boundaries
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 11
+
+    - Array []
+    + Array [
+    +   "button Sign out boundary: 1.00 < 3",
+    +   "a Find a consultation selected indicator: 1.10 < 3",
+    +   "button Refresh boundary: 1.54 < 3",
+    +   "select All modulesCS3227 · Software Architecture boundary: 1.48 < 3",
+    +   "input date-filter boundary: 1.48 < 3",
+    +   "button Previous week boundary: 1.54 < 3",
+    +   "button This week boundary: 1.54 < 3",
+    +   "button Next week boundary: 1.54 < 3",
+    +   "button Book boundary: 2.14 < 3",
+    + ]
+
+      30 |     if (state === 'dialog') { await page.getByRole('button', { name: /^book$/i }).click(); await expect(page.getByRole('dialog')).toBeVisible(); }
+      31 |     const text = await audit(page, 'text'); expect(text.checked).toBeGreaterThan(0); expect.soft(text.failures, 'all visible text').toEqual([]);
+    > 32 |     const controls = await audit(page, 'controls'); expect.soft(controls.failures, 'control and selected boundaries').toEqual([]);
+         |                                                                                                                       ^
+      33 |     // Visit the complete keyboard cycle, including the skip link; dialog cycling
+      34 |     // is scoped by its focus trap. Audit text again in each focus-visible state.
+      35 |     const count = await page.locator(state === 'dialog' ? '[role="dialog"] button' : 'a[href],button,input,select,textarea').count();
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:32:119
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Sign out keyboard focus indicator: 1.00 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Refresh keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "select All modulesCS3227 · Software Architecture keyboard focus indicator: 1.15 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "input date-filter keyboard focus indicator: 1.15 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "input date-filter keyboard focus indicator: 1.00 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Previous week keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button This week keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Next week keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Book keyboard focus indicator: 1.00 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error Context: test-results\contrast-FE-UI-CONTRAST-sl-07aaf-selected-and-keyboard-focus\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\contrast-FE-UI-CONTRAST-sl-07aaf-selected-and-keyboard-focus\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\contrast-FE-UI-CONTRAST-sl-07aaf-selected-and-keyboard-focus\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST bookings 1440px text, controls, selected and keyboard focus 
+
+    Error: control and selected boundaries
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 7
+
+    - Array []
+    + Array [
+    +   "button Sign out boundary: 1.00 < 3",
+    +   "a My bookings selected indicator: 1.10 < 3",
+    +   "button Refresh boundary: 1.54 < 3",
+    +   "input date-filter boundary: 1.54 < 3",
+    +   "button Cancel booking boundary: 1.54 < 3",
+    + ]
+
+      30 |     if (state === 'dialog') { await page.getByRole('button', { name: /^book$/i }).click(); await expect(page.getByRole('dialog')).toBeVisible(); }
+      31 |     const text = await audit(page, 'text'); expect(text.checked).toBeGreaterThan(0); expect.soft(text.failures, 'all visible text').toEqual([]);
+    > 32 |     const controls = await audit(page, 'controls'); expect.soft(controls.failures, 'control and selected boundaries').toEqual([]);
+         |                                                                                                                       ^
+      33 |     // Visit the complete keyboard cycle, including the skip link; dialog cycling
+      34 |     // is scoped by its focus trap. Audit text again in each focus-visible state.
+      35 |     const count = await page.locator(state === 'dialog' ? '[role="dialog"] button' : 'a[href],button,input,select,textarea').count();
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:32:119
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Sign out keyboard focus indicator: 1.00 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Refresh keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "input date-filter keyboard focus indicator: 1.16 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "input date-filter keyboard focus indicator: 1.00 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Cancel booking keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error Context: test-results\contrast-FE-UI-CONTRAST-bo-c1678-selected-and-keyboard-focus\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\contrast-FE-UI-CONTRAST-bo-c1678-selected-and-keyboard-focus\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\contrast-FE-UI-CONTRAST-bo-c1678-selected-and-keyboard-focus\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST dialog 1440px text, controls, selected and keyboard focus 
+
+    Error: control and selected boundaries
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Go back boundary: 1.54 < 3",
+    + ]
+
+      30 |     if (state === 'dialog') { await page.getByRole('button', { name: /^book$/i }).click(); await expect(page.getByRole('dialog')).toBeVisible(); }
+      31 |     const text = await audit(page, 'text'); expect(text.checked).toBeGreaterThan(0); expect.soft(text.failures, 'all visible text').toEqual([]);
+    > 32 |     const controls = await audit(page, 'controls'); expect.soft(controls.failures, 'control and selected boundaries').toEqual([]);
+         |                                                                                                                       ^
+      33 |     // Visit the complete keyboard cycle, including the skip link; dialog cycling
+      34 |     // is scoped by its focus trap. Audit text again in each focus-visible state.
+      35 |     const count = await page.locator(state === 'dialog' ? '[role="dialog"] button' : 'a[href],button,input,select,textarea').count();
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:32:119
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Confirm booking keyboard focus indicator: 1.84 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Go back keyboard focus indicator: 1.95 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Confirm booking keyboard focus indicator: 1.84 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error Context: test-results\contrast-FE-UI-CONTRAST-di-7cfee-selected-and-keyboard-focus\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\contrast-FE-UI-CONTRAST-di-7cfee-selected-and-keyboard-focus\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\contrast-FE-UI-CONTRAST-di-7cfee-selected-and-keyboard-focus\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST tutor 1440px text, controls, selected and keyboard focus 
+
+    Error: control and selected boundaries
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Sign out boundary: 1.00 < 3",
+    + ]
+
+      30 |     if (state === 'dialog') { await page.getByRole('button', { name: /^book$/i }).click(); await expect(page.getByRole('dialog')).toBeVisible(); }
+      31 |     const text = await audit(page, 'text'); expect(text.checked).toBeGreaterThan(0); expect.soft(text.failures, 'all visible text').toEqual([]);
+    > 32 |     const controls = await audit(page, 'controls'); expect.soft(controls.failures, 'control and selected boundaries').toEqual([]);
+         |                                                                                                                       ^
+      33 |     // Visit the complete keyboard cycle, including the skip link; dialog cycling
+      34 |     // is scoped by its focus trap. Audit text again in each focus-visible state.
+      35 |     const count = await page.locator(state === 'dialog' ? '[role="dialog"] button' : 'a[href],button,input,select,textarea').count();
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:32:119
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Sign out keyboard focus indicator: 1.00 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error Context: test-results\contrast-FE-UI-CONTRAST-tu-e0ba6-selected-and-keyboard-focus\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\contrast-FE-UI-CONTRAST-tu-e0ba6-selected-and-keyboard-focus\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\contrast-FE-UI-CONTRAST-tu-e0ba6-selected-and-keyboard-focus\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST admin 1440px text, controls, selected and keyboard focus 
+
+    Error: control and selected boundaries
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Sign out boundary: 1.00 < 3",
+    + ]
+
+      30 |     if (state === 'dialog') { await page.getByRole('button', { name: /^book$/i }).click(); await expect(page.getByRole('dialog')).toBeVisible(); }
+      31 |     const text = await audit(page, 'text'); expect(text.checked).toBeGreaterThan(0); expect.soft(text.failures, 'all visible text').toEqual([]);
+    > 32 |     const controls = await audit(page, 'controls'); expect.soft(controls.failures, 'control and selected boundaries').toEqual([]);
+         |                                                                                                                       ^
+      33 |     // Visit the complete keyboard cycle, including the skip link; dialog cycling
+      34 |     // is scoped by its focus trap. Audit text again in each focus-visible state.
+      35 |     const count = await page.locator(state === 'dialog' ? '[role="dialog"] button' : 'a[href],button,input,select,textarea').count();
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:32:119
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Sign out keyboard focus indicator: 1.00 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error Context: test-results\contrast-FE-UI-CONTRAST-ad-0d65b-selected-and-keyboard-focus\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\contrast-FE-UI-CONTRAST-ad-0d65b-selected-and-keyboard-focus\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\contrast-FE-UI-CONTRAST-ad-0d65b-selected-and-keyboard-focus\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST failure 1440px text, controls, selected and keyboard focus 
+
+    Error: keyboard focus
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "button Retry keyboard focus indicator: 1.84 < 3",
+    + ]
+
+      38 |       await page.keyboard.press('Tab');
+      39 |       const focus = await audit(page, 'focus'); focused += focus.checked;
+    > 40 |       expect.soft(focus.failures, 'keyboard focus').toEqual([]);
+         |                                                     ^
+      41 |       expect.soft((await audit(page, 'text')).failures, 'focused text').toEqual([]);
+      42 |     }
+      43 |     expect(focused).toBeGreaterThan(0);
+        at D:\cs3227\CS3227-2610-MP3\src\frontend\e2e\contrast.spec.ts:40:53
+
+    Error Context: test-results\contrast-FE-UI-CONTRAST-fa-84a65-selected-and-keyboard-focus\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\contrast-FE-UI-CONTRAST-fa-84a65-selected-and-keyboard-focus\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\contrast-FE-UI-CONTRAST-fa-84a65-selected-and-keyboard-focus\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8 failed
+    e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST login 1440px text, controls, selected and keyboard focus 
+    e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST slots 1440px text, controls, selected and keyboard focus 
+    e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST slots 320px text, controls, selected and keyboard focus 
+    e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST bookings 1440px text, controls, selected and keyboard focus 
+    e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST dialog 1440px text, controls, selected and keyboard focus 
+    e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST tutor 1440px text, controls, selected and keyboard focus 
+    e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST admin 1440px text, controls, selected and keyboard focus 
+    e2e\contrast.spec.ts:22:3 › FE-UI-CONTRAST failure 1440px text, controls, selected and keyboard focus 
+  8 passed (9.1s)

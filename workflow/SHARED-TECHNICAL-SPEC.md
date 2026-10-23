@@ -234,6 +234,12 @@ future model/tool permission needs an explicit spec change and security review.
 
 ## 6. Browser and Error Behavior
 
+Frontend FE0/FE1/FE2 scoped implementation detail and acceptance are in
+[Student frontend design](student/FRONTEND-DESIGN.md). It retains React/TypeScript/
+Vite/Bootstrap and all SH-AUTH/SH-WEB boundaries; adds no API or shared policy.
+Shared frontend development is authorized by Phuc's current request; affected
+owners' review is required before merge. Role ownership stays unchanged.
+
 SH-WEB-01: JSON contracts and HTTP statuses are defined in the integration spec.
 Reject unknown mutation-body fields to catch stale clients and actor spoofing.
 Apply validation on the backend even if React already validated.

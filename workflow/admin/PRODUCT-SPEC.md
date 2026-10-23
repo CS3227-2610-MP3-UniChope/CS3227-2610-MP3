@@ -44,7 +44,9 @@ No persistent reports, chat, exports or extra data source is required.
 
 Kok Seng decides Admin scope, management rules, statistics and AI report policies.
 Coordinate shared storage, locks and gateway interfaces with their implementers.
-Password reset and forced password change are excluded. Implementation and verification status are recorded below.
+Admin-provisioned Tutor accounts require one password change on first use; see the
+[Auth increment](../auth/FIRST-LOGIN-PASSWORD-CHANGE-SPEC.md). Password recovery
+and Admin reset remain excluded. Implementation and verification status are recorded below.
 
 
 Admin AI input/output/security limits are selected in the technical specification,
@@ -61,3 +63,11 @@ Fake reports are explicitly local; production defaults to AI_UNAVAILABLE. Comple
 a live SoC report depends on the Student-owned shared provider and durable quota
 infrastructure. No frontend or deployment is claimed. Verification results are
 recorded in logs/kokseng.md after checks complete.
+
+## Frontend increment — 23 October 2026
+
+The user has now assigned Admin and remaining authentication frontend work to
+Kok Seng. The earlier statements leaving frontend outside this scope describe the
+previous allocation. See [frontend specification](FRONTEND-SPEC.md) for the current
+scope, acceptance cases and plan. Real SoC integration remains a shared-provider
+dependency; frontend implementation does not resolve it.

@@ -14,26 +14,32 @@ auth/session, database, quota, and API contracts. Tutor code cannot invent its o
 user database, session format, SoC credentials, booking statuses, or quota counters.
 Shared contract proposals require team review before implementation.
 
-### Huanghao's shared contribution: AI infrastructure
+### Shared AI infrastructure ownership
 
-In addition to the Tutor role, Huanghao owns the shared `platform/ai` implementation:
-`AiGateway`, `FakeProvider`, the later `SocLlmProvider`, server-enforced per-account
-and provider-wide quotas, admission persistence, deadlines, sanitized provider errors,
+The Student role owns the shared `platform/ai` implementation: `AiGateway`,
+`FakeProvider`, the later `SocLlmProvider`, server-enforced per-account admission,
+per-key provider quotas, admission persistence, deadlines, sanitized provider errors,
 and infrastructure/transport tests. Coordinate AI metadata migrations with the core
-schema maintainer and authentication integration with the auth maintainer.
+schema maintainer and authentication integration with the auth maintainer. Each
+role uses its own provider key, selected only by trusted server-side task/configuration
+routing; keys are never exposed to React. The Student owner confirms the routing and
+secret-configuration contract.
 
 Each role owner remains responsible for their own AI feature's prompt, authorized
-context, task-specific output validation, UI, and acceptance tests. Huanghao's
-infrastructure ownership does not include implementing Student/Admin AI features
-or assuming ownership of core consultation persistence, authentication, or deployment.
+context, gateway integration/orchestration, task-specific output validation, UI,
+and acceptance tests. Tutor owns the Tutor-specific request and task-key mapping;
+the Student-owned shared gateway resolves the server-side key and provides generic
+provider transport and durable admission. Tutor ownership does not include
+implementing Student/Admin AI features or assuming ownership of core consultation
+persistence, authentication, or deployment.
 
 Agree the gateway request/result/failure contract with affected role owners before
 parallel implementation. Actor identity comes from trusted backend code; no browser
 parameter may choose another account for quota accounting. Develop fake-first;
 real SoC endpoint/model/key details remain deferred to provider activation.
 
-This section records Huanghao's selected contribution only. The shared ownership
-table has not been changed; teammates' allocations still require team agreement.
+This section records the current role boundary for Tutor/Student AI work. The shared
+ownership table and affected teammates' allocations still require team agreement.
 
 ## 2. Backend Structure
 
@@ -122,8 +128,13 @@ generation that replaces an edited draft requires confirmation. Bind each respon
 to account/booking/sequence; ignore stale results even if an AbortController was
 used. Aborting the browser request does not prove the provider stopped or refund quota.
 
-"Use reviewed draft" copies into the note editor without saving, confirming before
-replacing existing edits. "Save note" submits its current content and expectedVersion.
+Display the saved note as read-only by default. An explicit Edit note action opens
+the controlled textarea; cancelling dirty edits requires confirmation and restores
+the last saved content. "Use reviewed draft" opens the editor and copies the draft
+without saving, confirming before replacing existing edits. "Save note" submits its
+current content and expectedVersion. Keep the AI drafting controls collapsed until
+the Tutor chooses Prepare AI draft; hiding the controls preserves rough notes and
+draft text in component state.
 Update loaded version only on success; preserve buffers on conflict/failure. Show
 the need to reload on conflict without automatically discarding unsaved work.
 Successful saves may be reconciled through reload; do not blindly retry a lost response.
@@ -165,16 +176,18 @@ arbitrary text. No provider-specific structured-output feature is assumed.
 ### Limits and failures
 
 Input <= 8,000 code points, final draft <= 8,000 code points, application JSON request
-body <= 64 KiB, provider raw response <= 64 KiB, 30-second overall generation deadline
-including response reading. Apply a configured provider output-token cap as well;
+body <= 64 KiB, provider raw response <= 64 KiB, 20-second overall generation deadline
+including response reading. Provider request/token quotas are per role-specific API
+key; the application also applies its per-Tutor admission cap. Apply a configured provider output-token cap as well;
 its numeric value and input token accounting are deferred to SoC verification.
 The token cap never replaces character/byte validation. Configure shorter connection
 timeouts within the overall deadline rather than allowing an unbounded read.
 
-Use the shared admission service: one outstanding request per actor, 3 accepted
-Tutor requests per rolling 5 minutes, and the team/provider global budget. No
-automatic retry. Failed calls consume reservations. Fail closed for missing real
-configuration, quota-store errors, or exhausted budgets; manual notes remain usable.
+Use the shared admission service: one outstanding request per Tutor and 3 accepted
+Tutor requests per rolling 5 minutes. The provider separately enforces its quota
+per configured API key. No automatic retry. Failed calls consume reservations.
+Fail closed for missing real configuration, quota-store errors, or exhausted
+budgets; manual notes remain usable.
 
 ### Fake-first development
 

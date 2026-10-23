@@ -1,0 +1,125 @@
+[
+  {
+    "kind": "screenshot",
+    "theme": "light",
+    "width": 1440,
+    "overflow": false
+  },
+  {
+    "kind": "screenshot",
+    "theme": "light",
+    "width": 320,
+    "overflow": false
+  },
+  {
+    "kind": "screenshot",
+    "theme": "dark",
+    "width": 1440,
+    "overflow": false
+  },
+  {
+    "kind": "screenshot",
+    "theme": "dark",
+    "width": 320,
+    "overflow": false
+  },
+  {
+    "kind": "productionEarly",
+    "path": "/login",
+    "held": {
+      "theme": "dark",
+      "headings": 0,
+      "scheme": "dark"
+    },
+    "timeline": [
+      {
+        "t": 41.19999999552965,
+        "theme": "dark"
+      },
+      {
+        "t": 99.79999999701977,
+        "theme": "dark"
+      }
+    ],
+    "reload": {
+      "theme": "dark",
+      "scheme": "dark",
+      "timeline": [
+        {
+          "t": 37,
+          "theme": "dark"
+        },
+        {
+          "t": 53.600000001490116,
+          "theme": "dark"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "productionEarly",
+    "path": "/student/slots",
+    "held": {
+      "theme": "dark",
+      "headings": 0,
+      "scheme": "dark"
+    },
+    "timeline": [
+      {
+        "t": 47,
+        "theme": "dark"
+      },
+      {
+        "t": 99.60000000149012,
+        "theme": "dark"
+      }
+    ],
+    "reload": {
+      "theme": "dark",
+      "scheme": "dark",
+      "timeline": [
+        {
+          "t": 41.69999999552965,
+          "theme": "dark"
+        },
+        {
+          "t": 55.899999998509884,
+          "theme": "dark"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "productionEarly",
+    "path": "/admin",
+    "held": {
+      "theme": "dark",
+      "headings": 0,
+      "scheme": "dark"
+    },
+    "timeline": [
+      {
+        "t": 47.899999998509884,
+        "theme": "dark"
+      },
+      {
+        "t": 100.60000000149012,
+        "theme": "dark"
+      }
+    ],
+    "reload": {
+      "theme": "dark",
+      "scheme": "dark",
+      "timeline": [
+        {
+          "t": 41.400000005960464,
+          "theme": "dark"
+        },
+        {
+          "t": 57.400000005960464,
+          "theme": "dark"
+        }
+      ]
+    }
+  }
+]

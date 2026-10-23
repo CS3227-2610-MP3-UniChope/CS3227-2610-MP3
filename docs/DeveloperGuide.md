@@ -7,9 +7,8 @@ uses role-specific Student, Tutor, and Admin experiences, a Java backend, and
 PostgreSQL persistence. The backend is the authority for identity, permissions,
 validation, and consultation state; the browser does not connect to the database.
 
-This guide describes the current backend implementation and the intended web
-architecture recorded in the team specifications. Where a feature or deployment
-component is not implemented in this checkout, that status is stated explicitly.
+This guide describes the current web application and backend architecture, using
+the team specifications for detailed contracts and boundaries.
 The product and API contracts are in `workflow/`; local backend setup is in
 `src/backend/README.md`.
 
@@ -17,7 +16,7 @@ The product and API contracts are in `workflow/`; local backend setup is in
 
 | Area | Technology or location |
 | --- | --- |
-| Browser client | React, TypeScript, Vite, and Bootstrap are the shared technical specification's web-client choices. `src/frontend/` currently contains its README rather than the application source. |
+| Browser client | React, TypeScript, Vite, and Bootstrap; implemented in `src/frontend/` |
 | Backend | Java 25, Spring Boot 4.0.8, Spring MVC, Spring Security, and Gradle wrapper 9.1.0 |
 | Database | PostgreSQL with Spring JDBC `JdbcClient` and Flyway runtime migrations |
 | Password hashing | Argon2id through BouncyCastle |
@@ -28,6 +27,7 @@ The product and API contracts are in `workflow/`; local backend setup is in
 Backend sources are organized by role and shared platform responsibilities:
 
 ```text
+src/frontend/              React, TypeScript, and Vite browser application
 src/backend/src/main/java/unichope/
   admin/                 Admin API, service, reports, and PostgreSQL queries
   student/               Student booking and read APIs
@@ -50,6 +50,57 @@ depend on role packages. HTTP controllers handle request/response mapping and
 validation; services apply role rules; repository adapters perform parameterized
 SQL. The shared consultation lifecycle is the only route for slot and booking
 state transitions.
+
+### Local web application startup (Windows)
+
+Install Java 25 and Node.js 24 or newer, and start Docker Desktop. Open PowerShell
+in the repository root and run:
+
+```powershell
+.\src\backend\scripts\start-local-test.ps1
+```
+
+Enter a test-account password when prompted. The command creates or starts the
+local PostgreSQL database, builds and starts the backend, installs frontend
+dependencies if needed, starts the Vite web server, and seeds sample data through
+the real APIs. Open **<http://127.0.0.1:5173/login>** when it prints `Ready`.
+
+| Service | Local address |
+| --- | --- |
+| Web application | `http://127.0.0.1:5173` |
+| Backend API | `http://127.0.0.1:8080` |
+| Sample PostgreSQL database | `127.0.0.1:55433`, container `unichope-manual-db` |
+
+Sign in with one of these synthetic accounts, using the password you supplied:
+
+| Account | Sample content |
+| --- | --- |
+| `student1@example.edu` | Upcoming booking and cancelled-booking history |
+| `student2@example.edu` | No bookings initially; browse and book consultations |
+| `tutor1@example.edu`, `tutor2@example.edu` | Tutor accounts; current web destinations are placeholders |
+| `admin@example.edu` | Admin workspace; created once by the existing bootstrap task |
+
+The sample includes three modules and about 20 consultation slots over the next
+seven days in Singapore time. Student pages support finding consultations,
+booking, viewing bookings and cancellation. The theme switch is available in each
+page header.
+
+For later testing, run the same command with the **same password**. Existing
+passwords are not reset. Accounts and modules are reused, overlapping slots are
+skipped, existing bookings are preserved, and an upcoming sample booking is added
+if student1 no longer has one. Database records survive stopping and restarting
+the container; removing the container deletes this sample database.
+
+The servers run in the background. Startup output is in
+`src/backend/build/local-test/unichope-manual-db/` (`build.txt`, `backend.out.txt`,
+`backend.err.txt`, `frontend.out.txt` and `frontend.err.txt`; frontend output files
+are created when the command starts that server). Rerunning the command reuses
+running servers. Vite updates frontend edits automatically; restart the backend
+after Java changes.
+
+Use `-BackendOnly` to start and seed only the backend. Alternate container names
+and ports are also supported; see the [setup script](../src/backend/scripts/start-local-test.ps1)
+and [backend setup instructions](../src/backend/README.md#reusable-local-sample-setup-windows).
 
 ## 3. Whole-web architecture
 
@@ -103,9 +154,8 @@ flowchart LR
 The ingress represents the HTTPS boundary expected in a deployment; it is not a
 separate microservice. The runtime uses a single Spring Boot application and one
 PostgreSQL database per environment. In this checkout, backend APIs and database
-wiring exist; the React source is not present under `src/frontend/`. The diagram
-shows the end-to-end product boundary specified for the team, not a claim that the
-frontend or a particular hosting platform is included here. Tutor/Admin AI calls
+wiring exist, and the React client is implemented under `src/frontend/`. The diagram shows the current end-to-end application boundary; the ingress and
+hosting configuration depend on the deployment environment. Tutor/Admin AI calls
 pass through the shared gateway boundary; production AI availability is described
 in [AI integration](#9-ai-integration-boundary).
 
@@ -120,6 +170,24 @@ in [AI integration](#9-ai-integration-boundary).
 | `platform/core` | Shared domain records, account storage, repository contracts/adapters, and locked/atomic slot-booking transitions. |
 | PostgreSQL | Persist accounts, modules, assignments, slots, bookings, notes, and AI admission data represented by runtime migrations. |
 | AI gateway | Boundary between role-specific validated requests and configured providers/admission controls. Fake mode is local-only. |
+
+### Current browser application
+
+The Student, Tutor, and Admin browser workspaces are part of the React application.
+The Admin workspace is available after Admin sign-in at `/admin`. It includes users,
+modules, tutor assignments, booking activity, all-time statistics and the activity
+report assistant. Public Student registration is at `/register`; successful
+registration returns to sign-in. Existing Student routes are unchanged.
+
+The assistant is read only and displays its source snapshot. Fake-provider
+responses are clearly labelled; the default unavailable AI mode leaves management
+and statistics usable. For a local mocked demonstration only, start the backend
+with profiles `app-api,local` and `--unichope.ai.mode=fake`. Real SoC remains a
+shared-provider dependency. No frontend secrets or provider keys are required.
+
+Frontend CI installs Node 24, runs unit tests and builds the frontend. Run browser
+checks locally with the frontend README commands; port 5173 must be free because
+the test configuration starts a fresh server rather than reusing another checkout.
 
 ## 4. Application startup and request flow
 
@@ -257,7 +325,7 @@ instants. Wrong-owner and missing resource IDs share the same not-found behavior
 The browser treats generated text as plain text, binds async responses to the
 current account/booking/sequence, and clears private buffers on sign-out or account
 change. These browser behaviors are specified in `workflow/tutor/TECHNICAL-SPEC.md`;
-frontend source is not present in this checkout.
+the Tutor client is implemented in `src/frontend/src/tutor/`.
 
 ## 6. Student
 
@@ -380,9 +448,8 @@ verification; a documented command is not evidence that it was run.
 
 ## 12. Known limits and acknowledgements
 
-- The frontend source is not present under `src/frontend/`, and this checkout
-  does not include deployment manifests or hosting configuration. The React
-  architecture is specified by the shared technical document.
+- The production hosting environment and its HTTPS/proxy settings are deployment-specific;
+  use the backend setup and release instructions for the selected environment.
 - Server-side sessions and login counters are in memory and require a single app
   replica. Restarting the app invalidates sessions and clears login limits.
 - There is no password reset flow. Initial Tutor password change is mandatory;

@@ -1,0 +1,235 @@
+diff --git a/src/frontend/index.html b/src/frontend/index.html
+index 9a0d9f5..293b868 100644
+--- a/src/frontend/index.html
++++ b/src/frontend/index.html
+@@ -4,10 +4,11 @@
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <meta name="theme-color" content="#ffffff" />
++    <script src="/theme.js"></script>
+     <title>UniChope</title>
++    <script type="module" src="/src/main.tsx"></script>
+   </head>
+   <body>
+     <div id="root"></div>
+-    <script type="module" src="/src/main.tsx"></script>
+   </body>
+ </html>
+diff --git a/src/frontend/src/App.tsx b/src/frontend/src/App.tsx
+index 51b82aa..433b968 100644
+--- a/src/frontend/src/App.tsx
++++ b/src/frontend/src/App.tsx
+@@ -4,8 +4,12 @@ import { Brand, Icon, Link, Loading } from './components';
+ import Login from './Login';
+ import { navigate, useLocation } from './navigation';
+ import StudentWorkspace from './student/StudentWorkspace';
++import { ThemeProvider, ThemeSwitch } from './theme';
+ export const home = (actor: Actor) => actor.role === 'STUDENT' ? '/student/slots' : `/${actor.role.toLowerCase()}`;
+ export default function App() {
++  return <ThemeProvider><SessionApp /></ThemeProvider>;
++}
++function SessionApp() {
+   const [api] = useState(() => new ApiClient());
+   const [actor, setActor] = useState<Actor | null>(null); const [restoring, setRestoring] = useState(true);
+   const [message, setMessage] = useState(''); const [logoutFailed, setLogoutFailed] = useState(false);
+@@ -50,9 +54,9 @@ export default function App() {
+   }
+   const unknown = !['/', '/login', '/tutor', '/admin', '/student/slots', '/student/bookings'].includes(window.location.pathname);
+   return <><a className="skip-link" href="#main-content">Skip to content</a>
+-    {(restoring || restoreFailed || unknown) && <header className="app-header"><Brand /></header>}
++    {(restoring || restoreFailed || unknown) && <header className="app-header"><Brand /><div className="account"><ThemeSwitch /></div></header>}
+     {restoring ? <main id="main-content" className="restore-screen"><h1>Opening your workspace</h1><Loading label="Checking your session" /></main> : restoreFailed ? <main id="main-content" className="restore-screen"><h1>Unable to open your workspace</h1><p role="alert">{message}</p><button className="btn btn-primary" onClick={() => setRestoreAttempt(value => value + 1)}>Try again</button></main> : unknown ? <main id="main-content" className="restore-screen"><h1>Page not found</h1><p>This page could not be found.</p><Link href={actor ? home(actor) : '/login'}>Back to home</Link></main> : !actor ? <Login login={login} message={message} signingOut={signingOut} retryLogout={logoutFailed ? () => void logout() : undefined} /> : <>
+-      <header className="app-header"><Link href={home(actor)} className="brand-link"><Brand /></Link>{actor.role === 'STUDENT' && <span className="header-caption">CONSULTATION PLANNER</span>}<div className="account">{actor.role === 'STUDENT' && <span><strong>{actor.name}</strong><small>{actor.role.charAt(0) + actor.role.slice(1).toLowerCase()}</small></span>}<button className="btn sign-out" onClick={() => void logout()}><Icon name="logout" />Sign out</button></div></header>
++      <header className="app-header"><Link href={home(actor)} className="brand-link"><Brand /></Link>{actor.role === 'STUDENT' && <span className="header-caption">CONSULTATION PLANNER</span>}<div className="account">{actor.role === 'STUDENT' && <span><strong>{actor.name}</strong><small>{actor.role.charAt(0) + actor.role.slice(1).toLowerCase()}</small></span>}<ThemeSwitch /><button className="btn sign-out" onClick={() => void logout()}><Icon name="logout" />Sign out</button></div></header>
+       {actor.role === 'STUDENT' ? <StudentWorkspace key={actor.id} api={api} location={location} signOut={() => void logout()} /> : <main id="main-content" tabIndex={-1} className="placeholder-page"><div className="placeholder-icon"><Icon name="book" /></div><span className="eyebrow">YOUR UNICHOPE WORKSPACE</span><h1>{actor.role === 'TUTOR' ? 'Tutor' : 'Admin'} home</h1><p>Your workspace is not ready yet.</p><p className="muted">This space is being prepared for you. Please check back later.</p></main>}
+     </>}
+   </>;
+diff --git a/src/frontend/src/Login.tsx b/src/frontend/src/Login.tsx
+index 48aad8a..d19c955 100644
+--- a/src/frontend/src/Login.tsx
++++ b/src/frontend/src/Login.tsx
+@@ -1,6 +1,7 @@
+ ﻿import { useState } from 'react';
+ import { ApiError } from './api';
+ import { Brand, Icon } from './components';
++import { ThemeSwitch } from './theme';
+ export default function Login({ login, message, retryLogout, signingOut = false }: { login: (email: string, password: string) => Promise<void>; message: string; retryLogout?: () => void; signingOut?: boolean }) {
+   const [email, setEmail] = useState(''); const [password, setPassword] = useState('');
+   const [pending, setPending] = useState(false); const [error, setError] = useState(''); const [csrfFailed, setCsrfFailed] = useState(false);
+@@ -13,7 +14,7 @@ export default function Login({ login, message, retryLogout, signingOut = false
+       setCsrfFailed(true);
+     } finally { setPassword(''); setPending(false); }
+   }
+-  return <div className="login-page"><header className="login-header"><Brand /><span className="quiet">Your time, well spent.</span></header>
++  return <div className="login-page"><header className="login-header"><Brand /><span className="quiet">Your time, well spent.</span><ThemeSwitch /></header>
+     <main id="main-content" tabIndex={-1} className="login-main"><div className="login-intro"><span className="eyebrow">A LITTLE TIME. A LOT OF CLARITY.</span><p className="login-intro-title">Make room for<br />your next question.</p><p>Find a consultation, choose a time, and keep your learning moving.</p><div className="login-note"><Icon name="calendar" /><span>A simpler way to connect<br /><strong>One consultation at a time.</strong></span></div></div>
+       <section className="login-form-panel" aria-labelledby="login-title"><span className="eyebrow">WELCOME TO UNICHOPE</span><h1 id="login-title">Sign in</h1><p className="muted">Your next conversation starts here.</p>
+         {(error || message) && <div role="alert" className="notice error">{error || message}</div>}
+diff --git a/src/frontend/src/styles.css b/src/frontend/src/styles.css
+index 9612646..9703bd7 100644
+--- a/src/frontend/src/styles.css
++++ b/src/frontend/src/styles.css
+@@ -1,8 +1,31 @@
+-:root {
++/* Local palette values live here; Bootstrap and application surfaces share them. */
++:root, [data-bs-theme="light"] {
++  color-scheme: light;
+   --ink: #252d3a; --muted: #657084; --surface: #ffffff; --canvas: #f5f6f8;
+-  --control-line: #7b8493; --line: #dde1e7; --soft-line: #e9ecf0; --accent: #b44320; --accent-hover: #943418;
+-  --accent-soft: #fff2eb; --success: #276442; --danger: #96352c;
++  --control-line: #7b8493; --line: #dde1e7; --soft-line: #e9ecf0;
++  --accent: #b44320; --accent-hover: #943418; --accent-soft: #fff2eb; --on-accent: #ffffff;
++  --success: #276442; --success-soft: #f1f8f3; --success-line: #c5decc;
++  --danger: #96352c; --danger-soft: #fff6f3; --danger-line: #efc9c0;
++  --hover-surface: #faf5f1; --status-dot: #7b8a80; --stripe: #f7f8fa;
++  --event-surface: #fff4eb; --event-line: #ebc5af; --subtle-surface: #fafbfc;
++  --skeleton: #e7eaf0; --backdrop: #17212e80; --shadow: #15203020;
++  --login-canvas: #fafaf9; --focus-halo: #b443201a;
++}
++[data-bs-theme="dark"] {
++  color-scheme: dark;
++  --ink: #eef1f6; --muted: #b0bac9; --surface: #171d26; --canvas: #202733;
++  --control-line: #8898ac; --line: #394453; --soft-line: #303b4a;
++  --accent: #ffab85; --accent-hover: #ffc4aa; --accent-soft: #392a25; --on-accent: #2b1a12;
++  --success: #a0ddba; --success-soft: #1d3329; --success-line: #50785e;
++  --danger: #ffb4a6; --danger-soft: #3a2526; --danger-line: #8a5652;
++  --hover-surface: #332722; --status-dot: #a0b7a8; --stripe: #1c2430;
++  --event-surface: #332820; --event-line: #8d6b56; --subtle-surface: #1d2530;
++  --skeleton: #394656; --backdrop: #080d14b3; --shadow: #00000066;
++  --login-canvas: #131922; --focus-halo: #ffab8533;
++}
++:root {
+   --radius: .25rem; --bs-body-color: var(--ink); --bs-body-bg: var(--surface);
++  --bs-secondary-color: var(--muted); --bs-border-color: var(--control-line);
+   --bs-link-color: var(--accent); --bs-link-hover-color: var(--accent-hover);
+   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+ }
+@@ -22,40 +45,40 @@ h3 { font-size: .875rem; font-weight: 600; }
+ .skip-link:focus { transform: translateY(0); }
+ .line-icon { width: 1.25rem; height: 1.25rem; flex-shrink: 0; vertical-align: middle; }
+ .brand { display: inline-flex; align-items: center; gap: .625rem; color: var(--ink); font-size: 1.375rem; font-weight: 750; letter-spacing: -.045em; white-space: nowrap; }
+-.brand-mark { background: var(--accent); color: white; width: 2rem; height: 2rem; display: inline-flex; align-items: center; justify-content: center; border-radius: .375rem; }
++.brand-mark { background: var(--accent); color: var(--on-accent); width: 2rem; height: 2rem; display: inline-flex; align-items: center; justify-content: center; border-radius: .375rem; }
+ .brand-link { text-decoration: none; }.btn { border-radius: var(--radius); font-size: .8125rem; font-weight: 600; padding: .5rem .875rem; line-height: 1.4; }
+-.btn-primary { --bs-btn-bg: var(--accent); --bs-btn-border-color: var(--accent); --bs-btn-hover-bg: var(--accent-hover); --bs-btn-hover-border-color: var(--accent-hover); --bs-btn-active-bg: var(--accent-hover); --bs-btn-active-border-color: var(--accent-hover); --bs-btn-disabled-bg: var(--accent); --bs-btn-disabled-border-color: var(--accent); }
++.btn-primary { --bs-btn-color: var(--on-accent); --bs-btn-hover-color: var(--on-accent); --bs-btn-active-color: var(--on-accent); --bs-btn-disabled-color: var(--on-accent); --bs-btn-bg: var(--accent); --bs-btn-border-color: var(--accent); --bs-btn-hover-bg: var(--accent-hover); --bs-btn-hover-border-color: var(--accent-hover); --bs-btn-active-bg: var(--accent-hover); --bs-btn-active-border-color: var(--accent-hover); --bs-btn-disabled-bg: var(--accent); --bs-btn-disabled-border-color: var(--accent); }
+ .btn-outline-secondary { --bs-btn-color: var(--ink); --bs-btn-border-color: var(--control-line); --bs-btn-hover-bg: var(--canvas); --bs-btn-hover-color: var(--ink); --bs-btn-hover-border-color: var(--control-line); --bs-btn-active-bg: var(--canvas); --bs-btn-active-color: var(--ink); background: var(--surface); }
+ .text-button { padding: 0; background: none; border: 0; color: var(--accent); font-weight: 600; font-size: .75rem; text-decoration: underline; text-underline-offset: .2em; }
+-.form-control,.form-select { font-size: .8125rem; border-radius: var(--radius); border-color: var(--control-line); min-height: 2.5rem; color: var(--ink); }
+-.form-control:focus,.form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 .2rem #b443201a; }
++.form-control,.form-select { font-size: .8125rem; border-radius: var(--radius); border-color: var(--control-line); min-height: 2.5rem; color: var(--ink); background-color: var(--surface); }
++.form-control:focus,.form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 .2rem var(--focus-halo); }
+ label { font-size: .75rem; font-weight: 650; display: block; margin: 1.25rem 0 .5rem; }
+ .notice { display: flex; align-items: center; flex-wrap: wrap; gap: .75rem; padding: .875rem 1rem; border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 1.25rem; font-size: .8125rem; }
+-.notice.error { color: var(--danger); background: #fff6f3; border-color: #efc9c0; }.notice.success { color: var(--success); background: #f1f8f3; border-color: #c5decc; }
++.notice.error { color: var(--danger); background: var(--danger-soft); border-color: var(--danger-line); }.notice.success { color: var(--success); background: var(--success-soft); border-color: var(--success-line); }
+ .notice a,.notice button { margin-left: .25rem; }
+ .app-header { min-height: 4.5rem; padding: .875rem 2rem; border-bottom: 1px solid var(--line); display: flex; gap: 2rem; align-items: center; background: var(--canvas); }
+-.header-caption { color: var(--muted); font-size: .625rem; letter-spacing: .15em; border-left: 1px solid #ccd2da; padding-left: 2rem; }
++.header-caption { color: var(--muted); font-size: .625rem; letter-spacing: .15em; border-left: 1px solid var(--line); padding-left: 2rem; }
+ .account { margin-left: auto; display: flex; align-items: center; gap: 1.5rem; min-width: 0; }.account>span { text-align: right; min-width: 0; overflow-wrap: anywhere; }.account strong { font-size: .75rem; font-weight: 600; }.account small { display: block; color: var(--muted); font-size: .625rem; }
+ .sign-out { display: inline-flex; align-items: center; gap: .5rem; color: var(--muted); font-size: .75rem; border-left: 1px solid var(--line); padding-left: 1.25rem; white-space: nowrap; }
+ .student-layout { display: grid; grid-template-columns: 12.5rem minmax(0,1fr); min-height: calc(100vh - 4.5rem); }
+ .workspace-nav { padding: 2rem 1rem; border-right: 1px solid var(--soft-line); display: flex; flex-direction: column; gap: .5rem; }
+ .nav-caption { font-size: .5625rem; color: var(--muted); font-weight: 700; letter-spacing: .14em; padding: 0 .75rem; margin-bottom: 1rem; }
+ .workspace-nav>a { display: flex; align-items: center; gap: .75rem; color: var(--muted); text-decoration: none; padding: .75rem; border-radius: var(--radius); font-size: .75rem; line-height: 1.5; }
+-.workspace-nav>a[aria-current] { background: var(--accent-soft); color: var(--accent); font-weight: 650; }.workspace-nav>a:hover { color: var(--accent); background: #faf5f1; }
+-.nav-footnote { margin-top: auto; padding: 2rem .75rem 0; font-size: .625rem; color: var(--muted); }.tiny-dot { display: inline-block; width: .375rem; height: .375rem; border-radius: 50%; background: #7b8a80; margin-right: .375rem; }.nav-timezone { display: block; margin: .375rem 0 0 .75rem; font-size: .5625rem; }
++.workspace-nav>a[aria-current] { background: var(--accent-soft); color: var(--accent); font-weight: 650; }.workspace-nav>a:hover { color: var(--accent); background: var(--hover-surface); }
++.nav-footnote { margin-top: auto; padding: 2rem .75rem 0; font-size: .625rem; color: var(--muted); }.tiny-dot { display: inline-block; width: .375rem; height: .375rem; border-radius: 50%; background: var(--status-dot); margin-right: .375rem; }.nav-timezone { display: block; margin: .375rem 0 0 .75rem; font-size: .5625rem; }
+ .workspace-main { padding: 2.5rem 2rem 3rem; min-width: 0; }.page-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }.page-heading p { margin: 0; font-size: .8125rem; }.refresh-button { flex-shrink: 0; }
+ .browse-layout { display: grid; grid-template-columns: 11.5rem minmax(0,1fr); gap: 1.5rem; align-items: start; }.filter-sidebar { border-top: 2px solid var(--ink); padding-top: 1rem; min-width: 0; }.filter-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }.filter-heading h2 { font-size: .875rem; margin: 0; }.filter-heading button { font-size: .625rem; }.filter-sidebar label { margin-top: 1.5rem; }.filter-sidebar .form-select { padding-left: .625rem; }.filter-tip { display: flex; align-items: flex-start; gap: .5rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); }.filter-tip .line-icon { width: 1rem; height: 1rem; margin-top: .125rem; }.filter-tip p { font-size: .6875rem; line-height: 1.7; }.filter-tip strong { font-weight: 600; }
+ .results { min-width: 0; }.week-toolbar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: 1.25rem; min-height: 3rem; }.week-toolbar h2 { font-size: 1rem; letter-spacing: -.02em; margin: 0 0 .25rem; }.week-toolbar .small { font-size: .6875rem; }.week-controls { display: flex; gap: .375rem; flex-shrink: 0; }.week-controls .btn { font-size: .6875rem; padding: .375rem .625rem; }.week-controls button:first-child,.week-controls button:last-child { font-size: 1rem; line-height: 1; }
+-.desktop-timetable { border: 1px solid #d2d8e1; border-radius: var(--radius); overflow: hidden; }.timetable-head,.time-band { display: grid; grid-template-columns: 2.75rem repeat(7,minmax(0,1fr)); }.timetable-head { background: var(--canvas); border-bottom: 1px solid #d2d8e1; }.zone-label { font-size: .5rem; color: var(--muted); align-self: end; padding: .75rem .375rem; }.day-header { border-left: 1px solid var(--line); padding: .75rem .25rem; text-align: center; font-size: .625rem; min-width: 0; }.day-header span { display: block; }.day-header strong { font-size: .6875rem; font-weight: 650; }.day-header.today { color: var(--accent); background: var(--accent-soft); }.time-band { min-height: 3rem; border-bottom: 1px solid var(--soft-line); }.time-band:last-child { border-bottom: 0; }.time-band:nth-child(odd) { background: #f7f8fa; }.time-label { padding: .375rem .25rem; font-size: .5625rem; color: var(--muted); }.day-cell { border-left: 1px solid var(--soft-line); padding: .25rem; min-width: 0; }
+-.consultation { padding: .625rem .5rem; background: #fff4eb; border: 1px solid #ebc5af; border-left: 3px solid var(--accent); border-radius: .1875rem; margin-bottom: .375rem; overflow-wrap: anywhere; }.consultation:last-child { margin-bottom: 0; }.module-code { color: var(--accent); font-size: .6875rem; font-weight: 750; letter-spacing: .025em; }.consultation h3 { font-size: .625rem; line-height: 1.5; margin: .25rem 0 .5rem; font-weight: 550; }.tutor-name { margin-bottom: .5rem; font-size: .625rem; }.consultation-time { display: flex; align-items: flex-start; gap: .375rem; margin: .5rem 0 .75rem; font-size: .5625rem; line-height: 1.6; }.consultation .consultation-time .line-icon { display: none; }.consultation-time .line-icon { width: 1rem; height: 1rem; margin-top: .125rem; }.btn-book { background: white; color: var(--accent); border: 1px solid var(--accent); padding: .25rem .5rem; font-size: .625rem; width: 100%; }.btn-book:hover { color: white; background: var(--accent); border-color: var(--accent); }
+-.booking-tabs { display: flex; border-bottom: 1px solid var(--line); margin-bottom: 2rem; gap: 1.75rem; }.booking-tabs button { background: none; border: 0; padding: .5rem 0 .875rem; color: var(--muted); font-size: .8125rem; border-bottom: 2px solid transparent; }.booking-tabs button.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 650; }.booking-list { border-top: 1px solid var(--line); }.booking-row { padding: 1.5rem .25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }.booking-row h3 { font-size: 1rem; margin: .25rem 0 .5rem; }.booking-row .tutor-name { font-size: .8125rem; }.booking-row .consultation-time { font-size: .75rem; margin-bottom: 0; }.booking-row .module-code { font-size: .75rem; }.booking-row .consultation-action { display: flex; flex-direction: column; align-items: flex-end; gap: .75rem; flex-shrink: 0; }.booking-status { display: inline-block; font-size: .625rem; padding: .125rem .5rem; border: 1px solid var(--line); border-radius: 1rem; color: var(--muted); background: var(--canvas); }.booking-status.active { color: var(--success); border-color: #c5decc; background: #f1f8f3; }
+-.empty-state { padding: 4rem 1.5rem; text-align: center; border: 1px dashed #cbd1da; border-radius: var(--radius); background: #fafbfc; }.empty-state>.line-icon { width: 2rem; height: 2rem; color: var(--muted); margin-bottom: 1rem; }.empty-state h2 { font-size: 1rem; }.empty-state p { color: var(--muted); font-size: .8125rem; max-width: 24rem; margin: 0 auto; }.loading-state { padding: 2rem; background: #fafbfc; border: 1px solid var(--soft-line); }.loading-state p { color: var(--muted); font-size: .8125rem; margin: 1rem 0 0; }.skeleton { display: block; width: 80%; height: .875rem; background: #e7eaf0; margin-bottom: .75rem; border-radius: .125rem; }.skeleton.short { width: 50%; }
+-.dialog-backdrop { position: fixed; inset: 0; background: #17212e80; z-index: 1050; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto; }.confirmation { width: 30rem; max-width: 100%; max-height: calc(100dvh - 2rem); overflow-y: auto; background: var(--surface); padding: 2rem; border-radius: .375rem; box-shadow: 0 .75rem 3rem #15203020; overflow-wrap: anywhere; }.confirmation h2 { font-size: 1.5rem; letter-spacing: -.035em; margin-bottom: .75rem; }.confirmation>p { font-size: .8125rem; color: var(--muted); }.confirmation-details { margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-left: 3px solid var(--accent); background: #fafbfc; }.confirmation-details h3 { font-size: 1rem; margin: .25rem 0 .75rem; }.confirmation-details p { font-size: .8125rem; margin-bottom: .75rem; }.confirmation-details p:last-child { margin: 0; }.dialog-actions { display: flex; justify-content: flex-end; gap: .75rem; }.dialog-actions .btn { padding: .625rem .875rem; }
++.desktop-timetable { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }.timetable-head,.time-band { display: grid; grid-template-columns: 2.75rem repeat(7,minmax(0,1fr)); }.timetable-head { background: var(--canvas); border-bottom: 1px solid var(--line); }.zone-label { font-size: .5rem; color: var(--muted); align-self: end; padding: .75rem .375rem; }.day-header { border-left: 1px solid var(--line); padding: .75rem .25rem; text-align: center; font-size: .625rem; min-width: 0; }.day-header span { display: block; }.day-header strong { font-size: .6875rem; font-weight: 650; }.day-header.today { color: var(--accent); background: var(--accent-soft); }.time-band { min-height: 3rem; border-bottom: 1px solid var(--soft-line); }.time-band:last-child { border-bottom: 0; }.time-band:nth-child(odd) { background: var(--stripe); }.time-label { padding: .375rem .25rem; font-size: .5625rem; color: var(--muted); }.day-cell { border-left: 1px solid var(--soft-line); padding: .25rem; min-width: 0; }
++.consultation { padding: .625rem .5rem; background: var(--event-surface); border: 1px solid var(--event-line); border-left: 3px solid var(--accent); border-radius: .1875rem; margin-bottom: .375rem; overflow-wrap: anywhere; }.consultation:last-child { margin-bottom: 0; }.module-code { color: var(--accent); font-size: .6875rem; font-weight: 750; letter-spacing: .025em; }.consultation h3 { font-size: .625rem; line-height: 1.5; margin: .25rem 0 .5rem; font-weight: 550; }.tutor-name { margin-bottom: .5rem; font-size: .625rem; }.consultation-time { display: flex; align-items: flex-start; gap: .375rem; margin: .5rem 0 .75rem; font-size: .5625rem; line-height: 1.6; }.consultation .consultation-time .line-icon { display: none; }.consultation-time .line-icon { width: 1rem; height: 1rem; margin-top: .125rem; }.btn-book { background: var(--surface); color: var(--accent); border: 1px solid var(--accent); padding: .25rem .5rem; font-size: .625rem; width: 100%; }.btn-book:hover { color: var(--on-accent); background: var(--accent); border-color: var(--accent); }
++.booking-tabs { display: flex; border-bottom: 1px solid var(--line); margin-bottom: 2rem; gap: 1.75rem; }.booking-tabs button { background: none; border: 0; padding: .5rem 0 .875rem; color: var(--muted); font-size: .8125rem; border-bottom: 2px solid transparent; }.booking-tabs button.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 650; }.booking-list { border-top: 1px solid var(--line); }.booking-row { padding: 1.5rem .25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }.booking-row h3 { font-size: 1rem; margin: .25rem 0 .5rem; }.booking-row .tutor-name { font-size: .8125rem; }.booking-row .consultation-time { font-size: .75rem; margin-bottom: 0; }.booking-row .module-code { font-size: .75rem; }.booking-row .consultation-action { display: flex; flex-direction: column; align-items: flex-end; gap: .75rem; flex-shrink: 0; }.booking-status { display: inline-block; font-size: .625rem; padding: .125rem .5rem; border: 1px solid var(--line); border-radius: 1rem; color: var(--muted); background: var(--canvas); }.booking-status.active { color: var(--success); border-color: var(--success-line); background: var(--success-soft); }
++.empty-state { padding: 4rem 1.5rem; text-align: center; border: 1px dashed var(--line); border-radius: var(--radius); background: var(--subtle-surface); }.empty-state>.line-icon { width: 2rem; height: 2rem; color: var(--muted); margin-bottom: 1rem; }.empty-state h2 { font-size: 1rem; }.empty-state p { color: var(--muted); font-size: .8125rem; max-width: 24rem; margin: 0 auto; }.loading-state { padding: 2rem; background: var(--subtle-surface); border: 1px solid var(--soft-line); }.loading-state p { color: var(--muted); font-size: .8125rem; margin: 1rem 0 0; }.skeleton { display: block; width: 80%; height: .875rem; background: var(--skeleton); margin-bottom: .75rem; border-radius: .125rem; }.skeleton.short { width: 50%; }
++.dialog-backdrop { position: fixed; inset: 0; background: var(--backdrop); z-index: 1050; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto; }.confirmation { width: 30rem; max-width: 100%; max-height: calc(100dvh - 2rem); overflow-y: auto; background: var(--surface); padding: 2rem; border-radius: .375rem; box-shadow: 0 .75rem 3rem var(--shadow); overflow-wrap: anywhere; }.confirmation h2 { font-size: 1.5rem; letter-spacing: -.035em; margin-bottom: .75rem; }.confirmation>p { font-size: .8125rem; color: var(--muted); }.confirmation-details { margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--subtle-surface); }.confirmation-details h3 { font-size: 1rem; margin: .25rem 0 .75rem; }.confirmation-details p { font-size: .8125rem; margin-bottom: .75rem; }.confirmation-details p:last-child { margin: 0; }.dialog-actions { display: flex; justify-content: flex-end; gap: .75rem; }.dialog-actions .btn { padding: .625rem .875rem; }
+ .placeholder-page { max-width: 40rem; margin: 6rem auto; padding: 2rem; text-align: center; }.placeholder-icon { color: var(--accent); width: 4rem; height: 4rem; background: var(--accent-soft); display: grid; place-items: center; margin: 0 auto 2rem; border-radius: .5rem; }.placeholder-icon .line-icon { width: 2rem; height: 2rem; }.placeholder-page h1 { margin-bottom: 1.5rem; }.restore-screen { padding: 4rem 1.5rem; margin: auto; max-width: 40rem; }.restore-screen h1 { margin-top: 3rem; }
+-.login-page { min-height: 100dvh; background: #fafaf9; display: flex; flex-direction: column; }.login-header { padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); background: var(--surface); }.login-header .quiet { font-size: .75rem; }.login-main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 5rem; width: min(100%,64rem); margin: auto; padding: 4rem 2rem; }.login-intro { max-width: 26rem; }.login-intro .eyebrow { color: var(--accent); }.login-intro .login-intro-title { color: var(--ink); max-width: none; font-size: 2.875rem; line-height: 1.15; letter-spacing: -.055em; font-weight: 600; margin: 1.25rem 0 1.5rem; }.login-intro>p { font-size: 1rem; line-height: 1.8; color: var(--muted); max-width: 23rem; }.login-note { display: flex; gap: 1rem; align-items: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: .6875rem; color: var(--muted); }.login-note .line-icon { color: var(--accent); width: 1.75rem; height: 1.75rem; }.login-note strong { color: var(--ink); font-weight: 550; }.login-form-panel { background: var(--surface); padding: 2.5rem; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius); }.login-form-panel h1 { font-size: 1.875rem; }.login-form-panel>.muted { margin-bottom: 2rem; font-size: .8125rem; }.login-form-panel label { margin-top: 1.25rem; }.login-form-panel .form-control { min-height: 2.75rem; }.login-submit { margin-top: 1.75rem; width: 100%; display: flex; align-items: center; justify-content: space-between; min-height: 2.75rem; }.login-help { margin: 1.5rem 0 0; font-size: .6875rem; color: var(--muted); text-align: center; }.login-footer { text-align: center; color: var(--muted); font-size: .625rem; padding: 1.5rem; border-top: 1px solid var(--soft-line); }
++.login-page { min-height: 100dvh; background: var(--login-canvas); display: flex; flex-direction: column; }.login-header { padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); background: var(--surface); }.login-header .quiet { font-size: .75rem; }.login-main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 5rem; width: min(100%,64rem); margin: auto; padding: 4rem 2rem; }.login-intro { max-width: 26rem; }.login-intro .eyebrow { color: var(--accent); }.login-intro .login-intro-title { color: var(--ink); max-width: none; font-size: 2.875rem; line-height: 1.15; letter-spacing: -.055em; font-weight: 600; margin: 1.25rem 0 1.5rem; }.login-intro>p { font-size: 1rem; line-height: 1.8; color: var(--muted); max-width: 23rem; }.login-note { display: flex; gap: 1rem; align-items: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: .6875rem; color: var(--muted); }.login-note .line-icon { color: var(--accent); width: 1.75rem; height: 1.75rem; }.login-note strong { color: var(--ink); font-weight: 550; }.login-form-panel { background: var(--surface); padding: 2.5rem; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius); }.login-form-panel h1 { font-size: 1.875rem; }.login-form-panel>.muted { margin-bottom: 2rem; font-size: .8125rem; }.login-form-panel label { margin-top: 1.25rem; }.login-form-panel .form-control { min-height: 2.75rem; }.login-submit { margin-top: 1.75rem; width: 100%; display: flex; align-items: center; justify-content: space-between; min-height: 2.75rem; }.login-help { margin: 1.5rem 0 0; font-size: .6875rem; color: var(--muted); text-align: center; }.login-footer { text-align: center; color: var(--muted); font-size: .625rem; padding: 1.5rem; border-top: 1px solid var(--soft-line); }
+ @media (max-width: 1199px) { .student-layout { grid-template-columns: 10.5rem minmax(0,1fr); }.workspace-main { padding: 2rem 1.25rem; }.workspace-nav { padding: 2rem .625rem; }.browse-layout { grid-template-columns: 9.5rem minmax(0,1fr); gap: 1rem; }.day-header span { font-size: .5625rem; }.timetable-head,.time-band { grid-template-columns: 2.25rem repeat(7,minmax(0,1fr)); }.consultation { padding: .5rem .25rem; }.page-heading h1 { font-size: 1.625rem; } }
+ @media (max-width: 1023px) { .app-header { padding: 1rem 1.5rem; }.header-caption { display: none; }.student-layout { display: block; }.workspace-nav { padding: .5rem 1.5rem; flex-direction: row; border-right: 0; border-bottom: 1px solid var(--line); }.nav-caption,.nav-footnote { display: none; }.workspace-nav>a { padding: .625rem .75rem; }.workspace-main { padding: 2rem 1.5rem; }.browse-layout { grid-template-columns: 12rem minmax(0,1fr); gap: 1.5rem; }.day-list { margin-bottom: 1.5rem; }.day-list>h2 { font-size: .75rem; color: var(--muted); background: var(--canvas); padding: .75rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }.consultation { padding: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .75rem; }.consultation h3 { font-size: .8125rem; margin: .25rem 0 .75rem; }.consultation .module-code { font-size: .75rem; }.consultation .tutor-name { font-size: .75rem; }.consultation .consultation-time { font-size: .6875rem; margin-bottom: 0; }.consultation .consultation-time .line-icon { display: block; }.btn-book { width: auto; padding: .5rem .875rem; font-size: .75rem; }.login-main { gap: 2rem; }.login-intro .login-intro-title { font-size: 2.375rem; }.login-form-panel { padding: 2rem; } }
+-@media (max-width: 767px) { .app-header { padding: 1rem; gap: .75rem; }.brand { font-size: 1.125rem; gap: .5rem; }.brand-mark { width: 1.75rem; height: 1.75rem; }.account { gap: .5rem; }.account>span { max-width: 7rem; }.account strong { font-size: .625rem; }.sign-out { padding: .375rem .25rem .375rem .625rem; font-size: .625rem; gap: .25rem; }.sign-out .line-icon { width: 1rem; height: 1rem; }.workspace-nav { padding: .5rem; gap: .25rem; }.workspace-nav>a { font-size: .6875rem; padding: .5rem; gap: .375rem; }.workspace-nav .line-icon { width: 1rem; height: 1rem; }.workspace-main { padding: 1.5rem 1rem; }.page-heading { align-items: flex-start; margin-bottom: 1.5rem; }.page-heading .eyebrow { font-size: .5rem; max-width: 15rem; }.page-heading h1 { font-size: 1.5rem; }.page-heading p { font-size: .75rem; }.refresh-button { padding: .375rem .5rem; font-size: .6875rem; }.browse-layout { display: block; }.filter-sidebar { margin-bottom: 1.5rem; padding: 1rem; background: #fafbfc; border: 1px solid var(--line); border-radius: var(--radius); }.filter-sidebar label { margin-top: 1rem; }.filter-tip { display: none; }.filter-heading h2 { font-size: .8125rem; }.week-toolbar { align-items: flex-start; flex-direction: column; gap: .875rem; }.week-toolbar h2 { font-size: 1rem; }.week-controls { width: 100%; }.week-controls .btn:nth-child(2) { flex: 1; }.consultation { padding: .875rem; gap: .75rem; }.consultation h3 { font-size: .75rem; }.consultation .tutor-name { font-size: .6875rem; }.btn-book { padding: .5rem .625rem; }.booking-row { align-items: flex-start; flex-direction: column; padding: 1.25rem 0; }.booking-row .consultation-action { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }.booking-tabs { margin-bottom: 1.5rem; }.confirmation { padding: 1.25rem; }.confirmation h2 { font-size: 1.25rem; }.confirmation-details { padding: 1rem; }.dialog-actions { flex-direction: column-reverse; }.dialog-actions .btn { width: 100%; }.login-header { padding: 1.25rem; }.login-header .quiet { display: none; }.login-main { display: block; padding: 2rem 1rem; max-width: 28rem; }.login-intro { display: none; }.login-form-panel { padding: 1.5rem; }.login-form-panel h1 { font-size: 1.75rem; }.login-form-panel>.muted { margin-bottom: 1.5rem; }.placeholder-page { margin: 3rem auto; padding: 1.5rem; }.notice { padding: .75rem; }.empty-state { padding: 3rem 1rem; } }
++@media (max-width: 767px) { .app-header { padding: 1rem; gap: .75rem; }.brand { font-size: 1.125rem; gap: .5rem; }.brand-mark { width: 1.75rem; height: 1.75rem; }.account { gap: .5rem; }.account>span { max-width: 7rem; }.account strong { font-size: .625rem; }.sign-out { padding: .375rem .25rem .375rem .625rem; font-size: .625rem; gap: .25rem; }.sign-out .line-icon { width: 1rem; height: 1rem; }.workspace-nav { padding: .5rem; gap: .25rem; }.workspace-nav>a { font-size: .6875rem; padding: .5rem; gap: .375rem; }.workspace-nav .line-icon { width: 1rem; height: 1rem; }.workspace-main { padding: 1.5rem 1rem; }.page-heading { align-items: flex-start; margin-bottom: 1.5rem; }.page-heading .eyebrow { font-size: .5rem; max-width: 15rem; }.page-heading h1 { font-size: 1.5rem; }.page-heading p { font-size: .75rem; }.refresh-button { padding: .375rem .5rem; font-size: .6875rem; }.browse-layout { display: block; }.filter-sidebar { margin-bottom: 1.5rem; padding: 1rem; background: var(--subtle-surface); border: 1px solid var(--line); border-radius: var(--radius); }.filter-sidebar label { margin-top: 1rem; }.filter-tip { display: none; }.filter-heading h2 { font-size: .8125rem; }.week-toolbar { align-items: flex-start; flex-direction: column; gap: .875rem; }.week-toolbar h2 { font-size: 1rem; }.week-controls { width: 100%; }.week-controls .btn:nth-child(2) { flex: 1; }.consultation { padding: .875rem; gap: .75rem; }.consultation h3 { font-size: .75rem; }.consultation .tutor-name { font-size: .6875rem; }.btn-book { padding: .5rem .625rem; }.booking-row { align-items: flex-start; flex-direction: column; padding: 1.25rem 0; }.booking-row .consultation-action { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }.booking-tabs { margin-bottom: 1.5rem; }.confirmation { padding: 1.25rem; }.confirmation h2 { font-size: 1.25rem; }.confirmation-details { padding: 1rem; }.dialog-actions { flex-direction: column-reverse; }.dialog-actions .btn { width: 100%; }.login-header { padding: 1.25rem; }.login-header .quiet { display: none; }.login-main { display: block; padding: 2rem 1rem; max-width: 28rem; }.login-intro { display: none; }.login-form-panel { padding: 1.5rem; }.login-form-panel h1 { font-size: 1.75rem; }.login-form-panel>.muted { margin-bottom: 1.5rem; }.placeholder-page { margin: 3rem auto; padding: 1.5rem; }.notice { padding: .75rem; }.empty-state { padding: 3rem 1rem; } }
+ @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+ 
+ 
+@@ -64,3 +87,17 @@ label { font-size: .75rem; font-weight: 650; display: block; margin: 1.25rem 0 .
+ .sign-out { border: 1px solid var(--control-line); }
+ .workspace-nav>a[aria-current] { box-shadow: inset 3px 0 var(--accent); border-left: 3px solid var(--accent); }
+ .day-header.today { border-top: 3px solid var(--accent); }
++
++/* Theme control uses the same quiet outlined treatment as header actions. */
++.theme-switch { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; flex-shrink: 0; white-space: nowrap; color: var(--ink); background: var(--surface); border: 1px solid var(--control-line); }
++.theme-switch[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
++.theme-switch:hover, .sign-out:hover { color: var(--ink); background: var(--hover-surface); border-color: var(--control-line); }
++.theme-switch[aria-pressed="true"]:hover { color: var(--accent); border-color: var(--accent); }
++.form-control::placeholder { color: var(--muted); opacity: 1; }
++@media (max-width: 767px) {
++  .app-header { flex-wrap: wrap; }
++  .app-header .account { width: 100%; justify-content: flex-end; }
++  .app-header .account>span { margin-right: auto; text-align: left; }
++  .theme-switch { padding: .5rem; }
++  .theme-switch>span { display: none; }
++}
+diff --git a/src/frontend/src/theme.tsx b/src/frontend/src/theme.tsx
+new file mode 100644
+index 0000000..9d935c4
+--- /dev/null
++++ b/src/frontend/src/theme.tsx
+@@ -0,0 +1,35 @@
++import { createContext, useContext, useLayoutEffect, useState, type ReactNode } from 'react';
++
++type Theme = 'light' | 'dark';
++const preferenceKey = 'unichope.theme';
++const ThemeContext = createContext<{ theme: Theme; toggle: () => void } | null>(null);
++
++// Keep this exact-value rule in sync with public/theme.js. Storage is optional.
++function readTheme(): Theme {
++  try { return window.localStorage.getItem(preferenceKey) === 'dark' ? 'dark' : 'light'; }
++  catch { return 'light'; }
++}
++
++export function ThemeProvider({ children }: { children: ReactNode }) {
++  const [theme, setTheme] = useState<Theme>(readTheme);
++  useLayoutEffect(() => { document.documentElement.setAttribute('data-bs-theme', theme); }, [theme]);
++  function toggle() {
++    const next = theme === 'dark' ? 'light' : 'dark';
++    setTheme(next);
++    // Only explicit activation persists; never put this side effect in an updater
++    // (which React StrictMode may replay) or a session lifecycle effect.
++    try { window.localStorage.setItem(preferenceKey, next); } catch { /* Use page-local preference. */ }
++  }
++  return <ThemeContext.Provider value={{ theme, toggle }}>{children}</ThemeContext.Provider>;
++}
++
++export function ThemeSwitch() {
++  const value = useContext(ThemeContext);
++  if (!value) throw new Error('ThemeSwitch requires ThemeProvider');
++  const dark = value.theme === 'dark';
++  return <button type="button" className="btn theme-switch" aria-label="Dark theme" aria-pressed={dark} onClick={value.toggle}>
++    <svg className="line-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
++      {dark ? <><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" /></> : <path d="M20.5 14A9 9 0 0 1 10 3.5 9 9 0 1 0 20.5 14Z" />}
++    </svg><span>Dark theme</span>
++  </button>;
++}
+diff --git a/src/frontend/public/theme.js b/src/frontend/public/theme.js
+new file mode 100644
+index 0000000..667bda4
+--- /dev/null
++++ b/src/frontend/public/theme.js
+@@ -0,0 +1,8 @@
++// Runs synchronously before the application. Match src/theme.tsx's exact-value
++// validation and silent light fallback; never write a preference during loading.
++(function () {
++  var theme = 'light';
++  try { if (window.localStorage.getItem('unichope.theme') === 'dark') theme = 'dark'; }
++  catch (_) { /* Storage may be unavailable. */ }
++  document.documentElement.setAttribute('data-bs-theme', theme);
++}());

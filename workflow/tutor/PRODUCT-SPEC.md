@@ -130,7 +130,8 @@ acceptance criteria; the stories do not add separate functionality.
   rough notes, any existing draft, and the saved note. Manual editing/saving and
   non-AI workflows remain usable. No automatic retry loop is allowed.
 - Proposed review values: rough input and saved note each at most 8,000 Unicode
-  code points; draft at most 8,000 code points; 30-second generation timeout;
+  code points; draft at most 8,000 code points; the Tutor P6 increment uses a
+  20-second end-to-end generation deadline;
   at most 3 accepted generation attempts per tutor per rolling 5 minutes, counting
   provider failures. Rejected validation/authorization requests make no LLM call.
 - These are proposed app limits, not claims about SoC quotas. Provider token limits,
@@ -163,9 +164,13 @@ acceptance criteria; the stories do not add separate functionality.
    date/time creation form, and cancellation confirmation.
 2. **Bookings:** table with module/date/status filters and completion confirmation.
 3. **History & Notes:** slot-history filter, completed-consultation selector, saved
-   note editor with last-saved information, rough-note input, Generate draft,
-   editable AI draft, explicit action to use the reviewed draft in the note editor,
-   and a separate Save note action.
+   note shown read-only by default with last-saved information and an explicit Edit
+   note action. Open the editor only when editing; require confirmation before
+   discarding unsaved edits. AI drafting is an optional panel opened by an explicit
+   Prepare AI draft action; keep it collapsed by default and preserve its input when
+   hidden. Include rough-note input, Generate draft, editable AI draft, explicit
+   action to use the reviewed draft in the note editor, and a separate Save note
+   action.
 
 Show loading, empty, success, validation, access-denied, conflict, and AI-unavailable
 states. Label SGT times and unsaved edits. Announce whether a note was actually

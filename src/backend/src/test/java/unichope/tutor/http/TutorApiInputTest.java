@@ -39,24 +39,54 @@ class TutorApiInputTest {
     }
 
     @Test
-    void rt13UtcZOnlyAndExactlyEmptyCancellationObject() throws Exception {
+    void completedBookingQueryRequiresOneExactStatus() {
+        var validQuery=request("");validQuery.addParameter("status","COMPLETED");
+        assertEquals(unichope.platform.core.model.consultation.BookingStatus.COMPLETED,
+                TutorApiInput.bookingsQuery(validQuery).status().orElseThrow());
+        var invalidStatus=request("");invalidStatus.addParameter("status","DONE");
+        assertThrows(ApiFailure.class,()->TutorApiInput.bookingsQuery(invalidStatus));
+        var repeated=request("");repeated.addParameter("status","COMPLETED","COMPLETED");
+        assertThrows(ApiFailure.class,()->TutorApiInput.bookingsQuery(repeated));
+        var unknown=request("");unknown.addParameter("actorId",module);
+        assertThrows(ApiFailure.class,()->TutorApiInput.bookingsQuery(unknown));
+    }
+
+    @Test
+    void historyQueryRequiresOneHistoricalSlotStatusAndOptionalStrictDate() {
+        var valid=request("");valid.addParameter("status","COMPLETED");valid.addParameter("date","2026-10-21");
+        assertEquals(unichope.platform.core.model.consultation.SlotStatus.COMPLETED,TutorApiInput.historyQuery(valid).status());
+        assertEquals(java.time.LocalDate.parse("2026-10-21"),TutorApiInput.historyQuery(valid).date().orElseThrow());
+        for(String status:new String[]{null,"AVAILABLE","BOOKED","ACTIVE","done"}) {
+            var invalid=request("");if(status!=null)invalid.addParameter("status",status);
+            assertThrows(ApiFailure.class,()->TutorApiInput.historyQuery(invalid));
+        }
+        var repeated=request("");repeated.addParameter("status","COMPLETED","CANCELLED");
+        assertThrows(ApiFailure.class,()->TutorApiInput.historyQuery(repeated));
+        var badDate=request("");badDate.addParameter("status","CANCELLED");badDate.addParameter("date","2026-02-30");
+        assertThrows(ApiFailure.class,()->TutorApiInput.historyQuery(badDate));
+        var unknown=request("");unknown.addParameter("status","CANCELLED");unknown.addParameter("owner",module);
+        assertThrows(ApiFailure.class,()->TutorApiInput.historyQuery(unknown));
+    }
+
+    @Test
+    void rt13UtcZOnlyAndExactlyEmptyMutationObject() throws Exception {
         assertEquals(Instant.parse("2026-10-21T01:00:00.123Z"),TutorApiInput.create(request(valid.replace("01:00:00Z","01:00:00.123Z"))).startTime());
         for(String time:new String[]{"2026-10-21T01:00:00+00:00","2026-10-21T09:00:00+08:00","2026-10-21T01:00:00","2026-02-30T01:00:00Z"}) assertThrows(ApiFailure.class,()->TutorApiInput.create(request(valid.replace("2026-10-21T01:00:00Z",time))));
-        TutorApiInput.cancel(request(" {} \n"));
-        for(String body:new String[]{"", "null", "[]", "1", "{\"status\":\"CANCELLED\"}"}) assertThrows(ApiFailure.class,()->TutorApiInput.cancel(request(body)));
+        TutorApiInput.emptyObject(request(" {} \n"));
+        for(String body:new String[]{"", "null", "[]", "1", "{\"status\":\"CANCELLED\"}"}) assertThrows(ApiFailure.class,()->TutorApiInput.emptyObject(request(body)));
         var unsupported=request("{}"); unsupported.setContentType("text/plain");
-        assertEquals(415,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(unsupported)).status());
+        assertEquals(415,assertThrows(ApiFailure.class,()->TutorApiInput.emptyObject(unsupported)).status());
     }
 
     @Test
     void rt14ActualStreamLimitIncludesWhitespaceAndIgnoresDeclaredLength() throws Exception {
-        TutorApiInput.cancel(request("{}"+" ".repeat(65534)));
+        TutorApiInput.emptyObject(request("{}"+" ".repeat(65534)));
         var tooLarge=request("{}"+" ".repeat(65535));
         tooLarge.addHeader("Content-Length","2");
-        assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(tooLarge)).status());
+        assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.emptyObject(tooLarge)).status());
         byte[] utf8=("{\"pad\":\""+"é".repeat(32768)+"\"}").getBytes(java.nio.charset.StandardCharsets.UTF_8);
         var multi=request("");multi.setContent(utf8);
-        assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(multi)).status());
+        assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.emptyObject(multi)).status());
     }
 
     private MockHttpServletRequest request(String body) {

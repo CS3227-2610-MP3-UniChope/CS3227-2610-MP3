@@ -11,4 +11,5 @@ public interface AccountStorage {
     User provisionAccount(AdminContext admin, Role role, String name, String email, String encodedHash);
     AccountState setAccountActive(AdminContext admin, UUID targetId, boolean active);
     AccountState confirmVerifiedLogin(UUID userId, Role observedRole, String observedHash, long observedGeneration);
+    AccountState changeTutorPassword(UUID userId, long expectedGeneration, String encodedHash);
 }

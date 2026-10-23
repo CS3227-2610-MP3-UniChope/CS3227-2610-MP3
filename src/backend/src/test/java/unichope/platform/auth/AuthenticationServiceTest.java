@@ -95,6 +95,32 @@ class AuthenticationServiceTest {
   }
 
   @Test
+  void forcedPasswordChangeRequiresMatchingPolicyAndRevokesThroughStorage() {
+    User tutor = new Tutor(UUID.randomUUID(), "Tutor", "tutor@example.test", true);
+    var principal = new SessionPrincipal(tutor.id(), 4);
+    when(accounts.findAccountState(tutor.id())).thenReturn(Optional.of(new AccountState(tutor, 4, true)));
+    when(accounts.changeTutorPassword(tutor.id(), 4, "hash:New-password-2026"))
+        .thenReturn(new AccountState(tutor, 5, false));
+    try (var s = service()) {
+      s.changeTutorPassword(principal, "New-password-2026", "New-password-2026");
+      verify(accounts).changeTutorPassword(tutor.id(), 4, "hash:New-password-2026");
+    }
+  }
+
+  @Test
+  void passwordChangeRejectsMismatchWeakPasswordAndNonForcedAccount() {
+    User tutor = new Tutor(UUID.randomUUID(), "Tutor", "tutor@example.test", true);
+    when(accounts.findAccountState(tutor.id())).thenReturn(Optional.of(new AccountState(tutor, 4, true)));
+    try (var s = service()) {
+      assertEquals("VALIDATION_FAILED", assertThrows(AuthFailure.class,
+          () -> s.changeTutorPassword(new SessionPrincipal(tutor.id(), 4), "short", "different")).code());
+      assertEquals("VALIDATION_FAILED", assertThrows(AuthFailure.class,
+          () -> s.changeTutorPassword(new SessionPrincipal(tutor.id(), 4), "short", "short")).code());
+      verify(accounts, never()).changeTutorPassword(any(), anyLong(), anyString());
+    }
+  }
+
+  @Test
   void verificationFinishingAfterDeadlineCannotIssueSession() {
     var mutable = new LoginLimiterExpiryTest.MutableClock();
     var slowHasher =

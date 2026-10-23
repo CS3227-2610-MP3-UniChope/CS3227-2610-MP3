@@ -10,4 +10,5 @@ public record SlotView(
         String moduleCode,
         Instant startTime,
         Instant endTime,
-        SlotStatus status) {}
+        SlotStatus status,
+        String studentName) {}

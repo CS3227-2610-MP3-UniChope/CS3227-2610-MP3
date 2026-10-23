@@ -1,0 +1,32 @@
+{
+  "command": "npm.cmd test -- src/test/student.test.tsx -t FE-R1 --reporter=json --outputFile=../../workflow/student/changes/stu-fe2-booking-ui/evidence/fe-r1-red.json",
+  "cwd": "src/frontend",
+  "exitCode": 1,
+  "apiSha256": "6B2CA038DBD23CF2DA8D8D7C34DFDFFCE5F2C4B5650AFD64A345A7039042AD60",
+  "appSha256": "11FD37E757FC4904A0A81D7B0FD04043A2E3CA78218F8D7CA8098ADD480A4911",
+  "passed": 0,
+  "failed": 4,
+  "excludedByFilter": 23,
+  "results": [
+    {
+      "title": "FE-R1 book CSRF acquisition 401 UNAUTHENTICATED clears session before mutation and rejects late private data",
+      "status": "failed",
+      "firstFailure": "Error: Unable to find a label with the text of: /^email$/i"
+    },
+    {
+      "title": "FE-R1 book CSRF acquisition 403 ACCOUNT_INACTIVE clears session before mutation and rejects late private data",
+      "status": "failed",
+      "firstFailure": "Error: Unable to find a label with the text of: /^email$/i"
+    },
+    {
+      "title": "FE-R1 cancel CSRF acquisition 401 UNAUTHENTICATED clears session before mutation and rejects late private data",
+      "status": "failed",
+      "firstFailure": "Error: Unable to find a label with the text of: /^email$/i"
+    },
+    {
+      "title": "FE-R1 cancel CSRF acquisition 403 ACCOUNT_INACTIVE clears session before mutation and rejects late private data",
+      "status": "failed",
+      "firstFailure": "Error: Unable to find a label with the text of: /^email$/i"
+    }
+  ]
+}

@@ -27,7 +27,16 @@ final class CurrentAccountFilter extends OncePerRequestFilter {
       try {
         if (!(authentication.getPrincipal() instanceof SessionPrincipal principal))
           throw new AuthFailure(401, "UNAUTHENTICATED");
-        var user = accounts.current(principal);
+        var state = accounts.currentState(principal);
+        var user = state.user();
+        if (state.mustChangePassword()
+            && !(request.getMethod().equals("GET") && request.getRequestURI().equals("/api/auth/me"))
+            && !(request.getMethod().equals("GET") && request.getRequestURI().equals("/api/auth/csrf"))
+            && !(request.getMethod().equals("POST") && request.getRequestURI().equals("/api/auth/logout"))
+            && !(request.getMethod().equals("POST") && request.getRequestURI().equals("/api/auth/change-password"))) {
+          ApiErrors.write(request, response, 403, "PASSWORD_CHANGE_REQUIRED", "Change your initial password to continue");
+          return;
+        }
         var context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(
             UsernamePasswordAuthenticationToken.authenticated(

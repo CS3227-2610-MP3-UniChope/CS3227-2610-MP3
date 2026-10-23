@@ -6,7 +6,8 @@ References: [Product](PRODUCT-SPEC.md), [shared](../SHARED-TECHNICAL-SPEC.md),
 
 ## Shared compatibility
 
-Keep /api,64KiB JSON body bound, shared error envelope and existing exact actor DTO.
+Keep /api,64KiB JSON body bound and shared error envelope. The actor DTO adds the
+server-derived `mustChangePassword` boolean for Tutor first-login gating.
 Do not introduce /api/v1, persistent/multi-replica sessions, blanket version columns,
 a second user table or independently chosen throttle. Current internal account storage includes
 passwordHash; public core User remains credential-free; do not move it into a credentials table without reviewed core migration.
@@ -16,9 +17,20 @@ Huanghao before implementation. Platform must not import Admin role classes.
 
 ## HTTP contract
 
-Existing endpoints are normative proposals in Integration section2:
+Frontend FE1 consumes this unchanged HTTP contract; see
+[frontend design](../student/FRONTEND-DESIGN.md) for restoration/routing, in-memory
+CSRF, error distinctions and logout/late-response behavior. It changes no backend
+policy, provisioning or token/cookie format. Same-origin Vite proxy remains required.
+
+Existing endpoints are normative proposals in Integration section2, with the actor
+DTO extended by the first-login Tutor requirement:
 GET /api/auth/csrf ->{headerName,token}; POST /api/auth/login {email,password}
-->200{id,name,role}; GET /api/auth/me ->same; POST /api/auth/logout ->204.
+->200{id,name,role,mustChangePassword}; GET /api/auth/me ->same;
+POST /api/auth/logout ->204. A forced Tutor can also POST
+/api/auth/change-password {password,confirmation} ->204. The current account filter
+blocks all other routes for that Tutor with403 PASSWORD_CHANGE_REQUIRED. Password
+change updates the hash, clears the flag, and increments sessionGeneration atomically;
+the Tutor must sign in again.
 Private responses no-store. Missing/invalid CSRF403 CSRF_INVALID; other status/code
 semantics remain shared. Filter ordering may affect denial precedence, never access.
 Login malformed JSON/missing/wrong-type fields400 VALIDATION_FAILED; syntactically
@@ -31,7 +43,7 @@ New proposed registration: POST /api/auth/register {name,email,password,confirma
 ->201{message:"Registration completed"}, no session authentication. Duplicate409
 ACCOUNT_UNAVAILABLE, invalid400. Browser cannot choose role/active state. Provision
 entry is /api/admin/users (Admin spec), delegates shared auth/core collaborator.
-No public bootstrap endpoint. No additions to login or /me DTO needed in baseline.
+No public bootstrap endpoint. No additional role or account fields are accepted from the browser.
 
 ## Components and locking
 
@@ -114,7 +126,8 @@ nor credential. Never return the hash in public DTOs. Coordinate migration detai
 with core without duplicating its storage implementation.
 
 The internal sessionGeneration is a nonnegative bigint defaulting to zero. Increment
-only when active changes from true to false, atomically with that change. It is not
+when active changes from true to false or when a forced Tutor password changes,
+atomically with the corresponding update. It is not
 an entity edit version. Login stores the generation verified under the user lock;
 protected requests compare current generation before granting access. Same-state
 requests do not increment it. Reactivation requires fresh login for prior sessions.
@@ -137,7 +150,10 @@ core transactions retain their documented5/10second lock/statement bounds.
 
 Argon2id uses19456KiB,two iterations,one parallel lane with16-byte salt and32-byte
 hash. Four workers and16 queued jobs bound password work. Runtime migrations put
-password_hash/session_generation on users consistently with existing core storage.
+password_hash/session_generation on users consistently with existing core storage;
+V7 adds the default-false must_change_password flag and marks existing Tutor rows for
+one password change. Admin provisioning sets it only for a new Tutor. A password
+change updates all three credential/session fields in one row-locked transaction.
 bootstrapAdmin uses the separate bootstrap_state marker and advisory lock. Sessions
 and throttles stay in memory on one replica; counter reset on restart is intentional.
 Read src/backend/README.md for profiles and startup, not the old no-scaffold text.

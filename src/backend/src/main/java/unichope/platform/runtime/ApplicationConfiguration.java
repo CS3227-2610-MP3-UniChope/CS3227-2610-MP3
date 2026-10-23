@@ -2,12 +2,16 @@ package unichope.platform.runtime;
 
 import java.time.Clock;
 import javax.sql.DataSource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import unichope.platform.auth.*;
+import unichope.platform.ai.AiGateway;
+import unichope.platform.ai.FakeProvider;
 import unichope.platform.core.*;
 import unichope.platform.core.postgres.*;
 import unichope.platform.core.repository.*;
@@ -113,5 +117,23 @@ public class ApplicationConfiguration {
   AuthenticationService authenticationService(
       AccountStorage accounts, PasswordHasher hasher, LoginLimiter limiter, Clock clock) {
     return new AuthenticationService(accounts, hasher, limiter, clock);
+  }
+
+  @Bean
+  @Profile("local")
+  @ConditionalOnProperty(prefix = "unichope.ai", name = "mode", havingValue = "fake")
+  @ConditionalOnMissingBean(AiGateway.class)
+  AiGateway localFakeAiGateway() {
+    AiGateway tutor =
+        new FakeProvider(
+            """
+            {"summary":"Local fake draft for review.","topicsDiscussed":"Tutor note-drafting integration.","followUp":"Edit this draft before saving."}
+            """);
+    AiGateway agenda =
+        new FakeProvider(
+            """
+            {"goal":"Local fake agenda for review.","items":[{"topic":"Your questions","question":"Local fake agenda item. Edit before use.","minutes":1}],"prepare":["Bring your questions and any work in progress."]}
+            """);
+    return request -> ("STU-AGENDA-1".equals(request.task()) ? agenda : tutor).generate(request);
   }
 }

@@ -25,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import unichope.UnichopeApplication;
+import unichope.platform.ai.AiGateway;
 import unichope.platform.auth.PasswordHasher;
 import unichope.platform.auth.SessionPrincipal;
 
@@ -42,6 +43,9 @@ class StudentAuthIntegrationPgTest {
     String schema;
     MockMvc mvc;
     UUID student, second, tutor, admin, module, slot;
+    java.util.concurrent.atomic.AtomicInteger draftCalls;
+    java.util.concurrent.atomic.AtomicReference<AiGateway.Request> draftRequest;
+    java.util.concurrent.atomic.AtomicReference<Runnable> afterDraft;
     record Browser(MockHttpSession session, String header, String token) {}
 
     @BeforeEach void setup() throws Exception {
@@ -50,10 +54,19 @@ class StudentAuthIntegrationPgTest {
         base = new DriverManagerDataSource(url, user, password);
         schema = "student_auth_test_" + UUID.randomUUID().toString().replace("-", "");
         try (Connection c = base.getConnection(); var statement = c.createStatement()) { statement.execute("CREATE SCHEMA " + schema); }
+        draftCalls = new java.util.concurrent.atomic.AtomicInteger();
+        draftRequest = new java.util.concurrent.atomic.AtomicReference<>();
+        afterDraft = new java.util.concurrent.atomic.AtomicReference<>(() -> {});
+        AiGateway tutorFake = request -> {
+            draftCalls.incrementAndGet(); draftRequest.set(request); afterDraft.get().run();
+            return new AiGateway.Result("{\"summary\":\"Reviewed recursion\",\"topicsDiscussed\":\"Base cases\",\"followUp\":\"Practise examples\"}", AiGateway.ProviderMode.FAKE);
+        };
         context = new SpringApplicationBuilder(UnichopeApplication.class).web(WebApplicationType.SERVLET)
                 .profiles("app-api", "local").properties(Map.of("server.port", "0", "server.address", "127.0.0.1",
                         "unichope.jdbc.url", url + (url.contains("?") ? "&" : "?") + "currentSchema=" + schema,
-                        "unichope.jdbc.user", user, "unichope.jdbc.password", password, "unichope.ai.mode", "fake")).run();
+                        "unichope.jdbc.user", user, "unichope.jdbc.password", password, "unichope.ai.mode", "fake",
+                        "unichope.ai.tutor.note-draft.max-output-tokens", "256"))
+                .initializers(application -> application.getBeanFactory().registerSingleton("tutorAiTestGateway", tutorFake)).run();
         mvc = MockMvcBuilders.webAppContextSetup((WebApplicationContext) context).apply(springSecurity()).build();
         db = JdbcClient.create(context.getBean(javax.sql.DataSource.class));
         String hash = context.getBean(PasswordHasher.class).hash(PASSWORD);
@@ -76,7 +89,8 @@ class StudentAuthIntegrationPgTest {
 
     @Test void c5Run1AppApiIncludesStudentWithRealRuntimeMigrationsAndSharedActor() throws Exception {
         assertTrue(Arrays.asList(context.getEnvironment().getActiveProfiles()).containsAll(List.of("auth-api", "tutor-api", "admin-api", "student-api")));
-        assertEquals(4, db.sql("SELECT count(*) FROM flyway_schema_history WHERE success").query(Integer.class).single());
+        // V1-V4 core/auth/notes/bootstrap, V5-V6 AI admission, and V7 Tutor first-login password change.
+        assertEquals(7, db.sql("SELECT count(*) FROM flyway_schema_history WHERE success").query(Integer.class).single());
         Browser b = login("student");
         assertInstanceOf(SessionPrincipal.class, authentication(b.session()).getPrincipal());
         JsonNode modules = body(ok(get("/api/student/modules"), b, 200));
@@ -94,6 +108,31 @@ class StudentAuthIntegrationPgTest {
         assertEquals(module.toString(), tutorModules.get(0).get("id").asString());
         error(request(get("/api/tutor/modules"), b), 403, "FORBIDDEN");
         error(request(get("/api/student/modules"), tutorBrowser), 403, "FORBIDDEN");
+    }
+
+    @Test void p4TutorCompletionUsesRealSessionCsrfAndSharedLifecycle() throws Exception {
+        JsonNode created = body(ok(book(), login("student"), 201));
+        UUID booking = UUID.fromString(created.get("id").asString());
+        Browser anonymous = token(null);
+        error(request(complete(booking), anonymous), 401, "UNAUTHENTICATED");
+        Browser studentBrowser = login("student");
+        error(request(complete(booking), studentBrowser), 403, "FORBIDDEN");
+        assertEquals("ACTIVE", db.sql("SELECT status FROM bookings WHERE id=:id").param("id", booking).query(String.class).single());
+        assertEquals("BOOKED", db.sql("SELECT status FROM slots WHERE id=:id").param("id", slot).query(String.class).single());
+
+        JsonNode completed = body(ok(complete(booking), login("tutor"), 200));
+        assertEquals(Set.of("id", "slotId", "moduleId", "moduleCode", "studentName", "startTime", "endTime", "status"),
+                Set.copyOf(completed.propertyNames()));
+        assertEquals(booking.toString(), completed.get("id").asString());
+        assertEquals(slot.toString(), completed.get("slotId").asString());
+        assertEquals(module.toString(), completed.get("moduleId").asString());
+        assertEquals("CS3227", completed.get("moduleCode").asString());
+        assertEquals("student", completed.get("studentName").asString());
+        assertEquals("COMPLETED", completed.get("status").asString());
+        assertFalse(completed.toString().contains("@example.edu"));
+        assertEquals("COMPLETED", db.sql("SELECT status FROM bookings WHERE id=:id").param("id", booking).query(String.class).single());
+        assertEquals("COMPLETED", db.sql("SELECT status FROM slots WHERE id=:id").param("id", slot).query(String.class).single());
+        error(request(complete(booking), login("tutor")), 409, "INVALID_STATE");
     }
 
     @Test void c5Auth1RegistrationLoginRotationOldCsrfFailsFreshCsrfBooksReadsAndCancels() throws Exception {
@@ -166,6 +205,45 @@ class StudentAuthIntegrationPgTest {
         error(request(get(ROOT), b), 401, "UNAUTHENTICATED"); assertEquals(0, bookingCount());
     }
 
+    @Test void p6TutorDraftUsesRealSessionAndRechecksGenerationAfterProviderReturns() throws Exception {
+        UUID booking = completedBooking();
+        error(request(draft(booking), token(null)), 401, "UNAUTHENTICATED");
+        error(request(draft(booking), login("student")), 403, "FORBIDDEN");
+        assertEquals(0, draftCalls.get());
+        Browser browser = login("tutor");
+        var response = ok(draft(booking), browser, 200);
+        JsonNode result = body(response);
+        assertEquals(Set.of("bookingId", "draft", "requiresReview", "providerMode"), Set.copyOf(result.propertyNames()));
+        assertEquals(booking.toString(), result.get("bookingId").asString());
+        assertTrue(result.get("draft").asString().contains("Reviewed recursion"));
+        assertTrue(result.get("requiresReview").booleanValue()); assertEquals("fake", result.get("providerMode").asString());
+        assertEquals(1, draftCalls.get()); assertEquals(tutor, draftRequest.get().actorId());
+        assertEquals("tutor.note-draft.v1", draftRequest.get().task());
+        assertEquals("Reviewed recursion", draftRequest.get().input()); assertEquals(256, draftRequest.get().maxOutputTokens());
+        assertEquals(0, db.sql("SELECT count(*) FROM private_notes").query(Long.class).single());
+
+        afterDraft.set(() -> db.sql("UPDATE users SET session_generation=session_generation+1 WHERE id=:id").param("id", tutor).update());
+        MvcResult revoked = request(draft(booking), browser);
+        error(revoked, 401, "UNAUTHENTICATED");
+        assertTrue(browser.session().isInvalid());
+        assertFalse(revoked.getResponse().getContentAsString().contains("Reviewed recursion"));
+        assertEquals(2, draftCalls.get());
+        assertEquals(0, db.sql("SELECT count(*) FROM private_notes").query(Long.class).single());
+    }
+
+    @Test void p6TutorDraftDiscardsOutputAndInvalidatesSessionWhenAccountIsDeactivatedDuringCall() throws Exception {
+        UUID booking = completedBooking();
+        Browser browser = login("tutor");
+        afterDraft.set(() -> db.sql("UPDATE users SET active=false,session_generation=session_generation+1 WHERE id=:id").param("id", tutor).update());
+
+        MvcResult response = request(draft(booking), browser);
+
+        error(response, 403, "ACCOUNT_INACTIVE"); assertTrue(browser.session().isInvalid());
+        assertFalse(response.getResponse().getContentAsString().contains("Reviewed recursion"));
+        assertEquals(1, draftCalls.get());
+        assertEquals(0, db.sql("SELECT count(*) FROM private_notes").query(Long.class).single());
+    }
+
     @Test void c5Csrf1MissingInvalidTokensLogoutCookieRepeatAndFreshLogin() throws Exception {
         Browser b = login("student");
         JsonNode created = body(ok(book(), b, 201)); UUID id = UUID.fromString(created.get("id").asString());
@@ -216,13 +294,27 @@ class StudentAuthIntegrationPgTest {
     private Browser login(String name) throws Exception { return login(name, token(null)); }
     private Browser login(String name, Browser b) throws Exception {
         MvcResult result = ok(post("/api/auth/login").contentType("application/json").content("{\"email\":\"" + name + "@example.edu\",\"password\":\"" + PASSWORD + "\"}"), b, 200);
-        assertEquals(Set.of("id", "name", "role"), Set.copyOf(body(result).propertyNames())); return token((MockHttpSession) result.getRequest().getSession(false));
+        assertEquals(Set.of("id", "name", "role", "mustChangePassword"), Set.copyOf(body(result).propertyNames())); return token((MockHttpSession) result.getRequest().getSession(false));
     }
     private org.springframework.security.core.Authentication authentication(MockHttpSession session) {
         return ((org.springframework.security.core.context.SecurityContext) session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)).getAuthentication();
     }
     private MockHttpServletRequestBuilder book() { return post(ROOT).contentType("application/json").content("{\"slotId\":\"" + slot + "\"}"); }
+    private MockHttpServletRequestBuilder draft(UUID booking) {
+        return post("/api/tutor/bookings/" + booking + "/note-draft").contentType("application/json").content("{\"roughNotes\":\"Reviewed recursion\"}");
+    }
+    private MockHttpServletRequestBuilder complete(UUID booking) {
+        return post("/api/tutor/bookings/" + booking + "/complete").contentType("application/json").content("{}");
+    }
     private MockHttpServletRequestBuilder cancel(UUID id) { return post(ROOT + "/" + id + "/cancel").contentType("application/json").content("{}"); }
+    private UUID completedBooking() {
+        db.sql("UPDATE slots SET status='COMPLETED' WHERE id=:id").param("id", slot).update();
+        UUID id = UUID.randomUUID();
+        db.sql("INSERT INTO bookings(id,student_id,slot_id,created_at,status) VALUES(:id,:student,:slot,:created,'COMPLETED')")
+                .param("id", id).param("student", student).param("slot", slot)
+                .param("created", Instant.now().minusSeconds(7200).atOffset(java.time.ZoneOffset.UTC)).update();
+        return id;
+    }
     private MvcResult request(MockHttpServletRequestBuilder request, Browser browser) throws Exception {
         if (browser != null && !browser.session().isInvalid()) { request.session(browser.session()); if (!browser.header().equals("unused")) request.header(browser.header(), browser.token()); }
         else if (browser != null && !browser.header().equals("unused")) request.header(browser.header(), browser.token());

@@ -43,4 +43,20 @@ class RuntimePolicyTest {
                     Clock.systemUTC(),
                     beans.getBeanProvider(AiGateway.class)));
   }
+
+  @Test
+  void selectingUnknownSocModeFailsClosed() {
+    var environment = new MockEnvironment().withProperty("unichope.ai.mode", "soc");
+    var beans = new StaticListableBeanFactory();
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            new AdminConfiguration()
+                .activityReportService(
+                    mock(AdminActorProvider.class),
+                    mock(AdminRepository.class),
+                    environment,
+                    Clock.systemUTC(),
+                    beans.getBeanProvider(AiGateway.class)));
+  }
 }

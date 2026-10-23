@@ -1,45 +1,48 @@
-# UniChope User Guide
+# User guide
 
-UniChope is a web app for booking university consultations. This guide adds
-the Tutor workflow to the deployed-user instructions and retains the existing
-authentication and Admin-service information. Tutor dates and times shown in
-the app use Singapore time (SGT).
+This guide covers Student, Tutor, and Admin tasks, along with shared sign-in and
+account information. Open UniChope using the website address provided by your team.
 
-> **Release setup:** Replace `[production URL]` and the bracketed account
-> instructions with the team's deployed URL and secure account-delivery
-> details before sharing this guide with peer testers. Do not put real
-> passwords or provider keys in this public document.
+## Sign in and sign out
 
-## 1. Quick start
+1. Enter your account email and password on the **Sign in** page.
+2. Select **Sign in**. Your account role determines which workspace opens.
+3. Select **Sign out** in the page header when you have finished.
 
-### 1.1 Open UniChope
-
-Open **[production URL]** in a current web browser. The hosted app is ready
-to use; you do not need to install Java or configure a database. Keep the
-browser on the same site while using UniChope so your session is retained.
-
-### 1.2 Sign in as a Tutor
-
-Tutors cannot self-register. Ask an Admin for a Tutor account and initial
-password. On your first sign-in with that password, UniChope requires you to
-set and confirm a new password before opening your Tutor workspace. Use a
-password between 8 and 128 characters. After it is changed, sign in again with
-the new password. An Admin must assign you to an active module before you can
-offer slots for it. The role belongs to your account, so you do not choose a
-role at sign-in. Use **Sign out** when you finish, especially on a shared
-computer. Existing Tutor accounts will also receive this one-time prompt when
-the password-change update is deployed.
-
-Sessions expire after 30 minutes of inactivity. Sign in again if UniChope
-returns you to the sign-in page. An account reactivated by an Admin must sign
-in again.
+If you received an account from an administrator, use the initial password they
+provided. Passwords are case-sensitive. If sign-in fails, check your details and
+try again. After too many failed attempts, wait for the time shown before retrying.
 
 ![UniChope sign-in page with email and password fields.](images/sign-in.png)
 
-After authenticating with the initial password, complete the required
-password-change screen before proceeding:
+A session expires after 30 minutes without activity. If the application asks you
+to sign in again, do so before continuing. An inactive account cannot sign in;
+contact your administrator if you need access restored.
+
+Self-service password reset is not available. On first sign-in, Tutors must change
+the initial password (8–128 characters) and then sign in again. This requirement
+also applies once to existing Tutor accounts when the update is deployed; Student
+and Admin accounts are unaffected. Student and Admin accounts are not subject to
+this Tutor-only first-login requirement.
+
+After entering an initial Tutor password, complete the required password change
+before opening the Tutor workspace:
 
 ![Required first-login Tutor password-change screen.](images/tutor-first-login-password-change.png)
+
+## Create a Student account
+
+1. On the sign-in page, select **Create a Student account**.
+2. Enter your name and email address.
+3. Enter a password of 8–128 characters and enter it again in **Confirm password**.
+   Spaces count as part of the password, and both entries must match exactly.
+4. Select **Create account**.
+5. After successful registration, sign in with your new email and password.
+
+Registration creates a Student account. Tutor accounts are created by an Admin.
+If an account cannot be created with your email, try signing in or use another
+email address. If the outcome could not be confirmed, try signing in before
+submitting the registration again.
 
 ## 2. Tutor
 
@@ -176,93 +179,158 @@ SoC response.
 
 *Example screen. The displayed records are synthetic; the AI draft shown is a local test result.*
 
-## Admin and authentication backend
+## Find your way around the Admin workspace
 
-This increment provides APIs, not a browser interface. A client must keep the session
-cookie, obtain a CSRF token and include its returned header/token on every mutation.
-Use HTTPS outside localhost. See src/backend/README.md for server/database setup.
+After signing in as an Admin, use the navigation to open:
 
-1. GET /api/auth/csrf to obtain {headerName,token} and an anonymous cookie.
-2. POST /api/auth/login with {email,password}, cookie and CSRF header.
-3. Fetch a fresh CSRF token after login. GET /api/auth/me returns id,name,role
-   and mustChangePassword.
-4. If mustChangePassword is true, POST /api/auth/change-password with
-   {password,confirmation} and the CSRF token. Both values must match and
-   contain 8–128 characters. Success returns 204 and revokes the session, so
-   the Tutor signs in again with the new password.
-5. Otherwise, call only the APIs for the stored role. POST /api/auth/logout
-   signs out; fetch another CSRF token before a new login. A session expires
-   after 30 minutes idle.
+| Page | Use |
+| --- | --- |
+| **Overview** | View booking totals, percentages and breakdowns. |
+| **Users** | Create Student/Tutor accounts and manage their access. |
+| **Modules** | Create, edit and deactivate teaching modules. |
+| **Tutor assignments** | Assign tutors to modules or remove assignments. |
+| **Booking activity** | View and filter consultation booking records. |
+| **Activity report assistant** | |
 
-Public POST /api/auth/register accepts name,email,password,confirmation and creates
-a Student without signing in. Passwords are 8–128 Unicode code points;
-confirmation must match. Password reset is not provided. Admin-created
-Student/Tutor accounts use the initial password supplied securely by the Admin.
-New Tutor accounts require a password change after the first sign-in, before
-Tutor APIs are available. Student and Admin accounts are not subject to this
-Tutor first-login requirement.
+Select **Refresh** to reload the records on a page. On smaller screens, scroll
+horizontally through the navigation to reach the other pages. Use the theme button
+in the header to switch between light and dark appearance.
 
-Admin users can list accounts, create Student/Tutor accounts and activate/deactivate
-those accounts. Admin accounts cannot be changed through these APIs. Deactivation
-is blocked by active bookings and, for Tutors, future available slots. Deactivation
-revokes previous sessions; reactivation requires a new login for those sessions.
+## Manage users
 
-Admin modules can be created, edited and deactivated. Assignment endpoints assign
-or unassign active Tutors/modules. Resolve active bookings and future available
-slots before deactivation/unassignment; history is retained. Repeated no-op state
-changes do not duplicate records. No history deletion or module reactivation is offered.
+### Create an account
 
-GET /api/admin/bookings accepts optional moduleId,tutorId,date,status. Date means
-Singapore slot start date. GET /api/admin/statistics returns all-time booking counts
-and completion/cancellation percentages; every booking record is in the denominator.
-Empty data gives0percent. Lists use stable ordering and are unpaginated.
+1. Open **Users**.
+2. Under **Create account**, choose **Student** or **Tutor**.
+3. Enter the person's full name and email address.
+4. Enter an initial password of 8–128 characters.
+5. Select **Create account** and wait for **Change saved**.
+6. Share the account email and initial password securely with the account owner.
 
-POST /api/admin/activity-report with {} returns the statistics snapshot and a draft
-explanation requiring review. Reports have no side effects and cannot change records.
-Empty data returns a no-data message without AI. Local fake mode is labelled fake
-and does not call SoC. Real AI is unavailable until the shared gateway is integrated;
-manual operations and statistics still work. Never treat an explanation as verified
-fact or as permission to perform an operation.
+The password field clears after submission. Existing passwords are not displayed.
+You cannot create Admin accounts or change account roles from this page.
 
-Errors use {code,message,requestId}.401 requires login;403 may mean wrong role,
-inactive account or invalid CSRF;409 indicates conflicting current state/duplicate
-record;429 means wait for Retry-After;503 indicates temporary unavailability.
-Refresh after an uncertain mutation result before resubmitting creation requests.
-Exact endpoint/body shapes are in workflow/admin/TECHNICAL-SPEC.md and
-workflow/auth/TECHNICAL-SPEC.md. No frontend or deployment is claimed by this guide.
+### Find an account
 
-## 4. Troubleshooting and limitations
+Under **Accounts**, use **Filter role** and **Filter account status** to narrow the
+list. Each row shows the person's name, email, role and current access status.
 
-### I cannot sign in
+### Deactivate or reactivate an account
 
-Check that you are using the account supplied for your role and the correct
-production site. Ask an Admin to confirm that your account is active or
-provide the initial password securely. There is no self-service password
-reset.
+1. Find the Student or Tutor in **Accounts**.
+2. Select **Deactivate** or **Reactivate**.
+3. Read the confirmation message. Select **Go back** to leave the account unchanged,
+   or **Confirm change** to proceed.
+4. Wait for confirmation and check the updated status.
 
-### No slots appear
+Deactivation prevents access and retains the account's history. Reactivation
+restores access; previously revoked sessions require a new sign-in. Admin accounts
+are marked **Protected account** and cannot be changed here.
 
-Ask an Admin to confirm your assignment to an active module. Check that you
-selected the correct SGT date and created a future slot. Booked, cancelled,
-and past slots are not available to book.
+A Student cannot be deactivated while they have an active booking. A Tutor cannot
+be deactivated while affected active bookings or future available slots remain.
+Resolve those commitments through the relevant Student or Tutor workflow, then
+refresh the account list before trying again.
 
-### A slot or Admin action is rejected
+## Manage modules
 
-Read the workspace message. A slot may have been booked or withdrawn since
-the list was refreshed. Active bookings or future available slots can block
-account, module, or assignment changes. Refresh the relevant list before
-trying again.
+### Create a module
 
-### Current limitations
+1. Open **Modules**.
+2. Under **Create module**, enter a module code and module name.
+3. Use 1–20 letters, digits or hyphens for the code, and up to 200 characters for
+   the name. Module codes must be unique.
+4. Select **Create module** and wait for confirmation.
 
-- There is no self-service password reset, email verification, or NUS SSO.
-- Consultations cannot be rescheduled as one action. The Student must cancel
-  an eligible booking, then the Tutor can cancel the released slot and create
-  a replacement.
-- The module list is managed by Admins and is not synchronized with a live NUS
-  course catalogue.
-- AI output is a suggestion and requires human review. It cannot complete a
-  consultation or save a note by itself.
+### Edit a module
+
+1. Select **Edit** beside the module.
+2. Change its code or name in the form.
+3. Select **Save module**, or **Cancel editing** to discard the form changes.
+
+Editing keeps the module's existing bookings and history associated with it.
+
+### Deactivate a module
+
+1. Select **Deactivate** beside an active module.
+2. Read the message and select **Confirm change**, or **Go back** to cancel.
+3. Check that the module is marked **Inactive**.
+
+Active bookings and future available slots can prevent deactivation. Resolve those
+commitments before trying again. Deactivation retains history; module deletion and
+reactivation are not offered in this interface.
+
+## Manage tutor assignments
+
+### Assign a tutor to a module
+
+1. Open **Tutor assignments**.
+2. Under **Assign a tutor**, choose an active Tutor and an active module.
+3. Select **Assign tutor** and wait for confirmation.
+4. Check the pair under **Current assignments**.
+
+Only active Tutors and active modules appear as choices. Assigning a pair that
+already exists does not create a duplicate.
+
+### Remove an assignment
+
+1. Find the pair under **Current assignments**.
+2. Select **Remove**.
+3. Read the message and select **Confirm change**, or **Go back** to cancel.
+
+Removal is blocked while that Tutor/module pair has active bookings or future
+available slots. Other assignments are unaffected, and booking history is retained.
+
+## View booking activity
+
+1. Open **Booking activity**.
+2. Narrow the records using **Module**, **Tutor**, **Status** or
+   **Consultation date (SGT)**. Filters apply together.
+3. Select **Reset filters** to show all records again, or **Refresh** to reload.
+
+The table shows the module, Student, Tutor, consultation time and booking status.
+Dates and times use Singapore time (SGT). The date filter refers to the consultation's
+start date. Statuses are **ACTIVE**, **COMPLETED** and **CANCELLED**.
+
+Bookings are read-only on this page. Admins do not cancel or complete bookings here,
+and private consultation notes are not displayed.
+
+## Read the overview statistics
+
+Open **Overview** to see:
+
+- Total booking records.
+- Completed and cancelled booking counts.
+- Completion and cancellation percentages.
+- Booking counts by module and Tutor.
+
+Statistics cover all booking history, including inactive accounts/modules and
+cancelled bookings. A cancelled booking followed by a new booking counts as two
+records. Both percentages use all booking records as their denominator. For example,
+two completed records out of four total records gives a 50% completion rate.
+When there are no bookings, counts and percentages are zero.
+
+Check the snapshot capture time to see when the figures were read. Select
+**Refresh** for a new snapshot.
+
+## Activity report assistant
+
+## If something goes wrong
+
+| Message or situation | What to do |
+| --- | --- |
+| Session expired or sign-in requested | Sign in again before continuing. |
+| Account inactive | Contact your administrator about restoring access. |
+| Access denied | Check that you are using the correct account and workspace. |
+| Details already exist | Check the account email or module code; refresh the list before creating again. |
+| Change blocked by bookings or slots | Resolve the relevant active bookings or future available slots, then refresh and retry. |
+| Security token expired | Submit again as prompted; the application obtains a fresh token. |
+| Request limit reached | Wait before trying again. |
+| Service unavailable | Try **Refresh** or try again later. |
+| Outcome could not be confirmed | Refresh and inspect the records before resubmitting. The first change may already have completed. |
+
+Wait for each submitted change to finish. Leaving the page does not guarantee that
+an operation already sent has been cancelled.
 
 ## Frequently asked questions
 
@@ -312,9 +380,9 @@ Students.
 
 #### Does the AI agenda answer my questions or book a consultation for me?
 
-No. The agenda is a preparation suggestion based on your questions. Review it
-yourself; AI does not book, cancel, or change consultations. If AI is unavailable,
-you can still use the normal booking features.
+When available, the agenda is a preparation suggestion based on your questions.
+Review it yourself; AI does not book, cancel, or change consultations. If AI is
+unavailable, you can still use the normal booking features.
 
 ### Tutor FAQs
 
