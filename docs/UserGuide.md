@@ -44,7 +44,56 @@ If an account cannot be created with your email, try signing in or use another
 email address. If the outcome could not be confirmed, try signing in before
 submitting the registration again.
 
-## 2. Tutor
+## Student
+
+### Find a consultation
+
+Open **Find a consultation** to browse future available times. Use **Module**
+to narrow the list, **Specific date** to jump to a date, or the week controls
+to move between weeks. **This week** returns to the current week, and **Reset**
+clears the filters. Select **Refresh** to reload current availability. All dates
+and times are shown in Singapore time (SGT).
+
+Select **Book** on a consultation and review the confirmation dialog, including
+the module, Tutor, and time. Confirm to reserve it. A slot can be taken by
+another Student after it appears in your list; if that happens, refresh and
+choose another time. A Student cannot hold overlapping active bookings.
+
+![Student consultation browser with module/date filters and available times.](images/student-find-consultation.png)
+
+*Example screen. The displayed records are synthetic.*
+
+### My bookings
+
+Open **My bookings** and choose **Upcoming** to see active consultations, or
+**History** to see completed and cancelled bookings. Use **Consultation date**
+and, in History, **Status** to narrow the list. Select **Reset** to clear filters
+and **Refresh** to reload.
+
+To cancel an eligible upcoming booking, select **Cancel booking**, review the
+consultation details, and confirm. The slot is released for other Students.
+Cancellation is unavailable after the consultation has started or finished.
+
+![Student upcoming bookings with a cancellation and agenda action.](images/student-my-bookings.png)
+
+![Student booking history showing completed and cancelled consultations.](images/student-booking-history.png)
+
+*Example screens. The displayed records are synthetic.*
+
+### Prepare an agenda
+
+For an upcoming active booking, select **Prepare agenda**. Enter the topics and
+questions you want to discuss, then select **Generate agenda**. Review and edit
+the suggestion, then use **Copy agenda** to take it with you. The agenda is not
+saved or shared with the Tutor. Only your questions, module code, and consultation
+length are sent to AI; avoid personal or sensitive information.
+
+Questions and drafts stay in the page while you work. If you edit a draft and
+generate again, UniChope asks before replacing your edits. Leaving the page with
+unsaved preparation also asks for confirmation. If AI is unavailable or limited,
+your booking features remain available and you can keep your questions on the page.
+
+## Tutor
 
 ### Workspace tour
 
@@ -179,7 +228,9 @@ SoC response.
 
 *Example screen. The displayed records are synthetic; the AI draft shown is a local test result.*
 
-## Find your way around the Admin workspace
+## Admin
+
+### Admin workspace tour
 
 After signing in as an Admin, use the navigation to open:
 
@@ -196,9 +247,9 @@ Select **Refresh** to reload the records on a page. On smaller screens, scroll
 horizontally through the navigation to reach the other pages. Use the theme button
 in the header to switch between light and dark appearance.
 
-## Manage users
+### Manage users
 
-### Create an account
+#### Create an account
 
 1. Open **Users**.
 2. Under **Create account**, choose **Student** or **Tutor**.
@@ -210,12 +261,12 @@ in the header to switch between light and dark appearance.
 The password field clears after submission. Existing passwords are not displayed.
 You cannot create Admin accounts or change account roles from this page.
 
-### Find an account
+#### Find an account
 
 Under **Accounts**, use **Filter role** and **Filter account status** to narrow the
 list. Each row shows the person's name, email, role and current access status.
 
-### Deactivate or reactivate an account
+#### Deactivate or reactivate an account
 
 1. Find the Student or Tutor in **Accounts**.
 2. Select **Deactivate** or **Reactivate**.
@@ -232,9 +283,9 @@ be deactivated while affected active bookings or future available slots remain.
 Resolve those commitments through the relevant Student or Tutor workflow, then
 refresh the account list before trying again.
 
-## Manage modules
+### Manage modules
 
-### Create a module
+#### Create a module
 
 1. Open **Modules**.
 2. Under **Create module**, enter a module code and module name.
@@ -242,7 +293,7 @@ refresh the account list before trying again.
    the name. Module codes must be unique.
 4. Select **Create module** and wait for confirmation.
 
-### Edit a module
+#### Edit a module
 
 1. Select **Edit** beside the module.
 2. Change its code or name in the form.
@@ -250,7 +301,7 @@ refresh the account list before trying again.
 
 Editing keeps the module's existing bookings and history associated with it.
 
-### Deactivate a module
+#### Deactivate a module
 
 1. Select **Deactivate** beside an active module.
 2. Read the message and select **Confirm change**, or **Go back** to cancel.
@@ -260,9 +311,9 @@ Active bookings and future available slots can prevent deactivation. Resolve tho
 commitments before trying again. Deactivation retains history; module deletion and
 reactivation are not offered in this interface.
 
-## Manage tutor assignments
+### Manage tutor assignments
 
-### Assign a tutor to a module
+#### Assign a tutor to a module
 
 1. Open **Tutor assignments**.
 2. Under **Assign a tutor**, choose an active Tutor and an active module.
@@ -272,7 +323,7 @@ reactivation are not offered in this interface.
 Only active Tutors and active modules appear as choices. Assigning a pair that
 already exists does not create a duplicate.
 
-### Remove an assignment
+#### Remove an assignment
 
 1. Find the pair under **Current assignments**.
 2. Select **Remove**.
@@ -281,7 +332,7 @@ already exists does not create a duplicate.
 Removal is blocked while that Tutor/module pair has active bookings or future
 available slots. Other assignments are unaffected, and booking history is retained.
 
-## View booking activity
+### View booking activity
 
 1. Open **Booking activity**.
 2. Narrow the records using **Module**, **Tutor**, **Status** or
@@ -295,7 +346,7 @@ start date. Statuses are **ACTIVE**, **COMPLETED** and **CANCELLED**.
 Bookings are read-only on this page. Admins do not cancel or complete bookings here,
 and private consultation notes are not displayed.
 
-## Read the overview statistics
+### Read the overview statistics
 
 Open **Overview** to see:
 
@@ -310,10 +361,14 @@ records. Both percentages use all booking records as their denominator. For exam
 two completed records out of four total records gives a 50% completion rate.
 When there are no bookings, counts and percentages are zero.
 
+![Admin overview with the all-time booking statistics snapshot.](images/admin-overview.png)
+
+*Example screen. The displayed records are synthetic.*
+
 Check the snapshot capture time to see when the figures were read. Select
 **Refresh** for a new snapshot.
 
-## Activity report assistant
+### Activity report assistant
 
 ## If something goes wrong
 
