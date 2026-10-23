@@ -128,21 +128,31 @@ Student registration does not sign in. Password reset/change and forced-change f
 are excluded. Admin APIs are specified in `workflow/admin/TECHNICAL-SPEC.md`.
 Tutor APIs now receive trusted identity from the same session through runtime wiring.
 
-AI is unavailable by default. `UNICHOPE_AI_MODE=fake` is permitted only with `local`
-and produces explicitly labelled deterministic reports without a model call. Its
-in-memory limits support local testing only. No real SoC adapter or shared durable
-quota implementation is supplied by this Admin/auth increment; production returns
-AI_UNAVAILABLE for nonempty reports. Empty statistics need no provider. Do not treat
-fake output as satisfying the final product AI requirement. Integrate the Student-owned
-gateway with durable shared limits/deadlines before enabling real reports.
+AI is unavailable by default. The shared SoCLaaS client, role-key routing and
+PostgreSQL-backed admission controls are now implemented. Admin reports use the
+registered `ADM-REPORT-1` task through the shared gateway.
 
+To enable real Admin reports, set these environment variables in the backend's
+launch environment, then restart the updated backend:
 
-When the shared provider and durable quotas are implemented, `UNICHOPE_AI_MODE=shared`
-selects the externally supplied AiGateway bean. Missing bean fails startup; nonlocal
-fake responses are rejected. Do not use shared mode before that infrastructure is
-verified. Role-level report deadlines and in-flight checks do not replace its durable
-request/token accounting. An interrupted provider that still runs retains the
-per-account block beyond60seconds until it actually finishes.
+```powershell
+$env:UNICHOPE_AI_MODE = 'shared'
+# Set SOC_LLM_API_KEY_ADMIN privately in your terminal, IDE or hosting settings.
+.\gradlew.bat bootRun --args='--spring.profiles.active=app-api,local'
+```
+
+`SOC_LLM_API_KEY_ADMIN` is required for Admin model calls. Student and Tutor use
+separate role keys. See `.env.example` for the variable names; the backend does not
+automatically load `.env`. Never commit real keys. Successful real reports return
+`providerMode: soc`; a missing role key leaves that role's AI unavailable.
+
+`UNICHOPE_AI_MODE=fake` remains available only with `local` and produces explicitly
+labelled deterministic reports without calling a model. Empty statistics need no
+provider. Management and statistics remain available when AI fails. Reports retain
+their deadline and per-account in-flight checks; an uncertain request may remain
+blocked for at least 60 seconds and until its worker actually finishes. A timeout
+is reported to the user and does not silently substitute mocked output.
+
 ## Reusable local sample setup (Windows)
 
 From `src/backend` in PowerShell, with Java 25, Node 24+ and Docker Desktop running:
