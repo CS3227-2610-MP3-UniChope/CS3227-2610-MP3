@@ -83,3 +83,44 @@ I also asked Codex to evaluate the development agents with malicious issue text,
 ### 4. What remains to verify
 
 The Tutor feature has substantial fake-backed and local application evidence, including session, CSRF, booking ownership, no-write behavior, and explicit save. The current records still do not establish real SoC behavior, live-model prompt-injection resistance, actual provider quota accuracy, production migration and key activation, or final P6 acceptance by the affected owners and human reviewer. I will update this reflection when those checks have results.
+
+## Phuc — Student
+
+### AI security
+
+I relied on approval gates and human oversight rather than letting agents finish
+work on their own. When I asked for the light/dark theme switch, the agents stopped
+at a change record marked READY_FOR_HUMAN and made no commits. The independent
+reviewer's PASS did not count as acceptance. The agents then gave me one batch of
+decisions: whether the review fixes had to land before I accepted, how Login and
+Logout should behave on an already-revoked session (which Kok Seng should review
+because it touches authentication), and a keyboard, visual and zoom check that only
+I could do. Merging to main still needs reviews from Kok Seng and Huanghao. To stop
+the gates being bypassed, the agents report what they verified and what is still
+pending. Approval has to come from me or a teammate, not from an agent's report;
+device and no-flash checks were still open. I did not test whether injected
+instructions could fake my approval, so this relies on the process rather than
+on any evaluation.
+
+### Spec Driven Development
+
+I used two models, 6.1-sol and Opus 5.5, for different stages of development. A
+good spec is one that leads both models to build the same thing. If two models read
+the same spec and implement different behaviour, the spec is ambiguous and needs
+more detail before implementation.
+
+I gave each feature a short code (for example stu-fe5) to make handoffs between
+agents easier. The final reports also used these codes, plus finding IDs such as
+FE-R2 and CS-01, so I often could not tell which feature or problem they meant.
+Codes help the agents. Reports written for me should also name the feature in
+plain words.
+
+### Basic Multi Agent SE
+
+The specialised agent workflow was not a good fit for small UI changes. Adding a
+light/dark theme switch took 1 hour 17 minutes and used a lot of tokens, mostly
+on regression work across 188 unit tests and 77 browser tests. That is a lot of
+overhead for such a simple task. The separate roles and handoffs usually produce
+a better result, but the extra time and tokens are not worth it for small tasks.
+I should state more clearly that only heavy features go through the full workflow.
+Small changes can use a skill directly.
