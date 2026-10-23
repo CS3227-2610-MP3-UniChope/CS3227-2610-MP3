@@ -544,7 +544,7 @@ I asked to keep the current sample backend for later testing and chose a reusabl
 ## Codex GPT-6: Web startup in the developer guide
 I asked to add instructions for starting the web application to the developer guide. The agent added a local Windows startup section to docs/DeveloperGuide.md with prerequisites, the repository-root setup command, the Login URL, service ports, synthetic account emails, password reuse, sample-data behaviour, background output locations and backend-only/alternate-port links. The instructions were checked against the actual setup/seed scripts and their previously verified execution. The documentation whitespace and linked-file checks passed; no product tests were rerun for this documentation-only edit, and no credentials were recorded.
 
-## 23 October 2026: Claude Code (Opus 5.5): Port Student agenda to the main SoCLaaS adapter
+## Claude Code (Opus 5.5): Port Student agenda to the main SoCLaaS adapter
 
 I asked the agent, without the staged workflow, to port the `branch_AI` design onto
 `stu-AI` using the SoCLaaS adapter now on `main`. It brought over the Student agenda
@@ -573,3 +573,31 @@ the adapter change, output reliability beyond a few samples (one of three direct
 samples omitted `prepare`), and the local sample database, which still holds
 `branch_AI`'s different V5 and will block startup on this branch. Nothing was committed.
 
+
+## Claude Code (Opus 5.5): Seed MP2 module list into MP3 database
+
+I asked for the same list of modules as MP2 to be added to the MP3 database. The agent found MP2's list in `DemoData.java` (15 named requirements from the NUS BComp (CS) AY2026/27 curriculum) and added the Flyway data migration `src/backend/src/main/resources/db/migration/V7__seed_cs_modules.sql`. It inserts those modules as active, with the same IDs MP2 generated (`UUID.nameUUIDFromBytes("nus-cs-2026-27:" + code)`), and uses `ON CONFLICT DO NOTHING` so a code an admin already created is left alone. The agent treated this as a data-only change (no schema or API change) and used the workflow's shorter path. It noted that the migration runs in every environment, not only locally, and that `scripts/seed-local.ps1` still creates the older codes CS2030 and CS2040 alongside the new CS2030S and CS2040S.
+
+Verified: two of the generated IDs were checked against Java's `UUID.nameUUIDFromBytes`, and they match. I also confirmed that the existing PostgreSQL test fixtures only insert CS3227 and CS0000, so they don't collide with the seeded codes. Not verified: the migration was not run against PostgreSQL, and the `postgresTest` suite was not run because Docker was not running. Nothing was committed.
+
+## Claude Code (Opus 5.5): Deployment files for Vercel and Render
+
+I asked for help deploying the app on free hosting. After comparing options, I chose Vercel for the frontend, a free Render web service for the backend, and Neon or Supabase for PostgreSQL. The agent wrote `src/frontend/vercel.json`, which forwards `/api/*` to `https://cs3227-2610-mp3.onrender.com` so the site and API share one origin (SH-AUTH-05) and sends every other path to `index.html`. It also wrote `src/backend/Dockerfile` (Java 25: builds with Gradle `bootJar`, runs as a non-root user with the `app-api` profile, heap capped for 512 MB, listens on Render's `PORT`) and `src/backend/.dockerignore`, which keeps `.env` and local build output out of the image. The agent told me not to import the backend `.env` into Vercel, because the frontend needs no environment variables there.
+
+Verified: `docker build` succeeded locally. The image started in about 5 seconds with a 512 MB memory limit, using about 231 MB, against the local sample database, and served `/api/auth/csrf`. Not verified: no deployment to Vercel, Render, Neon or Supabase; the Render URL is assumed from the service name; the Vercel rewrites were not exercised. Nothing was committed.
+
+## Claude Code (Opus 5.5): Remove dates from interaction log headings
+
+I asked for dates to be removed from my log headings and for the logging rule to change to match. The agent removed the date prefix from the three headings that had one; all other headings were already undated. It changed the heading format in `CLAUDE.md` to `## <tool and model>: <topic>` and made the same change in `AGENTS.md` so Codex follows the same rule. Verified: no heading in `logs/phuc.md` now starts with a date. Both instruction files are git-ignored, so those two changes exist only on this machine.
+
+## Codex and GPT-6: Revert recent commit
+
+I asked to revert the recent commit. The agent reverted the deployment files and course seed migration from e80d551 (Add docker file and course seed), while preserving my append-only reflection log. This was an operational rollback with acceptance that all non-log tracked files match the parent commit. The working tree was clean before the rollback. The agent checked the staged diff against the parent and checked patch whitespace; application tests and database rollback were not performed. Affected files: src/backend/.dockerignore, src/backend/Dockerfile, src/backend/src/main/resources/db/migration/V7__seed_cs_modules.sql, src/frontend/vercel.json, and logs/phuc.md.
+
+Verification: pending Phuc's review.
+
+## Codex and GPT-6: Reset main while preserving file changes
+
+I clarified that I wanted to go back to origin/main and preserve the file changes. The agent fetched origin, restored the four deployment and seed files from e80d551 as working-tree files, and reset local main to origin/main at dbe3bfc using a mixed reset. This supersedes the earlier revert approach. My reflection log was preserved. Verification confirmed HEAD matches origin/main and all four restored files have the same Git content hashes as e80d551. Application tests were not run; the remote branch was not changed.
+
+Verification: pending Phuc's review.
