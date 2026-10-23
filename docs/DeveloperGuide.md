@@ -130,3 +130,10 @@ shared-provider dependency. No frontend secrets or provider keys are required.
 Frontend CI installs Node 24, runs unit tests and builds the frontend. Run browser
 checks locally with the frontend README commands; port 5173 must be free because
 the test configuration starts a fresh server rather than reusing another checkout.
+
+### Render deployment
+
+See [deployment instructions](DEPLOYMENT.md) for the combined frontend/backend
+Docker image, managed PostgreSQL configuration and existing Admin bootstrap flow.
+The Docker build excludes local environment files and credentials. Container CI
+checks that the complete deployment image builds without provider keys or a database.

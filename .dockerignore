@@ -1,0 +1,36 @@
+# Only application source and build descriptors are needed.
+**
+!src/
+!src/frontend/
+!src/frontend/**
+!src/backend/
+!src/backend/**
+!Dockerfile
+!.dockerignore
+
+# Local configuration, credentials and outputs never enter the build context.
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/.git
+**/.gradle
+**/node_modules
+**/dist
+**/build
+**/bin
+**/coverage
+**/test-results
+**/playwright-report
+**/*.log
+**/*.db
+**/.idea
+**/.vscode
+src/backend/src/test
+src/frontend/src/test
+src/frontend/e2e
+
+**/*.test.ts
+**/*.test.tsx

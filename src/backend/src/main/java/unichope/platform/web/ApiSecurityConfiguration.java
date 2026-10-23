@@ -31,8 +31,11 @@ public class ApiSecurityConfiguration {
     boolean student = environment.matchesProfiles("student-api");
     boolean auth = environment.matchesProfiles("auth-api");
     boolean admin = environment.matchesProfiles("admin-api");
+    boolean frontend = environment.matchesProfiles("app-api");
     http.authorizeHttpRequests(
         authorize -> {
+          if (frontend)
+            authorize.requestMatchers(SpaController::isPublicFrontendRequest).permitAll();
           if (auth) {
             authorize
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/auth/csrf")

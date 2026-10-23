@@ -142,3 +142,25 @@ check, not an exhaustive evaluation of factual accuracy or model security.
 Focused checks passed: 41 unit tests and 16 PostgreSQL tests, with no failures.
 The updated executable backend built successfully. I updated the setup docs to
 explain shared-mode configuration and retained fake mode for local testing.
+
+## 23 October 2026 — Render deployment preparation
+
+Verification status: this summary is awaiting my review.
+
+I based deployment preparation on main dbe3bfc and reused the current application,
+API security, database migrations and offline Admin bootstrap. I added one
+multi-stage Docker image that builds React and packages it into Spring Boot, plus
+an ignore file excluding credentials and local outputs. Production uses app-api,
+secure cookies, a non-root Java runtime and Render's port.
+
+I added explicit frontend deep-link handling and public read access for frontend
+assets while retaining API role checks and CSRF. Expired sessions can load the
+public shell, but their API requests are still rejected. Separate review found no
+blocking issues. I added deployment instructions and a container-build CI job.
+
+Verification: frontend TypeScript/build, five new web-security tests, six existing
+PostgreSQL application integration tests and bootJar passed. Real HTTP checks of
+the packaged JAR served deep links/assets and retained JSON401 API denials.
+The initial PostgreSQL check could not connect to the stopped local test database;
+it passed after that database was restarted. The local Docker engine was unavailable,
+so I have not claimed a successful Docker image build or an online Render deployment.

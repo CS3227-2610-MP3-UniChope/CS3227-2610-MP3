@@ -1,0 +1,21 @@
+name: Container build
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ['Dockerfile', '.dockerignore', 'src/backend/**', 'src/frontend/**', '.github/workflows/container.yml']
+  push:
+    branches: [main]
+    paths: ['Dockerfile', '.dockerignore', 'src/backend/**', 'src/frontend/**', '.github/workflows/container.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  image:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the deployment image without secrets
+        run: docker build --tag unichope:ci .

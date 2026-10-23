@@ -19,6 +19,13 @@ final class CurrentAccountFilter extends OncePerRequestFilter {
   }
 
   @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) {
+    String path = request.getServletPath();
+    if (path.isEmpty()) path = request.getRequestURI().substring(request.getContextPath().length());
+    return !path.startsWith("/api/");
+  }
+
+  @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws ServletException, IOException {
