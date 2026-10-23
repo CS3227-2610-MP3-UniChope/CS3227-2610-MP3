@@ -26,6 +26,7 @@ public class StudentExceptionHandler {
             status = api.status();
             code = api.code();
             message = api.getMessage();
+            if (api.retryAfterSeconds() != null) response.setHeader("Retry-After", Long.toString(api.retryAfterSeconds()));
         } else if (failure instanceof StudentAccessDeniedException access) {
             switch (access.reason()) {
                 case NO_ACTOR -> { status = 401; code = "UNAUTHENTICATED"; message = "Authentication is required"; }

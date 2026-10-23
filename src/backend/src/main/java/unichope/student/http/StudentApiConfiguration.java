@@ -84,6 +84,14 @@ public class StudentApiConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
+    unichope.student.AgendaService agendaService(StudentAccess access, StudentReadRepository reads, Clock clock,
+            org.springframework.beans.factory.ObjectProvider<unichope.platform.ai.AiGateway> gateway,
+            org.springframework.beans.factory.ObjectProvider<unichope.platform.auth.AuthenticationService> authentication) {
+        var sessions = new StudentAgendaSession(authentication.getIfAvailable());
+        return new unichope.student.AgendaService(access, reads, clock, gateway::getIfAvailable, sessions::capture);
+    }
+
+    @Bean
     StudentHttpService studentHttpService(StudentAccess access, ConsultationLifecycle lifecycle, StudentReadService reads) {
         return new StudentHttpService(access, lifecycle, reads);
     }
