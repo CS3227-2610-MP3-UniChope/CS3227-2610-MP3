@@ -246,7 +246,41 @@ length. Before admission, confirm current active STUDENT, ownership (404 otherwi
 booking ACTIVE, and slot `endTime > now` (409 `INVALID_STATE` otherwise). Read the
 module code and consultation length in whole minutes, close the transaction, then
 call the gateway. After the call, recheck the session's actor is still the same
-active student and the booking is still owned; otherwise discard the result.
+active student and the booking is still owned, ACTIVE and unended; otherwise discard
+the result using the same access/not-found/invalid-state rules as before the call.
+
+### Current agenda integration (23 October 2026)
+
+This scoped contract takes precedence over the obsolete future gateway proposal
+in section 6 for the agenda increment. Preserve the existing AiGateway nested
+Request/Result/Failure API and Tutor/Admin callers. Use task `STU-AGENDA-1`, trusted
+actor ID, fixed instructions and JSON input with exactly `questions`, `moduleCode`,
+`lengthMinutes`; actor/task metadata is never provider prompt data. Set a bounded
+output budget of 2048 tokens. Derive length using whole elapsed booked minutes
+(floor); a length below one minute is INVALID_STATE. No database transaction spans
+the model call. Reuse current shared-mode RoutedAiGateway and key routing,
+PostgresAiAdmission and server configuration. Missing gateway/configuration gives
+503 AI_UNAVAILABLE; ordinary Student startup and booking still work. Fake injection
+is permitted in tests/dev only and labelled; do not add production fake fallback.
+
+POST body is exactly `{ "questions": string }`, no query parameters, same strict
+JSON/UUID/content-type/64-KiB/duplicate/trailing-token rules as existing Student
+mutations. Blank means Unicode whitespace only; reject unpaired surrogate code
+units. Questions are measured before trimming. DTO is exactly `{ bookingId,
+agenda, requiresReview: true, providerMode: "fake" | "soc" }`.
+
+Current gateway failures map UNAVAILABLE/TIMEOUT/INVALID_OUTPUT to respectively
+503 AI_UNAVAILABLE / 504 AI_TIMEOUT / 502 AI_INVALID_OUTPUT. Preserve admission
+ApiFailure codes. Make ApiFailure retry seconds optional while retaining its
+existing constructor; PostgresAiAdmission supplies positive ceiling seconds for
+AI_BUSY (remaining lease), actor rate limit (earliest attempt leaving its window)
+and key RPM (earliest attempt leaving one minute). Student exception handling
+emits `Retry-After` when present. This is a backward-compatible completion of the
+existing Integration section 4 retry contract, not a gateway API migration.
+Per-key budgets remain the current gateway responsibility; budget exhaustion maps
+503 AI_UNAVAILABLE. No browser chooses key, model or task. Existing configured
+25-second provider timeout is within the 30-second provider deadline budget; do
+not claim a hard wall-clock HTTP bound that includes database lock waiting.
 
 ### Prompt
 
@@ -276,7 +310,8 @@ the module code, and the length in minutes. No names, emails, IDs, times, or not
 - `items`: 1 to 8 entries; `minutes` integers >= 1; their sum <= consultation length.
 - `prepare`: 0 to 5 entries.
 - Reject blank strings, HTML tags, and control characters other than newline.
-- Reject raw provider responses over 64 KiB before parsing.
+- Reject raw provider responses over 64 KiB UTF-8 before parsing; reject duplicate
+  keys and trailing JSON, unpaired surrogates, nonintegral minutes and overflow.
 
 Format the validated object into plain text, at most 4,000 code points:
 
@@ -383,8 +418,8 @@ shell, or callback access for the model, and no browser parameter selects a prov
 For the current FE0/FE1/FE2 frontend increment, the normative scoped detail is
 [FRONTEND-DESIGN.md](FRONTEND-DESIGN.md), including exact URL/API mapping, SGT week
 semantics, safe mutation failures and responsive/accessibility requirements.
-FE2 implements slots/bookings only; the agenda route/actions below are future
-scope. FE1 supplies shared cookie/CSRF/auth handling without changing backend
+FE2 implements slots/bookings only; the separate 23 October agenda increment
+activates the agenda route/actions below. FE1 supplies shared cookie/CSRF/auth handling without changing backend
 contracts. Use Bootstrap plus local tokens; do not replace the agreed stack.
 
 Routes inside the authenticated Student layout: `/student/slots`,
@@ -405,7 +440,8 @@ presentation only.
   Clipboard API with a visible fallback. Count length in code points
   (`[...text].length`). Show a "Fake AI output" badge when `providerMode` is `fake`.
 - On sign-out or account change, clear all Student state. Session expiry follows
-  SH-WEB-03: keep unsaved questions in memory only for the same actor. Warn on
+  the current App session handler and clears private state; do not preserve draft
+  text across login or introduce another auth policy. Warn on
   navigation away with unsaved questions or an edited draft. Never use
   local/session storage for private data.
 - Render all server and model text as ordinary React text. Use Bootstrap modals with
@@ -450,3 +486,21 @@ Verification prerequisite: disposable real PostgreSQL 17 with CREATE SCHEMA perm
 Java 25 and Gradle wrapper. Run focused unit and postgresTest suites, then full
 `test postgresTest bootJar`. Use unique schemas and synthetic credentials only.
 No runtime success is claimed by this specification.
+
+
+### Agenda UI integration detail (23 October 2026)
+
+Recognize only the canonical UUID agenda path in App route classification, including
+direct URL session restoration and wrong-role routing. Render the agenda page in
+the Student workspace without running browse-filter normalization on that route.
+Show Prepare agenda on ACTIVE unended booking rows (browser time is advisory;
+server eligibility is authoritative). Booking summary uses the existing owned GET.
+Keep Bootstrap/local theme tokens, responsive layout and labelled controls. Use
+accessible loading/status/alert states, keyboard confirmation with focus return,
+and safe plain-text textarea rendering. Validate the response shape, review flag,
+matching booking ID, provider mode and agenda bound before replacing a draft.
+A blocked clipboard offers selecting/copying the existing text manually. Warn for
+in-app navigation and browser unload if questions or an edited draft are nonempty;
+confirmed leave discards memory. Explicit sign-out bypasses leave confirmation and
+clears state. Same-page newer generation, route changes and API reset invalidate
+old completions. No generated links or HTML are executed.

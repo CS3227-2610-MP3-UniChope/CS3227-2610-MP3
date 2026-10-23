@@ -1,0 +1,14 @@
+[
+  {
+    "probe": "pending-regeneration-overwrites-new-edit",
+    "actual": "Second generated agenda",
+    "confirmationDialogs": 0,
+    "expected": "preserve edit or require confirmation"
+  },
+  {
+    "probe": "browser-back-discards-dirty-preparation",
+    "actualPath": "/student/bookings",
+    "confirmationDialogs": 0,
+    "expected": "warn before leaving dirty preparation"
+  }
+]

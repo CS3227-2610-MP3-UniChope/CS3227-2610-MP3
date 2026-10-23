@@ -3,8 +3,8 @@
 Frontend increment: the scoped [frontend design contract](FRONTEND-DESIGN.md)
 extends section 5 with the authorized UniChope weekly timetable/filter sidebar,
 mobile list and booking journeys (FE2 acceptance). It excludes AI UI from this
-increment; the future agenda requirements below remain pending, and FE2 exposes
-no unfinished agenda action. See FE0/FE1/FE2 in [the plan](PLAN.md).
+increment; FE2 exposes no unfinished agenda action. The separate 23 October
+2026 agenda increment activates STU-AI-01/02 and the agenda route below. See FE0/FE1/FE2 in [the plan](PLAN.md).
 
 Status: Draft for Student owner and team review; no features are implemented by this file.
 Owner: Phuc (Student role owner)
@@ -145,7 +145,7 @@ acceptance criteria; the stories do not add separate functionality.
 - Timeouts, quota exhaustion, malformed or unsafe output, and provider errors keep the
   student's questions and any existing draft. Browsing, booking, and cancellation keep
   working. There is no automatic retry.
-- Proposed values for review: questions at most 4,000 Unicode code points; formatted
+- Agenda increment limits: questions at most 4,000 Unicode code points; formatted
   agenda at most 4,000 code points; 30-second generation timeout; at most 3 accepted
   generation attempts per student per rolling 5 minutes, counting provider failures.
   Rejected validation or authorization requests make no LLM call and use no quota.
@@ -253,7 +253,10 @@ JavaFX views, local databases, or default credentials. No MP2 code has been reus
 
 Phuc owns the Student role and, under the 20 October 2026 allocation, `platform/ai`.
 
-Booking decisions 1-4 approved by Phuc on 22 October 2026 in the current user reply: "all" and "Approve all four proposed rules". AI assumptions 5-6 remain undecided and outside this request:
+Booking decisions 1-4 approved by Phuc on 22 October 2026 in the current user reply: "all" and "Approve all four proposed rules". The current 23 October 2026 user request to implement the consultation preparation
+assistant activates the existing agenda baseline 5-6 below. These are scoped
+implementation choices by the analyst under that request, not a claim that Phuc
+separately approved numeric limits or shared policy:
 
 1. Any active student can book any active module's slot; there is no enrolment model.
 2. Overlapping slots are listed and rejected on booking rather than hidden.
@@ -266,3 +269,26 @@ Booking decisions 1-4 approved by Phuc on 22 October 2026 in the current user re
 Decisions for the team: confirm 1; decide whether tutors should ever see agendas
 (would need storage and a Tutor contract change); reconcile the Tutor technical spec
 and plan, which still assign `platform/ai` to Huanghao, with the 20 October allocation.
+
+
+## 11. Agenda increment acceptance (23 October 2026)
+
+Scope: one independently testable capability, from an owned booking to an editable
+agenda, using the existing shared gateway. The student's topic and questions use
+one questions field; no separate topic endpoint, chat, storage, tutor sharing or
+booking mutation is added. Existing S-AI-1..6, S-UI-1 and S-INJ-1 remain required.
+
+| ID | Given / When / Then |
+| --- | --- |
+| S-AGENDA-ACCESS | Given an anonymous, inactive, wrong-role or other-owner caller / when generating / then existing session/CSRF rules and indistinguishable owned-resource 404 apply, with zero gateway calls for denials; syntax follows existing Student precedence. |
+| S-AGENDA-RACE | Given generation is pending / when account access is revoked, booking is cancelled/completed, or its end is reached / then post-call authorization and eligibility recheck discards the result. In-flight navigation, sign-out or account switch also discards UI results and clears private state. |
+| S-AGENDA-ROUTE | Given an active Student session / when opening the agenda URL directly or from an ACTIVE unended booking / then the owned summary loads and the editor appears; invalid/ineligible/missing bookings have safe states. Login restoration recognizes this route; other roles cannot display it. |
+| S-AGENDA-INPUT | Given empty, whitespace-only, over-4000-code-point or malformed input / when generating / then validation fails with zero gateway calls; exactly 4000 valid code points are accepted and the page shows a code-point count and privacy reminder. |
+| S-AGENDA-EDIT | Given a valid draft / when editing and copying / then plain text is editable and copy success or fallback is visible. Regeneration of an edited draft requires keyboard-operable confirmation; declining preserves it and makes no call. |
+| S-AGENDA-FAILURE | Given timeout, invalid output, unavailable service, busy or rate limit / when generating / then questions and previous draft remain, progress ends, no automatic retry occurs and booking navigation still works. Busy/rate-limit responses carry retry seconds, shown accessibly. |
+| S-AGENDA-PRIVACY | Given questions or an edited draft / when leaving preparation / then warn before ordinary in-app navigation or browser unload; explicit sign-out clears immediately. No questions/drafts enter browser storage, routine logs, booking mutations or provider metadata. Session expiry clears through the current shared App session handler. |
+
+Quality limitation: deterministic schema checks enforce bounds and structure, not
+semantic grounding or the absence of answers. Synthetic prompt-injection cases
+verify restricted context/no tools; a real-provider qualitative evaluation remains
+required before claiming that agenda quality is verified.

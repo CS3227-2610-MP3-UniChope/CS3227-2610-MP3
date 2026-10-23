@@ -1,0 +1,106 @@
+﻿[
+    {
+        "path":  "src/backend/src/main/java/unichope/platform/ai/PostgresAiAdmission.java",
+        "sha256":  "DB96807DA90DAC2DC318A3F3A070222B93EC29484410FACE85A6B256EA1CEBEE"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/platform/web/ApiFailure.java",
+        "sha256":  "AA5328E9D888FBC5ACC0CBD8580DB3BF00715D06858CC17EDE25A8C27BC8BF45"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/student/AgendaDraft.java",
+        "sha256":  "EFF2281623F3DE06335C41E65FCC890DBCE023DB5C41BD128E7C8A5AA88F05B1"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/student/AgendaOutput.java",
+        "sha256":  "ABEAA92ED809AB716D01A6D3992DFCA79E9CDD72C0830BD2C356080B158911BF"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/student/AgendaPrompt.java",
+        "sha256":  "DF35D083C945A2C653FE6593814A01B9925FD6AEA11B12277754C6FE54880F27"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/student/AgendaService.java",
+        "sha256":  "62C01F89456DF958DBB3DC248C689D428AC323D64C003B3358434CC0A5D3F636"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/student/AgendaText.java",
+        "sha256":  "2D0C61FA7F7A19800F23F1F3E283236AD326891DEC738FE9B5FD538DCC0D0041"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/student/http/StudentAgendaSession.java",
+        "sha256":  "EF667167C15712DE1D02DCDBE746388CF29506CDEC7ADD1C2CBEBCAF87EBB4C2"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/student/http/StudentApiConfiguration.java",
+        "sha256":  "1658E46E2FA35482902014024556AD765CFCA11515614D37BACE5A968D168551"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/student/http/StudentApiInput.java",
+        "sha256":  "0D492AD1BE9048A93D4906E88533654ACA9E0E65C41C069D1E33D6BACF663510"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/student/http/StudentController.java",
+        "sha256":  "D30F87501153AF9A7D2E8E14884C0DA789C7AA4E803582024B2CD690DD18C29E"
+    },
+    {
+        "path":  "src/backend/src/main/java/unichope/student/http/StudentExceptionHandler.java",
+        "sha256":  "197055491609CC5912E5EE1F834297C2550381612BB07E00BEE0F5D8588D80F5"
+    },
+    {
+        "path":  "src/backend/src/test/java/unichope/platform/ai/PostgresAiAdmissionPgTest.java",
+        "sha256":  "83927BCCCB3F1AE17D0A98369D66258576D3B5D94E43D5DD7C94358C306CB646"
+    },
+    {
+        "path":  "src/backend/src/test/java/unichope/platform/core/postgres/StudentAgendaPgTest.java",
+        "sha256":  "BA8D7EC469DE26D0D073301DADD1A6C54124BDF73C281FFC4D786C822AC3F4BE"
+    },
+    {
+        "path":  "src/backend/src/test/java/unichope/platform/runtime/AgendaSessionRacePgTest.java",
+        "sha256":  "22C0F280ED92BFCD66F36C23999AD595DB6E31D25E1526D6A23209C21E9ED966"
+    },
+    {
+        "path":  "src/frontend/src/App.tsx",
+        "sha256":  "50F666868D33BFA153E251CCB9325A1B18F5E3AD23B1B201434B6CC170EA955B"
+    },
+    {
+        "path":  "src/frontend/src/navigation.ts",
+        "sha256":  "EBA1A6C828829C9E6380DEE119DDAD57498656DDC7EA19896A0EA93ECD4B8796"
+    },
+    {
+        "path":  "src/frontend/src/student/AgendaConfirmation.tsx",
+        "sha256":  "DE92662EF603002C0DF3DEEBB553348E151A2DD3DC1C1E2180B89C5FE9855276"
+    },
+    {
+        "path":  "src/frontend/src/student/AgendaPage.tsx",
+        "sha256":  "DA1C3158EAA9B70E9E81C07D1B1349EBB4218EB73EE7580105125BF87DBA65E2"
+    },
+    {
+        "path":  "src/frontend/src/student/Consultations.tsx",
+        "sha256":  "3E430219FA4CECB2C4B8D05EBB1ACE6C72619E5BAD4B12C20D49264478EC588B"
+    },
+    {
+        "path":  "src/frontend/src/styles.css",
+        "sha256":  "CFBFDE9B36CEFF03C6DED3E8EAF22A4E1637914578091FE324DFF42EE47051C6"
+    },
+    {
+        "path":  "src/frontend/src/test/agenda.test.tsx",
+        "sha256":  "BACDDFD5AADFE8BBC7BD62C571B49D06279D383801B062B15EAA6D281D53C131"
+    },
+    {
+        "path":  "src/frontend/src/test/agenda-regressions.test.tsx",
+        "sha256":  "75068511AAA4B8E0762E8CF4CB0FDD2B60D7C78A5BDB1DF5D662A4E36A7886ED"
+    },
+    {
+        "path":  "workflow/student/PLAN.md",
+        "sha256":  "07050E9AF6A07737B08C5C7FDF0E6778224D3C49AC006E633845914244B0B15C"
+    },
+    {
+        "path":  "workflow/student/PRODUCT-SPEC.md",
+        "sha256":  "CB7F4C2DC12F7FECFEAEF258E8D25354E0FBF3D74B425EAF98AF74D4F48E3EEC"
+    },
+    {
+        "path":  "workflow/student/TECHNICAL-SPEC.md",
+        "sha256":  "ABEBC0DE10029D4F5861058850D6BC9C346F2529F0639F244C2D8F72B60C93DF"
+    }
+]

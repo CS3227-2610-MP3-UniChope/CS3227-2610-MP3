@@ -1,0 +1,15 @@
+[
+  {
+    "finding": "AG-R1",
+    "pendingDraftReadOnly": true,
+    "acceptedEditsLost": false,
+    "requests": 2
+  },
+  {
+    "finding": "AG-R2",
+    "backDeclinePreserves": true,
+    "backConfirmLeaves": true,
+    "forwardDeclinePreserves": true,
+    "forwardConfirmLeaves": true
+  }
+]

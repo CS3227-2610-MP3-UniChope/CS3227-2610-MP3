@@ -1,0 +1,842 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.platform.core.postgres.StudentAgendaPgTest" tests="38" skipped="0" failures="38" errors="0" timestamp="2026-10-23T00:01:06.057Z" hostname="PHUXTROHHG" time="23.251">
+  <properties/>
+  <testcase name="cancellationCompletionExpiryAndDeactivationDuringProviderCallDiscardOutput()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="2.797">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;dc5dd31a-2999-4704-ab74-550b6715708f&quot;} ==&gt; expected: &lt;409&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;dc5dd31a-2999-4704-ab74-550b6715708f&quot;} ==&gt; expected: &lt;409&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.cancellationCompletionExpiryAndDeactivationDuringProviderCallDiscardOutput(StudentAgendaPgTest.java:172)
+</failure>
+  </testcase>
+  <testcase name="timeoutUnavailableAndInvalidOutputMapToSafeFailures()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.697">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;6e95ff69-54d8-4602-8363-a7aca5bb7be3&quot;} ==&gt; expected: &lt;503&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;6e95ff69-54d8-4602-8363-a7aca5bb7be3&quot;} ==&gt; expected: &lt;503&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.timeoutUnavailableAndInvalidOutputMapToSafeFailures(StudentAgendaPgTest.java:164)
+</failure>
+  </testcase>
+  <testcase name="startedButUnendedConsultationUsesFloorMinutesWithoutOpenTransaction()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.653">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;d6508679-2b39-4dc4-b1ef-e86ae3135515&quot;} ==&gt; expected: &lt;200&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;d6508679-2b39-4dc4-b1ef-e86ae3135515&quot;} ==&gt; expected: &lt;200&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.startedButUnendedConsultationUsesFloorMinutesWithoutOpenTransaction(StudentAgendaPgTest.java:125)
+</failure>
+  </testcase>
+  <testcase name="[1] input = &quot;{}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.663">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;c0f3e03f-fc4d-4020-ac71-fe62f34c8fce&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;c0f3e03f-fc4d-4020-ac71-fe62f34c8fce&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.malformedInputHasNoGatewayCall(StudentAgendaPgTest.java:99)
+</failure>
+  </testcase>
+  <testcase name="[2] input = &quot;{\&quot;questions\&quot;:null}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.633">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;cfff5360-80ea-4880-9322-4ab80865ad6a&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;cfff5360-80ea-4880-9322-4ab80865ad6a&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.malformedInputHasNoGatewayCall(StudentAgendaPgTest.java:99)
+</failure>
+  </testcase>
+  <testcase name="[3] input = &quot;{\&quot;questions\&quot;:3}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.618">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;2ef6a94f-8dd1-426b-966d-0e523899ec7f&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;2ef6a94f-8dd1-426b-966d-0e523899ec7f&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.malformedInputHasNoGatewayCall(StudentAgendaPgTest.java:99)
+</failure>
+  </testcase>
+  <testcase name="[4] input = &quot;{\&quot;questions\&quot;:\&quot; \&quot;}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.585">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;10a5b2b9-b7b0-4d82-b478-4ddb1f8cf4c2&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;10a5b2b9-b7b0-4d82-b478-4ddb1f8cf4c2&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.malformedInputHasNoGatewayCall(StudentAgendaPgTest.java:99)
+</failure>
+  </testcase>
+  <testcase name="[5] input = &quot;{\&quot;questions\&quot;:\&quot;\\u2003\&quot;}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.55">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;c1a8bcfd-54a5-441a-af94-4b5f75da4542&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;c1a8bcfd-54a5-441a-af94-4b5f75da4542&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.malformedInputHasNoGatewayCall(StudentAgendaPgTest.java:99)
+</failure>
+  </testcase>
+  <testcase name="[6] input = &quot;{\&quot;questions\&quot;:\&quot;\\ud800\&quot;}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.575">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;146b488f-db14-4f17-bcac-c3d567dc6b2b&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;146b488f-db14-4f17-bcac-c3d567dc6b2b&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.malformedInputHasNoGatewayCall(StudentAgendaPgTest.java:99)
+</failure>
+  </testcase>
+  <testcase name="[7] input = &quot;{\&quot;questions\&quot;:\&quot;x\&quot;,\&quot;actorId\&quot;:\&quot;x\&quot;}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.546">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;e1f6434a-bb31-49f9-ae4f-d070bbcdf7e0&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;e1f6434a-bb31-49f9-ae4f-d070bbcdf7e0&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.malformedInputHasNoGatewayCall(StudentAgendaPgTest.java:99)
+</failure>
+  </testcase>
+  <testcase name="[8] input = &quot;{\&quot;questions\&quot;:\&quot;x\&quot;,\&quot;questions\&quot;:\&quot;y\&quot;}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.547">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;b62a6b7c-cc84-4781-8b92-26639177e37d&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;b62a6b7c-cc84-4781-8b92-26639177e37d&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.malformedInputHasNoGatewayCall(StudentAgendaPgTest.java:99)
+</failure>
+  </testcase>
+  <testcase name="[9] input = &quot;{\&quot;questions\&quot;:\&quot;x\&quot;} {}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.497">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;8d40464a-5f53-464e-8516-6edddc59fc7a&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;8d40464a-5f53-464e-8516-6edddc59fc7a&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.malformedInputHasNoGatewayCall(StudentAgendaPgTest.java:99)
+</failure>
+  </testcase>
+  <testcase name="[10] input = &quot;[]&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.515">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;a99c5cab-a3bd-43c5-b88a-b4b35cd717b5&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;a99c5cab-a3bd-43c5-b88a-b4b35cd717b5&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.malformedInputHasNoGatewayCall(StudentAgendaPgTest.java:99)
+</failure>
+  </testcase>
+  <testcase name="formattedAgendaCapIsIndependentOfFieldCaps()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.476">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;dac2839e-2195-4e82-a53f-4b220915a32e&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;dac2839e-2195-4e82-a53f-4b220915a32e&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.formattedAgendaCapIsIndependentOfFieldCaps(StudentAgendaPgTest.java:159)
+</failure>
+  </testcase>
+  <testcase name="unicodeInputBoundaryIsCodePointsBeforeTrimming()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.535">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;efbcabbe-e646-4f2b-a963-ccaedc30676a&quot;} ==&gt; expected: &lt;200&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;efbcabbe-e646-4f2b-a963-ccaedc30676a&quot;} ==&gt; expected: &lt;200&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.unicodeInputBoundaryIsCodePointsBeforeTrimming(StudentAgendaPgTest.java:102)
+</failure>
+  </testcase>
+  <testcase name="ownedEligibilityAccessAndCsrfDenyWithoutGatewayCalls()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.533">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;5157008c-7118-4564-9414-4221e47ec0c3&quot;} ==&gt; expected: &lt;403&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;5157008c-7118-4564-9414-4221e47ec0c3&quot;} ==&gt; expected: &lt;403&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.ownedEligibilityAccessAndCsrfDenyWithoutGatewayCalls(StudentAgendaPgTest.java:130)
+</failure>
+  </testcase>
+  <testcase name="validAgendaUsesOnlyAuthorizedContextAndNeverMutatesBookings()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.558">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;853f588f-942a-49cb-bf8f-d0fd36809af5&quot;} ==&gt; expected: &lt;200&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;853f588f-942a-49cb-bf8f-d0fd36809af5&quot;} ==&gt; expected: &lt;200&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.validAgendaUsesOnlyAuthorizedContextAndNeverMutatesBookings(StudentAgendaPgTest.java:83)
+</failure>
+  </testcase>
+  <testcase name="[1] raw = &quot;{}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.562">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;7566e9e1-d3a5-4d78-821b-091f1b9f3eea&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;7566e9e1-d3a5-4d78-821b-091f1b9f3eea&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[2] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]} {}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.565">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;e1eb6441-755f-4ed6-849b-b24a9b78a484&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;e1eb6441-755f-4ed6-849b-b24a9b78a484&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[3] raw = &quot;{\&quot;goal\&quot;:\&quot;duplicate\&quot;,\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.53">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;1d2cfa70-b1bc-4197-a8fb-2ee263592737&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;1d2cfa70-b1bc-4197-a8fb-2ee263592737&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[4] raw = &quot;{\&quot;goal\&quot;:\&quot;&lt;script&gt;alert(1)&lt;/script&gt;\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.519">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;28f9fd16-3933-4e31-84b1-a831ea3f541d&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;28f9fd16-3933-4e31-84b1-a831ea3f541d&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[5] raw = &quot;{\&quot;goal\&quot;:\&quot; \&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.558">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;76945ce6-6de7-494b-9028-a07e3e7364c8&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;76945ce6-6de7-494b-9028-a07e3e7364c8&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[6] raw = &quot;{\&quot;goal\&quot;:\&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\&quot;…&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.545">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;d3d3a0d0-ff49-424b-be37-fd2e9d59c129&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;d3d3a0d0-ff49-424b-be37-fd2e9d59c129&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[7] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.523">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;a05302a3-2034-4cd3-9571-d49c1ccbb3a0&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;a05302a3-2034-4cd3-9571-d49c1ccbb3a0&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[8] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx…&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.551">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;14254a2d-1c2b-4934-bf3c-01adedda7410&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;14254a2d-1c2b-4934-bf3c-01adedda7410&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[9] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.528">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;4ae86756-a931-4544-a6fc-d016bf398062&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;4ae86756-a931-4544-a6fc-d016bf398062&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[10] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:61}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.5">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;f2caa69d-43e1-436e-86ad-89dd4086e862&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;f2caa69d-43e1-436e-86ad-89dd4086e862&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[11] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:0}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.576">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;221fcdb4-71e5-4c53-a751-8c91f2187676&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;221fcdb4-71e5-4c53-a751-8c91f2187676&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[12] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:1.5}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.56">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;61c51d8f-59d8-48ed-b7f6-3b7f9d8649b7&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;61c51d8f-59d8-48ed-b7f6-3b7f9d8649b7&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[13] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:2147483648}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.533">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;2d61b3e7-5f53-4a2c-a331-bedd5893260c&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;2d61b3e7-5f53-4a2c-a331-bedd5893260c&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[14] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;extra\&quot;:true,\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.514">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;3ae48cb3-acd7-470b-b39a-b7a4955e642e&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;3ae48cb3-acd7-470b-b39a-b7a4955e642e&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[15] raw = &quot;{\&quot;goal\&quot;:\&quot;\\ud800\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.544">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;cd305181-19d6-4e38-a549-a661074166a4&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;cd305181-19d6-4e38-a549-a661074166a4&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[16] raw = &quot;{\&quot;goal\&quot;:\&quot;bad\\ttext\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.511">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;fbd3c6bc-da2a-423a-8997-2958aea92bdf&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;fbd3c6bc-da2a-423a-8997-2958aea92bdf&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[17] raw = &quot;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               …&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.523">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;28ab743d-34f6-4141-bad5-d50e2cf10738&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;28ab743d-34f6-4141-bad5-d50e2cf10738&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[18] raw = &quot;{\&quot;goal\&quot;:\&quot;x\&quot;,\&quot;items\&quot;:[],\&quot;prepare\&quot;:[]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.518">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;4254b098-ea9b-41a6-904d-e299a0ed76fb&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;4254b098-ea9b-41a6-904d-e299a0ed76fb&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[19] raw = &quot;{\&quot;goal\&quot;:\&quot;x\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1}],\&quot;prepare\&quot;:[]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.507">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;e9b63f62-d203-4a82-94df-7f38cb635fbc&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;e9b63f62-d203-4a82-94df-7f38cb635fbc&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="[20] raw = &quot;{\&quot;goal\&quot;:\&quot;x\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1}],\&quot;prepare\&quot;:[\&quot;a\&quot;,\&quot;b\&quot;,\&quot;c\&quot;,\&quot;d\&quot;,\&quot;e\&quot;,\&quot;f\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.511">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;12226200-d4be-4dfa-b5bd-3b56e3ce6b70&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;12226200-d4be-4dfa-b5bd-3b56e3ce6b70&quot;} ==&gt; expected: &lt;502&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.invalidProviderOutputFailsSafelyWithoutRepair(StudentAgendaPgTest.java:153)
+</failure>
+  </testcase>
+  <testcase name="strictHttpSyntaxPrecedesActorAndNeverCallsGateway()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.474">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;e5cffa5f-d223-4dbe-8338-e71458d31260&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;Resource not found&quot;,&quot;requestId&quot;:&quot;e5cffa5f-d223-4dbe-8338-e71458d31260&quot;} ==&gt; expected: &lt;400&gt; but was: &lt;404&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.status(StudentAgendaPgTest.java:77)
+	at app//unichope.platform.core.postgres.StudentAgendaPgTest.strictHttpSyntaxPrecedesActorAndNeverCallsGateway(StudentAgendaPgTest.java:116)
+</failure>
+  </testcase>
+  <system-out><![CDATA[08:01:06.684 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:06.758 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_0ca396d09d374375945c9d92a790e719"."flyway_schema_history" does not exist yet
+08:01:06.764 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.028s)
+08:01:06.791 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_0ca396d09d374375945c9d92a790e719"."flyway_schema_history" ...
+08:01:06.873 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_0ca396d09d374375945c9d92a790e719": << Empty Schema >>
+08:01:06.889 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_0ca396d09d374375945c9d92a790e719" to version "1 - create core tables"
+08:01:06.964 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_0ca396d09d374375945c9d92a790e719", now at version v1 (execution time 00:00.037s)
+08:01:08.609 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:08.612 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:08.615 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 2 ms
+08:01:08.758 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/ce7958fe-573e-4d22-8f45-5ee871c0850f/agenda
+08:01:08.940 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:08.966 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_09101a8c8b2744e8a2e68ede4de027ed"."flyway_schema_history" does not exist yet
+08:01:08.969 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.009s)
+08:01:08.987 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_09101a8c8b2744e8a2e68ede4de027ed"."flyway_schema_history" ...
+08:01:09.035 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_09101a8c8b2744e8a2e68ede4de027ed": << Empty Schema >>
+08:01:09.047 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_09101a8c8b2744e8a2e68ede4de027ed" to version "1 - create core tables"
+08:01:09.109 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_09101a8c8b2744e8a2e68ede4de027ed", now at version v1 (execution time 00:00.038s)
+08:01:09.516 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:09.516 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:09.517 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:09.522 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/0f358f70-93f2-4c89-ade5-9f0ffcd1683d/agenda
+08:01:09.626 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:09.650 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_9c37677728714db69461b4c1abdc4c38"."flyway_schema_history" does not exist yet
+08:01:09.652 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.008s)
+08:01:09.670 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_9c37677728714db69461b4c1abdc4c38"."flyway_schema_history" ...
+08:01:09.718 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_9c37677728714db69461b4c1abdc4c38": << Empty Schema >>
+08:01:09.725 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_9c37677728714db69461b4c1abdc4c38" to version "1 - create core tables"
+08:01:09.780 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_9c37677728714db69461b4c1abdc4c38", now at version v1 (execution time 00:00.033s)
+08:01:10.149 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:10.149 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:10.149 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:10.176 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/cbb501c4-bbd9-4398-a2a5-fecd01b39fd2/agenda
+08:01:10.355 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:10.385 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_c718b2b5a4dd45e3a6f5e081a8a4d582"."flyway_schema_history" does not exist yet
+08:01:10.387 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.008s)
+08:01:10.404 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_c718b2b5a4dd45e3a6f5e081a8a4d582"."flyway_schema_history" ...
+08:01:10.451 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_c718b2b5a4dd45e3a6f5e081a8a4d582": << Empty Schema >>
+08:01:10.458 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_c718b2b5a4dd45e3a6f5e081a8a4d582" to version "1 - create core tables"
+08:01:10.518 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_c718b2b5a4dd45e3a6f5e081a8a4d582", now at version v1 (execution time 00:00.035s)
+08:01:10.887 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:10.887 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:10.887 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:10.904 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/45fcd7c6-2870-4cdc-bfe9-b4194ba9e3ac/agenda
+08:01:11.017 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:11.043 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_26082060121a4529aa848d1fee4f3f6d"."flyway_schema_history" does not exist yet
+08:01:11.045 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:11.070 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_26082060121a4529aa848d1fee4f3f6d"."flyway_schema_history" ...
+08:01:11.126 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_26082060121a4529aa848d1fee4f3f6d": << Empty Schema >>
+08:01:11.131 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_26082060121a4529aa848d1fee4f3f6d" to version "1 - create core tables"
+08:01:11.188 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_26082060121a4529aa848d1fee4f3f6d", now at version v1 (execution time 00:00.036s)
+08:01:11.541 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:11.541 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:11.542 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:11.545 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/6243e85a-fcdd-4974-a55a-8bff5fff8642/agenda
+08:01:11.640 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:11.664 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_85806004473d47d893d7f8d132277c65"."flyway_schema_history" does not exist yet
+08:01:11.666 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.008s)
+08:01:11.684 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_85806004473d47d893d7f8d132277c65"."flyway_schema_history" ...
+08:01:11.729 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_85806004473d47d893d7f8d132277c65": << Empty Schema >>
+08:01:11.736 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_85806004473d47d893d7f8d132277c65" to version "1 - create core tables"
+08:01:11.789 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_85806004473d47d893d7f8d132277c65", now at version v1 (execution time 00:00.033s)
+08:01:12.159 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:12.159 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:12.160 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:12.162 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/12c30673-a672-4f1c-b66b-7d03fc240649/agenda
+08:01:12.267 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:12.291 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_d9ba32540dbc4d4d9154c52452659cc1"."flyway_schema_history" does not exist yet
+08:01:12.293 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:12.311 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_d9ba32540dbc4d4d9154c52452659cc1"."flyway_schema_history" ...
+08:01:12.356 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_d9ba32540dbc4d4d9154c52452659cc1": << Empty Schema >>
+08:01:12.362 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_d9ba32540dbc4d4d9154c52452659cc1" to version "1 - create core tables"
+08:01:12.426 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_d9ba32540dbc4d4d9154c52452659cc1", now at version v1 (execution time 00:00.039s)
+08:01:12.749 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:12.749 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:12.749 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:12.752 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/3440c4bd-cc25-49cb-ae1d-f607ad5ef962/agenda
+08:01:12.839 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:12.860 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_f2e983dd3cbb4ba1a2ee09567b717197"."flyway_schema_history" does not exist yet
+08:01:12.862 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:12.879 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_f2e983dd3cbb4ba1a2ee09567b717197"."flyway_schema_history" ...
+08:01:12.923 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_f2e983dd3cbb4ba1a2ee09567b717197": << Empty Schema >>
+08:01:12.927 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_f2e983dd3cbb4ba1a2ee09567b717197" to version "1 - create core tables"
+08:01:12.983 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_f2e983dd3cbb4ba1a2ee09567b717197", now at version v1 (execution time 00:00.034s)
+08:01:13.299 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:13.299 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:13.300 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:13.302 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/1b8bdf0b-c361-4c2a-8374-6c0fe3820152/agenda
+08:01:13.388 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:13.411 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_62eeb1d21c60466a8086188d579e14eb"."flyway_schema_history" does not exist yet
+08:01:13.413 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:13.429 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_62eeb1d21c60466a8086188d579e14eb"."flyway_schema_history" ...
+08:01:13.472 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_62eeb1d21c60466a8086188d579e14eb": << Empty Schema >>
+08:01:13.476 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_62eeb1d21c60466a8086188d579e14eb" to version "1 - create core tables"
+08:01:13.532 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_62eeb1d21c60466a8086188d579e14eb", now at version v1 (execution time 00:00.034s)
+08:01:13.876 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:13.876 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:13.877 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:13.880 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/f089e6bc-f475-4000-bdee-d3a7ba2d9012/agenda
+08:01:13.962 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:13.983 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_6f4edadfeec04b818c5f2c12147c408c"."flyway_schema_history" does not exist yet
+08:01:13.985 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:14.002 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_6f4edadfeec04b818c5f2c12147c408c"."flyway_schema_history" ...
+08:01:14.047 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_6f4edadfeec04b818c5f2c12147c408c": << Empty Schema >>
+08:01:14.052 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_6f4edadfeec04b818c5f2c12147c408c" to version "1 - create core tables"
+08:01:14.107 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_6f4edadfeec04b818c5f2c12147c408c", now at version v1 (execution time 00:00.036s)
+08:01:14.423 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:14.424 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:14.425 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:14.427 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/710b4728-454c-403d-8919-d301bfaf9b6a/agenda
+08:01:14.525 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:14.550 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_f2b97e6176c94e5593f41e5317ca9b44"."flyway_schema_history" does not exist yet
+08:01:14.552 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.008s)
+08:01:14.572 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_f2b97e6176c94e5593f41e5317ca9b44"."flyway_schema_history" ...
+08:01:14.615 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_f2b97e6176c94e5593f41e5317ca9b44": << Empty Schema >>
+08:01:14.621 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_f2b97e6176c94e5593f41e5317ca9b44" to version "1 - create core tables"
+08:01:14.673 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_f2b97e6176c94e5593f41e5317ca9b44", now at version v1 (execution time 00:00.032s)
+08:01:14.973 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:14.974 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:14.975 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:14.979 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/587b1fa3-435b-4c44-8bd4-ce527ab22ec6/agenda
+08:01:15.059 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:15.081 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_4e07eb62fcb245819ed300371e34f167"."flyway_schema_history" does not exist yet
+08:01:15.083 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:15.098 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_4e07eb62fcb245819ed300371e34f167"."flyway_schema_history" ...
+08:01:15.142 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_4e07eb62fcb245819ed300371e34f167": << Empty Schema >>
+08:01:15.147 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_4e07eb62fcb245819ed300371e34f167" to version "1 - create core tables"
+08:01:15.196 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_4e07eb62fcb245819ed300371e34f167", now at version v1 (execution time 00:00.032s)
+08:01:15.476 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:15.476 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:15.477 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:15.479 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/d70ab387-7d49-4063-97cd-a62e74cea9a1/agenda
+08:01:15.557 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:15.578 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_08eecddfaa104e36ad380411e07b85b3"."flyway_schema_history" does not exist yet
+08:01:15.580 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:15.598 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_08eecddfaa104e36ad380411e07b85b3"."flyway_schema_history" ...
+08:01:15.639 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_08eecddfaa104e36ad380411e07b85b3": << Empty Schema >>
+08:01:15.643 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_08eecddfaa104e36ad380411e07b85b3" to version "1 - create core tables"
+08:01:15.700 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_08eecddfaa104e36ad380411e07b85b3", now at version v1 (execution time 00:00.036s)
+08:01:15.993 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:15.994 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:15.994 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:15.996 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/0a92b81f-c1d8-47f2-935f-514cac5a9618/agenda
+08:01:16.073 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:16.093 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_055291bd0c4e45e9b0a447b4e7cde389"."flyway_schema_history" does not exist yet
+08:01:16.096 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.008s)
+08:01:16.113 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_055291bd0c4e45e9b0a447b4e7cde389"."flyway_schema_history" ...
+08:01:16.152 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_055291bd0c4e45e9b0a447b4e7cde389": << Empty Schema >>
+08:01:16.156 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_055291bd0c4e45e9b0a447b4e7cde389" to version "1 - create core tables"
+08:01:16.204 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_055291bd0c4e45e9b0a447b4e7cde389", now at version v1 (execution time 00:00.030s)
+08:01:16.467 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:16.467 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:16.468 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:16.475 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/a5367ed4-a2e6-402b-8bc3-5cfa45396c72/agenda
+08:01:16.552 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:16.575 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_a53168ab06b14671839173a9692bc008"."flyway_schema_history" does not exist yet
+08:01:16.577 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:16.594 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_a53168ab06b14671839173a9692bc008"."flyway_schema_history" ...
+08:01:16.637 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_a53168ab06b14671839173a9692bc008": << Empty Schema >>
+08:01:16.641 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_a53168ab06b14671839173a9692bc008" to version "1 - create core tables"
+08:01:16.693 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_a53168ab06b14671839173a9692bc008", now at version v1 (execution time 00:00.033s)
+08:01:16.994 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:16.995 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:16.996 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:17.002 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/e4d79002-8c4a-4190-9b1b-ca3224e78646/agenda
+08:01:17.087 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:17.109 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_84b1bd4997394371b4798d1d3edb4299"."flyway_schema_history" does not exist yet
+08:01:17.110 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.005s)
+08:01:17.125 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_84b1bd4997394371b4798d1d3edb4299"."flyway_schema_history" ...
+08:01:17.166 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_84b1bd4997394371b4798d1d3edb4299": << Empty Schema >>
+08:01:17.170 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_84b1bd4997394371b4798d1d3edb4299" to version "1 - create core tables"
+08:01:17.221 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_84b1bd4997394371b4798d1d3edb4299", now at version v1 (execution time 00:00.032s)
+08:01:17.514 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:17.514 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:17.515 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:17.537 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/ed3c1661-ba62-480a-9c82-76253bedf041/agenda
+08:01:17.620 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:17.641 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_41b1371d696d4047b67e0c87fa929519"."flyway_schema_history" does not exist yet
+08:01:17.643 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:17.659 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_41b1371d696d4047b67e0c87fa929519"."flyway_schema_history" ...
+08:01:17.701 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_41b1371d696d4047b67e0c87fa929519": << Empty Schema >>
+08:01:17.706 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_41b1371d696d4047b67e0c87fa929519" to version "1 - create core tables"
+08:01:17.753 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_41b1371d696d4047b67e0c87fa929519", now at version v1 (execution time 00:00.029s)
+08:01:18.052 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:18.053 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:18.054 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:18.099 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/02f00e7f-ea44-4cb4-adb6-d406a49d5f9d/agenda
+08:01:18.183 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:18.203 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_815b7150719c4792ba82497409c02adb"."flyway_schema_history" does not exist yet
+08:01:18.205 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:18.221 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_815b7150719c4792ba82497409c02adb"."flyway_schema_history" ...
+08:01:18.261 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_815b7150719c4792ba82497409c02adb": << Empty Schema >>
+08:01:18.266 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_815b7150719c4792ba82497409c02adb" to version "1 - create core tables"
+08:01:18.318 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_815b7150719c4792ba82497409c02adb", now at version v1 (execution time 00:00.031s)
+08:01:18.618 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:18.618 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:18.619 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:18.660 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/eea3d85f-672a-4070-9898-23942a2ad157/agenda
+08:01:18.758 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:18.782 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_d592738807a84af9b5ee98106667ed13"."flyway_schema_history" does not exist yet
+08:01:18.784 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.008s)
+08:01:18.802 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_d592738807a84af9b5ee98106667ed13"."flyway_schema_history" ...
+08:01:18.849 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_d592738807a84af9b5ee98106667ed13": << Empty Schema >>
+08:01:18.853 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_d592738807a84af9b5ee98106667ed13" to version "1 - create core tables"
+08:01:18.910 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_d592738807a84af9b5ee98106667ed13", now at version v1 (execution time 00:00.036s)
+08:01:19.193 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:19.193 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:19.195 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:19.231 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/e166a67a-cf98-4de2-9a75-ae2ade7657ca/agenda
+08:01:19.313 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:19.334 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_c8561279644c4655a1fa98cb43400bc8"."flyway_schema_history" does not exist yet
+08:01:19.336 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:19.353 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_c8561279644c4655a1fa98cb43400bc8"."flyway_schema_history" ...
+08:01:19.391 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_c8561279644c4655a1fa98cb43400bc8": << Empty Schema >>
+08:01:19.395 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_c8561279644c4655a1fa98cb43400bc8" to version "1 - create core tables"
+08:01:19.443 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_c8561279644c4655a1fa98cb43400bc8", now at version v1 (execution time 00:00.028s)
+08:01:19.730 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:19.730 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:19.730 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:19.767 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/624a24f7-1aac-4a56-b37c-0ae6b63b206a/agenda
+08:01:19.842 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:19.861 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_b879a285c15a4b19b1b6bca31388c14a"."flyway_schema_history" does not exist yet
+08:01:19.863 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:19.877 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_b879a285c15a4b19b1b6bca31388c14a"."flyway_schema_history" ...
+08:01:19.914 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_b879a285c15a4b19b1b6bca31388c14a": << Empty Schema >>
+08:01:19.918 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_b879a285c15a4b19b1b6bca31388c14a" to version "1 - create core tables"
+08:01:19.967 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_b879a285c15a4b19b1b6bca31388c14a", now at version v1 (execution time 00:00.029s)
+08:01:20.246 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:20.246 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:20.247 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:20.283 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/efc8d01a-f6fe-403a-b8e2-1da66b3e6259/agenda
+08:01:20.365 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:20.387 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_1066b18f3c9741299e3d874b287c3ec5"."flyway_schema_history" does not exist yet
+08:01:20.389 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:20.405 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_1066b18f3c9741299e3d874b287c3ec5"."flyway_schema_history" ...
+08:01:20.442 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_1066b18f3c9741299e3d874b287c3ec5": << Empty Schema >>
+08:01:20.446 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_1066b18f3c9741299e3d874b287c3ec5" to version "1 - create core tables"
+08:01:20.495 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_1066b18f3c9741299e3d874b287c3ec5", now at version v1 (execution time 00:00.029s)
+08:01:20.798 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:20.798 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:20.798 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:20.842 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/91e4a4f4-a993-4d48-9449-bc4bf901e829/agenda
+08:01:20.919 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:20.940 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_fb208ad98d684af1a1aa7f94e5bd4279"."flyway_schema_history" does not exist yet
+08:01:20.941 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:20.957 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_fb208ad98d684af1a1aa7f94e5bd4279"."flyway_schema_history" ...
+08:01:20.996 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_fb208ad98d684af1a1aa7f94e5bd4279": << Empty Schema >>
+08:01:21.000 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_fb208ad98d684af1a1aa7f94e5bd4279" to version "1 - create core tables"
+08:01:21.048 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_fb208ad98d684af1a1aa7f94e5bd4279", now at version v1 (execution time 00:00.029s)
+08:01:21.351 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:21.351 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:21.352 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:21.389 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/a00a23cc-eeb9-4ed2-859b-03061f4a2f04/agenda
+08:01:21.463 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:21.483 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_52284542bdfe4420b6842c17195021ff"."flyway_schema_history" does not exist yet
+08:01:21.485 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:21.500 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_52284542bdfe4420b6842c17195021ff"."flyway_schema_history" ...
+08:01:21.540 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_52284542bdfe4420b6842c17195021ff": << Empty Schema >>
+08:01:21.544 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_52284542bdfe4420b6842c17195021ff" to version "1 - create core tables"
+08:01:21.594 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_52284542bdfe4420b6842c17195021ff", now at version v1 (execution time 00:00.031s)
+08:01:21.879 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:21.879 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:21.879 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:21.915 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/46a5a765-c454-4d63-8a25-30b2cc1a0dc8/agenda
+08:01:21.990 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:22.014 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_aa6d02b67afd4fab810d676b2f414391"."flyway_schema_history" does not exist yet
+08:01:22.016 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:22.033 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_aa6d02b67afd4fab810d676b2f414391"."flyway_schema_history" ...
+08:01:22.072 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_aa6d02b67afd4fab810d676b2f414391": << Empty Schema >>
+08:01:22.075 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_aa6d02b67afd4fab810d676b2f414391" to version "1 - create core tables"
+08:01:22.126 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_aa6d02b67afd4fab810d676b2f414391", now at version v1 (execution time 00:00.029s)
+08:01:22.430 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:22.430 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:22.431 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:22.468 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/fe547032-6a96-4136-9fb3-5f1d7b1e7e35/agenda
+08:01:22.553 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:22.570 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_8c5c79fbd6e74f1ca089e4b1d5d89d60"."flyway_schema_history" does not exist yet
+08:01:22.572 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:22.586 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_8c5c79fbd6e74f1ca089e4b1d5d89d60"."flyway_schema_history" ...
+08:01:22.625 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_8c5c79fbd6e74f1ca089e4b1d5d89d60": << Empty Schema >>
+08:01:22.629 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_8c5c79fbd6e74f1ca089e4b1d5d89d60" to version "1 - create core tables"
+08:01:22.678 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_8c5c79fbd6e74f1ca089e4b1d5d89d60", now at version v1 (execution time 00:00.029s)
+08:01:22.960 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:22.961 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:22.962 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:22.997 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/102ba978-2075-498a-83f1-f2333f911198/agenda
+08:01:23.072 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:23.091 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_f6d978ed53394790991fbbe0384dcc98"."flyway_schema_history" does not exist yet
+08:01:23.093 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:23.109 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_f6d978ed53394790991fbbe0384dcc98"."flyway_schema_history" ...
+08:01:23.151 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_f6d978ed53394790991fbbe0384dcc98": << Empty Schema >>
+08:01:23.154 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_f6d978ed53394790991fbbe0384dcc98" to version "1 - create core tables"
+08:01:23.202 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_f6d978ed53394790991fbbe0384dcc98", now at version v1 (execution time 00:00.027s)
+08:01:23.465 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:23.465 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:23.465 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:23.499 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/14a30d70-89bc-4f8c-b012-3549599adca8/agenda
+08:01:23.572 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:23.593 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_8c3e18463a2d41a78b0a08b0227de976"."flyway_schema_history" does not exist yet
+08:01:23.595 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:23.613 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_8c3e18463a2d41a78b0a08b0227de976"."flyway_schema_history" ...
+08:01:23.653 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_8c3e18463a2d41a78b0a08b0227de976": << Empty Schema >>
+08:01:23.658 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_8c3e18463a2d41a78b0a08b0227de976" to version "1 - create core tables"
+08:01:23.713 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_8c3e18463a2d41a78b0a08b0227de976", now at version v1 (execution time 00:00.032s)
+08:01:24.021 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:24.021 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:24.022 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:24.074 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/7a9712b8-d52b-4b48-a2e5-d1c5788dc190/agenda
+08:01:24.152 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:24.173 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_9013195c0865466aac5611004df719b9"."flyway_schema_history" does not exist yet
+08:01:24.175 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:24.190 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_9013195c0865466aac5611004df719b9"."flyway_schema_history" ...
+08:01:24.232 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_9013195c0865466aac5611004df719b9": << Empty Schema >>
+08:01:24.238 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_9013195c0865466aac5611004df719b9" to version "1 - create core tables"
+08:01:24.295 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_9013195c0865466aac5611004df719b9", now at version v1 (execution time 00:00.033s)
+08:01:24.601 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:24.601 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:24.602 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:24.638 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/9dff41c5-a42e-44f7-83d2-4ccbbcb5d608/agenda
+08:01:24.725 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:24.752 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_5d64640183c34c259a8b126ae1147a55"."flyway_schema_history" does not exist yet
+08:01:24.754 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.008s)
+08:01:24.775 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_5d64640183c34c259a8b126ae1147a55"."flyway_schema_history" ...
+08:01:24.816 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_5d64640183c34c259a8b126ae1147a55": << Empty Schema >>
+08:01:24.820 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_5d64640183c34c259a8b126ae1147a55" to version "1 - create core tables"
+08:01:24.868 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_5d64640183c34c259a8b126ae1147a55", now at version v1 (execution time 00:00.028s)
+08:01:25.138 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:25.138 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:25.138 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:25.174 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/dbdcb563-44d8-4229-a214-736d17f613ab/agenda
+08:01:25.247 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:25.269 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_69bd0b30e5e040aebc8fced469978aa1"."flyway_schema_history" does not exist yet
+08:01:25.271 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:25.286 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_69bd0b30e5e040aebc8fced469978aa1"."flyway_schema_history" ...
+08:01:25.323 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_69bd0b30e5e040aebc8fced469978aa1": << Empty Schema >>
+08:01:25.328 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_69bd0b30e5e040aebc8fced469978aa1" to version "1 - create core tables"
+08:01:25.382 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_69bd0b30e5e040aebc8fced469978aa1", now at version v1 (execution time 00:00.032s)
+08:01:25.645 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:25.645 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:25.646 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:25.686 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/a4f89304-2eb3-4074-b95f-cd0b6de69477/agenda
+08:01:25.766 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:25.785 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_fc6dbc585575448a82782d7bc7a8eb69"."flyway_schema_history" does not exist yet
+08:01:25.787 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:25.804 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_fc6dbc585575448a82782d7bc7a8eb69"."flyway_schema_history" ...
+08:01:25.852 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_fc6dbc585575448a82782d7bc7a8eb69": << Empty Schema >>
+08:01:25.857 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_fc6dbc585575448a82782d7bc7a8eb69" to version "1 - create core tables"
+08:01:25.908 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_fc6dbc585575448a82782d7bc7a8eb69", now at version v1 (execution time 00:00.031s)
+08:01:26.196 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:26.197 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:26.197 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:26.234 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/9274fa4d-82b2-4b0b-92a5-54c94ce20620/agenda
+08:01:26.307 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:26.329 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_019dae9d88724d129153c0af110a770a"."flyway_schema_history" does not exist yet
+08:01:26.330 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:26.346 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_019dae9d88724d129153c0af110a770a"."flyway_schema_history" ...
+08:01:26.387 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_019dae9d88724d129153c0af110a770a": << Empty Schema >>
+08:01:26.392 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_019dae9d88724d129153c0af110a770a" to version "1 - create core tables"
+08:01:26.444 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_019dae9d88724d129153c0af110a770a", now at version v1 (execution time 00:00.032s)
+08:01:26.704 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:26.704 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:26.704 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:26.744 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/d232e19c-dbfe-44e9-907d-b9924164dc0b/agenda
+08:01:26.820 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:26.840 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_479db81bfaaf49909a594f5413de5051"."flyway_schema_history" does not exist yet
+08:01:26.842 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:26.854 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_479db81bfaaf49909a594f5413de5051"."flyway_schema_history" ...
+08:01:26.892 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_479db81bfaaf49909a594f5413de5051": << Empty Schema >>
+08:01:26.896 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_479db81bfaaf49909a594f5413de5051" to version "1 - create core tables"
+08:01:26.941 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_479db81bfaaf49909a594f5413de5051", now at version v1 (execution time 00:00.028s)
+08:01:27.234 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:27.234 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:27.235 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:01:27.271 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/2bd72f4a-4f41-45a8-9bb9-0fc4406be3e9/agenda
+08:01:27.342 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:27.361 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_047f9ecde5a24ce5a6c7861b2607d22c"."flyway_schema_history" does not exist yet
+08:01:27.363 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:27.379 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_047f9ecde5a24ce5a6c7861b2607d22c"."flyway_schema_history" ...
+08:01:27.419 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_047f9ecde5a24ce5a6c7861b2607d22c": << Empty Schema >>
+08:01:27.424 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_047f9ecde5a24ce5a6c7861b2607d22c" to version "1 - create core tables"
+08:01:27.472 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_047f9ecde5a24ce5a6c7861b2607d22c", now at version v1 (execution time 00:00.031s)
+08:01:27.748 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:27.748 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:27.749 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:27.788 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/97b0c507-ef94-4824-ba21-11e84282eea6/agenda
+08:01:27.861 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:27.882 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_0b62596c714c47bd99d0c057bbc116df"."flyway_schema_history" does not exist yet
+08:01:27.884 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.008s)
+08:01:27.900 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_0b62596c714c47bd99d0c057bbc116df"."flyway_schema_history" ...
+08:01:27.939 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_0b62596c714c47bd99d0c057bbc116df": << Empty Schema >>
+08:01:27.942 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_0b62596c714c47bd99d0c057bbc116df" to version "1 - create core tables"
+08:01:27.996 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_0b62596c714c47bd99d0c057bbc116df", now at version v1 (execution time 00:00.031s)
+08:01:28.257 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:28.257 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:28.258 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:28.296 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/9f1ac9a6-f6b8-4066-9e90-90c4b6621832/agenda
+08:01:28.370 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:28.390 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_73f2b39a52b646759a8da2f487590626"."flyway_schema_history" does not exist yet
+08:01:28.391 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:01:28.407 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_73f2b39a52b646759a8da2f487590626"."flyway_schema_history" ...
+08:01:28.447 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_73f2b39a52b646759a8da2f487590626": << Empty Schema >>
+08:01:28.451 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_73f2b39a52b646759a8da2f487590626" to version "1 - create core tables"
+08:01:28.501 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_73f2b39a52b646759a8da2f487590626", now at version v1 (execution time 00:00.029s)
+08:01:28.765 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:28.765 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:28.766 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:28.808 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/6d532246-e55c-4f5a-830b-21500b47674b/agenda
+08:01:28.887 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:01:28.910 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_0ddbcb11c4bd4a1e8b36572921cd2ad0"."flyway_schema_history" does not exist yet
+08:01:28.912 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:01:28.928 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_0ddbcb11c4bd4a1e8b36572921cd2ad0"."flyway_schema_history" ...
+08:01:28.964 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_0ddbcb11c4bd4a1e8b36572921cd2ad0": << Empty Schema >>
+08:01:28.967 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_0ddbcb11c4bd4a1e8b36572921cd2ad0" to version "1 - create core tables"
+08:01:29.014 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_0ddbcb11c4bd4a1e8b36572921cd2ad0", now at version v1 (execution time 00:00.029s)
+08:01:29.281 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:01:29.281 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:01:29.282 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:01:29.284 [Test worker] WARN org.springframework.web.servlet.PageNotFound -- No mapping for POST /api/student/bookings/67ca4bda-596c-438d-989d-72c4dabf1c46/agenda
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

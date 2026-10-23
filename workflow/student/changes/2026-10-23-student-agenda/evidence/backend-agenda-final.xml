@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.platform.core.postgres.StudentAgendaPgTest" tests="38" skipped="0" failures="0" errors="0" timestamp="2026-10-23T00:12:46.096Z" hostname="PHUXTROHHG" time="23.714">
+  <properties/>
+  <testcase name="cancellationCompletionExpiryAndDeactivationDuringProviderCallDiscardOutput()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="2.514"/>
+  <testcase name="timeoutUnavailableAndInvalidOutputMapToSafeFailures()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.669"/>
+  <testcase name="startedButUnendedConsultationUsesFloorMinutesWithoutOpenTransaction()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.592"/>
+  <testcase name="[1] input = &quot;{}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.537"/>
+  <testcase name="[2] input = &quot;{\&quot;questions\&quot;:null}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.537"/>
+  <testcase name="[3] input = &quot;{\&quot;questions\&quot;:3}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.471"/>
+  <testcase name="[4] input = &quot;{\&quot;questions\&quot;:\&quot; \&quot;}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.489"/>
+  <testcase name="[5] input = &quot;{\&quot;questions\&quot;:\&quot;\\u2003\&quot;}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.443"/>
+  <testcase name="[6] input = &quot;{\&quot;questions\&quot;:\&quot;\\ud800\&quot;}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.445"/>
+  <testcase name="[7] input = &quot;{\&quot;questions\&quot;:\&quot;x\&quot;,\&quot;actorId\&quot;:\&quot;x\&quot;}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.452"/>
+  <testcase name="[8] input = &quot;{\&quot;questions\&quot;:\&quot;x\&quot;,\&quot;questions\&quot;:\&quot;y\&quot;}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.458"/>
+  <testcase name="[9] input = &quot;{\&quot;questions\&quot;:\&quot;x\&quot;} {}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.506"/>
+  <testcase name="[10] input = &quot;[]&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.472"/>
+  <testcase name="formattedAgendaCapIsIndependentOfFieldCaps()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.545"/>
+  <testcase name="unicodeInputBoundaryIsCodePointsBeforeTrimming()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.587"/>
+  <testcase name="ownedEligibilityAccessAndCsrfDenyWithoutGatewayCalls()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.785"/>
+  <testcase name="validAgendaUsesOnlyAuthorizedContextAndNeverMutatesBookings()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.611"/>
+  <testcase name="[1] raw = &quot;{}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.583"/>
+  <testcase name="[2] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]} {}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.597"/>
+  <testcase name="[3] raw = &quot;{\&quot;goal\&quot;:\&quot;duplicate\&quot;,\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.574"/>
+  <testcase name="[4] raw = &quot;{\&quot;goal\&quot;:\&quot;&lt;script&gt;alert(1)&lt;/script&gt;\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.591"/>
+  <testcase name="[5] raw = &quot;{\&quot;goal\&quot;:\&quot; \&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.575"/>
+  <testcase name="[6] raw = &quot;{\&quot;goal\&quot;:\&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\&quot;…&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.6"/>
+  <testcase name="[7] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.583"/>
+  <testcase name="[8] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx…&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.589"/>
+  <testcase name="[9] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.618"/>
+  <testcase name="[10] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:61}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.584"/>
+  <testcase name="[11] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:0}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.602"/>
+  <testcase name="[12] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:1.5}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.652"/>
+  <testcase name="[13] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:2147483648}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.636"/>
+  <testcase name="[14] raw = &quot;{\&quot;goal\&quot;:\&quot;Clarify recursion\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;extra\&quot;:true,\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.594"/>
+  <testcase name="[15] raw = &quot;{\&quot;goal\&quot;:\&quot;\\ud800\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.615"/>
+  <testcase name="[16] raw = &quot;{\&quot;goal\&quot;:\&quot;bad\\ttext\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;Base cases\&quot;,\&quot;question\&quot;:\&quot;How do base cases work?\&quot;,\&quot;minutes\&quot;:10}],\&quot;prepare\&quot;:[\&quot;Bring an example\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.612"/>
+  <testcase name="[17] raw = &quot;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               …&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.605"/>
+  <testcase name="[18] raw = &quot;{\&quot;goal\&quot;:\&quot;x\&quot;,\&quot;items\&quot;:[],\&quot;prepare\&quot;:[]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.597"/>
+  <testcase name="[19] raw = &quot;{\&quot;goal\&quot;:\&quot;x\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1},{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1}],\&quot;prepare\&quot;:[]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.605"/>
+  <testcase name="[20] raw = &quot;{\&quot;goal\&quot;:\&quot;x\&quot;,\&quot;items\&quot;:[{\&quot;topic\&quot;:\&quot;x\&quot;,\&quot;question\&quot;:\&quot;q\&quot;,\&quot;minutes\&quot;:1}],\&quot;prepare\&quot;:[\&quot;a\&quot;,\&quot;b\&quot;,\&quot;c\&quot;,\&quot;d\&quot;,\&quot;e\&quot;,\&quot;f\&quot;]}&quot;" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.602"/>
+  <testcase name="strictHttpSyntaxPrecedesActorAndNeverCallsGateway()" classname="unichope.platform.core.postgres.StudentAgendaPgTest" time="0.476"/>
+  <system-out><![CDATA[08:12:46.136 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:46.153 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_723af48e059b4be68cec948b7a832bce"."flyway_schema_history" does not exist yet
+08:12:46.154 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:46.169 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_723af48e059b4be68cec948b7a832bce"."flyway_schema_history" ...
+08:12:46.205 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_723af48e059b4be68cec948b7a832bce": << Empty Schema >>
+08:12:46.211 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_723af48e059b4be68cec948b7a832bce" to version "1 - create core tables"
+08:12:46.257 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_723af48e059b4be68cec948b7a832bce", now at version v1 (execution time 00:00.028s)
+08:12:48.026 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:48.030 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:48.033 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 2 ms
+08:12:48.670 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:48.692 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_6264b13864054ba0a98c32d51f5fc350"."flyway_schema_history" does not exist yet
+08:12:48.695 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:12:48.711 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_6264b13864054ba0a98c32d51f5fc350"."flyway_schema_history" ...
+08:12:48.751 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_6264b13864054ba0a98c32d51f5fc350": << Empty Schema >>
+08:12:48.756 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_6264b13864054ba0a98c32d51f5fc350" to version "1 - create core tables"
+08:12:48.804 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_6264b13864054ba0a98c32d51f5fc350", now at version v1 (execution time 00:00.031s)
+08:12:49.139 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:49.139 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:49.140 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:12:49.321 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:49.342 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_5a7a6a9868534397afea57562c9e63f0"."flyway_schema_history" does not exist yet
+08:12:49.343 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.005s)
+08:12:49.358 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_5a7a6a9868534397afea57562c9e63f0"."flyway_schema_history" ...
+08:12:49.393 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_5a7a6a9868534397afea57562c9e63f0": << Empty Schema >>
+08:12:49.396 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_5a7a6a9868534397afea57562c9e63f0" to version "1 - create core tables"
+08:12:49.438 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_5a7a6a9868534397afea57562c9e63f0", now at version v1 (execution time 00:00.027s)
+08:12:49.744 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:49.745 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:49.745 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:12:49.977 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:49.996 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_a72064225ccd4276a46f0951c3a569e4"."flyway_schema_history" does not exist yet
+08:12:49.998 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:12:50.013 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_a72064225ccd4276a46f0951c3a569e4"."flyway_schema_history" ...
+08:12:50.052 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_a72064225ccd4276a46f0951c3a569e4": << Empty Schema >>
+08:12:50.057 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_a72064225ccd4276a46f0951c3a569e4" to version "1 - create core tables"
+08:12:50.106 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_a72064225ccd4276a46f0951c3a569e4", now at version v1 (execution time 00:00.031s)
+08:12:50.431 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:50.431 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:50.432 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:12:50.525 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:50.545 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_72fe3858a7fe403ab1a4fb5e00b385f9"."flyway_schema_history" does not exist yet
+08:12:50.546 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:50.562 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_72fe3858a7fe403ab1a4fb5e00b385f9"."flyway_schema_history" ...
+08:12:50.602 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_72fe3858a7fe403ab1a4fb5e00b385f9": << Empty Schema >>
+08:12:50.606 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_72fe3858a7fe403ab1a4fb5e00b385f9" to version "1 - create core tables"
+08:12:50.659 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_72fe3858a7fe403ab1a4fb5e00b385f9", now at version v1 (execution time 00:00.032s)
+08:12:50.982 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:50.982 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:50.983 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:12:51.056 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:51.076 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_0a992a1d6ea9403e9472c7a65a56ea89"."flyway_schema_history" does not exist yet
+08:12:51.078 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:12:51.094 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_0a992a1d6ea9403e9472c7a65a56ea89"."flyway_schema_history" ...
+08:12:51.136 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_0a992a1d6ea9403e9472c7a65a56ea89": << Empty Schema >>
+08:12:51.140 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_0a992a1d6ea9403e9472c7a65a56ea89" to version "1 - create core tables"
+08:12:51.188 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_0a992a1d6ea9403e9472c7a65a56ea89", now at version v1 (execution time 00:00.029s)
+08:12:51.458 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:51.458 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:51.459 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:12:51.530 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:51.547 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_cf8409670edd444f8d7ef38641ec484a"."flyway_schema_history" does not exist yet
+08:12:51.549 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.005s)
+08:12:51.563 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_cf8409670edd444f8d7ef38641ec484a"."flyway_schema_history" ...
+08:12:51.599 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_cf8409670edd444f8d7ef38641ec484a": << Empty Schema >>
+08:12:51.603 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_cf8409670edd444f8d7ef38641ec484a" to version "1 - create core tables"
+08:12:51.647 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_cf8409670edd444f8d7ef38641ec484a", now at version v1 (execution time 00:00.027s)
+08:12:51.942 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:51.942 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:51.942 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:12:52.017 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:52.036 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_41a0d816525440ffafe1022c1664fc95"."flyway_schema_history" does not exist yet
+08:12:52.038 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:12:52.052 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_41a0d816525440ffafe1022c1664fc95"."flyway_schema_history" ...
+08:12:52.087 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_41a0d816525440ffafe1022c1664fc95": << Empty Schema >>
+08:12:52.091 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_41a0d816525440ffafe1022c1664fc95" to version "1 - create core tables"
+08:12:52.136 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_41a0d816525440ffafe1022c1664fc95", now at version v1 (execution time 00:00.027s)
+08:12:52.392 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:52.392 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:52.393 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:12:52.459 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:52.478 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_6e5bfc8b7eed42a0b347baf300441b64"."flyway_schema_history" does not exist yet
+08:12:52.479 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:52.493 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_6e5bfc8b7eed42a0b347baf300441b64"."flyway_schema_history" ...
+08:12:52.527 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_6e5bfc8b7eed42a0b347baf300441b64": << Empty Schema >>
+08:12:52.530 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_6e5bfc8b7eed42a0b347baf300441b64" to version "1 - create core tables"
+08:12:52.573 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_6e5bfc8b7eed42a0b347baf300441b64", now at version v1 (execution time 00:00.028s)
+08:12:52.837 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:52.837 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:52.837 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:12:52.906 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:52.923 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_f2bfaf59406140eda886b6c94caa2d0c"."flyway_schema_history" does not exist yet
+08:12:52.925 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.004s)
+08:12:52.939 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_f2bfaf59406140eda886b6c94caa2d0c"."flyway_schema_history" ...
+08:12:52.974 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_f2bfaf59406140eda886b6c94caa2d0c": << Empty Schema >>
+08:12:52.977 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_f2bfaf59406140eda886b6c94caa2d0c" to version "1 - create core tables"
+08:12:53.024 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_f2bfaf59406140eda886b6c94caa2d0c", now at version v1 (execution time 00:00.029s)
+08:12:53.293 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:53.293 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:53.294 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:12:53.359 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:53.378 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_9f63cc747f804c64aefee256e97cb686"."flyway_schema_history" does not exist yet
+08:12:53.380 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:53.395 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_9f63cc747f804c64aefee256e97cb686"."flyway_schema_history" ...
+08:12:53.431 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_9f63cc747f804c64aefee256e97cb686": << Empty Schema >>
+08:12:53.434 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_9f63cc747f804c64aefee256e97cb686" to version "1 - create core tables"
+08:12:53.481 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_9f63cc747f804c64aefee256e97cb686", now at version v1 (execution time 00:00.030s)
+08:12:53.749 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:53.749 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:53.750 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:12:53.820 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:53.839 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_914bcd99600e4a25a360011af90a24a7"."flyway_schema_history" does not exist yet
+08:12:53.841 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:53.857 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_914bcd99600e4a25a360011af90a24a7"."flyway_schema_history" ...
+08:12:53.901 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_914bcd99600e4a25a360011af90a24a7": << Empty Schema >>
+08:12:53.903 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_914bcd99600e4a25a360011af90a24a7" to version "1 - create core tables"
+08:12:53.954 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_914bcd99600e4a25a360011af90a24a7", now at version v1 (execution time 00:00.030s)
+08:12:54.258 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:54.258 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:54.258 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:12:54.330 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:54.349 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_cae8083aa9934224a1b3c04096a6f9d0"."flyway_schema_history" does not exist yet
+08:12:54.351 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:54.366 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_cae8083aa9934224a1b3c04096a6f9d0"."flyway_schema_history" ...
+08:12:54.403 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_cae8083aa9934224a1b3c04096a6f9d0": << Empty Schema >>
+08:12:54.406 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_cae8083aa9934224a1b3c04096a6f9d0" to version "1 - create core tables"
+08:12:54.457 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_cae8083aa9934224a1b3c04096a6f9d0", now at version v1 (execution time 00:00.031s)
+08:12:54.729 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:54.729 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:54.730 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:12:54.802 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:54.823 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_07519cc47c5d4ba38b57c3a01cf20b67"."flyway_schema_history" does not exist yet
+08:12:54.825 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:12:54.840 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_07519cc47c5d4ba38b57c3a01cf20b67"."flyway_schema_history" ...
+08:12:54.879 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_07519cc47c5d4ba38b57c3a01cf20b67": << Empty Schema >>
+08:12:54.882 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_07519cc47c5d4ba38b57c3a01cf20b67" to version "1 - create core tables"
+08:12:54.929 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_07519cc47c5d4ba38b57c3a01cf20b67", now at version v1 (execution time 00:00.030s)
+08:12:55.208 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:55.209 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:55.209 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:12:55.353 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:55.373 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_59e094ac6d5d44028027979828fce75a"."flyway_schema_history" does not exist yet
+08:12:55.375 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:55.389 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_59e094ac6d5d44028027979828fce75a"."flyway_schema_history" ...
+08:12:55.428 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_59e094ac6d5d44028027979828fce75a": << Empty Schema >>
+08:12:55.432 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_59e094ac6d5d44028027979828fce75a" to version "1 - create core tables"
+08:12:55.479 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_59e094ac6d5d44028027979828fce75a", now at version v1 (execution time 00:00.029s)
+08:12:55.768 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:55.768 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:55.768 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:12:55.943 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:55.963 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_a1aaafa60e734675907d739a70d6bb6b"."flyway_schema_history" does not exist yet
+08:12:55.965 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:12:55.980 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_a1aaafa60e734675907d739a70d6bb6b"."flyway_schema_history" ...
+08:12:56.018 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_a1aaafa60e734675907d739a70d6bb6b": << Empty Schema >>
+08:12:56.022 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_a1aaafa60e734675907d739a70d6bb6b" to version "1 - create core tables"
+08:12:56.068 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_a1aaafa60e734675907d739a70d6bb6b", now at version v1 (execution time 00:00.028s)
+08:12:56.372 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:56.372 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:56.374 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 2 ms
+08:12:56.723 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:56.744 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_a2a8e45356f14e208c7a2f2c1926ea54"."flyway_schema_history" does not exist yet
+08:12:56.746 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:12:56.760 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_a2a8e45356f14e208c7a2f2c1926ea54"."flyway_schema_history" ...
+08:12:56.801 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_a2a8e45356f14e208c7a2f2c1926ea54": << Empty Schema >>
+08:12:56.804 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_a2a8e45356f14e208c7a2f2c1926ea54" to version "1 - create core tables"
+08:12:56.859 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_a2a8e45356f14e208c7a2f2c1926ea54", now at version v1 (execution time 00:00.034s)
+08:12:57.137 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:57.137 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:57.138 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:12:57.337 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:57.358 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_0a9a649156754fd8b48065806f58c8b9"."flyway_schema_history" does not exist yet
+08:12:57.360 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:57.375 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_0a9a649156754fd8b48065806f58c8b9"."flyway_schema_history" ...
+08:12:57.411 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_0a9a649156754fd8b48065806f58c8b9": << Empty Schema >>
+08:12:57.414 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_0a9a649156754fd8b48065806f58c8b9" to version "1 - create core tables"
+08:12:57.464 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_0a9a649156754fd8b48065806f58c8b9", now at version v1 (execution time 00:00.033s)
+08:12:57.722 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:57.722 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:57.724 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 2 ms
+08:12:57.922 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:57.940 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_14accb85b80a452cbb07fce59844fc89"."flyway_schema_history" does not exist yet
+08:12:57.941 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:57.957 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_14accb85b80a452cbb07fce59844fc89"."flyway_schema_history" ...
+08:12:57.994 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_14accb85b80a452cbb07fce59844fc89": << Empty Schema >>
+08:12:57.998 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_14accb85b80a452cbb07fce59844fc89" to version "1 - create core tables"
+08:12:58.048 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_14accb85b80a452cbb07fce59844fc89", now at version v1 (execution time 00:00.029s)
+08:12:58.318 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:58.318 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:58.318 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:12:58.516 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:58.534 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_6d5ec4c80c4f4487b64181c814107618"."flyway_schema_history" does not exist yet
+08:12:58.536 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:58.551 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_6d5ec4c80c4f4487b64181c814107618"."flyway_schema_history" ...
+08:12:58.586 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_6d5ec4c80c4f4487b64181c814107618": << Empty Schema >>
+08:12:58.589 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_6d5ec4c80c4f4487b64181c814107618" to version "1 - create core tables"
+08:12:58.634 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_6d5ec4c80c4f4487b64181c814107618", now at version v1 (execution time 00:00.027s)
+08:12:58.895 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:58.895 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:58.895 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:12:59.094 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:59.113 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_0137eaa04dcb442583b64a05c372af8c"."flyway_schema_history" does not exist yet
+08:12:59.114 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:12:59.129 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_0137eaa04dcb442583b64a05c372af8c"."flyway_schema_history" ...
+08:12:59.166 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_0137eaa04dcb442583b64a05c372af8c": << Empty Schema >>
+08:12:59.169 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_0137eaa04dcb442583b64a05c372af8c" to version "1 - create core tables"
+08:12:59.218 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_0137eaa04dcb442583b64a05c372af8c", now at version v1 (execution time 00:00.031s)
+08:12:59.486 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:12:59.486 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:12:59.487 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:12:59.688 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:12:59.705 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_085b7f2e6a774c33a47cc35832317596"."flyway_schema_history" does not exist yet
+08:12:59.707 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.005s)
+08:12:59.721 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_085b7f2e6a774c33a47cc35832317596"."flyway_schema_history" ...
+08:12:59.757 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_085b7f2e6a774c33a47cc35832317596": << Empty Schema >>
+08:12:59.761 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_085b7f2e6a774c33a47cc35832317596" to version "1 - create core tables"
+08:12:59.809 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_085b7f2e6a774c33a47cc35832317596", now at version v1 (execution time 00:00.031s)
+08:13:00.065 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:00.065 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:00.065 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:13:00.261 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:00.279 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_17d772caeb4d4217bc5e942d0fc626d5"."flyway_schema_history" does not exist yet
+08:13:00.280 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:13:00.296 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_17d772caeb4d4217bc5e942d0fc626d5"."flyway_schema_history" ...
+08:13:00.339 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_17d772caeb4d4217bc5e942d0fc626d5": << Empty Schema >>
+08:13:00.343 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_17d772caeb4d4217bc5e942d0fc626d5" to version "1 - create core tables"
+08:13:00.399 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_17d772caeb4d4217bc5e942d0fc626d5", now at version v1 (execution time 00:00.038s)
+08:13:00.661 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:00.661 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:00.662 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:13:00.861 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:00.880 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_7ccdcf1dde5f47abaf3d8643dd74cb5b"."flyway_schema_history" does not exist yet
+08:13:00.881 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.005s)
+08:13:00.895 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_7ccdcf1dde5f47abaf3d8643dd74cb5b"."flyway_schema_history" ...
+08:13:00.931 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_7ccdcf1dde5f47abaf3d8643dd74cb5b": << Empty Schema >>
+08:13:00.934 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_7ccdcf1dde5f47abaf3d8643dd74cb5b" to version "1 - create core tables"
+08:13:00.980 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_7ccdcf1dde5f47abaf3d8643dd74cb5b", now at version v1 (execution time 00:00.029s)
+08:13:01.242 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:01.242 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:01.242 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:13:01.445 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:01.463 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_2cbf9dafe135499ba5dc9385783ebf1e"."flyway_schema_history" does not exist yet
+08:13:01.465 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:13:01.479 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_2cbf9dafe135499ba5dc9385783ebf1e"."flyway_schema_history" ...
+08:13:01.514 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_2cbf9dafe135499ba5dc9385783ebf1e": << Empty Schema >>
+08:13:01.517 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_2cbf9dafe135499ba5dc9385783ebf1e" to version "1 - create core tables"
+08:13:01.565 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_2cbf9dafe135499ba5dc9385783ebf1e", now at version v1 (execution time 00:00.030s)
+08:13:01.832 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:01.832 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:01.832 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:13:02.041 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:02.058 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_f181295f24a14ee186bfe44914e290a2"."flyway_schema_history" does not exist yet
+08:13:02.059 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:13:02.075 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_f181295f24a14ee186bfe44914e290a2"."flyway_schema_history" ...
+08:13:02.117 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_f181295f24a14ee186bfe44914e290a2": << Empty Schema >>
+08:13:02.121 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_f181295f24a14ee186bfe44914e290a2" to version "1 - create core tables"
+08:13:02.172 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_f181295f24a14ee186bfe44914e290a2", now at version v1 (execution time 00:00.031s)
+08:13:02.448 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:02.450 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:02.450 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:13:02.660 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:02.678 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_350f26ac0de04d79a15014ad3679c6b3"."flyway_schema_history" does not exist yet
+08:13:02.680 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:13:02.695 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_350f26ac0de04d79a15014ad3679c6b3"."flyway_schema_history" ...
+08:13:02.733 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_350f26ac0de04d79a15014ad3679c6b3": << Empty Schema >>
+08:13:02.737 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_350f26ac0de04d79a15014ad3679c6b3" to version "1 - create core tables"
+08:13:02.787 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_350f26ac0de04d79a15014ad3679c6b3", now at version v1 (execution time 00:00.033s)
+08:13:03.043 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:03.043 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:03.044 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:13:03.244 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:03.263 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_01cc28adff9844f69371ad4853246b26"."flyway_schema_history" does not exist yet
+08:13:03.264 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.005s)
+08:13:03.279 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_01cc28adff9844f69371ad4853246b26"."flyway_schema_history" ...
+08:13:03.318 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_01cc28adff9844f69371ad4853246b26": << Empty Schema >>
+08:13:03.320 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_01cc28adff9844f69371ad4853246b26" to version "1 - create core tables"
+08:13:03.371 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_01cc28adff9844f69371ad4853246b26", now at version v1 (execution time 00:00.032s)
+08:13:03.642 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:03.642 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:03.643 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:13:03.843 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:03.863 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_c4a73fd32e784120ad059c5fe65cad56"."flyway_schema_history" does not exist yet
+08:13:03.864 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:13:03.881 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_c4a73fd32e784120ad059c5fe65cad56"."flyway_schema_history" ...
+08:13:03.921 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_c4a73fd32e784120ad059c5fe65cad56": << Empty Schema >>
+08:13:03.924 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_c4a73fd32e784120ad059c5fe65cad56" to version "1 - create core tables"
+08:13:03.974 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_c4a73fd32e784120ad059c5fe65cad56", now at version v1 (execution time 00:00.031s)
+08:13:04.255 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:04.255 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:04.255 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:13:04.499 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:04.518 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_beb263cd2c4e4b9da118129acc2eb6d7"."flyway_schema_history" does not exist yet
+08:13:04.521 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:13:04.539 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_beb263cd2c4e4b9da118129acc2eb6d7"."flyway_schema_history" ...
+08:13:04.584 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_beb263cd2c4e4b9da118129acc2eb6d7": << Empty Schema >>
+08:13:04.589 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_beb263cd2c4e4b9da118129acc2eb6d7" to version "1 - create core tables"
+08:13:04.643 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_beb263cd2c4e4b9da118129acc2eb6d7", now at version v1 (execution time 00:00.036s)
+08:13:04.927 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:04.927 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:04.927 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:13:05.139 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:05.160 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_05cb771d098b4b2c9cbeef7043f28e5e"."flyway_schema_history" does not exist yet
+08:13:05.161 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.007s)
+08:13:05.177 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_05cb771d098b4b2c9cbeef7043f28e5e"."flyway_schema_history" ...
+08:13:05.215 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_05cb771d098b4b2c9cbeef7043f28e5e": << Empty Schema >>
+08:13:05.219 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_05cb771d098b4b2c9cbeef7043f28e5e" to version "1 - create core tables"
+08:13:05.266 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_05cb771d098b4b2c9cbeef7043f28e5e", now at version v1 (execution time 00:00.028s)
+08:13:05.525 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:05.525 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:05.526 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:13:05.735 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:05.755 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_ff5ee685cf034077ab3468539822b7ad"."flyway_schema_history" does not exist yet
+08:13:05.755 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.005s)
+08:13:05.773 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_ff5ee685cf034077ab3468539822b7ad"."flyway_schema_history" ...
+08:13:05.813 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_ff5ee685cf034077ab3468539822b7ad": << Empty Schema >>
+08:13:05.816 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_ff5ee685cf034077ab3468539822b7ad" to version "1 - create core tables"
+08:13:05.870 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_ff5ee685cf034077ab3468539822b7ad", now at version v1 (execution time 00:00.034s)
+08:13:06.140 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:06.140 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:06.140 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:13:06.350 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:06.370 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_34d52dbf88e641c7a520a571c6cd650b"."flyway_schema_history" does not exist yet
+08:13:06.371 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:13:06.386 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_34d52dbf88e641c7a520a571c6cd650b"."flyway_schema_history" ...
+08:13:06.424 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_34d52dbf88e641c7a520a571c6cd650b": << Empty Schema >>
+08:13:06.428 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_34d52dbf88e641c7a520a571c6cd650b" to version "1 - create core tables"
+08:13:06.477 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_34d52dbf88e641c7a520a571c6cd650b", now at version v1 (execution time 00:00.030s)
+08:13:06.747 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:06.747 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:06.747 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:13:06.964 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:06.984 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_031387f81dad48a680da0b1aa5867ddf"."flyway_schema_history" does not exist yet
+08:13:06.986 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:13:07.001 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_031387f81dad48a680da0b1aa5867ddf"."flyway_schema_history" ...
+08:13:07.038 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_031387f81dad48a680da0b1aa5867ddf": << Empty Schema >>
+08:13:07.041 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_031387f81dad48a680da0b1aa5867ddf" to version "1 - create core tables"
+08:13:07.089 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_031387f81dad48a680da0b1aa5867ddf", now at version v1 (execution time 00:00.029s)
+08:13:07.362 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:07.362 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:07.363 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:13:07.569 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:07.587 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_5ce779489ac147ef842a45b0b96b7445"."flyway_schema_history" does not exist yet
+08:13:07.588 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.005s)
+08:13:07.604 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_5ce779489ac147ef842a45b0b96b7445"."flyway_schema_history" ...
+08:13:07.641 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_5ce779489ac147ef842a45b0b96b7445": << Empty Schema >>
+08:13:07.644 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_5ce779489ac147ef842a45b0b96b7445" to version "1 - create core tables"
+08:13:07.696 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_5ce779489ac147ef842a45b0b96b7445", now at version v1 (execution time 00:00.032s)
+08:13:07.961 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:07.961 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:07.962 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+08:13:08.164 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:08.183 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_73e612b442e841978c479eb31ebd2ab7"."flyway_schema_history" does not exist yet
+08:13:08.185 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:13:08.201 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_73e612b442e841978c479eb31ebd2ab7"."flyway_schema_history" ...
+08:13:08.240 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_73e612b442e841978c479eb31ebd2ab7": << Empty Schema >>
+08:13:08.243 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_73e612b442e841978c479eb31ebd2ab7" to version "1 - create core tables"
+08:13:08.294 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_73e612b442e841978c479eb31ebd2ab7", now at version v1 (execution time 00:00.033s)
+08:13:08.571 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:08.571 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:08.571 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:13:08.777 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:08.796 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_d2894a4ed8714635ae0f72c8d046747a"."flyway_schema_history" does not exist yet
+08:13:08.798 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:13:08.813 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_d2894a4ed8714635ae0f72c8d046747a"."flyway_schema_history" ...
+08:13:08.853 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_d2894a4ed8714635ae0f72c8d046747a": << Empty Schema >>
+08:13:08.855 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_d2894a4ed8714635ae0f72c8d046747a" to version "1 - create core tables"
+08:13:08.906 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_d2894a4ed8714635ae0f72c8d046747a", now at version v1 (execution time 00:00.033s)
+08:13:09.170 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:09.170 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:09.170 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+08:13:09.378 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:13:09.397 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_bc17ce0ff7334a948e3eea4c4af567f7"."flyway_schema_history" does not exist yet
+08:13:09.399 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.006s)
+08:13:09.413 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_bc17ce0ff7334a948e3eea4c4af567f7"."flyway_schema_history" ...
+08:13:09.451 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_bc17ce0ff7334a948e3eea4c4af567f7": << Empty Schema >>
+08:13:09.454 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_bc17ce0ff7334a948e3eea4c4af567f7" to version "1 - create core tables"
+08:13:09.507 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_bc17ce0ff7334a948e3eea4c4af567f7", now at version v1 (execution time 00:00.035s)
+08:13:09.770 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+08:13:09.770 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+08:13:09.770 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

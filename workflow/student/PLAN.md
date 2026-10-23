@@ -285,3 +285,35 @@ deferred by that backend-only request and is now implemented in the current FE0/
 increment above. AI remains pending. Real runtime tests use db/migration V1-V4;
 isolated fake actors continue as focused seam tests only. Full regression includes
 Auth, Admin, Tutor, Student and core tests plus bootJar.
+
+
+## 5. Current agenda increment (23 October 2026)
+
+Authorization: current user request to implement the Student consultation preparation
+assistant, turning a student's topic and questions into an agenda. One standard
+capability with task record [2026-10-23-student-agenda](changes/2026-10-23-student-agenda.md).
+Earlier S5/AI1/AI2 proposal checkboxes are historical planning, not blockers requiring
+replacement of the existing shared-mode gateway. The actual gateway/key/quota
+implementation is the integration dependency; preserve its API and other roles.
+
+1. Fresh test writer: tests for S-AI-1..6, S-UI-1, S-INJ-1 and S-AGENDA-* across
+   strict HTTP/owned backend context, parser/formatter, post-call races, admission
+   retry headers and React route/editor/session states; record executable red evidence.
+2. Fresh implementer: Student agenda service/prompt/validator/DTO and HTTP wiring;
+   optional ApiFailure retry metadata plus current admission calculation; Student
+   frontend route/page/booking action using existing API/session/theme components.
+   Dependency order within capability: backend context/validator -> endpoint -> UI.
+3. Fresh independent reviewer: rerun focused backend/frontend checks, full relevant
+   regression/build, inspect privacy/security and perform responsive keyboard/browser
+   smoke checks. Real SoC evaluation and Phuc acceptance remain explicitly pending
+   unless actually performed; fake-backed evidence cannot claim real model quality.
+
+Permitted files: Student Java/HTTP/tests, frontend Student/App/API/navigation/styles
+and related frontend tests/browser checks, platform/web/ApiFailure and platform/ai
+PostgresAiAdmission plus tests only for retry metadata. Preserve other role code,
+shared gateway interfaces/configuration, existing migrations and unrelated changes.
+No new dependencies or schema are required. Verification: backend `gradlew.bat test
+postgresTest bootJar` with disposable configured PostgreSQL, frontend `npm.cmd test`,
+`npm.cmd run build` and targeted Playwright/browser checks. Use existing fixtures and
+Java 25 toolchain. Record commands and actual results; do not treat this plan as
+execution evidence.

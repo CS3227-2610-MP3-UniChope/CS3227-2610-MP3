@@ -1,0 +1,74 @@
+[
+  {
+    "theme": "light",
+    "width": 320,
+    "keyboardFocusTrap": true,
+    "escapedWithoutLoss": true,
+    "noOverflow": true,
+    "noPageErrors": true,
+    "posts": 1
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "keyboardFocusTrap": true,
+    "escapedWithoutLoss": true,
+    "noOverflow": true,
+    "noPageErrors": true,
+    "posts": 1
+  },
+  {
+    "theme": "light",
+    "width": 1024,
+    "keyboardFocusTrap": true,
+    "escapedWithoutLoss": true,
+    "noOverflow": true,
+    "noPageErrors": true,
+    "posts": 1
+  },
+  {
+    "theme": "light",
+    "width": 1440,
+    "keyboardFocusTrap": true,
+    "escapedWithoutLoss": true,
+    "noOverflow": true,
+    "noPageErrors": true,
+    "posts": 1
+  },
+  {
+    "theme": "dark",
+    "width": 320,
+    "keyboardFocusTrap": true,
+    "escapedWithoutLoss": true,
+    "noOverflow": true,
+    "noPageErrors": true,
+    "posts": 1
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "keyboardFocusTrap": true,
+    "escapedWithoutLoss": true,
+    "noOverflow": true,
+    "noPageErrors": true,
+    "posts": 1
+  },
+  {
+    "theme": "dark",
+    "width": 1024,
+    "keyboardFocusTrap": true,
+    "escapedWithoutLoss": true,
+    "noOverflow": true,
+    "noPageErrors": true,
+    "posts": 1
+  },
+  {
+    "theme": "dark",
+    "width": 1440,
+    "keyboardFocusTrap": true,
+    "escapedWithoutLoss": true,
+    "noOverflow": true,
+    "noPageErrors": true,
+    "posts": 1
+  }
+]

@@ -148,4 +148,49 @@ class PostgresAiAdmissionPgTest {
     var failure = assertThrows(AiGateway.Failure.class, () -> a.admit(AiKeySlot.ADMIN, UUID.randomUUID(), AiTask.ADMIN_ACTIVITY_REPORT, 10));
     assertEquals(AiGateway.FailureCode.UNAVAILABLE, failure.code());
   }
+
+  // AG1: public retry information is required by the existing HTTP integration contract.
+  // Reflection keeps the pre-implementation baseline executable without binding a new API.
+  private static long retrySeconds(ApiFailure failure) {
+    try {
+      Object value = failure.getClass().getMethod("retryAfterSeconds").invoke(failure);
+      if (value instanceof java.util.Optional<?> optional) value = optional.orElse(null);
+      assertInstanceOf(Number.class, value, "Admission rejection must expose positive retry seconds");
+      return ((Number) value).longValue();
+    } catch (ReflectiveOperationException missing) {
+      return fail("Admission rejection does not expose retryAfterSeconds", missing);
+    }
+  }
+
+  @Test
+  void agendaBusyRetryCeilsRemainingLeaseAndAdmissionWorksAtBoundary() {
+    var a = admission(AiQuotaPolicy.defaults()); UUID actor = UUID.randomUUID();
+    a.admit(AiKeySlot.STUDENT, actor, AiTask.STUDENT_AGENDA, 100);
+    now.set(T0.plusMillis(1));
+    var busy = assertThrows(ApiFailure.class, () -> a.admit(AiKeySlot.STUDENT, actor, AiTask.STUDENT_AGENDA, 100));
+    assertEquals("AI_BUSY", busy.code()); assertEquals(60, retrySeconds(busy));
+    now.set(T0.plusSeconds(60)); a.admit(AiKeySlot.STUDENT, actor, AiTask.STUDENT_AGENDA, 100);
+  }
+
+  @Test
+  void agendaActorRateLimitRetryUsesEarliestWindowExpiry() {
+    var a = admission(AiQuotaPolicy.defaults()); UUID actor = UUID.randomUUID();
+    for (int i = 0; i < 3; i++) {
+      now.set(T0.plusSeconds(i)); a.complete(a.admit(AiKeySlot.STUDENT, actor, AiTask.STUDENT_AGENDA, 100), null);
+    }
+    now.set(T0.plusMillis(2001));
+    var limited = assertThrows(ApiFailure.class, () -> a.admit(AiKeySlot.STUDENT, actor, AiTask.STUDENT_AGENDA, 100));
+    assertEquals("AI_RATE_LIMITED", limited.code()); assertEquals(298, retrySeconds(limited));
+    now.set(T0.plusSeconds(300)); a.admit(AiKeySlot.STUDENT, actor, AiTask.STUDENT_AGENDA, 100);
+  }
+
+  @Test
+  void agendaKeyMinuteLimitRetryUsesEarliestWindowExpiry() {
+    var a = admission(policy(1, 70_000_000, 700_000_000));
+    a.complete(a.admit(AiKeySlot.STUDENT, UUID.randomUUID(), AiTask.STUDENT_AGENDA, 100), null);
+    now.set(T0.plusMillis(1));
+    var limited = assertThrows(ApiFailure.class, () -> a.admit(AiKeySlot.STUDENT, UUID.randomUUID(), AiTask.STUDENT_AGENDA, 100));
+    assertEquals("AI_RATE_LIMITED", limited.code()); assertEquals(60, retrySeconds(limited));
+    now.set(T0.plusSeconds(60)); a.admit(AiKeySlot.STUDENT, UUID.randomUUID(), AiTask.STUDENT_AGENDA, 100);
+  }
 }

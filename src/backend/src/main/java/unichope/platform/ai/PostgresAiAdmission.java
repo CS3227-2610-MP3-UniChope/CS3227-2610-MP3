@@ -65,21 +65,23 @@ public final class PostgresAiAdmission implements AiAdmission {
                     .map(OffsetDateTime::toInstant)
                     .orElse(null);
             if (busyUntil != null)
-              throw new ApiFailure(409, "AI_BUSY", "A generation is already in progress");
+              throw new ApiFailure(409, "AI_BUSY", "A generation is already in progress", retrySeconds(now, busyUntil));
 
             long recentForActor =
                 count(
                     "SELECT count(*) FROM ai_attempts WHERE actor_id=:id AND admitted_at>:since",
                     "id", actorId, now.minus(policy.perActorWindow()));
             if (recentForActor >= policy.perActorRequests())
-              throw new ApiFailure(429, "AI_RATE_LIMITED", "AI generation limit reached. Try again later.");
+              throw new ApiFailure(429, "AI_RATE_LIMITED", "AI generation limit reached. Try again later.",
+                  windowRetry("actor_id", actorId, now, policy.perActorWindow()));
 
             long lastMinute =
                 count(
                     "SELECT count(*) FROM ai_attempts WHERE key_slot=:id AND admitted_at>:since",
                     "id", slot.name(), now.minus(Duration.ofMinutes(1)));
             if (lastMinute >= policy.requestsPerMinute())
-              throw new ApiFailure(429, "AI_RATE_LIMITED", "The AI service is busy. Try again shortly.");
+              throw new ApiFailure(429, "AI_RATE_LIMITED", "The AI service is busy. Try again shortly.",
+                  windowRetry("key_slot", slot.name(), now, Duration.ofMinutes(1)));
 
             if (spent(slot, now.minus(DAY)) + reservedMicros > policy.dailyBudgetMicros()
                 || spent(slot, now.minus(MONTH)) + reservedMicros > policy.monthlyBudgetMicros())
@@ -121,6 +123,19 @@ public final class PostgresAiAdmission implements AiAdmission {
 
   private long count(String sql, String name, Object value, Instant since) {
     return jdbc.sql(sql).param(name, value).param("since", at(since)).query(Long.class).single();
+  }
+
+  private long windowRetry(String column, Object value, Instant now, Duration window) {
+    // Column names are internal constants; request data is always bound.
+    Instant earliest = jdbc.sql("SELECT min(admitted_at) FROM ai_attempts WHERE " + column + "=:id AND admitted_at>:since")
+        .param("id", value).param("since", at(now.minus(window)))
+        .query(OffsetDateTime.class).single().toInstant();
+    return retrySeconds(now, earliest.plus(window));
+  }
+
+  private static long retrySeconds(Instant now, Instant until) {
+    Duration remaining = Duration.between(now, until);
+    return Math.max(1, remaining.getSeconds() + (remaining.getNano() == 0 ? 0 : 1));
   }
 
   private long spent(AiKeySlot slot, Instant since) {

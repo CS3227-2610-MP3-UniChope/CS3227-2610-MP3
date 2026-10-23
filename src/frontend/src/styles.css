@@ -154,3 +154,14 @@ label { font-size: .9375rem; font-weight: 650; display: block; margin: 1.25rem 0
  .admin-layout .workspace-nav { overflow-x: auto; }
  .admin-layout .workspace-nav a { flex-shrink: 0; }
 }
+
+.agenda-summary { padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
+.agenda-summary h2 { font-size: 1.2rem; margin-top: .5rem; }
+.agenda-summary p:last-child { margin-bottom: 0; }
+.agenda-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; }
+.agenda-panel { min-width: 0; padding: 1.5rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
+.agenda-panel h2 { font-size: 1.2rem; }
+.agenda-panel label { display: block; font-weight: 600; margin-bottom: .5rem; }
+.agenda-panel textarea { resize: vertical; }
+.agenda-draft { line-height: 1.7; }
+@media (max-width: 1023px) { .agenda-layout { grid-template-columns: minmax(0, 1fr); } }

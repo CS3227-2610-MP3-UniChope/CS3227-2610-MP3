@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.platform.ai.PostgresAiAdmissionPgTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-23T00:21:53.961Z" hostname="PHUXTROHHG" time="6.279">
+  <properties/>
+  <testcase name="perActorWindowAllowsThreeIn5MinutesCountingFailures()" classname="unichope.platform.ai.PostgresAiAdmissionPgTest" time="1.786"/>
+  <testcase name="concurrentAdmissionsForOneKeyCannotExceedTheMinuteLimit()" classname="unichope.platform.ai.PostgresAiAdmissionPgTest" time="0.651"/>
+  <testcase name="oneInFlightPerActorUntilCompletedOrLeaseExpires()" classname="unichope.platform.ai.PostgresAiAdmissionPgTest" time="0.566"/>
+  <testcase name="dailyAndMonthlyBudgetsBlockOnlyTheExhaustedKey()" classname="unichope.platform.ai.PostgresAiAdmissionPgTest" time="0.614"/>
+  <testcase name="agendaKeyMinuteLimitRetryUsesEarliestWindowExpiry()" classname="unichope.platform.ai.PostgresAiAdmissionPgTest" time="0.519"/>
+  <testcase name="storesMetadataOnlyAndUnusableStoreFailsClosed()" classname="unichope.platform.ai.PostgresAiAdmissionPgTest" time="0.524"/>
+  <testcase name="agendaBusyRetryCeilsRemainingLeaseAndAdmissionWorksAtBoundary()" classname="unichope.platform.ai.PostgresAiAdmissionPgTest" time="0.469"/>
+  <testcase name="requestsPerMinuteAreCountedPerKeyIndependently()" classname="unichope.platform.ai.PostgresAiAdmissionPgTest" time="0.553"/>
+  <testcase name="agendaActorRateLimitRetryUsesEarliestWindowExpiry()" classname="unichope.platform.ai.PostgresAiAdmissionPgTest" time="0.59"/>
+  <system-out><![CDATA[08:21:54.805 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:21:54.902 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "ai_test_7bd730f57e1e46b3930f3e195c1ea8a6"."flyway_schema_history" does not exist yet
+08:21:54.910 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 5 migrations (execution time 00:00.041s)
+08:21:54.943 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "ai_test_7bd730f57e1e46b3930f3e195c1ea8a6"."flyway_schema_history" ...
+08:21:55.051 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "ai_test_7bd730f57e1e46b3930f3e195c1ea8a6": << Empty Schema >>
+08:21:55.075 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_7bd730f57e1e46b3930f3e195c1ea8a6" to version "1 - create core tables"
+08:21:55.154 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_7bd730f57e1e46b3930f3e195c1ea8a6" to version "2 - add auth account state"
+08:21:55.185 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_7bd730f57e1e46b3930f3e195c1ea8a6" to version "3 - create private notes"
+08:21:55.219 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_7bd730f57e1e46b3930f3e195c1ea8a6" to version "4 - bootstrap state"
+08:21:55.250 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_7bd730f57e1e46b3930f3e195c1ea8a6" to version "5 - ai usage"
+08:21:55.292 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 5 migrations to schema "ai_test_7bd730f57e1e46b3930f3e195c1ea8a6", now at version v5 (execution time 00:00.082s)
+08:21:55.837 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:21:55.875 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "ai_test_ea86f3c84745463db49b01218a333487"."flyway_schema_history" does not exist yet
+08:21:55.878 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 5 migrations (execution time 00:00.013s)
+08:21:55.897 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "ai_test_ea86f3c84745463db49b01218a333487"."flyway_schema_history" ...
+08:21:55.943 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "ai_test_ea86f3c84745463db49b01218a333487": << Empty Schema >>
+08:21:55.951 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_ea86f3c84745463db49b01218a333487" to version "1 - create core tables"
+08:21:56.013 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_ea86f3c84745463db49b01218a333487" to version "2 - add auth account state"
+08:21:56.040 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_ea86f3c84745463db49b01218a333487" to version "3 - create private notes"
+08:21:56.069 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_ea86f3c84745463db49b01218a333487" to version "4 - bootstrap state"
+08:21:56.094 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_ea86f3c84745463db49b01218a333487" to version "5 - ai usage"
+08:21:56.128 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 5 migrations to schema "ai_test_ea86f3c84745463db49b01218a333487", now at version v5 (execution time 00:00.074s)
+08:21:56.474 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:21:56.502 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "ai_test_546e0d65441240d1b3f733b22b23bb42"."flyway_schema_history" does not exist yet
+08:21:56.504 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 5 migrations (execution time 00:00.012s)
+08:21:56.520 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "ai_test_546e0d65441240d1b3f733b22b23bb42"."flyway_schema_history" ...
+08:21:56.578 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "ai_test_546e0d65441240d1b3f733b22b23bb42": << Empty Schema >>
+08:21:56.586 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_546e0d65441240d1b3f733b22b23bb42" to version "1 - create core tables"
+08:21:56.649 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_546e0d65441240d1b3f733b22b23bb42" to version "2 - add auth account state"
+08:21:56.677 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_546e0d65441240d1b3f733b22b23bb42" to version "3 - create private notes"
+08:21:56.704 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_546e0d65441240d1b3f733b22b23bb42" to version "4 - bootstrap state"
+08:21:56.727 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_546e0d65441240d1b3f733b22b23bb42" to version "5 - ai usage"
+08:21:56.760 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 5 migrations to schema "ai_test_546e0d65441240d1b3f733b22b23bb42", now at version v5 (execution time 00:00.074s)
+08:21:57.035 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:21:57.064 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "ai_test_2ea99cacbd954335981f5a71311245c7"."flyway_schema_history" does not exist yet
+08:21:57.066 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 5 migrations (execution time 00:00.013s)
+08:21:57.083 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "ai_test_2ea99cacbd954335981f5a71311245c7"."flyway_schema_history" ...
+08:21:57.126 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "ai_test_2ea99cacbd954335981f5a71311245c7": << Empty Schema >>
+08:21:57.132 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_2ea99cacbd954335981f5a71311245c7" to version "1 - create core tables"
+08:21:57.189 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_2ea99cacbd954335981f5a71311245c7" to version "2 - add auth account state"
+08:21:57.216 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_2ea99cacbd954335981f5a71311245c7" to version "3 - create private notes"
+08:21:57.246 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_2ea99cacbd954335981f5a71311245c7" to version "4 - bootstrap state"
+08:21:57.273 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_2ea99cacbd954335981f5a71311245c7" to version "5 - ai usage"
+08:21:57.309 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 5 migrations to schema "ai_test_2ea99cacbd954335981f5a71311245c7", now at version v5 (execution time 00:00.070s)
+08:21:57.652 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:21:57.681 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "ai_test_8bb3e407fa6d42ed82949a95e5c0669c"."flyway_schema_history" does not exist yet
+08:21:57.685 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 5 migrations (execution time 00:00.013s)
+08:21:57.703 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "ai_test_8bb3e407fa6d42ed82949a95e5c0669c"."flyway_schema_history" ...
+08:21:57.749 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "ai_test_8bb3e407fa6d42ed82949a95e5c0669c": << Empty Schema >>
+08:21:57.753 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_8bb3e407fa6d42ed82949a95e5c0669c" to version "1 - create core tables"
+08:21:57.807 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_8bb3e407fa6d42ed82949a95e5c0669c" to version "2 - add auth account state"
+08:21:57.835 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_8bb3e407fa6d42ed82949a95e5c0669c" to version "3 - create private notes"
+08:21:57.862 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_8bb3e407fa6d42ed82949a95e5c0669c" to version "4 - bootstrap state"
+08:21:57.889 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_8bb3e407fa6d42ed82949a95e5c0669c" to version "5 - ai usage"
+08:21:57.922 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 5 migrations to schema "ai_test_8bb3e407fa6d42ed82949a95e5c0669c", now at version v5 (execution time 00:00.066s)
+08:21:58.181 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:21:58.213 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "ai_test_f932e989c49e431bb6820855812d8dde"."flyway_schema_history" does not exist yet
+08:21:58.215 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 5 migrations (execution time 00:00.011s)
+08:21:58.233 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "ai_test_f932e989c49e431bb6820855812d8dde"."flyway_schema_history" ...
+08:21:58.280 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "ai_test_f932e989c49e431bb6820855812d8dde": << Empty Schema >>
+08:21:58.285 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_f932e989c49e431bb6820855812d8dde" to version "1 - create core tables"
+08:21:58.341 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_f932e989c49e431bb6820855812d8dde" to version "2 - add auth account state"
+08:21:58.367 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_f932e989c49e431bb6820855812d8dde" to version "3 - create private notes"
+08:21:58.397 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_f932e989c49e431bb6820855812d8dde" to version "4 - bootstrap state"
+08:21:58.424 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_f932e989c49e431bb6820855812d8dde" to version "5 - ai usage"
+08:21:58.468 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 5 migrations to schema "ai_test_f932e989c49e431bb6820855812d8dde", now at version v5 (execution time 00:00.074s)
+08:21:58.696 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:21:58.721 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "ai_test_e47170f0de884e58a6de1d3e4b518275"."flyway_schema_history" does not exist yet
+08:21:58.723 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 5 migrations (execution time 00:00.009s)
+08:21:58.741 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "ai_test_e47170f0de884e58a6de1d3e4b518275"."flyway_schema_history" ...
+08:21:58.783 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "ai_test_e47170f0de884e58a6de1d3e4b518275": << Empty Schema >>
+08:21:58.788 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_e47170f0de884e58a6de1d3e4b518275" to version "1 - create core tables"
+08:21:58.850 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_e47170f0de884e58a6de1d3e4b518275" to version "2 - add auth account state"
+08:21:58.879 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_e47170f0de884e58a6de1d3e4b518275" to version "3 - create private notes"
+08:21:58.905 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_e47170f0de884e58a6de1d3e4b518275" to version "4 - bootstrap state"
+08:21:58.931 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_e47170f0de884e58a6de1d3e4b518275" to version "5 - ai usage"
+08:21:58.963 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 5 migrations to schema "ai_test_e47170f0de884e58a6de1d3e4b518275", now at version v5 (execution time 00:00.075s)
+08:21:59.164 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:21:59.189 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "ai_test_925953376098455fb8a7b08097d9d21b"."flyway_schema_history" does not exist yet
+08:21:59.191 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 5 migrations (execution time 00:00.010s)
+08:21:59.207 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "ai_test_925953376098455fb8a7b08097d9d21b"."flyway_schema_history" ...
+08:21:59.246 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "ai_test_925953376098455fb8a7b08097d9d21b": << Empty Schema >>
+08:21:59.251 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_925953376098455fb8a7b08097d9d21b" to version "1 - create core tables"
+08:21:59.302 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_925953376098455fb8a7b08097d9d21b" to version "2 - add auth account state"
+08:21:59.325 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_925953376098455fb8a7b08097d9d21b" to version "3 - create private notes"
+08:21:59.348 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_925953376098455fb8a7b08097d9d21b" to version "4 - bootstrap state"
+08:21:59.373 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_925953376098455fb8a7b08097d9d21b" to version "5 - ai usage"
+08:21:59.407 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 5 migrations to schema "ai_test_925953376098455fb8a7b08097d9d21b", now at version v5 (execution time 00:00.064s)
+08:21:59.710 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55432/mp3_test (PostgreSQL 17.11)
+08:21:59.737 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "ai_test_0a3fbc45a30f49c59c3184176d5acd25"."flyway_schema_history" does not exist yet
+08:21:59.739 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 5 migrations (execution time 00:00.013s)
+08:21:59.755 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "ai_test_0a3fbc45a30f49c59c3184176d5acd25"."flyway_schema_history" ...
+08:21:59.796 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "ai_test_0a3fbc45a30f49c59c3184176d5acd25": << Empty Schema >>
+08:21:59.801 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_0a3fbc45a30f49c59c3184176d5acd25" to version "1 - create core tables"
+08:21:59.854 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_0a3fbc45a30f49c59c3184176d5acd25" to version "2 - add auth account state"
+08:21:59.879 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_0a3fbc45a30f49c59c3184176d5acd25" to version "3 - create private notes"
+08:21:59.905 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_0a3fbc45a30f49c59c3184176d5acd25" to version "4 - bootstrap state"
+08:21:59.930 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "ai_test_0a3fbc45a30f49c59c3184176d5acd25" to version "5 - ai usage"
+08:21:59.962 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 5 migrations to schema "ai_test_0a3fbc45a30f49c59c3184176d5acd25", now at version v5 (execution time 00:00.065s)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
