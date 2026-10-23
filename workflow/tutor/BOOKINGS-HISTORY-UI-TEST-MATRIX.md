@@ -15,3 +15,6 @@ Applies to [`BOOKINGS-HISTORY-UI-SPEC.md`](BOOKINGS-HISTORY-UI-SPEC.md).
 | P4-UI-09 | Completion returns an ambiguous server error after it may have committed | Refresh the list so the UI reflects persisted state; show a safe error | React simulated post-commit failure test |
 | P4-UI-10 | Older booking or history filter request resolves after a newer request | Ignore stale response and keep results for the latest submitted filters | React deferred-response test |
 | P4-UI-11 | Booking filters change while completion is pending | Completion refresh uses the latest applied filters | React deferred-completion test |
+| P4-UI-12 | Open note from a completed history slot | Select the matching completed booking and display its saved note; cancelled or unmatched slots have no action | React history-to-note navigation test |
+| P4-UI-13 | Load Tutor slot and booking lists | Show the booked student's display name; show an em dash when no active/completed booking is attached | PostgreSQL REST test and React table test |
+| P4-UI-14 | Search by student name in Bookings or Slot history | Case-insensitive substring matching filters visible rows without changing server query filters | React filter test |
