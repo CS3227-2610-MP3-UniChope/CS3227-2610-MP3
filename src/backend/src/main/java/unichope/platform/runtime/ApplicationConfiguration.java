@@ -124,9 +124,16 @@ public class ApplicationConfiguration {
   @ConditionalOnProperty(prefix = "unichope.ai", name = "mode", havingValue = "fake")
   @ConditionalOnMissingBean(AiGateway.class)
   AiGateway localFakeAiGateway() {
-    return new FakeProvider(
-        """
-        {"summary":"Local fake draft for review.","topicsDiscussed":"Tutor note-drafting integration.","followUp":"Edit this draft before saving."}
-        """);
+    AiGateway tutor =
+        new FakeProvider(
+            """
+            {"summary":"Local fake draft for review.","topicsDiscussed":"Tutor note-drafting integration.","followUp":"Edit this draft before saving."}
+            """);
+    AiGateway agenda =
+        new FakeProvider(
+            """
+            {"goal":"Local fake agenda for review.","items":[{"topic":"Your questions","question":"Local fake agenda item. Edit before use.","minutes":1}],"prepare":["Bring your questions and any work in progress."]}
+            """);
+    return request -> ("STU-AGENDA-1".equals(request.task()) ? agenda : tutor).generate(request);
   }
 }

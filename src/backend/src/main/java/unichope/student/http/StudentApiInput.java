@@ -47,6 +47,16 @@ public final class StudentApiInput {
         if (!object(request).isEmpty()) throw invalid();
     }
 
+    public static String agenda(HttpServletRequest request) throws IOException {
+        JsonNode body = object(request);
+        if (!Set.copyOf(body.propertyNames()).equals(Set.of("questions")) || !body.get("questions").isString()) throw invalid();
+        String questions = body.get("questions").stringValue();
+        if (!unichope.student.AgendaText.validUnicode(questions) || questions.codePointCount(0, questions.length()) > 4000) throw invalid();
+        questions = unichope.student.AgendaText.trim(questions);
+        if (questions.isEmpty()) throw invalid();
+        return questions;
+    }
+
     private static JsonNode object(HttpServletRequest request) throws IOException {
         try {
             MediaType type = request.getContentType() == null ? null : MediaType.parseMediaType(request.getContentType());
