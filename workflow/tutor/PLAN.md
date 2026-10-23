@@ -197,14 +197,17 @@ tests establish boundaries, not real-model resistance or factual quality.
   limits remain explicit verification items.
 - [x] Implement a bounded OpenAI-compatible Chat Completions adapter and local
   loopback contract tests; see the P8 spec, matrix, and developer handoff.
+- [x] Align Tutor local trial configuration with the shared Spring wiring proposed
+  in PR #10; use the shared V5 migration rather than a duplicate local migration.
 - [ ] Review the shared provider adapter with the Student AI owner before routing
-  any production role key through it. Keep the adapter unwired until runtime routing,
-  durable admission, migration, and environment configuration are accepted.
-- [ ] Supply real endpoint/model/auth details server-side and verify hosting access.
+  any production role key through it. Keep production routing, migration, and
+  environment configuration disabled until the shared contract is accepted.
+- [x] Record owner-selected local model `qwen3.6:35b` and conservative initial application caps.
+- [ ] Provision the development key and capture an end-to-end live Tutor request; verify hosting access.
 - [ ] Confirm provider request/token limits and configure conservative shared budgets,
   input accounting, output caps, deadlines, and separate dev/prod team keys.
-- [ ] Implement provider adapter and mocked transport contract tests; retain fake tests.
-- [ ] Use a local mock HTTP server to verify real-adapter headers/request mapping,
+- [x] Implement provider adapter and mocked transport contract tests; retain fake tests.
+- [x] Use a local mock HTTP server to verify real-adapter headers/request mapping,
   HTTP errors, malformed/oversized responses, and deadlines without live credentials.
 - [ ] Run a small synthetic normal/adversarial evaluation for valid useful output,
   grounding, safe failure, and quota behavior. Record token/call usage where available.
@@ -213,7 +216,8 @@ Depends on: P6, actual provider details, and P7 findings resolution. Requirement
 AI-01, AI-02, TUT-AI-01, TUT-AI-02. Verify: real SoC responses reach the review UI; no secret is
 in browser/build/logs; quality errors are documented and fixed where feasible.
 Never mark fake output or an unverified external call as completing this task. The
-adapter is implemented but not wired; see
+adapter uses the shared runtime proposed in PR #10; production activation remains
+subject to review. See
 [`SOCLAAS-PROVIDER-SPEC.md`](SOCLAAS-PROVIDER-SPEC.md) and
 [`SOCLAAS-PROVIDER-TEST-MATRIX.md`](SOCLAAS-PROVIDER-TEST-MATRIX.md).
 

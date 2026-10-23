@@ -128,8 +128,13 @@ generation that replaces an edited draft requires confirmation. Bind each respon
 to account/booking/sequence; ignore stale results even if an AbortController was
 used. Aborting the browser request does not prove the provider stopped or refund quota.
 
-"Use reviewed draft" copies into the note editor without saving, confirming before
-replacing existing edits. "Save note" submits its current content and expectedVersion.
+Display the saved note as read-only by default. An explicit Edit note action opens
+the controlled textarea; cancelling dirty edits requires confirmation and restores
+the last saved content. "Use reviewed draft" opens the editor and copies the draft
+without saving, confirming before replacing existing edits. "Save note" submits its
+current content and expectedVersion. Keep the AI drafting controls collapsed until
+the Tutor chooses Prepare AI draft; hiding the controls preserves rough notes and
+draft text in component state.
 Update loaded version only on success; preserve buffers on conflict/failure. Show
 the need to reload on conflict without automatically discarding unsaved work.
 Successful saves may be reconciled through reload; do not blindly retry a lost response.

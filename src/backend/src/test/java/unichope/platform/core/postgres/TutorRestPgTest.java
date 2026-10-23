@@ -115,13 +115,16 @@ class TutorRestPgTest extends LifecyclePgFixture {
         UUID foreignSlot=slot(T2,START,END,"COMPLETED");
         UUID older=booking(S1,olderSlot,"COMPLETED"), tied=booking(S1,tiedSlot,"COMPLETED"), newer=booking(S1,newerSlot,"COMPLETED");
         booking(S1,activeSlot,"ACTIVE"); booking(S1,foreignSlot,"COMPLETED");
+        JsonNode upcoming=body(ok(get("/api/tutor/slots"),session(T1),200));
+        assertEquals("Synthetic",upcoming.findValue("studentName").asString());
 
         JsonNode result=body(ok(get("/api/tutor/bookings").param("status","COMPLETED"),session(T1),200));
         var tiedIds=List.of(older,tied).stream().sorted().map(UUID::toString).toList();
         assertEquals(List.of(tiedIds.get(0),tiedIds.get(1),newer.toString()),List.of(
                 result.get(0).get("bookingId").asString(),result.get(1).get("bookingId").asString(),result.get(2).get("bookingId").asString()));
-        assertEquals(Set.of("bookingId","slotId","moduleCode","startTime","endTime","status"),
+        assertEquals(Set.of("bookingId","slotId","moduleCode","studentName","startTime","endTime","status"),
                 Set.copyOf(result.get(0).propertyNames()));
+        assertEquals("Synthetic",result.get(0).get("studentName").asString());
         assertEquals("COMPLETED",result.get(0).get("status").asString());
         assertTrue(result.get(0).get("startTime").asString().endsWith("Z"));
         JsonNode all=body(ok(get("/api/tutor/bookings"),session(T1),200));
@@ -148,12 +151,13 @@ class TutorRestPgTest extends LifecyclePgFixture {
         UUID cancelled=slot(T1,Instant.parse("2026-10-20T17:00:00Z"),Instant.parse("2026-10-20T18:00:00Z"),"CANCELLED");
         slot(T2,Instant.parse("2026-10-20T16:00:00Z"),Instant.parse("2026-10-20T17:00:00Z"),"COMPLETED");
         slot(T1,Instant.parse("2026-10-20T16:00:00Z"),Instant.parse("2026-10-20T17:00:00Z"),"BOOKED");
+        booking(S1,previousDay,"COMPLETED");booking(S1,first,"COMPLETED");booking(S1,tied,"COMPLETED");
 
         JsonNode completed=body(ok(get("/api/tutor/history/slots").param("status","COMPLETED"),session(T1),200));
         var tiedIds=List.of(first,tied).stream().sorted().map(UUID::toString).toList();
         assertEquals(List.of(previousDay.toString(),tiedIds.get(0),tiedIds.get(1)),List.of(
                 completed.get(0).get("id").asString(),completed.get(1).get("id").asString(),completed.get(2).get("id").asString()));
-        for(JsonNode item:completed){exactSlot(item);assertEquals("COMPLETED",item.get("status").asString());}
+        for(JsonNode item:completed){exactSlot(item);assertEquals("COMPLETED",item.get("status").asString());assertEquals("Synthetic",item.get("studentName").asString());}
         JsonNode sgtDate=body(ok(get("/api/tutor/history/slots").param("status","COMPLETED").param("date","2026-10-21"),session(T1),200));
         assertEquals(2,sgtDate.size());assertFalse(List.of(sgtDate.get(0).get("id").asString(),sgtDate.get(1).get("id").asString()).contains(previousDay.toString()));
         JsonNode cancelledResult=body(ok(get("/api/tutor/history/slots").param("status","CANCELLED"),session(T1),200));
@@ -724,7 +728,7 @@ class TutorRestPgTest extends LifecyclePgFixture {
         UUID.fromString(body.get("requestId").asString());String text=body.toString();
         assertFalse(text.contains("private-marker"));assertFalse(text.contains(T1.toString()));assertFalse(text.contains("client-sensitive-marker"));return body;
     }
-    private void exactSlot(JsonNode slot) { assertEquals(Set.of("id","moduleId","moduleCode","startTime","endTime","status"),Set.copyOf(slot.propertyNames())); }
+    private void exactSlot(JsonNode slot) { assertEquals(Set.of("id","moduleId","moduleCode","startTime","endTime","status","studentName"),Set.copyOf(slot.propertyNames())); }
     @Configuration @EnableWebMvc static class MvcFixture {}
 
     private static final class FaultingLifecycle implements ConsultationLifecycle {

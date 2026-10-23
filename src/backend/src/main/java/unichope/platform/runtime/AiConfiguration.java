@@ -38,6 +38,7 @@ public class AiConfiguration {
   static final int KEY_IN_FLIGHT = 8;
   static final int MAX_RESPONSE_BYTES = 65_536;
   static final Duration DEADLINE = Duration.ofSeconds(25);
+  static final Duration TUTOR_DEADLINE = Duration.ofSeconds(20);
 
   @Bean(destroyMethod = "close")
   @DependsOn("applicationMigrations")
@@ -68,20 +69,27 @@ public class AiConfiguration {
         };
 
     int tutorTokens = env.getProperty("unichope.ai.tutor.note-draft.max-output-tokens", Integer.class, 2048);
-    Map<String, AiTaskPolicy> policies =
-        Stream.of(
-                // Agenda input is JSON-escaped questions (4,000 code points) plus booking context.
-                policy("STU-AGENDA-1", AiProviderKey.STUDENT, 25_000, 2048),
-                policy("tutor.note-draft.v1", AiProviderKey.TUTOR, 8_000, tutorTokens),
-                policy("ADM-REPORT-1", AiProviderKey.ADMIN, 4_000, 2048))
-            .collect(Collectors.toMap(AiTaskPolicy::task, p -> p));
+    return new AdmittedAiGateway(
+        new PostgresAiAdmissionService(source, clock, budgets), router, taskPolicies(tutorTokens));
+  }
 
-    return new AdmittedAiGateway(new PostgresAiAdmissionService(source, clock, budgets), router, policies);
+  static Map<String, AiTaskPolicy> taskPolicies(int tutorTokens) {
+    return Stream.of(
+            // Agenda input is JSON-escaped questions (4,000 code points) plus booking context.
+            policy("STU-AGENDA-1", AiProviderKey.STUDENT, 25_000, 2048),
+            policy("tutor.note-draft.v1", AiProviderKey.TUTOR, 8_000, tutorTokens, TUTOR_DEADLINE),
+            policy("ADM-REPORT-1", AiProviderKey.ADMIN, 4_000, 2048))
+        .collect(Collectors.toMap(AiTaskPolicy::task, p -> p));
   }
 
   private static AiTaskPolicy policy(String task, AiProviderKey key, int maxInput, int maxOutputTokens) {
+    return policy(task, key, maxInput, maxOutputTokens, DEADLINE);
+  }
+
+  private static AiTaskPolicy policy(
+      String task, AiProviderKey key, int maxInput, int maxOutputTokens, Duration deadline) {
     return new AiTaskPolicy(
-        task, key, ACTOR_REQUESTS, ACTOR_WINDOW, 1, maxInput, maxOutputTokens, MAX_RESPONSE_BYTES, DEADLINE);
+        task, key, ACTOR_REQUESTS, ACTOR_WINDOW, 1, maxInput, maxOutputTokens, MAX_RESPONSE_BYTES, deadline);
   }
 
   private static int number(Environment env, String name, int fallback) {

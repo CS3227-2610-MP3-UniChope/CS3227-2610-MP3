@@ -8,10 +8,10 @@ stale status claims. The latest full run passed 91 unit tests, 192 PostgreSQL
 tests, and 193 frontend tests; `bootJar` and the frontend build succeeded. See
 the current verification evidence.
 The completed-booking list API and draft UI are implemented. A bounded SoCLaaS
-Chat Completions adapter now has local HTTP contract tests, but it is not wired into
-the shared router or application. Production provider wiring, active migration,
-affected-owner acceptance, model/key setup, and live evaluation remain pending. No
-SoC calls or production AI activation are claimed.
+Chat Completions adapter has local HTTP contract tests and local-only Spring wiring
+through durable PostgreSQL admission. Production provider wiring, production
+migration activation, affected-owner acceptance, model/key setup, and live
+evaluation remain pending. No live SoC call or production AI activation is claimed.
 Specification: [Tutor AI increment](TUTOR-AI-INCREMENT-SPEC.md).
 Test matrix: [Tutor AI test matrix](TUTOR-AI-TEST-MATRIX.md).
 Evidence register: [Tutor AI evidence](TUTOR-AI-EVIDENCE.md).

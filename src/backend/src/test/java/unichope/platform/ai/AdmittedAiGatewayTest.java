@@ -58,6 +58,11 @@ class AdmittedAiGatewayTest {
       @Override
       public void complete(Reservation reservation) {
       }
+
+      @Override
+      public void failed(Reservation reservation, boolean retainLeaseUntilExpiry) {
+        if (!retainLeaseUntilExpiry) complete(reservation);
+      }
     };
     AiGateway provider = request -> new AiGateway.Result("draft", AiGateway.ProviderMode.FAKE);
 
@@ -178,6 +183,31 @@ class AdmittedAiGatewayTest {
       assertEquals(AiGateway.FailureCode.INVALID_OUTPUT, failure.code());
     }
     assertEquals(1, admission.completed.get());
+    assertEquals(1, admission.failed.get());
+  }
+
+  @Test
+  void taskOutputValidationRunsBeforeActorQuotaIsCharged() {
+    var admission = new RecordingAdmission();
+    var calls = new AtomicInteger();
+    AiGateway provider = request -> {
+      calls.incrementAndGet();
+      return new AiGateway.Result("unusable", AiGateway.ProviderMode.FAKE);
+    };
+
+    try (var gateway = gateway(admission, ignored -> provider, policy(Duration.ofSeconds(1)))) {
+      var failure = assertThrows(
+          AiGateway.Failure.class,
+          () -> gateway.generate(REQUEST, ignored -> {
+            throw new AiGateway.Failure(AiGateway.FailureCode.INVALID_OUTPUT);
+          }));
+      assertEquals(AiGateway.FailureCode.INVALID_OUTPUT, failure.code());
+    }
+
+    assertEquals(1, calls.get());
+    assertEquals(1, admission.completed.get());
+    assertEquals(1, admission.failed.get());
+    assertFalse(admission.retainedLease);
   }
 
   @Test
@@ -208,6 +238,8 @@ class AdmittedAiGatewayTest {
       assertTrue(entered.await(1, TimeUnit.SECONDS));
       assertEquals(1, calls.get());
       assertEquals(0, admission.completed.get());
+      assertEquals(1, admission.failed.get());
+      assertTrue(admission.retainedLease);
     } finally {
       release.countDown();
     }
@@ -240,6 +272,8 @@ class AdmittedAiGatewayTest {
   private static final class RecordingAdmission implements AiAdmissionService {
     private final AtomicInteger admitted = new AtomicInteger();
     private final AtomicInteger completed = new AtomicInteger();
+    private final AtomicInteger failed = new AtomicInteger();
+    private boolean retainedLease;
     private Attempt attempt;
     private AiGateway.Failure failure;
     private boolean throwUnexpected;
@@ -256,6 +290,13 @@ class AdmittedAiGatewayTest {
     @Override
     public void complete(Reservation reservation) {
       completed.incrementAndGet();
+    }
+
+    @Override
+    public void failed(Reservation reservation, boolean retainLeaseUntilExpiry) {
+      failed.incrementAndGet();
+      retainedLease = retainLeaseUntilExpiry;
+      if (!retainLeaseUntilExpiry) complete(reservation);
     }
   }
 }

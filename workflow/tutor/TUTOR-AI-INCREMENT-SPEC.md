@@ -8,7 +8,9 @@ integration verifies production `AuthenticationService` and account storage for
 Tutor login, anonymous/wrong-role denial, session-generation revocation, and
 deactivation during generation. Frontend tests cover explicit copy/save, failure
 retention, replacement confirmation, selection changes, and stale-response discard.
-Production provider wiring, active migration, and affected-owner acceptance remain
+Merged PR #10 supplies shared SoCLaaS runtime wiring and the V5 admission
+migration. Tutor local provider trials use that shared gateway; production
+activation, live provider verification, and affected-owner acceptance remain
 pending.
 Requirement: TUT-AI-01 and TUT-AI-02.
 Owner: Huanghao (Tutor); shared gateway/admission remains Student-owned.
@@ -45,8 +47,9 @@ The user's 22 October instruction authorizes starting P6. P5 manual-note
 implementation acceptance is recorded in the [acceptance handoff](../handoffs/2026-10-22-tutor-notes-human-acceptance.md).
 The following shared gateway contract and PostgreSQL admission adapter are
 implemented as a proposal in `platform/ai`; affected owners still need to review
-it before it becomes the team contract. Runtime wiring and production migration
-activation are not implemented.
+it before it becomes the team contract. Merged PR #10 supplies the shared runtime
+bean and V5 migration. The Tutor-local profile uses that shared wiring and must not
+add a duplicate provider or admission migration.
 The remaining cross-role decisions are:
 
 1. The Student and Admin owners review the shared `AiTaskPolicy`,
@@ -58,8 +61,9 @@ The remaining cross-role decisions are:
    this boundary.
    The proposal's PostgreSQL adapter now enforces atomic per-actor windows,
    in-flight limits, and configured per-key request/output-token reservations.
-   Its schema remains isolated under `db/ai-review`; production wiring and owner
-   acceptance are pending.
+   Its review schema remains under `db/ai-review`. Merged PR #10 adds V5 to the
+   normal runtime migration sequence; Core owner review of activation is still
+   required.
 2. The core owner and Student owner assign the AI metadata migration version if
    shared admission requires a production migration. Tutor does not create that
    shared schema.
@@ -83,16 +87,15 @@ session principal, and test-only `AuthenticationService`; they do not verify pro
 provider wiring. A separate `app-api,local` integration uses the production
 `AuthenticationService`, account storage, and a deterministic fake provider to verify
 session establishment and post-generation revocation/deactivation checks.
-The isolated PostgreSQL adapter is tested, but production does not use its schema.
+The isolated PostgreSQL adapter is tested. The shared runtime migration and provider
+configuration are supplied by PR #10 and must be reviewed before production use.
 
-The endpoint implements the response below against the proposed shared gateway
-contract. The `AdmittedAiGateway` proposal accepts the existing request shape, applies registered
-task policy, asks the admission service before provider dispatch, routes by
-server-side role-key alias, bounds the call, and returns untrusted text or typed
-failures. The Tutor task policy proposes a 20-second deadline, enforced by this
-shared wrapper once registered. The durable adapter is tested against an isolated
-schema, but has no production bean or active migration; the wrapper's string-size
-check also does not replace a raw-response transport limit.
+The endpoint implements the response below against the shared gateway contract.
+`AdmittedAiGateway` applies registered task policy, asks admission before provider
+dispatch, routes by server-side role-key alias, bounds the call, and returns
+untrusted text or typed failures. Merged PR #10 supplies shared runtime wiring and V5.
+Production activation remains subject to Core and role-owner review. The wrapper's
+string-size check also does not replace a raw-response transport limit.
 
 ## 3. HTTP contract
 
@@ -217,9 +220,13 @@ server-side backend deployment configuration; the shared gateway resolves it
 from trusted task routing for `tutor.note-draft.v1`. The key is never sent to
 React or accepted from a request. This provider quota is separate from the
 application admission policy:
-allow at most 3 accepted admissions per Tutor per rolling 5 minutes, with one
-in-flight generation per Tutor. Count admitted failures and timeouts, use no
-automatic retries, and fail closed if durable admission is unavailable.
+allow at most 3 usable drafts per Tutor per rolling 5 minutes, with one in-flight
+generation per Tutor. A failed admitted attempt does not consume the Tutor's
+successful-draft allowance, but remains charged to the Tutor key's request/token
+budget because SoCLaaS may have processed it. A new user action may retry; the
+backend never retries automatically. Cap the Tutor key at 2 admitted attempts per
+rolling minute and reserve 2,048 output tokens per minute for two 1,024-token
+drafts. These are application trial caps, not verified SoCLaaS quotas.
 
 Use a 20-second end-to-end deadline, including response reading, for this
 interactive note-draft request. Set connection/read timeouts within that overall
@@ -233,7 +240,9 @@ On quota rejection, AI busy, timeout, unavailable provider, malformed output,
 unexpected response size, or authorization recheck failure, preserve manual note
 work and all unrelated Tutor operations. Rejected validation/authorization calls
 must consume no admission and cause zero gateway/provider calls. Admitted failures
-must follow the shared accounting decision and must not trigger client retries.
+must retain their provider-key usage, release only the actor success charge, and
+must not trigger automatic retries. A new manual attempt remains subject to the
+two-per-minute Tutor key cap.
 
 ## 7. Explicit exclusions
 

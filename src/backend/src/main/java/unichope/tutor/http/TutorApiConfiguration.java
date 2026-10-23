@@ -80,15 +80,24 @@ public class TutorApiConfiguration implements WebMvcConfigurer {
     TutorNoteDraftGateway tutorNoteDraftGateway(AiGateway gateway, Environment environment,
             @Value("${unichope.ai.tutor.note-draft.max-output-tokens}") int maxOutputTokens) {
         boolean local = environment.matchesProfiles("local");
-        AiGateway fakeGuard = request -> {
-            if (!local && !(gateway instanceof AdmittedAiGateway)) {
-                throw new AiGateway.Failure(AiGateway.FailureCode.UNAVAILABLE);
+        AiGateway fakeGuard = new AiGateway() {
+            @Override
+            public Result generate(Request request) {
+                return generate(request, ignored -> {});
             }
-            var result = gateway.generate(request);
-            if (result.providerMode() == AiGateway.ProviderMode.FAKE && !local) {
-                throw new AiGateway.Failure(AiGateway.FailureCode.UNAVAILABLE);
+
+            @Override
+            public Result generate(Request request, ResultValidator validator) {
+                if (!local && !(gateway instanceof AdmittedAiGateway)) {
+                    throw new Failure(FailureCode.UNAVAILABLE);
+                }
+                return gateway.generate(request, result -> {
+                    validator.validate(result);
+                    if (result.providerMode() == ProviderMode.FAKE && !local) {
+                        throw new Failure(FailureCode.UNAVAILABLE);
+                    }
+                });
             }
-            return result;
         };
         return new TutorNoteDraftGateway(fakeGuard,maxOutputTokens);
     }
