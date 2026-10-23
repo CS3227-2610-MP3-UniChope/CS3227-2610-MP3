@@ -17,7 +17,8 @@ A session expires after 30 minutes without activity. If the application asks you
 to sign in again, do so before continuing. An inactive account cannot sign in;
 contact your administrator if you need access restored.
 
-Password reset and password change are not available in this version.
+When prompted, Tutors must set a new password before opening the Tutor workspace.
+Password recovery and Admin-initiated password reset are not available.
 
 ## Create a Student account
 
@@ -169,6 +170,23 @@ Check the snapshot capture time to see when the figures were read. Select
 
 ## Activity report assistant
 
+## Tutor consultation notes and AI drafts
+
+1. Open **Consultation notes** and choose a completed consultation.
+2. Select **Prepare AI draft**, enter brief notes about the session, then select
+   **Generate draft**.
+3. Check the draft against what actually happened. AI output can omit details,
+   state something incorrectly, or suggest unsupported follow-up. Edit or remove
+   anything you cannot verify, and avoid entering unnecessary personal or sensitive
+   information.
+4. Select **Use reviewed draft** to copy it into the note editor, then select
+   **Save note**. Generating or reviewing a draft does not save it.
+
+If the draft is unavailable, times out, or is not useful, your rough notes remain
+in the form. You can write the consultation note manually or try drafting again
+later. A **FAKE RESULT** badge means the app returned a local test result, not a
+SoC response.
+
 ## If something goes wrong
 
 | Message or situation | What to do |
@@ -180,6 +198,7 @@ Check the snapshot capture time to see when the figures were read. Select
 | Change blocked by bookings or slots | Resolve the relevant active bookings or future available slots, then refresh and retry. |
 | Security token expired | Submit again as prompted; the application obtains a fresh token. |
 | Request limit reached | Wait before trying again. |
+| AI draft unavailable or unusable | Keep your notes, write the consultation note manually, or try again later. |
 | Service unavailable | Try **Refresh** or try again later. |
 | Outcome could not be confirmed | Refresh and inspect the records before resubmitting. The first change may already have completed. |
 
