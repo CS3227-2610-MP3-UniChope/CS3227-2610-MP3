@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://cs3227-2610-mp3.onrender.com/api/:path*" },
+    { "source": "/api/:path*", "destination": "https://cs3227-2610-mp3-by4h.onrender.com/api/:path*" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
