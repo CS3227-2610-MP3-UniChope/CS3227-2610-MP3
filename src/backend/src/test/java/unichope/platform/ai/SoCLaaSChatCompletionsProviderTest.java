@@ -91,6 +91,8 @@ class SoCLaaSChatCompletionsProviderTest {
     assertEquals("synthetic-model", body.get("model").asText());
     assertEquals(128, body.get("max_tokens").asInt());
     assertFalse(body.get("stream").asBoolean());
+    assertEquals("none", body.get("reasoning_effort").asText());
+    assertEquals("json_object", body.at("/response_format/type").asText());
     assertEquals(2, body.get("messages").size());
     assertEquals("system", body.at("/messages/0/role").asText());
     assertEquals(REQUEST.instructions(), body.at("/messages/0/content").asText());

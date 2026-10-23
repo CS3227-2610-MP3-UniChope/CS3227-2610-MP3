@@ -102,7 +102,14 @@ public final class SoCLaaSChatCompletionsProvider implements AiGateway {
                   "max_tokens",
                   request.maxOutputTokens(),
                   "stream",
-                  false));
+                  false,
+                  // Reasoning models otherwise spend the whole output budget (and the request
+                  // timeout) on hidden reasoning and return empty content. Every registered task
+                  // requires a single JSON object, which JSON mode enforces at the provider.
+                  "reasoning_effort",
+                  "none",
+                  "response_format",
+                  Map.of("type", "json_object")));
     } catch (IOException serializationFailure) {
       throw new Failure(FailureCode.UNAVAILABLE);
     }

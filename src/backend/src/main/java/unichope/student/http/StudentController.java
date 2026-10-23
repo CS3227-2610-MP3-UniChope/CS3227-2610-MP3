@@ -28,10 +28,20 @@ import unichope.student.StudentReadService;
 public class StudentController {
     private final StudentReadService reads;
     private final StudentHttpService writes;
+    private final unichope.student.AgendaService agendas;
 
-    public StudentController(StudentReadService reads, StudentHttpService writes) {
+    public StudentController(StudentReadService reads, StudentHttpService writes, unichope.student.AgendaService agendas) {
         this.reads = reads;
         this.writes = writes;
+        this.agendas = agendas;
+    }
+
+    @PostMapping("/bookings/{id}/agenda")
+    public unichope.student.AgendaDraft agenda(@PathVariable("id") String id, HttpServletRequest request) throws IOException {
+        StudentApiInput.noQuery(request);
+        UUID bookingId = StudentApiInput.id(id);
+        String questions = StudentApiInput.agenda(request);
+        return agendas.generate(bookingId, questions);
     }
 
     @PostMapping("/bookings")
