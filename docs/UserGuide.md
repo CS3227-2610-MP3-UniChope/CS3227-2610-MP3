@@ -3,6 +3,13 @@
 This guide covers Student, Tutor, and Admin tasks, along with shared sign-in and
 account information. Open UniChope using the website address provided by your team.
 
+For testing workflows that create Tutor accounts, sign in with an authorized Admin
+account. Teammates should obtain the test account credentials through the team's
+approved secure channel.
+
+Admin email: admin@u.nus.edu
+Admin password: 12345678
+
 ## Sign in and sign out
 
 1. Enter your account email and password on the **Sign in** page.
