@@ -136,8 +136,8 @@ acceptance criteria; the stories do not add separate functionality.
   provider failures. Rejected validation/authorization requests make no LLM call.
 - These are proposed app limits, not claims about SoC quotas. Provider token limits,
   shared quota accounting, and any bounded retries must be settled in the shared
-  technical spec after checking the team's actual allowance. This is an
-  implementation-readiness dependency.
+  technical spec after checking the team's actual allowance. This is a
+  real-provider activation dependency; fake-backed development can proceed first.
 
 ## 4. Non-Functional and AI Security Requirements
 
@@ -258,4 +258,7 @@ Confirm with the team: active-account policy, private-note visibility, early
 completion, stale-save rejection, proposed AI limits, shared SoC budget, and
 Student/Admin interaction rules. The technical spec must then define the agreed
 data/API contracts, auth/session behavior, concurrency guarantees, and failure
-handling before the implementation plan is executed.
+handling before the implementation plan is executed. The draft
+[Tutor Technical Spec](TECHNICAL-SPEC.md), [Integration Spec](../INTEGRATION-SPEC.md),
+and [Plan](PLAN.md) are available for that review. Real-provider connection details
+can be supplied later, before enabling and evaluating SoC in the release.

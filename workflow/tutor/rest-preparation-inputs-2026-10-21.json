@@ -1,0 +1,192 @@
+{
+  "format": 1,
+  "head": "50c6213abdde9ee5063c7f333e448b33ac83d59b",
+  "scope": [
+    "workflow/agents/common.md",
+    "workflow/agents/architect.md",
+    "workflow/agents/test-designer.md",
+    "workflow/INTEGRATION-SPEC.md",
+    "workflow/SHARED-TECHNICAL-SPEC.md",
+    "workflow/tutor/PRODUCT-SPEC.md",
+    "workflow/tutor/TECHNICAL-SPEC.md",
+    "workflow/tutor/PLAN.md",
+    "workflow/core/LIFECYCLE-SPEC.md",
+    "src/backend/build.gradle",
+    "src/backend/src/main/java/unichope/tutor",
+    "src/backend/src/main/java/unichope/platform/core/ConsultationLifecycle.java",
+    "src/backend/src/main/java/unichope/platform/core/LifecycleFailure.java",
+    "src/backend/src/test/java/unichope/tutor/TutorReadServiceTest.java",
+    "src/backend/src/test/java/unichope/UnichopeApplicationTest.java"
+  ],
+  "files": [
+    {
+      "path": "src/backend/build.gradle",
+      "tracked": false,
+      "bytes": 1627,
+      "sha256": "fd0a0322bec6b15cf1b336d3fa7bb6f34b6fb2fbfeecbf4a8899af963ae09a5d",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/ConsultationLifecycle.java",
+      "tracked": false,
+      "bytes": 690,
+      "sha256": "3065c2c803e6f5b10fe5a7ed17606e1066a8ea4a2897358fe1140e41ce7610fe",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/LifecycleFailure.java",
+      "tracked": false,
+      "bytes": 1375,
+      "sha256": "0025872720e4d05ed0d8859f9e9e7700504c59d0dd901d76e5411d7189771dd4",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/AssignedModule.java",
+      "tracked": false,
+      "bytes": 132,
+      "sha256": "68ab3bb44ac733d3205f6369a6240049b22e41151a5f57f519898bed9a9c312d",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/CurrentActorProvider.java",
+      "tracked": false,
+      "bytes": 223,
+      "sha256": "678bb180df4e3768fd83c9d6040d90233f8719aadc14f38acd00bd449b94615d",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/ModuleOption.java",
+      "tracked": false,
+      "bytes": 114,
+      "sha256": "9288c5891a52d1a71f441ef14fc14c85dea929d77d95449cd117d17724aee540",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/PostgresTutorReadRepository.java",
+      "tracked": false,
+      "bytes": 2380,
+      "sha256": "0e0071b6630c056c338393f92c15b6874225c34d1b846e5270088f5e65e89b5c",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/SlotView.java",
+      "tracked": false,
+      "bytes": 309,
+      "sha256": "186f5cf7a82b285b798ecf04ef467e4bad941c2e8f85ae63c31922956403c212",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorAccessDeniedException.java",
+      "tracked": false,
+      "bytes": 250,
+      "sha256": "003cf6e652ec65ef0343701f4a642a54800fc827dbc805b2dcda92995d7daaac",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorAccount.java",
+      "tracked": false,
+      "bytes": 162,
+      "sha256": "dea362dcb615860122599650cd6ee0e29d80e6b017eb28eebd6a7db2018f2559",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorReadRepository.java",
+      "tracked": false,
+      "bytes": 390,
+      "sha256": "87b753eb0f051018a2e5fe7c2432549ba5228c62d4561826bcbdcab11fb4ec7c",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorReadService.java",
+      "tracked": false,
+      "bytes": 2863,
+      "sha256": "18266bf129f24d3d469698ea2b7b84920a34e9d10f6feef5d577ac2fa19fbaba",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorSlot.java",
+      "tracked": false,
+      "bytes": 236,
+      "sha256": "1fe6a3b13391fa4c75dc3dc59613091ea712c41610526d8ead3be98e5e8c0d14",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/UnichopeApplicationTest.java",
+      "tracked": false,
+      "bytes": 589,
+      "sha256": "b5d1470e5b30426a47e26b0994d67efa6899447f91a4770f64569cec3ab550e5",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/tutor/TutorReadServiceTest.java",
+      "tracked": false,
+      "bytes": 6045,
+      "sha256": "686443611e710e3367f89aeb6144bfa504026653ef25c75c4e17fc3a4b83331d",
+      "executable": false
+    },
+    {
+      "path": "workflow/INTEGRATION-SPEC.md",
+      "tracked": true,
+      "bytes": 14844,
+      "sha256": "a6b83bb1d391cc85d2d1499606a51bfc1c018c5af8d172a3785c635224a24800",
+      "executable": false
+    },
+    {
+      "path": "workflow/SHARED-TECHNICAL-SPEC.md",
+      "tracked": true,
+      "bytes": 19121,
+      "sha256": "3bbe6b14568f4a3a6ad1bcd256a9c1f9bd167d308f651b30852569780b55b06d",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/architect.md",
+      "tracked": false,
+      "bytes": 1411,
+      "sha256": "543b605de52395dfc98877583e5f62987cd6730d465b847a8ac48b142f24d7b6",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/common.md",
+      "tracked": false,
+      "bytes": 6952,
+      "sha256": "ab059b67fa5210987ea0b8e3e5ff02e00e2f084165c66357b6426cac2f5c1564",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/test-designer.md",
+      "tracked": false,
+      "bytes": 2740,
+      "sha256": "94dedda344af3dc5d90cf5e92ffb405b10cd12e30d3e179ff611370b44e05082",
+      "executable": false
+    },
+    {
+      "path": "workflow/core/LIFECYCLE-SPEC.md",
+      "tracked": false,
+      "bytes": 10730,
+      "sha256": "83559d52aef7706842d139481f4f3494ac3efa3138e26ac350e08844b2e6e288",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/PLAN.md",
+      "tracked": true,
+      "bytes": 14954,
+      "sha256": "4275d89be13d5118bad2ad20d1b42c0b8730625d44a45bd533c8ce963fb81365",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/PRODUCT-SPEC.md",
+      "tracked": true,
+      "bytes": 16351,
+      "sha256": "758f62e47d33ca0e7cd7f5fd8dbdbbcc540edde1dbb864b9debeafb8a976a1c3",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/TECHNICAL-SPEC.md",
+      "tracked": true,
+      "bytes": 13897,
+      "sha256": "918ebdc2df3633e06dfa4b18d0c080635f6ad4f10cdd9d78f00978f3e6890d15",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}

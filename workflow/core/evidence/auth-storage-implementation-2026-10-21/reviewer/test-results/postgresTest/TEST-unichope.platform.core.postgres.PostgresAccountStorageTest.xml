@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.platform.core.postgres.PostgresAccountStorageTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-21T15:07:34.706Z" hostname="XuHH.local" time="1.088">
+  <properties/>
+  <testcase name="historicalBookingsDoNotBlockAndInactiveAdminCannotProvision()" classname="unichope.platform.core.postgres.PostgresAccountStorageTest" time="0.21"/>
+  <testcase name="confirmationChecksEveryObservedDimension()" classname="unichope.platform.core.postgres.PostgresAccountStorageTest" time="0.146"/>
+  <testcase name="generationAndOverflow()" classname="unichope.platform.core.postgres.PostgresAccountStorageTest" time="0.131"/>
+  <testcase name="tutorFutureSlotUsesActualClockAcrossSubmicrosecondBoundary()" classname="unichope.platform.core.postgres.PostgresAccountStorageTest" time="0.127"/>
+  <testcase name="guardsProvisioningAndTargetState()" classname="unichope.platform.core.postgres.PostgresAccountStorageTest" time="0.14"/>
+  <testcase name="registerIsAtomicCanonicalAndSafe()" classname="unichope.platform.core.postgres.PostgresAccountStorageTest" time="0.124"/>
+  <testcase name="blockersRetainHistoryAndReactivationWorks()" classname="unichope.platform.core.postgres.PostgresAccountStorageTest" time="0.208"/>
+  <system-out><![CDATA[23:07:34.721 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:34.726 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "account_test_65d96cd780724bc3b92337dccc106923"."flyway_schema_history" does not exist yet
+23:07:34.726 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.001s)
+23:07:34.730 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "account_test_65d96cd780724bc3b92337dccc106923"."flyway_schema_history" ...
+23:07:34.741 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "account_test_65d96cd780724bc3b92337dccc106923": << Empty Schema >>
+23:07:34.743 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_65d96cd780724bc3b92337dccc106923" to version "1 - create core tables"
+23:07:34.759 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_65d96cd780724bc3b92337dccc106923" to version "2 - add auth account state"
+23:07:34.762 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 2 migrations to schema "account_test_65d96cd780724bc3b92337dccc106923", now at version v2 (execution time 00:00.013s)
+23:07:34.931 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:34.937 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "account_test_5d6f9225425f464eac6707f69be70315"."flyway_schema_history" does not exist yet
+23:07:34.937 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.001s)
+23:07:34.941 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "account_test_5d6f9225425f464eac6707f69be70315"."flyway_schema_history" ...
+23:07:34.952 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "account_test_5d6f9225425f464eac6707f69be70315": << Empty Schema >>
+23:07:34.953 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_5d6f9225425f464eac6707f69be70315" to version "1 - create core tables"
+23:07:34.968 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_5d6f9225425f464eac6707f69be70315" to version "2 - add auth account state"
+23:07:34.973 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 2 migrations to schema "account_test_5d6f9225425f464eac6707f69be70315", now at version v2 (execution time 00:00.012s)
+23:07:35.077 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.082 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "account_test_f81a74d7955f4390a8baf6ad6133a6f0"."flyway_schema_history" does not exist yet
+23:07:35.082 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.001s)
+23:07:35.086 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "account_test_f81a74d7955f4390a8baf6ad6133a6f0"."flyway_schema_history" ...
+23:07:35.096 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "account_test_f81a74d7955f4390a8baf6ad6133a6f0": << Empty Schema >>
+23:07:35.097 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_f81a74d7955f4390a8baf6ad6133a6f0" to version "1 - create core tables"
+23:07:35.113 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_f81a74d7955f4390a8baf6ad6133a6f0" to version "2 - add auth account state"
+23:07:35.116 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 2 migrations to schema "account_test_f81a74d7955f4390a8baf6ad6133a6f0", now at version v2 (execution time 00:00.012s)
+23:07:35.207 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.212 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "account_test_656c00d7debe4c029d6fd0bfeaf7879b"."flyway_schema_history" does not exist yet
+23:07:35.212 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.001s)
+23:07:35.216 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "account_test_656c00d7debe4c029d6fd0bfeaf7879b"."flyway_schema_history" ...
+23:07:35.226 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "account_test_656c00d7debe4c029d6fd0bfeaf7879b": << Empty Schema >>
+23:07:35.227 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_656c00d7debe4c029d6fd0bfeaf7879b" to version "1 - create core tables"
+23:07:35.243 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_656c00d7debe4c029d6fd0bfeaf7879b" to version "2 - add auth account state"
+23:07:35.247 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 2 migrations to schema "account_test_656c00d7debe4c029d6fd0bfeaf7879b", now at version v2 (execution time 00:00.013s)
+23:07:35.335 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.340 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "account_test_02e6df5a3fba4f05ad7b0ad964a5585a"."flyway_schema_history" does not exist yet
+23:07:35.340 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.001s)
+23:07:35.344 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "account_test_02e6df5a3fba4f05ad7b0ad964a5585a"."flyway_schema_history" ...
+23:07:35.354 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "account_test_02e6df5a3fba4f05ad7b0ad964a5585a": << Empty Schema >>
+23:07:35.355 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_02e6df5a3fba4f05ad7b0ad964a5585a" to version "1 - create core tables"
+23:07:35.371 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_02e6df5a3fba4f05ad7b0ad964a5585a" to version "2 - add auth account state"
+23:07:35.375 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 2 migrations to schema "account_test_02e6df5a3fba4f05ad7b0ad964a5585a", now at version v2 (execution time 00:00.013s)
+23:07:35.476 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.482 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "account_test_10f32a6e25284651b655f5b5df509915"."flyway_schema_history" does not exist yet
+23:07:35.483 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.002s)
+23:07:35.487 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "account_test_10f32a6e25284651b655f5b5df509915"."flyway_schema_history" ...
+23:07:35.498 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "account_test_10f32a6e25284651b655f5b5df509915": << Empty Schema >>
+23:07:35.499 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_10f32a6e25284651b655f5b5df509915" to version "1 - create core tables"
+23:07:35.516 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_10f32a6e25284651b655f5b5df509915" to version "2 - add auth account state"
+23:07:35.520 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 2 migrations to schema "account_test_10f32a6e25284651b655f5b5df509915", now at version v2 (execution time 00:00.013s)
+23:07:35.601 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.606 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "account_test_f9cd7e18ab054b14b694c3fc2d2fc4df"."flyway_schema_history" does not exist yet
+23:07:35.606 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.001s)
+23:07:35.610 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "account_test_f9cd7e18ab054b14b694c3fc2d2fc4df"."flyway_schema_history" ...
+23:07:35.620 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "account_test_f9cd7e18ab054b14b694c3fc2d2fc4df": << Empty Schema >>
+23:07:35.622 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_f9cd7e18ab054b14b694c3fc2d2fc4df" to version "1 - create core tables"
+23:07:35.637 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "account_test_f9cd7e18ab054b14b694c3fc2d2fc4df" to version "2 - add auth account state"
+23:07:35.640 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 2 migrations to schema "account_test_f9cd7e18ab054b14b694c3fc2d2fc4df", now at version v2 (execution time 00:00.012s)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

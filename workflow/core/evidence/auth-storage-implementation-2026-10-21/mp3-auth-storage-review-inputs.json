@@ -1,0 +1,213 @@
+{
+  "head": "1c14c34f73b0792a2c46724d30e8aa7d48dd5e36",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "9cecb463000cbfcb287256865f01c63fcbf879990ce8333874797894daccc995"
+    },
+    {
+      "path": "src/backend/README.md",
+      "sha256": "b65e78c730b485bb6b3805268261cefba6fae0833c2bd97fc23d72797cd20cca"
+    },
+    {
+      "path": "src/backend/build.gradle",
+      "sha256": "fb193f9bb3e058014c442541efec2ef4b3bea861e9519847dcc99ff44c9d0e73"
+    },
+    {
+      "path": "src/backend/gradle/wrapper/gradle-wrapper.jar",
+      "sha256": "76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3"
+    },
+    {
+      "path": "src/backend/gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "2478441beebf3e8ecc4ce7c367eaed7bf5db5daad4cb603f987b02715d2bd8c4"
+    },
+    {
+      "path": "src/backend/gradlew",
+      "sha256": "fb68debc1b1acf8ec55dc0d5e5495e1dedd0bd6b61f304bee61613eeb2bd9b92"
+    },
+    {
+      "path": "src/backend/gradlew.bat",
+      "sha256": "fedad02c18e266ec094995a5751b7fe1eb6e74f66bf75db64fae2e50eb22c234"
+    },
+    {
+      "path": "src/backend/settings.gradle",
+      "sha256": "dc0838395442841a22b182af73e033e127ef05ea672a52a3118f6f7443942229"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/UnichopeApplication.java",
+      "sha256": "afba2dea8714119bc0a870ec4723d27f5b4f6cda988969d9b9bbd11c1a0c491e"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/AccountCredentialSnapshot.java",
+      "sha256": "6107282d1d6bdfee97cc177bebf6f1f97569564dfc9806758a21a15d04e1926a"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/AccountFailure.java",
+      "sha256": "c8cec53c1644778c080a20ec88f9e8e7db082a234591bb121a4968052f08c255"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/AccountState.java",
+      "sha256": "c3787779cee2ff24bfcdf9e19b564ad23997c98c63b0b1dad6c5cd3ef5c2d82a"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/AccountStorage.java",
+      "sha256": "e73f87089016149f83d978b765eb0418a8b813ff63618fe09435926f5a616b06"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/AdminContext.java",
+      "sha256": "fe6d9527b6fb809a752a7ba80fe0778bc049ec8f5581119af728162cfea2af12"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/ConsultationLifecycle.java",
+      "sha256": "3065c2c803e6f5b10fe5a7ed17606e1066a8ea4a2897358fe1140e41ce7610fe"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/LifecycleFailure.java",
+      "sha256": "0025872720e4d05ed0d8859f9e9e7700504c59d0dd901d76e5411d7189771dd4"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/Validation.java",
+      "sha256": "0af480107295214f00ba46c954fa038e0e1bfac60992909589c9adf10ba642f4"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/Booking.java",
+      "sha256": "e5bc4c90e75c2edabe6a225df1aff47ce8f27e05fc588adf341f7d612d7a138f"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/BookingStatus.java",
+      "sha256": "6154c1e1bf0229b8629bf93175d2d85e6314708bc0b3e458cd25e8d0da1b4e3e"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/ConsultationSlot.java",
+      "sha256": "0e6cecc8d998e62ebba669dbe3a4d5cbe46137068d56a3b35b99291247b65513"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/SlotStatus.java",
+      "sha256": "bbbef164ee5633acf8901484e77b5c8edb0681423149a088aa914d70a99fe905"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/module/Module.java",
+      "sha256": "d14cf54c4be866890f7cab607a41252539a12854630506a01f7503bcbb77a57c"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/module/TutorModule.java",
+      "sha256": "1f282646f9a1f71f0a8005842f81faa9d126edb8131c8d7a5767496b096faa95"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/user/Admin.java",
+      "sha256": "fec5714e6bca91bd276c0ae4e3c90c4a6471eb567b6406f5b569902e58289f6b"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/user/Role.java",
+      "sha256": "f5f02dcc0b95f4a37831745cd6a653a8f7f287c5988ae52cd16567760298c0a0"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/user/Student.java",
+      "sha256": "a3b3fbfa5107ad60540ab3af29fdfa043facc431a2ea64ac8b9377d5a335d9a3"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/user/Tutor.java",
+      "sha256": "bae579cad5d7d10bca83bea628cb64ee916e95668e37e014cabe468c2203d7af"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/user/User.java",
+      "sha256": "8e4328a79d7f03a882a877848a267a8d385f975f07bf565023b6dc20add09a23"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresAccountStorage.java",
+      "sha256": "3d36db29f97e4eab7e9663e91ce2eaeab2f8429c038ce0e10bc30b3ef6def540"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresBookingRepository.java",
+      "sha256": "236c06efac26f64f6e68915f772a1640ad7467d0c5c940dedfe16db2a1042956"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresConsultationLifecycle.java",
+      "sha256": "f19a094eafe78f76a8e1ba551b9579033a1210b068e67d5f4ec91cda49cf8d45"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresModuleRepository.java",
+      "sha256": "d21cbbbfe80f1a7c5aa2dbaf69fa8fff8f44c0a3e5a8d6baedfbbb3aeaf1ae41"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresSlotRepository.java",
+      "sha256": "569b40e207491139dd83d171c44e07bc2acbebca5308cb726c51c9a44545e51c"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresUserRepository.java",
+      "sha256": "73190fda0b2ad4b379b3185332697d1c412ea11d857a7e327493e3fbccf91c6a"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/repository/BookingRepository.java",
+      "sha256": "987cd2ea90dc3bbb216995609392e1442fd27e8525872c364e15a86be424feef"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/repository/ModuleRepository.java",
+      "sha256": "4f5a91d7068ca433c982531badaadedbf10e4e8658e4aa8b991151fdc7c26db5"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/repository/SlotRepository.java",
+      "sha256": "388083f84a2947aa67955394a0b50d70140b8797eb0f638e87263f4cee43f1d5"
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/repository/UserRepository.java",
+      "sha256": "deedd769480af9d03dd179fce8f79c074db40c26af440b539e090eb3181848fa"
+    },
+    {
+      "path": "src/backend/src/main/resources/db/auth-review/V2__add_auth_account_state.sql",
+      "sha256": "d57a3b766be8ea8470087292d9fc05fb5b26f218d74af6eebaaa9521822c3e33"
+    },
+    {
+      "path": "src/backend/src/main/resources/db/core-review/V1__create_core_tables.sql",
+      "sha256": "04f77837ac97d409f81dcb0108536b5a00f255623bf9be8d24cb1567ea1ce306"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/model/DomainTest.java",
+      "sha256": "6446da9bf42ed42b4921c95aac100673592a7431c5cd1bc92f62d599f28cea72"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/AccountInputTest.java",
+      "sha256": "fa785412eca30bb97470fb758e76586def56483109681f80f58bb198e023440e"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/AccountPgFixture.java",
+      "sha256": "f507ce1769cfbbba16f136cb28763c988a9deee33c890f8552048077de9213c8"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/LifecycleInputTest.java",
+      "sha256": "816afe53c1ed21ef606b8e83a9be545b9245ba77393e16d838e1ae305969b0f7"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java",
+      "sha256": "71dfb6e311b25689d5e3346346a5b84217416d9ef181e35ad60f0cdecbc4f641"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresAccountConcurrencyTest.java",
+      "sha256": "e7f3f77e5128f193bbee6178d590a144df8bbfc9c222cf850c54ead83bc666ef"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresAccountFailureTest.java",
+      "sha256": "5ffba60c023d128a7f4e20b643248db1ac05e22e0e991c85f6495c9907f9587c"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresAccountStorageTest.java",
+      "sha256": "04c15e14f3a3acd9ff7526a09b2b703d080748b507a3057d0d6f4c5de578735b"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresAuthMigrationTest.java",
+      "sha256": "b4c362c0ca98caaf78de207ce16b01dd37642c4a11b293d7b504e854e3c8a49b"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresCoreReadTest.java",
+      "sha256": "21a579947bb0c46326a19fdbf7f2b2b57e90006aed49b2f6c98bdef58cf78892"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleConcurrencyTest.java",
+      "sha256": "a716edf14780f3affa9de75e4a3e0beb51cbb0a935dd69eeeb5c4ac8fa17a222"
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java",
+      "sha256": "2b2fdb5de8f0e3b5dd8c0f22b8ee67696a182c50f6e1408508a27afe213dba04"
+    }
+  ]
+}

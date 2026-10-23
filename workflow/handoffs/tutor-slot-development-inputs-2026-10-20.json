@@ -1,0 +1,263 @@
+{
+  "format": 1,
+  "head": "e48694a04d80544ce127fc75cb7bd215dfd713a0",
+  "scope": [
+    "workflow/agents/common.md",
+    "workflow/agents/developer.md",
+    "workflow/agents/architect.md",
+    "workflow/handoffs/2026-10-20-architect-tutor-slot.md",
+    "workflow/handoffs/2026-10-20-developer-tutor-slot.md",
+    "workflow/PRODUCT-SPEC.md",
+    "workflow/INTEGRATION-SPEC.md",
+    "workflow/SHARED-TECHNICAL-SPEC.md",
+    "workflow/tutor/PRODUCT-SPEC.md",
+    "workflow/tutor/TECHNICAL-SPEC.md",
+    "workflow/tutor/PLAN.md",
+    "workflow/REUSE-INVENTORY.md",
+    "logs/2026-10-20-developer-tutor-slot.md",
+    "src/backend/build.gradle",
+    "src/backend/gradlew",
+    "src/backend/gradle/wrapper/gradle-wrapper.properties",
+    "src/backend/src/main/java/unichope/UnichopeApplication.java",
+    "src/backend/src/main/java/unichope/platform/ai/AiGateway.java",
+    "src/backend/src/main/java/unichope/platform/ai/FakeProvider.java",
+    "src/backend/src/test/java/unichope/UnichopeApplicationTest.java",
+    "src/backend/src/test/java/unichope/platform/ai/AiGatewayTest.java",
+    "src/backend/src/main/java/unichope/tutor",
+    "src/backend/src/test/java/unichope/tutor"
+  ],
+  "files": [
+    {
+      "path": "logs/2026-10-20-developer-tutor-slot.md",
+      "tracked": false,
+      "bytes": 1461,
+      "sha256": "acd02122e2183dc6ce4d12252461dd2db0ef26bc6dfa3dc80bfb9a517d7d9501",
+      "executable": false
+    },
+    {
+      "path": "src/backend/build.gradle",
+      "tracked": false,
+      "bytes": 604,
+      "sha256": "cb9233a6d0aab57ee993f13f92c4c11cec2189c75a6a474c028319fd0aea3680",
+      "executable": false
+    },
+    {
+      "path": "src/backend/gradle/wrapper/gradle-wrapper.properties",
+      "tracked": false,
+      "bytes": 339,
+      "sha256": "2478441beebf3e8ecc4ce7c367eaed7bf5db5daad4cb603f987b02715d2bd8c4",
+      "executable": false
+    },
+    {
+      "path": "src/backend/gradlew",
+      "tracked": false,
+      "bytes": 8618,
+      "sha256": "fb68debc1b1acf8ec55dc0d5e5495e1dedd0bd6b61f304bee61613eeb2bd9b92",
+      "executable": true
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/UnichopeApplication.java",
+      "tracked": false,
+      "bytes": 315,
+      "sha256": "afba2dea8714119bc0a870ec4723d27f5b4f6cda988969d9b9bbd11c1a0c491e",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/ai/AiGateway.java",
+      "tracked": false,
+      "bytes": 2293,
+      "sha256": "610c106b4f9d74f70cd40bcfad4b47403ba9be1c37a56aa473f67016f8c268f8",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/ai/FakeProvider.java",
+      "tracked": false,
+      "bytes": 589,
+      "sha256": "91ddb6c8ee1915edfa6be47c1d29f37917ade55b668ee974e53c033a8da83f01",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/AccountRole.java",
+      "tracked": false,
+      "bytes": 87,
+      "sha256": "97825a127ce419314ca0582a8cb0ed173ad92317c41b969d5b471193bc50e73a",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/AssignedModule.java",
+      "tracked": false,
+      "bytes": 132,
+      "sha256": "68ab3bb44ac733d3205f6369a6240049b22e41151a5f57f519898bed9a9c312d",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/ConsultationSlot.java",
+      "tracked": false,
+      "bytes": 278,
+      "sha256": "eb1ea44a1e0806887756aa12c42c741ba5a467ad93cf8c1df98ee141d1c97707",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/CurrentActorProvider.java",
+      "tracked": false,
+      "bytes": 223,
+      "sha256": "678bb180df4e3768fd83c9d6040d90233f8719aadc14f38acd00bd449b94615d",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/ModuleOption.java",
+      "tracked": false,
+      "bytes": 114,
+      "sha256": "9288c5891a52d1a71f441ef14fc14c85dea929d77d95449cd117d17724aee540",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/SlotStatus.java",
+      "tracked": false,
+      "bytes": 108,
+      "sha256": "e2dd6f3780e3f695fcbd45d8c4b9d881fae69fdd64786f1faf33ebca769d1e06",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/SlotView.java",
+      "tracked": false,
+      "bytes": 248,
+      "sha256": "9327bc099a44e21ce51fa65a814d86090c9a1d7718b6d1d62b8fa582aa6e155c",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorAccessDeniedException.java",
+      "tracked": false,
+      "bytes": 250,
+      "sha256": "003cf6e652ec65ef0343701f4a642a54800fc827dbc805b2dcda92995d7daaac",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorAccount.java",
+      "tracked": false,
+      "bytes": 122,
+      "sha256": "1edcb6305507d47daeb1ef82b6867f281267367ad15e5640aac947281e91307f",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorReadRepository.java",
+      "tracked": false,
+      "bytes": 397,
+      "sha256": "88c09704955a65cc1392a0c15c135a2f5352c709c357f6558226e22dd69c8d11",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorReadService.java",
+      "tracked": false,
+      "bytes": 2623,
+      "sha256": "30eddd5a0ec8e80790e1de6bfb03d7a1cf9f986c1101a305d7de985ccfe969de",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/UnichopeApplicationTest.java",
+      "tracked": false,
+      "bytes": 589,
+      "sha256": "b5d1470e5b30426a47e26b0994d67efa6899447f91a4770f64569cec3ab550e5",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/ai/AiGatewayTest.java",
+      "tracked": false,
+      "bytes": 3371,
+      "sha256": "4a0f8109707714a4884b3a6bfd4eada72d8c38831f31d706e67012807624423f",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/tutor/TutorReadServiceTest.java",
+      "tracked": false,
+      "bytes": 5925,
+      "sha256": "194de2d15bfc335e497268d94cc827700121caad22bfe2616170bdf422d01cd6",
+      "executable": false
+    },
+    {
+      "path": "workflow/INTEGRATION-SPEC.md",
+      "tracked": false,
+      "bytes": 14609,
+      "sha256": "14df5331a6f789d80325114e0f79a0e7b107eaae72532b57064cb714b535da92",
+      "executable": false
+    },
+    {
+      "path": "workflow/PRODUCT-SPEC.md",
+      "tracked": true,
+      "bytes": 7973,
+      "sha256": "a771bab78e40ab061d8a15e4251f0be466389f0ffb097bd60bdb6e6cb9f7b86f",
+      "executable": false
+    },
+    {
+      "path": "workflow/REUSE-INVENTORY.md",
+      "tracked": false,
+      "bytes": 4780,
+      "sha256": "f05fc75c1f09a0abd77d249d6ac699a35745f0443fb7847dc852529fe18266b3",
+      "executable": false
+    },
+    {
+      "path": "workflow/SHARED-TECHNICAL-SPEC.md",
+      "tracked": false,
+      "bytes": 18547,
+      "sha256": "bb1f10cde0488c1a504e7810851dea3ca9338f63bc118d57db5d4a422906f692",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/architect.md",
+      "tracked": false,
+      "bytes": 1161,
+      "sha256": "3c9a33da06eb96324ca42c603f997f9933ac65dd171f91f28e5eba4235b11039",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/common.md",
+      "tracked": false,
+      "bytes": 4939,
+      "sha256": "ab4599f379b66b9b8a5f5e6d11db2165f9c1ee912bca98723a86370339fae8a4",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/developer.md",
+      "tracked": false,
+      "bytes": 1507,
+      "sha256": "d59d6ab5b2755fa38f07d13fd7d3d883a9fe21024309fd176c2146372a3de498",
+      "executable": false
+    },
+    {
+      "path": "workflow/handoffs/2026-10-20-architect-tutor-slot.md",
+      "tracked": false,
+      "bytes": 13534,
+      "sha256": "3f8a86135d9416e4fdc80af4e92ca0c4a6dc97a8628eb02ddb42b7e1db93ec4e",
+      "executable": false
+    },
+    {
+      "path": "workflow/handoffs/2026-10-20-developer-tutor-slot.md",
+      "tracked": false,
+      "bytes": 6633,
+      "sha256": "5e16f56d1ad80e372b34e52041bb84f7bf0981039f82420877dedadcc1cfd8ca",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/PLAN.md",
+      "tracked": true,
+      "bytes": 13873,
+      "sha256": "d27e2fa914c2716c6dc3bbc1962dff4a774deebe55a751762783db9c021a7f6d",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/PRODUCT-SPEC.md",
+      "tracked": true,
+      "bytes": 16351,
+      "sha256": "758f62e47d33ca0e7cd7f5fd8dbdbbcc540edde1dbb864b9debeafb8a976a1c3",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/TECHNICAL-SPEC.md",
+      "tracked": true,
+      "bytes": 13513,
+      "sha256": "985ec81617836c47f21fbd4dbeb4af19b99807b51f263838700a1713608712aa",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}

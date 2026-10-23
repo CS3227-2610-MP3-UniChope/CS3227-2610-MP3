@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="UniChope helps NUS students book consultations with tutors.">
+  <title>UniChope — consultation booking</title>
+  <style>
+    :root { color-scheme: light; --ink:#19212b; --muted:#5d6b7a; --blue:#174a7e; --pale:#eef4fa; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f7f9fc; color:var(--ink); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    header { background:var(--blue); color:white; padding:4.5rem max(1.25rem,calc((100% - 1080px)/2)); }
+    header p { max-width:650px; color:#e2edf8; font-size:1.15rem; }
+    main { max-width:1080px; margin:auto; padding:2rem 1.25rem 4rem; }
+    h1 { margin:0; font-size:clamp(2.4rem,6vw,4rem); line-height:1.1; }
+    h2 { margin-top:2.5rem; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
+    article { background:white; border:1px solid #dce4ec; border-radius:12px; padding:1.2rem; }
+    article h3 { margin-top:0; color:var(--blue); }
+    a { color:#145b9b; }
+    .links { display:flex; flex-wrap:wrap; gap:1rem; padding:0; list-style:none; }
+    .links a { display:inline-block; background:var(--pale); border-radius:8px; padding:.65rem .9rem; font-weight:650; }
+    footer { border-top:1px solid #dce4ec; color:var(--muted); padding:1.5rem max(1.25rem,calc((100% - 1080px)/2)); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>UniChope</h1>
+    <p>Find a consultation, meet with a tutor, and keep the follow-up in one place.</p>
+  </header>
+  <main>
+    <section aria-labelledby="about">
+      <h2 id="about">Consultations made easier</h2>
+      <p>UniChope is a role-based consultation booking app built for students, tutors, and administrators. Each person sees the tools for their role, while the backend enforces access and booking rules.</p>
+      <div class="grid">
+        <article><h3>Students</h3><p>Browse available consultation slots, book a time, and manage your bookings.</p></article>
+        <article><h3>Tutors</h3><p>Manage availability, review bookings, complete sessions, and keep private consultation notes.</p></article>
+        <article><h3>Administrators</h3><p>Manage accounts, modules, Tutor assignments, and review booking activity.</p></article>
+      </div>
+    </section>
+    <section aria-labelledby="ai">
+      <h2 id="ai">AI stays advisory</h2>
+      <p>Optional AI assistance can draft consultation notes or explain aggregate activity. People review generated text; it does not book, complete, or save anything by itself. Provider access is server-side and subject to application limits. Live provider behavior and deployment availability depend on the team's configured environment.</p>
+    </section>
+    <nav aria-label="Project guides">
+      <h2>Guides and project details</h2>
+      <ul class="links">
+        <li><a href="https://github.com/CS3227-2610-MP3-UniChope/CS3227-2610-MP3/blob/main/docs/UserGuide.md">User guide</a></li>
+        <li><a href="https://github.com/CS3227-2610-MP3-UniChope/CS3227-2610-MP3/blob/main/docs/DeveloperGuide.md">Developer guide</a></li>
+        <li><a href="https://github.com/CS3227-2610-MP3-UniChope/CS3227-2610-MP3/blob/main/docs/Reflections.md">Project reflections</a></li>
+      </ul>
+    </nav>
+  </main>
+  <footer>UniChope · CS3227 MP3 · Product website</footer>
+</body>
+</html>

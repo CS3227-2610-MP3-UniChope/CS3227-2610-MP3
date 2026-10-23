@@ -1,0 +1,237 @@
+{
+  "format": 1,
+  "head": "50c6213abdde9ee5063c7f333e448b33ac83d59b",
+  "scope": [
+    "workflow/agents/architect.md",
+    "workflow/agents/common.md",
+    "workflow/core/TECHNICAL-SPEC.md",
+    "workflow/core/PLAN.md",
+    "workflow/INTEGRATION-SPEC.md",
+    "workflow/SHARED-TECHNICAL-SPEC.md",
+    "workflow/tutor/PRODUCT-SPEC.md",
+    "src/backend/build.gradle",
+    "src/backend/src/main/java/unichope/platform/core",
+    "src/backend/src/main/resources/db/core-review",
+    "src/backend/src/test/java/unichope/platform/core"
+  ],
+  "files": [
+    {
+      "path": "src/backend/build.gradle",
+      "tracked": false,
+      "bytes": 1627,
+      "sha256": "fd0a0322bec6b15cf1b336d3fa7bb6f34b6fb2fbfeecbf4a8899af963ae09a5d",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/Validation.java",
+      "tracked": false,
+      "bytes": 701,
+      "sha256": "eb79c48190b1eea623188c72d8a928bc4bc9e5e920fff7f9847fde0454e2bcf1",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/Booking.java",
+      "tracked": false,
+      "bytes": 663,
+      "sha256": "e5bc4c90e75c2edabe6a225df1aff47ce8f27e05fc588adf341f7d612d7a138f",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/BookingStatus.java",
+      "tracked": false,
+      "bytes": 111,
+      "sha256": "6154c1e1bf0229b8629bf93175d2d85e6314708bc0b3e458cd25e8d0da1b4e3e",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/ConsultationSlot.java",
+      "tracked": false,
+      "bytes": 990,
+      "sha256": "0e6cecc8d998e62ebba669dbe3a4d5cbe46137068d56a3b35b99291247b65513",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/SlotStatus.java",
+      "tracked": false,
+      "bytes": 119,
+      "sha256": "bbbef164ee5633acf8901484e77b5c8edb0681423149a088aa914d70a99fe905",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/module/Module.java",
+      "tracked": false,
+      "bytes": 563,
+      "sha256": "d14cf54c4be866890f7cab607a41252539a12854630506a01f7503bcbb77a57c",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/module/TutorModule.java",
+      "tracked": false,
+      "bytes": 357,
+      "sha256": "1f282646f9a1f71f0a8005842f81faa9d126edb8131c8d7a5767496b096faa95",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/user/Admin.java",
+      "tracked": false,
+      "bytes": 569,
+      "sha256": "fec5714e6bca91bd276c0ae4e3c90c4a6471eb567b6406f5b569902e58289f6b",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/user/Role.java",
+      "tracked": false,
+      "bytes": 87,
+      "sha256": "f5f02dcc0b95f4a37831745cd6a653a8f7f287c5988ae52cd16567760298c0a0",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/user/Student.java",
+      "tracked": false,
+      "bytes": 579,
+      "sha256": "a3b3fbfa5107ad60540ab3af29fdfa043facc431a2ea64ac8b9377d5a335d9a3",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/user/Tutor.java",
+      "tracked": false,
+      "bytes": 569,
+      "sha256": "bae579cad5d7d10bca83bea628cb64ee916e95668e37e014cabe468c2203d7af",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/model/user/User.java",
+      "tracked": false,
+      "bytes": 331,
+      "sha256": "8e4328a79d7f03a882a877848a267a8d385f975f07bf565023b6dc20add09a23",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresBookingRepository.java",
+      "tracked": false,
+      "bytes": 1942,
+      "sha256": "236c06efac26f64f6e68915f772a1640ad7467d0c5c940dedfe16db2a1042956",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresModuleRepository.java",
+      "tracked": false,
+      "bytes": 2259,
+      "sha256": "d21cbbbfe80f1a7c5aa2dbaf69fa8fff8f44c0a3e5a8d6baedfbbb3aeaf1ae41",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresSlotRepository.java",
+      "tracked": false,
+      "bytes": 2043,
+      "sha256": "569b40e207491139dd83d171c44e07bc2acbebca5308cb726c51c9a44545e51c",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresUserRepository.java",
+      "tracked": false,
+      "bytes": 1955,
+      "sha256": "588582d19bdef47b075c12d3ca027b1fc324dc7ed4d452c60c2fe9347e85a60d",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/repository/BookingRepository.java",
+      "tracked": false,
+      "bytes": 472,
+      "sha256": "987cd2ea90dc3bbb216995609392e1442fd27e8525872c364e15a86be424feef",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/repository/ModuleRepository.java",
+      "tracked": false,
+      "bytes": 569,
+      "sha256": "4f5a91d7068ca433c982531badaadedbf10e4e8658e4aa8b991151fdc7c26db5",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/repository/SlotRepository.java",
+      "tracked": false,
+      "bytes": 514,
+      "sha256": "388083f84a2947aa67955394a0b50d70140b8797eb0f638e87263f4cee43f1d5",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/repository/UserRepository.java",
+      "tracked": false,
+      "bytes": 402,
+      "sha256": "deedd769480af9d03dd179fce8f79c074db40c26af440b539e090eb3181848fa",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/resources/db/core-review/V1__create_core_tables.sql",
+      "tracked": false,
+      "bytes": 2045,
+      "sha256": "04f77837ac97d409f81dcb0108536b5a00f255623bf9be8d24cb1567ea1ce306",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/model/DomainTest.java",
+      "tracked": false,
+      "bytes": 1917,
+      "sha256": "6446da9bf42ed42b4921c95aac100673592a7431c5cd1bc92f62d599f28cea72",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresCoreReadTest.java",
+      "tracked": false,
+      "bytes": 11826,
+      "sha256": "0c00a5da64cddcfacd37b2d22d4cb36b07d652dfb6d321f3af947b8bd2299a37",
+      "executable": false
+    },
+    {
+      "path": "workflow/INTEGRATION-SPEC.md",
+      "tracked": true,
+      "bytes": 14844,
+      "sha256": "a6b83bb1d391cc85d2d1499606a51bfc1c018c5af8d172a3785c635224a24800",
+      "executable": false
+    },
+    {
+      "path": "workflow/SHARED-TECHNICAL-SPEC.md",
+      "tracked": true,
+      "bytes": 18802,
+      "sha256": "6801cd01d59f8c9584b4668bbd2a73f22eb1e0a43abf9791f3eed8cf7a392d6b",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/architect.md",
+      "tracked": false,
+      "bytes": 1161,
+      "sha256": "3c9a33da06eb96324ca42c603f997f9933ac65dd171f91f28e5eba4235b11039",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/common.md",
+      "tracked": false,
+      "bytes": 5295,
+      "sha256": "48b732da3fc60a2edbcb74c24e778ac15dff98968c2883f8aa34b03a9685ba2f",
+      "executable": false
+    },
+    {
+      "path": "workflow/core/PLAN.md",
+      "tracked": false,
+      "bytes": 7261,
+      "sha256": "89c1eab028857ba79cd713c08c6f1b489bc3bd989a3154960df4b0f35cacba4b",
+      "executable": false
+    },
+    {
+      "path": "workflow/core/TECHNICAL-SPEC.md",
+      "tracked": false,
+      "bytes": 12298,
+      "sha256": "6477b62982b09beae895672b34531cf98dcd2f293f1d60d5520f7eaf2acc9155",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/PRODUCT-SPEC.md",
+      "tracked": true,
+      "bytes": 16351,
+      "sha256": "758f62e47d33ca0e7cd7f5fd8dbdbbcc540edde1dbb864b9debeafb8a976a1c3",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}

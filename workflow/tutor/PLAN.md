@@ -6,11 +6,11 @@ deployment/changes to other roles by themselves.
 Owner: Huanghao
 Date: 20 October 2026
 
-Scope: Tutor implementation, including the Tutor-specific prompt, request
-construction, output validation, and orchestration of its AI feature. The Student
-role owns generic shared AI transport, durable admission, and per-key quotas in
-`platform/ai`. This plan does not assign shared core/auth/deployment work to
-Huanghao or change teammates' responsibilities.
+Scope: Tutor implementation and shared domain/persistence work in `platform/core`,
+including core tables and `ConsultationLifecycle`, per Huanghao's corrected role
+allocation. The Student role owns shared AI transport, durable admission, and
+per-key quotas in `platform/ai`. Authentication and deployment remain separately
+assigned.
 
 Inputs: [Tutor Product](PRODUCT-SPEC.md), [Tutor Technical](TECHNICAL-SPEC.md),
 [Shared Technical](../SHARED-TECHNICAL-SPEC.md), [Integration](../INTEGRATION-SPEC.md).
@@ -60,10 +60,11 @@ Do not read or publish hidden reasoning or expose production resources to these 
 
 - [ ] Review team size, owners, privacy, active-account policy, early completion,
   note conflicts, draft limits, stack, role-first packages, and row-lock protocol.
-- [ ] Assign shared auth/schema/quota/deployment work; do not assume Huanghao owns it all.
-- [ ] Record Huanghao as Tutor AI feature owner; agree the Tutor-to-shared-AiGateway
-  request/result/failure and quota integration with affected role owners. Do not
-  allocate shared platform, core/auth, or deployment work on teammates' behalf.
+- [ ] Confirm shared ownership: Huanghao owns Tutor and `platform/core`; Student owns
+  `platform/ai`; auth and deployment remain separately assigned.
+- [ ] Agree core repository/lifecycle contracts with Student/Admin, credential-storage
+  boundaries with auth, and the Tutor-to-shared-AiGateway request/result/failure and
+  quota integration with the Student AI owner.
 - [ ] Review proposed maintainer/reviewer assignments in the shared technical spec;
   record actual agreement and keep Tutor-private notes within Tutor ownership.
 - [ ] Create team-authored agent instructions and an evaluation/handoff template.

@@ -1,0 +1,166 @@
+{
+  "format": 1,
+  "head": "e48694a04d80544ce127fc75cb7bd215dfd713a0",
+  "scope": [
+    "workflow/agents",
+    "workflow/handoffs/2026-10-20-architect-readiness.md",
+    "workflow/tutor",
+    "workflow/INTEGRATION-SPEC.md",
+    "workflow/SHARED-TECHNICAL-SPEC.md",
+    "workflow/REUSE-INVENTORY.md",
+    "src/backend/build.gradle",
+    "src/backend/settings.gradle",
+    "src/backend/gradle/wrapper/gradle-wrapper.properties",
+    "src/backend/src"
+  ],
+  "files": [
+    {
+      "path": "src/backend/build.gradle",
+      "tracked": false,
+      "bytes": 604,
+      "sha256": "cb9233a6d0aab57ee993f13f92c4c11cec2189c75a6a474c028319fd0aea3680",
+      "executable": false
+    },
+    {
+      "path": "src/backend/gradle/wrapper/gradle-wrapper.properties",
+      "tracked": false,
+      "bytes": 339,
+      "sha256": "2478441beebf3e8ecc4ce7c367eaed7bf5db5daad4cb603f987b02715d2bd8c4",
+      "executable": false
+    },
+    {
+      "path": "src/backend/settings.gradle",
+      "tracked": false,
+      "bytes": 30,
+      "sha256": "f6aca3c4dc4b6f196541664a40f8f81840f42d4dcc248da26073a89c395a6143",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/UnichopeApplication.java",
+      "tracked": false,
+      "bytes": 315,
+      "sha256": "afba2dea8714119bc0a870ec4723d27f5b4f6cda988969d9b9bbd11c1a0c491e",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/ai/AiGateway.java",
+      "tracked": false,
+      "bytes": 2293,
+      "sha256": "610c106b4f9d74f70cd40bcfad4b47403ba9be1c37a56aa473f67016f8c268f8",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/ai/FakeProvider.java",
+      "tracked": false,
+      "bytes": 589,
+      "sha256": "91ddb6c8ee1915edfa6be47c1d29f37917ade55b668ee974e53c033a8da83f01",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/UnichopeApplicationTest.java",
+      "tracked": false,
+      "bytes": 589,
+      "sha256": "b5d1470e5b30426a47e26b0994d67efa6899447f91a4770f64569cec3ab550e5",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/ai/AiGatewayTest.java",
+      "tracked": false,
+      "bytes": 3371,
+      "sha256": "4a0f8109707714a4884b3a6bfd4eada72d8c38831f31d706e67012807624423f",
+      "executable": false
+    },
+    {
+      "path": "workflow/INTEGRATION-SPEC.md",
+      "tracked": false,
+      "bytes": 14609,
+      "sha256": "14df5331a6f789d80325114e0f79a0e7b107eaae72532b57064cb714b535da92",
+      "executable": false
+    },
+    {
+      "path": "workflow/REUSE-INVENTORY.md",
+      "tracked": false,
+      "bytes": 1920,
+      "sha256": "0206cc4253486a60195a6da8734e9c1569640b9c115e400440133b32d51e0ffe",
+      "executable": false
+    },
+    {
+      "path": "workflow/SHARED-TECHNICAL-SPEC.md",
+      "tracked": false,
+      "bytes": 18547,
+      "sha256": "bb1f10cde0488c1a504e7810851dea3ca9338f63bc118d57db5d4a422906f692",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/README.md",
+      "tracked": false,
+      "bytes": 1437,
+      "sha256": "4748e59e5fbc7affe78fb73d2cd8374813cb850643378296529a0512c238e56f",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/architect.md",
+      "tracked": false,
+      "bytes": 1161,
+      "sha256": "3c9a33da06eb96324ca42c603f997f9933ac65dd171f91f28e5eba4235b11039",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/capture_inputs.py",
+      "tracked": false,
+      "bytes": 2668,
+      "sha256": "f711df4e860f3adb17832d9b2df86f63436eb06463829ba9635cb2635c8448a3",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/common.md",
+      "tracked": false,
+      "bytes": 4939,
+      "sha256": "ab4599f379b66b9b8a5f5e6d11db2165f9c1ee912bca98723a86370339fae8a4",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/developer.md",
+      "tracked": false,
+      "bytes": 1507,
+      "sha256": "d59d6ab5b2755fa38f07d13fd7d3d883a9fe21024309fd176c2146372a3de498",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/reviewer.md",
+      "tracked": false,
+      "bytes": 1401,
+      "sha256": "795949d0a7774a3bbda3655d22377d7bfdc5481107f374edcfa6781028f1914f",
+      "executable": false
+    },
+    {
+      "path": "workflow/handoffs/2026-10-20-architect-readiness.md",
+      "tracked": false,
+      "bytes": 11355,
+      "sha256": "8debf0a8e267b97f0cba5aa1f9d1ae20ff9219eb085ea32f778512328555eaac",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/PLAN.md",
+      "tracked": true,
+      "bytes": 13873,
+      "sha256": "d27e2fa914c2716c6dc3bbc1962dff4a774deebe55a751762783db9c021a7f6d",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/PRODUCT-SPEC.md",
+      "tracked": true,
+      "bytes": 16351,
+      "sha256": "758f62e47d33ca0e7cd7f5fd8dbdbbcc540edde1dbb864b9debeafb8a976a1c3",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/TECHNICAL-SPEC.md",
+      "tracked": true,
+      "bytes": 13513,
+      "sha256": "985ec81617836c47f21fbd4dbeb4af19b99807b51f263838700a1713608712aa",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}

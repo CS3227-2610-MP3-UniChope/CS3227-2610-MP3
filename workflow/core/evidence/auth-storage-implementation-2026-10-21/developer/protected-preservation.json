@@ -1,0 +1,10 @@
+{
+  "changed_existing": [
+    "src/backend/README.md",
+    "src/backend/build.gradle",
+    "src/backend/src/main/java/unichope/platform/core/postgres/PostgresUserRepository.java",
+    "src/backend/src/main/java/unichope/platform/core/model/Validation.java"
+  ],
+  "baseline_test_files_unchanged": true,
+  "baseline_sql_unchanged": true
+}

@@ -1,8 +1,8 @@
 # Tutor private notes: requirement-linked test matrix
 
-Status: Design matrix for the implemented Tutor note increment. Execution evidence and results are recorded in the implementation run status below. Date: 22 October 2026.
+Status: designed against resolved Tutor note decisions; no implementation tests executed. Date: 22 October 2026.
 
-Scope is TUT-NOTE-01 (`GET`/`PUT /api/tutor/bookings/{bookingId}/note`) as specified in `NOTE-INCREMENT-SPEC.md`. Expected outcomes below come from NOTE-01 through NOTE-05 and their cited contracts. Synthetic fixtures only. The rows define the design oracle; actual suite execution and aggregate results are recorded in the implementation run status below.
+Scope is TUT-NOTE-01 (`GET`/`PUT /api/tutor/bookings/{bookingId}/note`) as specified in `NOTE-INCREMENT-SPEC.md`. Expected outcomes below come from NOTE-01 through NOTE-05 and their cited contracts, not implementation behavior. Synthetic fixtures only. Each case is **designed**, not executed, passed, failed, or blocked.
 
 The existing backend tests provide a disposable-schema PostgreSQL fixture pattern, bounded executor waits with `pg_stat_activity` observation, request-level MockMvc + PostgreSQL patterns, and isolated strict-input tests. These are candidate verification layers, not evidence that the note feature exists. Real PostgreSQL is required for the races, uniqueness, lock timeout, rollback, and persistence oracles.
 
@@ -52,31 +52,4 @@ The existing backend tests provide a disposable-schema PostgreSQL fixture patter
 2. Add isolated input tests for TN-05–TN-08, then focused service/request tests for TN-01–TN-13 and TN-19/TN-22.
 3. Add isolated PostgreSQL schema/constraint, fresh-request persistence, atomicity, and bounded-failure checks (TN-02–04, TN-13, TN-17–TN-20).
 4. Add two-connection barrier/lock-observed PostgreSQL races (TN-14–TN-16); always bound waits and clean up workers/connections.
-5. Run existing Tutor/core regressions once (TN-21/TN-23), then capture real command output/report paths and scope-preservation evidence. The completed run and report locations are recorded below.
-
-## Implementation run status (22 October 2026)
-
-Implementation is in progress in the `feat/tutor-private-notes` worktree at
-base revision `2d298bdd912d5b881a873ea456eb8342d42b91f2`. The code adds the note
-service/repository, strict request parsing, GET/PUT routes, Tutor-only review DDL,
-and PostgreSQL request cases described above. The production migration remains
-inactive.
-
-Executed from `src/backend`: `./gradlew test bootJar` passed with 26 tests and
-zero failures/errors/skips; this includes four `TutorNoteInputTest` cases for
-strict request shape, numeric range, code-point counting, and `String.strip()`.
-The XML and HTML reports are under `src/backend/build/reports/tests/test/` and
-`src/backend/build/test-results/test/`.
-
-`./gradlew test postgresTest bootJar -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55432/postgres -Dcore.test.user=mp3_test -Dcore.test.password=`
-passed against a temporary PostgreSQL 17.11 cluster bound to localhost. The unit
-suite reports 26 tests; the PostgreSQL suite reports 103 tests; both have zero
-failures, errors, or skips. This includes note HTTP persistence, compare-and-set,
-two-connection contention, deactivation during lock wait, rollback, lock timeout,
-and Tutor review-schema constraint cases, plus existing regressions.
-
-Reports are under `src/backend/build/reports/tests/{test,postgresTest}/` and
-`src/backend/build/test-results/{test,postgresTest}/`. The temporary server was
-stopped and its `/private/tmp` data directory/log removed after the run. No shared
-or production database was used. The original matrix remains the design oracle;
-each case should still be checked against its named test during independent review.
+5. Run existing Tutor/core regressions once (TN-21/TN-23), then capture real command output/report paths and scope-preservation evidence. This document itself records no test execution.

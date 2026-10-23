@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.platform.core.postgres.PostgresLifecycleTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-10-21T15:07:43.833Z" hostname="XuHH.local" time="4.306">
+  <properties/>
+  <testcase name="td05ModuleEligibilityFailuresAreIndistinguishable()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.148"/>
+  <testcase name="td14CancelRejectsInvalidPairsStatesAndStrictTimeBoundary()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.308"/>
+  <testcase name="td09ForeignAndAbsentOwnedResourcesHaveIdenticalNotFound()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.198"/>
+  <testcase name="r1SlotNanosecondsAreTruncatedBeforeValidationAndMatchPersistedValues()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.108"/>
+  <testcase name="td16CompletionRejectsInvalidPairsAndHistoryWithoutWrites()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.235"/>
+  <testcase name="td03CreatePersistsExactGeneratedSlotAndTd28SurvivesReconnection()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.104"/>
+  <testcase name="td04StrictTimeAndPositiveDurationWithSupportedPrecisionBoundary()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.162"/>
+  <testcase name="td02InvalidActorRejectedForEveryOperationAndBothPresentMissingResources()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.776"/>
+  <testcase name="td06OverlapAcrossModulesHalfOpenAdjacencyAndOtherTutorControl()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.396"/>
+  <testcase name="td15CompletionAllowsEarlyLateAndNonactorIneligibility()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.187"/>
+  <testcase name="td13CancellationRetainsHistoryReleasesSlotAndAllowsRebooking()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.122"/>
+  <testcase name="td08CancelOnlyOwnedAvailableAndPreservePastAndFutureHistory()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.245"/>
+  <testcase name="td07CancelledAndCompletedHistoryDoNotBlockNewSlots()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.1"/>
+  <testcase name="td01RequiredArgumentsAndNullTimesHaveTypedFailuresWithoutWrites()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.246"/>
+  <testcase name="td11BookingRejectsInvalidStatesNonfutureAndExistingActiveConflict()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.245"/>
+  <testcase name="r1BookingCreatedAtWithNanosecondClockMatchesPersistedMicroseconds()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.1"/>
+  <testcase name="r1SubmicroFutureAndCollapsedIntervalsAreTypedInvalidTimeWithoutWrites()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.145"/>
+  <testcase name="td10BookAtomicallyAndRejectRelatedEligibilityWithoutDisclosure()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.213"/>
+  <testcase name="td12StudentActiveOverlapButNotAdjacencyHistoryOrAnotherStudent()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.26"/>
+  <system-out><![CDATA[23:07:43.844 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:43.848 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_295c8933886b406693ea4b7ec7f2c86a"."flyway_schema_history" does not exist yet
+23:07:43.849 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:43.852 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_295c8933886b406693ea4b7ec7f2c86a"."flyway_schema_history" ...
+23:07:43.862 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_295c8933886b406693ea4b7ec7f2c86a": << Empty Schema >>
+23:07:43.864 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_295c8933886b406693ea4b7ec7f2c86a" to version "1 - create core tables"
+23:07:43.878 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_295c8933886b406693ea4b7ec7f2c86a", now at version v1 (execution time 00:00.011s)
+23:07:43.993 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:43.997 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_b317c3191fe04c37a4c7054c69110866"."flyway_schema_history" does not exist yet
+23:07:43.998 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:44.001 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_b317c3191fe04c37a4c7054c69110866"."flyway_schema_history" ...
+23:07:44.011 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_b317c3191fe04c37a4c7054c69110866": << Empty Schema >>
+23:07:44.011 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_b317c3191fe04c37a4c7054c69110866" to version "1 - create core tables"
+23:07:44.026 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_b317c3191fe04c37a4c7054c69110866", now at version v1 (execution time 00:00.011s)
+23:07:44.300 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:44.305 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_936694d509ed40f6b93037f0636c4546"."flyway_schema_history" does not exist yet
+23:07:44.305 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:44.309 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_936694d509ed40f6b93037f0636c4546"."flyway_schema_history" ...
+23:07:44.319 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_936694d509ed40f6b93037f0636c4546": << Empty Schema >>
+23:07:44.320 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_936694d509ed40f6b93037f0636c4546" to version "1 - create core tables"
+23:07:44.335 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_936694d509ed40f6b93037f0636c4546", now at version v1 (execution time 00:00.011s)
+23:07:44.498 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:44.503 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_086042d42ea541c08f5e19f01d983b1f"."flyway_schema_history" does not exist yet
+23:07:44.503 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:44.507 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_086042d42ea541c08f5e19f01d983b1f"."flyway_schema_history" ...
+23:07:44.517 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_086042d42ea541c08f5e19f01d983b1f": << Empty Schema >>
+23:07:44.518 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_086042d42ea541c08f5e19f01d983b1f" to version "1 - create core tables"
+23:07:44.533 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_086042d42ea541c08f5e19f01d983b1f", now at version v1 (execution time 00:00.011s)
+23:07:44.605 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:44.610 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_9641e70c94b747479bbf84f4b57975b2"."flyway_schema_history" does not exist yet
+23:07:44.610 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:44.614 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_9641e70c94b747479bbf84f4b57975b2"."flyway_schema_history" ...
+23:07:44.624 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_9641e70c94b747479bbf84f4b57975b2": << Empty Schema >>
+23:07:44.625 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_9641e70c94b747479bbf84f4b57975b2" to version "1 - create core tables"
+23:07:44.640 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_9641e70c94b747479bbf84f4b57975b2", now at version v1 (execution time 00:00.012s)
+23:07:44.843 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:44.848 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_425a98094db940ed855506a98c2d5733"."flyway_schema_history" does not exist yet
+23:07:44.848 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:44.852 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_425a98094db940ed855506a98c2d5733"."flyway_schema_history" ...
+23:07:44.862 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_425a98094db940ed855506a98c2d5733": << Empty Schema >>
+23:07:44.864 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_425a98094db940ed855506a98c2d5733" to version "1 - create core tables"
+23:07:44.878 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_425a98094db940ed855506a98c2d5733", now at version v1 (execution time 00:00.011s)
+23:07:44.946 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:44.950 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_b22e4fa4db984d0c814501ca26503357"."flyway_schema_history" does not exist yet
+23:07:44.950 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:44.954 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_b22e4fa4db984d0c814501ca26503357"."flyway_schema_history" ...
+23:07:44.964 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_b22e4fa4db984d0c814501ca26503357": << Empty Schema >>
+23:07:44.965 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_b22e4fa4db984d0c814501ca26503357" to version "1 - create core tables"
+23:07:44.979 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_b22e4fa4db984d0c814501ca26503357", now at version v1 (execution time 00:00.011s)
+23:07:45.108 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:45.112 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_d1aa8af03af14d7aa81b9f97b9d9bf3d"."flyway_schema_history" does not exist yet
+23:07:45.112 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:45.116 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_d1aa8af03af14d7aa81b9f97b9d9bf3d"."flyway_schema_history" ...
+23:07:45.126 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_d1aa8af03af14d7aa81b9f97b9d9bf3d": << Empty Schema >>
+23:07:45.127 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_d1aa8af03af14d7aa81b9f97b9d9bf3d" to version "1 - create core tables"
+23:07:45.142 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_d1aa8af03af14d7aa81b9f97b9d9bf3d", now at version v1 (execution time 00:00.011s)
+23:07:45.884 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:45.889 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_81b02687693d494f86f5063250b1daa6"."flyway_schema_history" does not exist yet
+23:07:45.889 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:45.893 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_81b02687693d494f86f5063250b1daa6"."flyway_schema_history" ...
+23:07:45.903 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_81b02687693d494f86f5063250b1daa6": << Empty Schema >>
+23:07:45.904 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_81b02687693d494f86f5063250b1daa6" to version "1 - create core tables"
+23:07:45.921 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_81b02687693d494f86f5063250b1daa6", now at version v1 (execution time 00:00.011s)
+23:07:46.280 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:46.284 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_1a4c9251e72b41fb83a62d14112bdb9c"."flyway_schema_history" does not exist yet
+23:07:46.285 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:46.289 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_1a4c9251e72b41fb83a62d14112bdb9c"."flyway_schema_history" ...
+23:07:46.298 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_1a4c9251e72b41fb83a62d14112bdb9c": << Empty Schema >>
+23:07:46.299 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_1a4c9251e72b41fb83a62d14112bdb9c" to version "1 - create core tables"
+23:07:46.314 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_1a4c9251e72b41fb83a62d14112bdb9c", now at version v1 (execution time 00:00.011s)
+23:07:46.468 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:46.473 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_4602c8b8e7484e088afca0d02c086f35"."flyway_schema_history" does not exist yet
+23:07:46.473 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:46.477 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_4602c8b8e7484e088afca0d02c086f35"."flyway_schema_history" ...
+23:07:46.486 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_4602c8b8e7484e088afca0d02c086f35": << Empty Schema >>
+23:07:46.487 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_4602c8b8e7484e088afca0d02c086f35" to version "1 - create core tables"
+23:07:46.503 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_4602c8b8e7484e088afca0d02c086f35", now at version v1 (execution time 00:00.011s)
+23:07:46.590 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:46.595 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_e1f7b4b5bd2b401c915e876cf2eb8edc"."flyway_schema_history" does not exist yet
+23:07:46.596 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:46.599 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_e1f7b4b5bd2b401c915e876cf2eb8edc"."flyway_schema_history" ...
+23:07:46.609 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_e1f7b4b5bd2b401c915e876cf2eb8edc": << Empty Schema >>
+23:07:46.611 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_e1f7b4b5bd2b401c915e876cf2eb8edc" to version "1 - create core tables"
+23:07:46.626 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_e1f7b4b5bd2b401c915e876cf2eb8edc", now at version v1 (execution time 00:00.012s)
+23:07:46.836 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:46.841 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_f66db42ee5394ad18f6f013e64fa0156"."flyway_schema_history" does not exist yet
+23:07:46.841 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:46.845 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_f66db42ee5394ad18f6f013e64fa0156"."flyway_schema_history" ...
+23:07:46.855 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_f66db42ee5394ad18f6f013e64fa0156": << Empty Schema >>
+23:07:46.856 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_f66db42ee5394ad18f6f013e64fa0156" to version "1 - create core tables"
+23:07:46.871 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_f66db42ee5394ad18f6f013e64fa0156", now at version v1 (execution time 00:00.011s)
+23:07:46.938 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:46.943 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_9a13da616be64c949ad44566eeba3536"."flyway_schema_history" does not exist yet
+23:07:46.944 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:46.947 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_9a13da616be64c949ad44566eeba3536"."flyway_schema_history" ...
+23:07:46.961 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_9a13da616be64c949ad44566eeba3536": << Empty Schema >>
+23:07:46.963 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_9a13da616be64c949ad44566eeba3536" to version "1 - create core tables"
+23:07:46.984 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_9a13da616be64c949ad44566eeba3536", now at version v1 (execution time 00:00.016s)
+23:07:47.183 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:47.187 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_29197739e57a4882a4da2ea3117e3803"."flyway_schema_history" does not exist yet
+23:07:47.188 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:47.192 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_29197739e57a4882a4da2ea3117e3803"."flyway_schema_history" ...
+23:07:47.201 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_29197739e57a4882a4da2ea3117e3803": << Empty Schema >>
+23:07:47.202 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_29197739e57a4882a4da2ea3117e3803" to version "1 - create core tables"
+23:07:47.217 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_29197739e57a4882a4da2ea3117e3803", now at version v1 (execution time 00:00.011s)
+23:07:47.429 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:47.433 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_d4436507440f4dd490c51f1685fe4c51"."flyway_schema_history" does not exist yet
+23:07:47.434 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:47.438 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_d4436507440f4dd490c51f1685fe4c51"."flyway_schema_history" ...
+23:07:47.447 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_d4436507440f4dd490c51f1685fe4c51": << Empty Schema >>
+23:07:47.448 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_d4436507440f4dd490c51f1685fe4c51" to version "1 - create core tables"
+23:07:47.463 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_d4436507440f4dd490c51f1685fe4c51", now at version v1 (execution time 00:00.011s)
+23:07:47.530 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:47.534 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_f3a2512c2af347b196ab3b6ec4917bf2"."flyway_schema_history" does not exist yet
+23:07:47.535 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:47.538 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_f3a2512c2af347b196ab3b6ec4917bf2"."flyway_schema_history" ...
+23:07:47.548 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_f3a2512c2af347b196ab3b6ec4917bf2": << Empty Schema >>
+23:07:47.549 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_f3a2512c2af347b196ab3b6ec4917bf2" to version "1 - create core tables"
+23:07:47.564 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_f3a2512c2af347b196ab3b6ec4917bf2", now at version v1 (execution time 00:00.011s)
+23:07:47.675 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:47.679 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_0558681af6df4d60a040f6618dc5e671"."flyway_schema_history" does not exist yet
+23:07:47.680 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:47.684 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_0558681af6df4d60a040f6618dc5e671"."flyway_schema_history" ...
+23:07:47.693 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_0558681af6df4d60a040f6618dc5e671": << Empty Schema >>
+23:07:47.694 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_0558681af6df4d60a040f6618dc5e671" to version "1 - create core tables"
+23:07:47.710 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_0558681af6df4d60a040f6618dc5e671", now at version v1 (execution time 00:00.011s)
+23:07:47.890 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:47.894 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_4930820db0254dfca95a893ac9de6e9f"."flyway_schema_history" does not exist yet
+23:07:47.895 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:47.898 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_4930820db0254dfca95a893ac9de6e9f"."flyway_schema_history" ...
+23:07:47.908 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_4930820db0254dfca95a893ac9de6e9f": << Empty Schema >>
+23:07:47.909 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_4930820db0254dfca95a893ac9de6e9f" to version "1 - create core tables"
+23:07:47.923 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_4930820db0254dfca95a893ac9de6e9f", now at version v1 (execution time 00:00.011s)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

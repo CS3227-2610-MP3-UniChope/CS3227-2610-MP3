@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.platform.core.postgres.AccountInputTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-21T15:07:16.558Z" hostname="XuHH.local" time="0.005">
+  <properties/>
+  <testcase name="snapshotDiagnosticsAreRedactedAndNotBeanAccessors()" classname="unichope.platform.core.postgres.AccountInputTest" time="0.004"/>
+  <testcase name="dotlessAndUnicodeEmailPolicy()" classname="unichope.platform.core.postgres.AccountInputTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

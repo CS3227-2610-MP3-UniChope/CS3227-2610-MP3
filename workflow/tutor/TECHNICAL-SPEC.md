@@ -14,24 +14,29 @@ auth/session, database, quota, and API contracts. Tutor code cannot invent its o
 user database, session format, SoC credentials, booking statuses, or quota counters.
 Shared contract proposals require team review before implementation.
 
-### Shared AI infrastructure ownership
+### Shared platform ownership
+
+Per Huanghao's corrected role allocation, Huanghao owns `platform/core`: shared
+domain records and validation, core repository contracts and PostgreSQL
+implementations, core tables (`users`, `modules`, `tutor_modules`, `slots`, and
+`bookings`), and `ConsultationLifecycle` with atomic transitions and row locks.
+Coordinate credential-storage requirements with the auth owner and lifecycle/API
+contracts with Student and Admin. Core code must not import role packages.
 
 The Student role owns the shared `platform/ai` implementation: `AiGateway`,
-`FakeProvider`, the later `SocLlmProvider`, server-enforced per-account admission,
-per-key provider quotas, admission persistence, deadlines, sanitized provider errors,
-and infrastructure/transport tests. Coordinate AI metadata migrations with the core
-schema maintainer and authentication integration with the auth maintainer. Each
-role uses its own provider key, selected only by trusted server-side task/configuration
-routing; keys are never exposed to React. The Student owner confirms the routing and
-secret-configuration contract.
+`FakeProvider`, the SoC provider, server-enforced admission, per-key quotas,
+admission persistence, deadlines, sanitized provider errors, and infrastructure/
+transport tests. Coordinate AI metadata migrations with the core owner and
+authentication integration with the auth owner. Each role uses its own provider
+key through trusted server-side task/configuration routing; keys are never exposed
+to React.
 
 Each role owner remains responsible for their own AI feature's prompt, authorized
 context, gateway integration/orchestration, task-specific output validation, UI,
 and acceptance tests. Tutor owns the Tutor-specific request and task-key mapping;
 the Student-owned shared gateway resolves the server-side key and provides generic
-provider transport and durable admission. Tutor ownership does not include
-implementing Student/Admin AI features or assuming ownership of core consultation
-persistence, authentication, or deployment.
+provider transport and durable admission. Authentication and deployment remain
+separate assignments; Tutor does not own Student/Admin AI features.
 
 Agree the gateway request/result/failure contract with affected role owners before
 parallel implementation. Actor identity comes from trusted backend code; no browser

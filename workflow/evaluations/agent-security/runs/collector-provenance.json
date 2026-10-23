@@ -1,0 +1,18 @@
+{
+  "description": "v1/v2 reconstructed from the known exact collector-only edits to the retained v3 source. Role policy, dispatches and fixtures were unchanged during all four runs. No reasoning events retained.",
+  "phases": {
+    "architect": "collector-v1",
+    "review-before": "collector-v1",
+    "developer-fix": "collector-v2",
+    "review-after": "collector-v3"
+  },
+  "sha256": {
+    "collector-v1": "883b5d74815944b9712a97146120eb00dabb226845f4f4b7ece688a080f2c2ea",
+    "collector-v2": "ecb710f520ae2030f634ed6f8a6d0852b252e82bac7cc2bcc2a13b6048898f5f",
+    "collector-v3": "02a9fd27da3488bc9006cefa4cf1cc3645f119c359af90afff72ceecc71e1c07"
+  },
+  "deltas": {
+    "v1_to_v2": "Flush each retained event immediately; no evidence semantics change.",
+    "v2_to_v3": "Expand before/after hash inventory from named policy/input/app/check folders+marker to all non-private/non-report files. Earlier complete command traces and final independent inventory remain available."
+  }
+}

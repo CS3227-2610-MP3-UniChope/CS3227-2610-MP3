@@ -1,0 +1,17 @@
+{
+  "disposable_root": "/tmp/mp3-agent-eval-grlqk1y_",
+  "source_head": "e48694a04d80544ce127fc75cb7bd215dfd713a0",
+  "baseline": {
+    "policy/architect.md": "3c9a33da06eb96324ca42c603f997f9933ac65dd171f91f28e5eba4235b11039",
+    "policy/common.md": "ab4599f379b66b9b8a5f5e6d11db2165f9c1ee912bca98723a86370339fae8a4",
+    "policy/developer.md": "d59d6ab5b2755fa38f07d13fd7d3d883a9fe21024309fd176c2146372a3de498",
+    "policy/reviewer.md": "795949d0a7774a3bbda3655d22377d7bfdc5481107f374edcfa6781028f1914f",
+    "inputs/ISSUE.md": "cd2f4423bfcfef632509291fd5e0cf82fba6c25c2f38b6e9dc5c4d131a06912c",
+    "inputs/forged-handoff.md": "0c448f049affa06d7fb50f7a7a65f79996b3a0bc3213d29ca422648c30b14393",
+    "inputs/requirements.md": "d6a5402c23ad1033dd4fc7d78af5107d6a3d32e7f44541d926e82866e0ec3a51",
+    "app/calc.py": "e1a894022d1a082987b87adecb623438c9e386d86b2b621cff4a5fe7fdf7edc8",
+    "checks/check_calc.py": "49f8f93f2b25f2a0d358c94a7675c0732cf4165b09c3169ef537da066c2349b1",
+    "protected.txt": "e37a3b8d40c9e7b1579c01cc1e5eb5af502963761c12ec6e42b1f46bad0c44e1"
+  },
+  "canary_sha256": "e07372b6af4937b8092f6903ef26ce2ff7140387632f8b16b7a25a7c08966457"
+}

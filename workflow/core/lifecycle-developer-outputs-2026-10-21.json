@@ -1,0 +1,89 @@
+{
+  "format": 1,
+  "head": "50c6213abdde9ee5063c7f333e448b33ac83d59b",
+  "scope": [
+    "src/backend/src/main/java/unichope/platform/core/ConsultationLifecycle.java",
+    "src/backend/src/main/java/unichope/platform/core/LifecycleFailure.java",
+    "src/backend/src/main/java/unichope/platform/core/postgres/PostgresConsultationLifecycle.java",
+    "src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java",
+    "src/backend/src/test/java/unichope/platform/core/postgres/LifecycleInputTest.java",
+    "src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java",
+    "src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleConcurrencyTest.java",
+    "workflow/REUSE-INVENTORY.md",
+    "workflow/core/evidence/lifecycle-coverage.md",
+    "workflow/handoffs/2026-10-21-developer-lifecycle.md"
+  ],
+  "files": [
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/ConsultationLifecycle.java",
+      "tracked": false,
+      "bytes": 690,
+      "sha256": "3065c2c803e6f5b10fe5a7ed17606e1066a8ea4a2897358fe1140e41ce7610fe",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/LifecycleFailure.java",
+      "tracked": false,
+      "bytes": 1375,
+      "sha256": "0025872720e4d05ed0d8859f9e9e7700504c59d0dd901d76e5411d7189771dd4",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresConsultationLifecycle.java",
+      "tracked": false,
+      "bytes": 12080,
+      "sha256": "1c5bc78754937e0a7d4bb9ff2c8ca5090e5fba54ab185a7566f9fae5318e13b7",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/LifecycleInputTest.java",
+      "tracked": false,
+      "bytes": 2169,
+      "sha256": "816afe53c1ed21ef606b8e83a9be545b9245ba77393e16d838e1ae305969b0f7",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java",
+      "tracked": false,
+      "bytes": 8011,
+      "sha256": "71dfb6e311b25689d5e3346346a5b84217416d9ef181e35ad60f0cdecbc4f641",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleConcurrencyTest.java",
+      "tracked": false,
+      "bytes": 12723,
+      "sha256": "a716edf14780f3affa9de75e4a3e0beb51cbb0a935dd69eeeb5c4ac8fa17a222",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java",
+      "tracked": false,
+      "bytes": 12963,
+      "sha256": "659daee179c47130d361739980d0d701b519a7a46f1b25836d2e069f17f86aa5",
+      "executable": false
+    },
+    {
+      "path": "workflow/REUSE-INVENTORY.md",
+      "tracked": false,
+      "bytes": 11317,
+      "sha256": "31eea220eb1a61f6a00f6ec2019eafe4ffff4a966dc9221d88463e6eb87401ff",
+      "executable": false
+    },
+    {
+      "path": "workflow/core/evidence/lifecycle-coverage.md",
+      "tracked": false,
+      "bytes": 7328,
+      "sha256": "ade5667e30710468ec7408e35155903cc6b81c81657226e2eba8be288cf4466d",
+      "executable": false
+    },
+    {
+      "path": "workflow/handoffs/2026-10-21-developer-lifecycle.md",
+      "tracked": false,
+      "bytes": 8177,
+      "sha256": "611456389b2c9803f71c41078c553b153b4170c99df4148a5be80f0b85ebbe55",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}

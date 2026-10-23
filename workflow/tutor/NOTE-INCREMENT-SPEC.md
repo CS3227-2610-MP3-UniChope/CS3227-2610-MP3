@@ -1,6 +1,6 @@
 # Tutor Private Notes Increment Specification
 
-Status: Implementation complete and human-accepted on 22 October 2026. Production migration activation and real session-adapter integration remain external coordination gates.
+Status: Decisions resolved for implementation planning; no note persistence implementation is included here.
 Date: 22 October 2026
 Scope: TUT-NOTE-01 load/save for a tutor's own completed consultation.
 

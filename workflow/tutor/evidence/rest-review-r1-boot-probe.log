@@ -1,0 +1,38 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.8)
+
+2026-10-21T16:10:31.745+08:00  INFO 66931 --- [           main] RestWiringProbe                          : Starting RestWiringProbe using Java 25.0.4 with PID 66931 (/tmp/mp3-tutor-rest-review-probe/RestWiringProbe.java started by huanghao in /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend)
+2026-10-21T16:10:31.746+08:00  INFO 66931 --- [           main] RestWiringProbe                          : The following 1 profile is active: "tutor-api"
+2026-10-21T16:10:32.237+08:00  INFO 66931 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-21T16:10:32.246+08:00  INFO 66931 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-21T16:10:32.246+08:00  INFO 66931 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-21T16:10:32.264+08:00  INFO 66931 --- [           main] o.apache.catalina.loader.WebappLoader    : Unknown class loader [com.sun.tools.javac.launcher.MemoryClassLoader@517d4a0d] of class [class com.sun.tools.javac.launcher.MemoryClassLoader]
+2026-10-21T16:10:32.276+08:00  INFO 66931 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 503 ms
+2026-10-21T16:10:32.556+08:00  INFO 66931 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 54146 (http) with context path '/'
+2026-10-21T16:10:32.560+08:00  INFO 66931 --- [           main] RestWiringProbe                          : Started RestWiringProbe in 0.994 seconds (process running for 1.715)
+PROBE controller beans=[tutorController]
+PROBE advice beans=[tutorExceptionHandler]
+2026-10-21T16:10:32.572+08:00  INFO 66931 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring TestDispatcherServlet ''
+2026-10-21T16:10:32.572+08:00  INFO 66931 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-21T16:10:32.573+08:00  INFO 66931 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+PROBE path=/api/tutor/modules accept=application/json status=200 type=application/json cache=no-store body=[{"id":"c82b76c0-64f1-46f5-b781-b22ab158a003","code":"CS1","name":"Test"}]
+PROBE path=/api/tutor/modules accept=text/html status=406 type=application/json cache=no-store body={"code":"NOT_ACCEPTABLE","message":"A JSON response is required","requestId":"ea96c246-b853-4f6f-89c2-1828659ef0cf"}
+PROBE path=/api/tutor/unknown accept=application/json status=404 type=application/json cache=no-store body={"code":"NOT_FOUND","message":"Resource not found","requestId":"6854c755-957c-4962-9c86-f55d2d424520"}
+PROBE path=/api/tutor/unknown accept=text/html status=404 type=application/json cache=no-store body={"code":"NOT_FOUND","message":"Resource not found","requestId":"e5ea4554-d571-4764-b7b0-094700c473fc"}
+PROBE path=/api/tutor/modules?unknown=x accept=application/json status=400 type=application/json cache=no-store body={"code":"VALIDATION_FAILED","message":"Request validation failed","requestId":"c29fa954-b7d2-4a8a-bf95-44907fe3cedb"}
+PROBE path=/api/tutor/modules?unknown=x accept=text/html status=400 type=application/json cache=no-store body={"code":"VALIDATION_FAILED","message":"Request validation failed","requestId":"e5882e2b-cd3e-42e5-874b-9f058d8b3e43"}
+PROBE path=/api/tutor/slots/invalid accept=application/json status=400 type=application/json cache=no-store body={"code":"VALIDATION_FAILED","message":"Request validation failed","requestId":"0058acd3-4226-49bf-84cb-0aa2c6d8d6a9"}
+PROBE path=/api/tutor/slots/invalid accept=text/html status=400 type=application/json cache=no-store body={"code":"VALIDATION_FAILED","message":"Request validation failed","requestId":"4b6c8fec-5dcf-42bb-8cd5-7a80a6e1280b"}
+PROBE path=/api/tutor/slots/00000000-0000-0000-0000-000000000099 accept=application/json status=404 type=application/json cache=no-store body={"code":"NOT_FOUND","message":"Consultation resource not found","requestId":"f9feae55-a847-4cdb-b829-a5caa175ed57"}
+PROBE path=/api/tutor/slots/00000000-0000-0000-0000-000000000099 accept=text/html status=404 type=application/json cache=no-store body={"code":"NOT_FOUND","message":"Consultation resource not found","requestId":"176648cb-237e-480b-b269-d8158086ff20"}
+2026-10-21T16:10:32.659+08:00  INFO 66931 --- [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-21T16:10:32.664+08:00  INFO 66931 --- [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+
+Exit 0

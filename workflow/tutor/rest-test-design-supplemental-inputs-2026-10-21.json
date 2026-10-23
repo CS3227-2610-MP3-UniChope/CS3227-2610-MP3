@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "head": "50c6213abdde9ee5063c7f333e448b33ac83d59b",
+  "scope": [
+    "workflow/tutor/REST-INCREMENT-SPEC.md",
+    "workflow/tutor/REST-INCREMENT-PLAN.md"
+  ],
+  "files": [
+    {
+      "path": "workflow/tutor/REST-INCREMENT-PLAN.md",
+      "tracked": false,
+      "bytes": 3567,
+      "sha256": "726fd259794cccddcba2ae15a83252ba5ebbe01b75d375d1f22cf2784f168740",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/REST-INCREMENT-SPEC.md",
+      "tracked": false,
+      "bytes": 10827,
+      "sha256": "02a79d88a58c6b0fd6e173651aecc73f9fb83de9dad670b9f8d611fe31626913",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}

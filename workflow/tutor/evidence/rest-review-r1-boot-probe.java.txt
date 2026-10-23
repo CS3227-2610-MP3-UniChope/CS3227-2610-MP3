@@ -1,0 +1,44 @@
+import java.time.*;
+import java.util.*;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import unichope.UnichopeApplication;
+import unichope.tutor.*;
+import unichope.tutor.http.*;
+import unichope.platform.core.*;
+import unichope.platform.core.model.user.Role;
+import unichope.platform.core.repository.ModuleRepository;
+class RestWiringProbe {
+ public static void main(String[] args) throws Exception {
+  UUID tutor=UUID.randomUUID();
+  TutorReadRepository reads=new TutorReadRepository(){
+   public Optional<TutorAccount> findAccount(UUID id){return Optional.of(new TutorAccount(id,Role.TUTOR,true));}
+   public List<TutorSlot> findSlotsByTutor(UUID id){return List.of();}
+   public List<AssignedModule> findAssignedModulesByTutor(UUID id){return List.of(new AssignedModule(UUID.randomUUID(),"CS1","Test",true));}
+  };
+  CurrentActorProvider actor=()->{var auth=SecurityContextHolder.getContext().getAuthentication();return auth!=null&&auth.getPrincipal() instanceof UUID id?Optional.of(id):Optional.empty();};
+  try(var context=new SpringApplicationBuilder(UnichopeApplication.class).web(WebApplicationType.SERVLET).profiles("tutor-api")
+   .properties("server.port=0","server.address=127.0.0.1")
+   .initializers(c->{var f=c.getBeanFactory();f.registerSingleton("currentActorProvider",actor);f.registerSingleton("tutorReads",reads);f.registerSingleton("clock",Clock.systemUTC());
+    f.registerSingleton("modules",java.lang.reflect.Proxy.newProxyInstance(RestWiringProbe.class.getClassLoader(),new Class[]{ModuleRepository.class},(o,m,a)->{if(m.getReturnType()==Optional.class)return Optional.empty();if(m.getReturnType()==List.class)return List.of();return null;}));
+    f.registerSingleton("lifecycle",java.lang.reflect.Proxy.newProxyInstance(RestWiringProbe.class.getClassLoader(),new Class[]{ConsultationLifecycle.class},(o,m,a)->{throw new UnsupportedOperationException();}));
+   }).run()) {
+    System.out.println("PROBE controller beans="+context.getBeansOfType(TutorController.class).keySet());
+    System.out.println("PROBE advice beans="+context.getBeansOfType(TutorExceptionHandler.class).keySet());
+    var mvc=MockMvcBuilders.webAppContextSetup((org.springframework.web.context.WebApplicationContext)context).apply(springSecurity()).build();
+    for(String path:List.of("/api/tutor/modules","/api/tutor/unknown","/api/tutor/modules?unknown=x","/api/tutor/slots/invalid","/api/tutor/slots/00000000-0000-0000-0000-000000000099"))for(String accept:List.of("application/json","text/html")) {
+     var session=new MockHttpSession();var security=SecurityContextHolder.createEmptyContext();security.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(tutor,"synthetic",List.of(new SimpleGrantedAuthority("ROLE_TUTOR"))));session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,security);
+     var r=mvc.perform(get(path).session(session).accept(accept)).andReturn().getResponse();
+     System.out.println("PROBE path="+path+" accept="+accept+" status="+r.getStatus()+" type="+r.getContentType()+" cache="+r.getHeader("Cache-Control")+" body="+r.getContentAsString());
+    }
+   }
+ }
+}

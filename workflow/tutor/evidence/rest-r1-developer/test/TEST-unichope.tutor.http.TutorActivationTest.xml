@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.tutor.http.TutorActivationTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-21T08:06:13.308Z" hostname="XuHH.local" time="0.4">
+  <properties/>
+  <testcase name="rt20DefaultHasNoTutorHandlersOrGeneratedLogin()" classname="unichope.tutor.http.TutorActivationTest" time="0.355"/>
+  <testcase name="rt20ActivatedMissingIdentityAndDatabaseFailsWithoutFallback()" classname="unichope.tutor.http.TutorActivationTest" time="0.045"/>
+  <system-out><![CDATA[
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.8)
+
+2026-10-21T16:06:13.323+08:00  INFO 56544 --- [    Test worker] w.o.g.p.i.worker.GradleWorkerMain        : Starting GradleWorkerMain using Java 25.0.4 with PID 56544 (started by huanghao in /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend)
+2026-10-21T16:06:13.324+08:00  INFO 56544 --- [    Test worker] w.o.g.p.i.worker.GradleWorkerMain        : No active profile set, falling back to 1 default profile: "default"
+2026-10-21T16:06:13.472+08:00  INFO 56544 --- [    Test worker] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-21T16:06:13.482+08:00  INFO 56544 --- [    Test worker] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-21T16:06:13.482+08:00  INFO 56544 --- [    Test worker] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-21T16:06:13.505+08:00  INFO 56544 --- [    Test worker] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 179 ms
+2026-10-21T16:06:13.583+08:00  INFO 56544 --- [    Test worker] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 49543 (http) with context path '/'
+2026-10-21T16:06:13.585+08:00  INFO 56544 --- [    Test worker] w.o.g.p.i.worker.GradleWorkerMain        : Started GradleWorkerMain in 0.275 seconds (process running for 2.252)
+2026-10-21T16:06:13.596+08:00  INFO 56544 --- [    Test worker] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring TestDispatcherServlet ''
+2026-10-21T16:06:13.597+08:00  INFO 56544 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-21T16:06:13.597+08:00  INFO 56544 --- [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-21T16:06:13.644+08:00  INFO 56544 --- [    Test worker] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-21T16:06:13.654+08:00  INFO 56544 --- [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-21T16:06:13.658+08:00  INFO 56544 --- [    Test worker] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-10-21T16:06:13.708+08:00  WARN 56544 --- [    Test worker] .s.AnnotationConfigWebApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'tutorController': Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'tutorReadService' defined in unichope.tutor.http.TutorApiConfiguration: Unsatisfied dependency expressed through method 'tutorReadService' parameter 0: No qualifying bean of type 'unichope.tutor.CurrentActorProvider' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

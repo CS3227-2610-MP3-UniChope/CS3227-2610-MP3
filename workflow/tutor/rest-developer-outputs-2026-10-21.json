@@ -1,0 +1,214 @@
+{
+  "format": 1,
+  "head": "50c6213abdde9ee5063c7f333e448b33ac83d59b",
+  "scope": [
+    "src/backend/build.gradle",
+    "src/backend/src/main/java/unichope/UnichopeApplication.java",
+    "src/backend/src/main/java/unichope/platform/web",
+    "src/backend/src/main/java/unichope/tutor",
+    "src/backend/src/test/java/unichope/tutor/http",
+    "src/backend/src/test/java/unichope/platform/core/postgres/TutorRestPgTest.java",
+    "workflow/REUSE-INVENTORY.md",
+    "workflow/tutor/evidence/rest-coverage.md",
+    "workflow/handoffs/2026-10-21-developer-tutor-rest.md"
+  ],
+  "files": [
+    {
+      "path": "src/backend/build.gradle",
+      "tracked": false,
+      "bytes": 1941,
+      "sha256": "df02aa218bb4a10d17998126816fc2da196fc54f3670fe50320114680e3ba88a",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/UnichopeApplication.java",
+      "tracked": false,
+      "bytes": 416,
+      "sha256": "4847ae7b827a409ad89ebe0328ea715e419e2008dfaa4ea3f141099fe6ec80aa",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/web/ApiErrors.java",
+      "tracked": false,
+      "bytes": 1240,
+      "sha256": "6aa5443b7e4b3c72873f171f6389aa5c7044228e3751456e85b6137723cb747e",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/web/ApiFailure.java",
+      "tracked": false,
+      "bytes": 474,
+      "sha256": "bd16db4d71195b1a368c5f6845a4f847f0521c484056a00fe584be4f86dd8985",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/web/ApiResponseFilter.java",
+      "tracked": false,
+      "bytes": 729,
+      "sha256": "b2370996d181fce14aa990b98b32442179557ff4129e0dd0f3dd339525c83600",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/platform/web/ApiSecurityConfiguration.java",
+      "tracked": false,
+      "bytes": 1998,
+      "sha256": "710ac08304ff6f6c88c9b5359cba7c6a3aae890a4ca936f058c479a44beae357",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/AssignedModule.java",
+      "tracked": false,
+      "bytes": 132,
+      "sha256": "68ab3bb44ac733d3205f6369a6240049b22e41151a5f57f519898bed9a9c312d",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/CurrentActorProvider.java",
+      "tracked": false,
+      "bytes": 223,
+      "sha256": "678bb180df4e3768fd83c9d6040d90233f8719aadc14f38acd00bd449b94615d",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/ModuleOption.java",
+      "tracked": false,
+      "bytes": 114,
+      "sha256": "9288c5891a52d1a71f441ef14fc14c85dea929d77d95449cd117d17724aee540",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/PostgresTutorReadRepository.java",
+      "tracked": false,
+      "bytes": 3276,
+      "sha256": "51d22651bdf066dc5743b7ce4f0fe76e249198b2fd8169b5577110a463a8bf97",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/SlotView.java",
+      "tracked": false,
+      "bytes": 309,
+      "sha256": "186f5cf7a82b285b798ecf04ef467e4bad941c2e8f85ae63c31922956403c212",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorAccess.java",
+      "tracked": false,
+      "bytes": 1065,
+      "sha256": "eb9ca8c386aea7c01d16cef29864079b26a1716181670a35462249b9121be5a2",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorAccessDeniedException.java",
+      "tracked": false,
+      "bytes": 502,
+      "sha256": "62ad6c8cea3e01d16568da473c4cdbf7b8320b0e51abaa60136e03537a2d06e9",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorAccount.java",
+      "tracked": false,
+      "bytes": 162,
+      "sha256": "dea362dcb615860122599650cd6ee0e29d80e6b017eb28eebd6a7db2018f2559",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorReadRepository.java",
+      "tracked": false,
+      "bytes": 585,
+      "sha256": "6aadb53c9735ce5f3d18063c1c3542118dcc924c4fa983ee6569b28368500bfe",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorReadService.java",
+      "tracked": false,
+      "bytes": 3013,
+      "sha256": "aaa3b0d161726410189aea6904b8bcf5dbfe241b2e9fee7d8d1bcbae08f7780c",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/TutorSlot.java",
+      "tracked": false,
+      "bytes": 236,
+      "sha256": "1fe6a3b13391fa4c75dc3dc59613091ea712c41610526d8ead3be98e5e8c0d14",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/http/TutorApiConfiguration.java",
+      "tracked": false,
+      "bytes": 2877,
+      "sha256": "479c6a0072c5b87f8a30d93de29627b98aef9bddb7ca4a3097456a31f7cdef3c",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/http/TutorApiInput.java",
+      "tracked": false,
+      "bytes": 3915,
+      "sha256": "5aaf020b2ffaa792bbfe9384634777f45a299563820e171026bc34ef1fc992b6",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/http/TutorController.java",
+      "tracked": false,
+      "bytes": 2143,
+      "sha256": "8a7dd17d0cd0ae34859b876a1919d47c6c6be3d651e76ea6971cabdf7d7f2279",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/http/TutorExceptionHandler.java",
+      "tracked": false,
+      "bytes": 3058,
+      "sha256": "4ddf47d622096a86573954649577b1d01dff28a28c50a6c2bd8275c4bea18c94",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/main/java/unichope/tutor/http/TutorHttpService.java",
+      "tracked": false,
+      "bytes": 1938,
+      "sha256": "5f43ec43b6328ba987201af9d85aeeb1bba490a9eab7070d43680668430e1e11",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/TutorRestPgTest.java",
+      "tracked": false,
+      "bytes": 22011,
+      "sha256": "04e92b8ac53a6764f79bd23b83fef4448d92562c7166b635f073c03f83e4e69d",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/tutor/http/TutorActivationTest.java",
+      "tracked": false,
+      "bytes": 2931,
+      "sha256": "4240c3f0aa878ca4f4605916d6e3bf4f2517e1fcc29cb1450f39e4f5472a89de",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java",
+      "tracked": false,
+      "bytes": 4298,
+      "sha256": "279957f33e73951bfdac9c2d84d50cd5a54091bdfc06f34f77293601ceea4303",
+      "executable": false
+    },
+    {
+      "path": "workflow/REUSE-INVENTORY.md",
+      "tracked": false,
+      "bytes": 12259,
+      "sha256": "14ce5235f0d9c4f6a9ccde890ca069a86accb75f2266a145a9bdb5e011c8d086",
+      "executable": false
+    },
+    {
+      "path": "workflow/handoffs/2026-10-21-developer-tutor-rest.md",
+      "tracked": false,
+      "bytes": 8963,
+      "sha256": "46ba3b1dfcaba1494cbaeef9ec1b776cb407da8a10d839a1aa39ef8cd993bc6e",
+      "executable": false
+    },
+    {
+      "path": "workflow/tutor/evidence/rest-coverage.md",
+      "tracked": false,
+      "bytes": 6852,
+      "sha256": "d10dd8185c1783c2a86b4bf82b66b979606288f58cb2c02e0a5254a0863917c2",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}

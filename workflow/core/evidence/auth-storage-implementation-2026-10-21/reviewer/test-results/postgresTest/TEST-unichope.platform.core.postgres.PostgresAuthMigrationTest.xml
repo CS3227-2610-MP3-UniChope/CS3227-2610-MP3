@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.platform.core.postgres.PostgresAuthMigrationTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-21T15:07:35.795Z" hostname="XuHH.local" time="0.214">
+  <properties/>
+  <testcase name="emptySchemaConstraintsAndDefaults()" classname="unichope.platform.core.postgres.PostgresAuthMigrationTest" time="0.103"/>
+  <testcase name="credentiallessExistingSchemaFailsAtomically()" classname="unichope.platform.core.postgres.PostgresAuthMigrationTest" time="0.111"/>
+  <system-out><![CDATA[23:07:35.813 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.818 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "migration_test_3882c1b15f504d63818cfe43a214d34c"."flyway_schema_history" does not exist yet
+23:07:35.819 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.001s)
+23:07:35.823 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "migration_test_3882c1b15f504d63818cfe43a214d34c"."flyway_schema_history" ...
+23:07:35.832 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "migration_test_3882c1b15f504d63818cfe43a214d34c": << Empty Schema >>
+23:07:35.834 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "migration_test_3882c1b15f504d63818cfe43a214d34c" to version "1 - create core tables"
+23:07:35.849 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "migration_test_3882c1b15f504d63818cfe43a214d34c" to version "2 - add auth account state"
+23:07:35.853 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 2 migrations to schema "migration_test_3882c1b15f504d63818cfe43a214d34c", now at version v2 (execution time 00:00.012s)
+23:07:35.912 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.917 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "migration_test_7fd47c5d6e994460a2eee57e8a9ce37e"."flyway_schema_history" does not exist yet
+23:07:35.918 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:35.922 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "migration_test_7fd47c5d6e994460a2eee57e8a9ce37e"."flyway_schema_history" ...
+23:07:35.932 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "migration_test_7fd47c5d6e994460a2eee57e8a9ce37e": << Empty Schema >>
+23:07:35.933 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "migration_test_7fd47c5d6e994460a2eee57e8a9ce37e" to version "1 - create core tables"
+23:07:35.948 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "migration_test_7fd47c5d6e994460a2eee57e8a9ce37e", now at version v1 (execution time 00:00.012s)
+23:07:35.965 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.972 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.002s)
+23:07:35.979 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "migration_test_7fd47c5d6e994460a2eee57e8a9ce37e": 1
+23:07:35.980 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "migration_test_7fd47c5d6e994460a2eee57e8a9ce37e" to version "2 - add auth account state"
+23:07:35.987 [Test worker] ERROR org.flywaydb.core.internal.command.DbMigrate -- Migration of schema "migration_test_7fd47c5d6e994460a2eee57e8a9ce37e" to version "2 - add auth account state" failed! Changes successfully rolled back.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

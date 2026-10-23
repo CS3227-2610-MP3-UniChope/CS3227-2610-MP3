@@ -1,22 +1,24 @@
 # Tutor Private Notes Increment Plan
 
-Status: Implementation, local PostgreSQL verification, and independent review complete; human acceptance pending.
+Status: Ready for implementation planning; implementation has not started.
 Date: 22 October 2026
 Specification: [NOTE-INCREMENT-SPEC.md](NOTE-INCREMENT-SPEC.md)
 
 ## Sequence
 
-1. [x] Integrate the reviewed lock seam into the feature worktree and compile it
-   with the Tutor note implementation.
-2. [x] Implement Tutor-owned note persistence, validation, authorization, version
-   checks, GET/PUT endpoints, and isolated review-only DDL.
-3. [x] Run the normal unit suite and build the application JAR.
-4. [x] Run the PostgreSQL request, locking, rollback, concurrency, and schema
-   checks against a disposable database; retain the reports and exact command.
-5. [x] Complete a separate source/evidence review against the frozen input and
-   compare implementation/test coverage with the matrix. Review findings were
-   fixed and re-reviewed; the reviewer verified the fresh PostgreSQL reports.
-6. [ ] Present the concrete patch and evidence for human implementation acceptance.
+1. Verify and integrate the reviewed core note-lock seam source revision before
+   Tutor implementation. Confirm the local source matches
+   `workflow/core/NOTE-LOCK-SEAM-SPEC.md` and its tests.
+2. Have an independent test designer reconcile the existing matrix with the
+   resolved note rules, then refresh the frozen input manifest.
+3. Implement test-first in the Tutor role: private-note migration/repository,
+   service authorization and version checks, then GET/PUT endpoints and tests.
+   Keep migrations production-inactive until the shared migration owner agrees.
+4. Run unit/request tests and real PostgreSQL integration/concurrency tests; retain
+   red-first, fresh green, rollback and persistence evidence.
+5. Have a separate reviewer reproduce the tests against frozen inputs and compare
+   each test with the independent matrix. Fix and re-review findings.
+6. Present the concrete patch and evidence for human implementation acceptance.
    Do not record acceptance before the human responds.
 
 ## Proposed source boundary
@@ -49,8 +51,7 @@ Specification: [NOTE-INCREMENT-SPEC.md](NOTE-INCREMENT-SPEC.md)
   lifecycle contract, granting another role access, changing the note visibility
   policy, or adding AI generation.
 
-Human scope review: pending. Implementation acceptance: pending. No commit or
-push has been made. The production migration remains inactive pending coordination.
+Human scope review: pending. Implementation acceptance: pending.
 
 Post-draft architecture findings are resolved for local note design; see the
 [architecture check handoff](../handoffs/2026-10-21-review-tutor-notes-design.md)

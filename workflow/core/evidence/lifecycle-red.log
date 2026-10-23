@@ -1,0 +1,544 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+
+> Task :compileTestJava FAILED
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:27: error: cannot find symbol
+import unichope.platform.core.LifecycleFailure;
+                             ^
+  symbol:   class LifecycleFailure
+  location: package unichope.platform.core
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:37: error: cannot find symbol
+    PostgresConsultationLifecycle lifecycle;
+    ^
+  symbol:   class PostgresConsultationLifecycle
+  location: class LifecyclePgFixture
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:90: error: package LifecycleFailure does not exist
+    LifecycleFailure failure(LifecycleFailure.Code code, Runnable action) {
+                                             ^
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:90: error: cannot find symbol
+    LifecycleFailure failure(LifecycleFailure.Code code, Runnable action) {
+    ^
+  symbol:   class LifecycleFailure
+  location: class LifecyclePgFixture
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:127: error: package LifecycleFailure does not exist
+    void exactlyOne(List<Object> outcomes, LifecycleFailure.Code loser) {
+                                                           ^
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:4: error: package unichope.platform.core.LifecycleFailure does not exist
+import static unichope.platform.core.LifecycleFailure.Code.*;
+                                                     ^
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:59: error: cannot find symbol
+        lifecycle=new PostgresConsultationLifecycle(source,clock);
+                      ^
+  symbol:   class PostgresConsultationLifecycle
+  location: class LifecyclePgFixture
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:92: error: cannot find symbol
+        LifecycleFailure error=assertThrows(LifecycleFailure.class,action::run);
+        ^
+  symbol:   class LifecycleFailure
+  location: class LifecyclePgFixture
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:92: error: cannot find symbol
+        LifecycleFailure error=assertThrows(LifecycleFailure.class,action::run);
+                                            ^
+  symbol:   class LifecycleFailure
+  location: class LifecyclePgFixture
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:107: error: cannot find symbol
+        return workers.submit(() -> { try { return work.call(); } catch(LifecycleFailure failure) { return failure; } });
+                                                                        ^
+  symbol:   class LifecycleFailure
+  location: class LifecyclePgFixture
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:128: error: cannot find symbol
+        assertEquals(1,outcomes.stream().filter(x->!(x instanceof LifecycleFailure)).count());
+                                                                  ^
+  symbol:   class LifecycleFailure
+  location: class LifecyclePgFixture
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:129: error: cannot find symbol
+        assertEquals(List.of(loser),outcomes.stream().filter(LifecycleFailure.class::isInstance).map(LifecycleFailure.class::cast).map(LifecycleFailure::code).toList());
+                                                             ^
+  symbol:   class LifecycleFailure
+  location: class LifecyclePgFixture
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:129: error: cannot find symbol
+        assertEquals(List.of(loser),outcomes.stream().filter(LifecycleFailure.class::isInstance).map(LifecycleFailure.class::cast).map(LifecycleFailure::code).toList());
+                                                                                                     ^
+  symbol:   class LifecycleFailure
+  location: class LifecyclePgFixture
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:129: error: cannot find symbol
+        assertEquals(List.of(loser),outcomes.stream().filter(LifecycleFailure.class::isInstance).map(LifecycleFailure.class::cast).map(LifecycleFailure::code).toList());
+                                                                                                                                       ^
+  symbol:   variable LifecycleFailure
+  location: class LifecyclePgFixture
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:129: error: incompatible types: no instance(s) of type variable(s) E exist so that List<E> conforms to short
+        assertEquals(List.of(loser),outcomes.stream().filter(LifecycleFailure.class::isInstance).map(LifecycleFailure.class::cast).map(LifecycleFailure::code).toList());
+                            ^
+  where E is a type-variable:
+    E extends Object declared in method <E>of(E...)
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:18: error: cannot find symbol
+        failure(INVALID_INPUT,()->lifecycle.createSlot(null,M,START,END));
+                ^
+  symbol:   variable INVALID_INPUT
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:19: error: cannot find symbol
+        failure(INVALID_INPUT,()->lifecycle.createSlot(T1,null,START,END));
+                ^
+  symbol:   variable INVALID_INPUT
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:20: error: cannot find symbol
+        failure(INVALID_TIME,()->lifecycle.createSlot(T1,M,null,END));
+                ^
+  symbol:   variable INVALID_TIME
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:21: error: cannot find symbol
+        failure(INVALID_TIME,()->lifecycle.createSlot(T1,M,START,null));
+                ^
+  symbol:   variable INVALID_TIME
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:25: error: cannot find symbol
+            failure(INVALID_INPUT,()->invoke(operation,null,target,booking));
+                    ^
+  symbol:   variable INVALID_INPUT
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:26: error: cannot find symbol
+            failure(INVALID_INPUT,()->invoke(operation,operation==1||operation==2?S1:T1,null,null));
+                    ^
+  symbol:   variable INVALID_INPUT
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:36: error: cannot find symbol
+            failure(ACCESS_DENIED,()->lifecycle.createSlot(actor,M,START,END));
+                    ^
+  symbol:   variable ACCESS_DENIED
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:37: error: cannot find symbol
+            for(int op=0;op<4;op++) { int operation=op; failure(ACCESS_DENIED,()->invoke(operation,actor,s,b)); }
+                                                                ^
+  symbol:   variable ACCESS_DENIED
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:39: error: cannot find symbol
+        failure(ACCESS_DENIED,()->lifecycle.createSlot(S1,M,START,END));
+                ^
+  symbol:   variable ACCESS_DENIED
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:40: error: cannot find symbol
+        failure(ACCESS_DENIED,()->lifecycle.bookAvailableSlot(T1,target));
+                ^
+  symbol:   variable ACCESS_DENIED
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:41: error: cannot find symbol
+        failure(ACCESS_DENIED,()->lifecycle.cancelAvailableSlot(S1,target));
+                ^
+  symbol:   variable ACCESS_DENIED
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:42: error: cannot find symbol
+        failure(ACCESS_DENIED,()->lifecycle.cancelActiveBooking(T1,booking));
+                ^
+  symbol:   variable ACCESS_DENIED
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:43: error: cannot find symbol
+        failure(ACCESS_DENIED,()->lifecycle.completeActiveBooking(S1,booking));
+                ^
+  symbol:   variable ACCESS_DENIED
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:57: error: cannot find symbol
+        for(Instant start:List.of(N,N.minusSeconds(1))) failure(INVALID_TIME,()->lifecycle.createSlot(T1,M,start,END));
+                                                                ^
+  symbol:   variable INVALID_TIME
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:58: error: cannot find symbol
+        for(Instant end:List.of(START,START.minusSeconds(1))) failure(INVALID_TIME,()->lifecycle.createSlot(T1,M,START,end));
+                                                                      ^
+  symbol:   variable INVALID_TIME
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:64: error: cannot find symbol
+        String absent=failure(MODULE_UNAVAILABLE,()->lifecycle.createSlot(T1,id(999),START,END)).getMessage();
+                              ^
+  symbol:   variable MODULE_UNAVAILABLE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:66: error: cannot find symbol
+        assertEquals(absent,failure(MODULE_UNAVAILABLE,()->lifecycle.createSlot(T1,M,START,END)).getMessage());
+                                    ^
+  symbol:   variable MODULE_UNAVAILABLE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:69: error: cannot find symbol
+        assertEquals(absent,failure(MODULE_UNAVAILABLE,()->lifecycle.createSlot(T1,M,START,END)).getMessage());
+                                    ^
+  symbol:   variable MODULE_UNAVAILABLE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:76: error: cannot find symbol
+            failure(SLOT_OVERLAP,()->lifecycle.createSlot(T1,M,N.plusSeconds(interval[0]),N.plusSeconds(interval[1])));
+                    ^
+  symbol:   variable SLOT_OVERLAP
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:99: error: cannot find symbol
+            failure(INVALID_STATE,()->lifecycle.cancelAvailableSlot(T1,target));
+                    ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:103: error: cannot find symbol
+            failure(INVALID_STATE,()->lifecycle.cancelAvailableSlot(T1,target));
+                    ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:110: error: cannot find symbol
+        assertEquals(failure(NOT_FOUND,()->lifecycle.cancelAvailableSlot(T1,target)).getMessage(),
+                             ^
+  symbol:   variable NOT_FOUND
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:111: error: cannot find symbol
+                failure(NOT_FOUND,()->lifecycle.cancelAvailableSlot(T1,id(999))).getMessage());
+                        ^
+  symbol:   variable NOT_FOUND
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:113: error: cannot find symbol
+        assertEquals(failure(NOT_FOUND,()->lifecycle.cancelActiveBooking(S1,booking)).getMessage(),
+                             ^
+  symbol:   variable NOT_FOUND
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:114: error: cannot find symbol
+                failure(NOT_FOUND,()->lifecycle.cancelActiveBooking(S1,id(999))).getMessage());
+                        ^
+  symbol:   variable NOT_FOUND
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:115: error: cannot find symbol
+        assertEquals(failure(NOT_FOUND,()->lifecycle.completeActiveBooking(T1,booking)).getMessage(),
+                             ^
+  symbol:   variable NOT_FOUND
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:116: error: cannot find symbol
+                failure(NOT_FOUND,()->lifecycle.completeActiveBooking(T1,id(999))).getMessage());
+                        ^
+  symbol:   variable NOT_FOUND
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:129: error: cannot find symbol
+            String current=failure(MODULE_UNAVAILABLE,()->lifecycle.bookAvailableSlot(S1,next)).getMessage();
+                                   ^
+  symbol:   variable MODULE_UNAVAILABLE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:137: error: cannot find symbol
+            clearConsultations(); UUID target=slot(T1,START,END,state); failure(INVALID_STATE,()->lifecycle.bookAvailableSlot(S1,target));
+                                                                                ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:140: error: cannot find symbol
+            clearConsultations(); UUID target=slot(T1,start,END,"AVAILABLE"); failure(INVALID_STATE,()->lifecycle.bookAvailableSlot(S1,target));
+                                                                                      ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:143: error: cannot find symbol
+        failure(INVALID_STATE,()->lifecycle.bookAvailableSlot(S1,target));
+                ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:151: error: cannot find symbol
+            if(status.equals("ACTIVE")&&sameStudent) failure(BOOKING_OVERLAP,()->lifecycle.bookAvailableSlot(S1,target));
+                                                             ^
+  symbol:   variable BOOKING_OVERLAP
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:171: error: cannot find symbol
+            failure(INVALID_STATE,()->lifecycle.cancelActiveBooking(S1,b));
+                    ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:175: error: cannot find symbol
+            failure(INVALID_STATE,()->lifecycle.cancelActiveBooking(S1,b));
+                    ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:179: error: cannot find symbol
+            failure(INVALID_STATE,()->lifecycle.cancelActiveBooking(S1,b));
+                    ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:195: error: cannot find symbol
+            failure(INVALID_STATE,()->lifecycle.completeActiveBooking(T1,b));
+                    ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:203: error: cannot find symbol
+            failure(INVALID_STATE,()->lifecycle.completeActiveBooking(T1,b));
+                    ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:207: error: cannot find symbol
+            failure(INVALID_STATE,()->lifecycle.completeActiveBooking(T1,b));
+                    ^
+  symbol:   variable INVALID_STATE
+  location: class PostgresLifecycleTest
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+53 errors
+
+[Incubating] Problems report is available at: file:///Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileTestJava'.
+> Compilation failed; see the compiler output below.
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:129: error: incompatible types: no instance(s) of type variable(s) E exist so that List<E> conforms to short
+          assertEquals(List.of(loser),outcomes.stream().filter(LifecycleFailure.class::isInstance).map(LifecycleFailure.class::cast).map(LifecycleFailure::code).toList());
+                              ^
+    where E is a type-variable:
+      E extends Object declared in method <E>of(E...)
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:27: error: cannot find symbol
+  import unichope.platform.core.LifecycleFailure;
+                               ^
+    symbol:   class LifecycleFailure
+    location: package unichope.platform.core
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:37: error: cannot find symbol
+      PostgresConsultationLifecycle lifecycle;
+      ^
+    symbol:   class PostgresConsultationLifecycle
+    location: class LifecyclePgFixture
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:90: error: cannot find symbol
+      LifecycleFailure failure(LifecycleFailure.Code code, Runnable action) {
+      ^
+    symbol:   class LifecycleFailure
+    location: class LifecyclePgFixture
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:59: error: cannot find symbol
+          lifecycle=new PostgresConsultationLifecycle(source,clock);
+                        ^
+    symbol:   class PostgresConsultationLifecycle
+    location: class LifecyclePgFixture
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:92: error: cannot find symbol
+          LifecycleFailure error=assertThrows(LifecycleFailure.class,action::run);
+          ^
+    symbol:   class LifecycleFailure
+    location: class LifecyclePgFixture
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:92: error: cannot find symbol
+          LifecycleFailure error=assertThrows(LifecycleFailure.class,action::run);
+                                              ^
+    symbol:   class LifecycleFailure
+    location: class LifecyclePgFixture
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:107: error: cannot find symbol
+          return workers.submit(() -> { try { return work.call(); } catch(LifecycleFailure failure) { return failure; } });
+                                                                          ^
+    symbol:   class LifecycleFailure
+    location: class LifecyclePgFixture
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:128: error: cannot find symbol
+          assertEquals(1,outcomes.stream().filter(x->!(x instanceof LifecycleFailure)).count());
+                                                                    ^
+    symbol:   class LifecycleFailure
+    location: class LifecyclePgFixture
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:129: error: cannot find symbol
+          assertEquals(List.of(loser),outcomes.stream().filter(LifecycleFailure.class::isInstance).map(LifecycleFailure.class::cast).map(LifecycleFailure::code).toList());
+                                                               ^
+    symbol:   class LifecycleFailure
+    location: class LifecyclePgFixture
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:129: error: cannot find symbol
+          assertEquals(List.of(loser),outcomes.stream().filter(LifecycleFailure.class::isInstance).map(LifecycleFailure.class::cast).map(LifecycleFailure::code).toList());
+                                                                                                       ^
+    symbol:   class LifecycleFailure
+    location: class LifecyclePgFixture
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:129: error: cannot find symbol
+          assertEquals(List.of(loser),outcomes.stream().filter(LifecycleFailure.class::isInstance).map(LifecycleFailure.class::cast).map(LifecycleFailure::code).toList());
+                                                                                                                                         ^
+    symbol:   variable LifecycleFailure
+    location: class LifecyclePgFixture
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:18: error: cannot find symbol
+          failure(INVALID_INPUT,()->lifecycle.createSlot(null,M,START,END));
+                  ^
+    symbol:   variable INVALID_INPUT
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:19: error: cannot find symbol
+          failure(INVALID_INPUT,()->lifecycle.createSlot(T1,null,START,END));
+                  ^
+    symbol:   variable INVALID_INPUT
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:20: error: cannot find symbol
+          failure(INVALID_TIME,()->lifecycle.createSlot(T1,M,null,END));
+                  ^
+    symbol:   variable INVALID_TIME
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:21: error: cannot find symbol
+          failure(INVALID_TIME,()->lifecycle.createSlot(T1,M,START,null));
+                  ^
+    symbol:   variable INVALID_TIME
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:25: error: cannot find symbol
+              failure(INVALID_INPUT,()->invoke(operation,null,target,booking));
+                      ^
+    symbol:   variable INVALID_INPUT
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:26: error: cannot find symbol
+              failure(INVALID_INPUT,()->invoke(operation,operation==1||operation==2?S1:T1,null,null));
+                      ^
+    symbol:   variable INVALID_INPUT
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:36: error: cannot find symbol
+              failure(ACCESS_DENIED,()->lifecycle.createSlot(actor,M,START,END));
+                      ^
+    symbol:   variable ACCESS_DENIED
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:37: error: cannot find symbol
+              for(int op=0;op<4;op++) { int operation=op; failure(ACCESS_DENIED,()->invoke(operation,actor,s,b)); }
+                                                                  ^
+    symbol:   variable ACCESS_DENIED
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:39: error: cannot find symbol
+          failure(ACCESS_DENIED,()->lifecycle.createSlot(S1,M,START,END));
+                  ^
+    symbol:   variable ACCESS_DENIED
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:40: error: cannot find symbol
+          failure(ACCESS_DENIED,()->lifecycle.bookAvailableSlot(T1,target));
+                  ^
+    symbol:   variable ACCESS_DENIED
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:41: error: cannot find symbol
+          failure(ACCESS_DENIED,()->lifecycle.cancelAvailableSlot(S1,target));
+                  ^
+    symbol:   variable ACCESS_DENIED
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:42: error: cannot find symbol
+          failure(ACCESS_DENIED,()->lifecycle.cancelActiveBooking(T1,booking));
+                  ^
+    symbol:   variable ACCESS_DENIED
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:43: error: cannot find symbol
+          failure(ACCESS_DENIED,()->lifecycle.completeActiveBooking(S1,booking));
+                  ^
+    symbol:   variable ACCESS_DENIED
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:57: error: cannot find symbol
+          for(Instant start:List.of(N,N.minusSeconds(1))) failure(INVALID_TIME,()->lifecycle.createSlot(T1,M,start,END));
+                                                                  ^
+    symbol:   variable INVALID_TIME
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:58: error: cannot find symbol
+          for(Instant end:List.of(START,START.minusSeconds(1))) failure(INVALID_TIME,()->lifecycle.createSlot(T1,M,START,end));
+                                                                        ^
+    symbol:   variable INVALID_TIME
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:64: error: cannot find symbol
+          String absent=failure(MODULE_UNAVAILABLE,()->lifecycle.createSlot(T1,id(999),START,END)).getMessage();
+                                ^
+    symbol:   variable MODULE_UNAVAILABLE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:66: error: cannot find symbol
+          assertEquals(absent,failure(MODULE_UNAVAILABLE,()->lifecycle.createSlot(T1,M,START,END)).getMessage());
+                                      ^
+    symbol:   variable MODULE_UNAVAILABLE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:69: error: cannot find symbol
+          assertEquals(absent,failure(MODULE_UNAVAILABLE,()->lifecycle.createSlot(T1,M,START,END)).getMessage());
+                                      ^
+    symbol:   variable MODULE_UNAVAILABLE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:76: error: cannot find symbol
+              failure(SLOT_OVERLAP,()->lifecycle.createSlot(T1,M,N.plusSeconds(interval[0]),N.plusSeconds(interval[1])));
+                      ^
+    symbol:   variable SLOT_OVERLAP
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:99: error: cannot find symbol
+              failure(INVALID_STATE,()->lifecycle.cancelAvailableSlot(T1,target));
+                      ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:103: error: cannot find symbol
+              failure(INVALID_STATE,()->lifecycle.cancelAvailableSlot(T1,target));
+                      ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:110: error: cannot find symbol
+          assertEquals(failure(NOT_FOUND,()->lifecycle.cancelAvailableSlot(T1,target)).getMessage(),
+                               ^
+    symbol:   variable NOT_FOUND
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:111: error: cannot find symbol
+                  failure(NOT_FOUND,()->lifecycle.cancelAvailableSlot(T1,id(999))).getMessage());
+                          ^
+    symbol:   variable NOT_FOUND
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:113: error: cannot find symbol
+          assertEquals(failure(NOT_FOUND,()->lifecycle.cancelActiveBooking(S1,booking)).getMessage(),
+                               ^
+    symbol:   variable NOT_FOUND
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:114: error: cannot find symbol
+                  failure(NOT_FOUND,()->lifecycle.cancelActiveBooking(S1,id(999))).getMessage());
+                          ^
+    symbol:   variable NOT_FOUND
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:115: error: cannot find symbol
+          assertEquals(failure(NOT_FOUND,()->lifecycle.completeActiveBooking(T1,booking)).getMessage(),
+                               ^
+    symbol:   variable NOT_FOUND
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:116: error: cannot find symbol
+                  failure(NOT_FOUND,()->lifecycle.completeActiveBooking(T1,id(999))).getMessage());
+                          ^
+    symbol:   variable NOT_FOUND
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:129: error: cannot find symbol
+              String current=failure(MODULE_UNAVAILABLE,()->lifecycle.bookAvailableSlot(S1,next)).getMessage();
+                                     ^
+    symbol:   variable MODULE_UNAVAILABLE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:137: error: cannot find symbol
+              clearConsultations(); UUID target=slot(T1,START,END,state); failure(INVALID_STATE,()->lifecycle.bookAvailableSlot(S1,target));
+                                                                                  ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:140: error: cannot find symbol
+              clearConsultations(); UUID target=slot(T1,start,END,"AVAILABLE"); failure(INVALID_STATE,()->lifecycle.bookAvailableSlot(S1,target));
+                                                                                        ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:143: error: cannot find symbol
+          failure(INVALID_STATE,()->lifecycle.bookAvailableSlot(S1,target));
+                  ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:151: error: cannot find symbol
+              if(status.equals("ACTIVE")&&sameStudent) failure(BOOKING_OVERLAP,()->lifecycle.bookAvailableSlot(S1,target));
+                                                               ^
+    symbol:   variable BOOKING_OVERLAP
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:171: error: cannot find symbol
+              failure(INVALID_STATE,()->lifecycle.cancelActiveBooking(S1,b));
+                      ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:175: error: cannot find symbol
+              failure(INVALID_STATE,()->lifecycle.cancelActiveBooking(S1,b));
+                      ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:179: error: cannot find symbol
+              failure(INVALID_STATE,()->lifecycle.cancelActiveBooking(S1,b));
+                      ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:195: error: cannot find symbol
+              failure(INVALID_STATE,()->lifecycle.completeActiveBooking(T1,b));
+                      ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:203: error: cannot find symbol
+              failure(INVALID_STATE,()->lifecycle.completeActiveBooking(T1,b));
+                      ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:207: error: cannot find symbol
+              failure(INVALID_STATE,()->lifecycle.completeActiveBooking(T1,b));
+                      ^
+    symbol:   variable INVALID_STATE
+    location: class PostgresLifecycleTest
+  Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:90: error: package LifecycleFailure does not exist
+      LifecycleFailure failure(LifecycleFailure.Code code, Runnable action) {
+                                               ^
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/LifecyclePgFixture.java:127: error: package LifecycleFailure does not exist
+      void exactlyOne(List<Object> outcomes, LifecycleFailure.Code loser) {
+                                                             ^
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java:4: error: package unichope.platform.core.LifecycleFailure does not exist
+  import static unichope.platform.core.LifecycleFailure.Code.*;
+                                                       ^
+  53 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 5s
+3 actionable tasks: 1 executed, 2 up-to-date

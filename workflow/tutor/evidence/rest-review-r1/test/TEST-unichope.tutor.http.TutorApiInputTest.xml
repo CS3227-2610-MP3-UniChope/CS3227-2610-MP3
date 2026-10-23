@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.tutor.http.TutorApiInputTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-21T08:11:48.423Z" hostname="XuHH.local" time="0.035">
+  <properties/>
+  <testcase name="rt14ActualStreamLimitIncludesWhitespaceAndIgnoresDeclaredLength()" classname="unichope.tutor.http.TutorApiInputTest" time="0.023"/>
+  <testcase name="rt11QueriesPathsAndDatesAreStrictAndNeverFirstValueWins()" classname="unichope.tutor.http.TutorApiInputTest" time="0.001"/>
+  <testcase name="rt12StrictObjectStringFieldsNoCoercionUnknownDuplicateOrTrailingTokens()" classname="unichope.tutor.http.TutorApiInputTest" time="0.009"/>
+  <testcase name="rt13UtcZOnlyAndExactlyEmptyCancellationObject()" classname="unichope.tutor.http.TutorApiInputTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

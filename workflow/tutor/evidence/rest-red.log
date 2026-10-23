@@ -1,0 +1,296 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Task :compileJava
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/main/java/unichope/platform/ai/AiGateway.java:50: warning: [serial] serializable class Failure has no definition of serialVersionUID
+    final class Failure extends RuntimeException {
+          ^
+1 warning
+
+> Task :processResources UP-TO-DATE
+> Task :classes
+
+> Task :compileTestJava FAILED
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:9: error: package unichope.platform.web does not exist
+import unichope.platform.web.ApiFailure;
+                            ^
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:17: error: cannot find symbol
+        assertEquals(UUID.fromString(module),TutorApiInput.create(request(valid)).moduleId());
+                                             ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:19: error: cannot find symbol
+            assertEquals(400,assertThrows(ApiFailure.class,()->TutorApiInput.create(request(body))).status());
+                                          ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:19: error: cannot find symbol
+            assertEquals(400,assertThrows(ApiFailure.class,()->TutorApiInput.create(request(body))).status());
+                                                               ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:24: error: cannot find symbol
+            assertThrows(ApiFailure.class,()->TutorApiInput.create(request(tree.toString())));
+                         ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:24: error: cannot find symbol
+            assertThrows(ApiFailure.class,()->TutorApiInput.create(request(tree.toString())));
+                                              ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:32: error: cannot find symbol
+            assertThrows(ApiFailure.class,()->TutorApiInput.date(request));
+                         ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:32: error: cannot find symbol
+            assertThrows(ApiFailure.class,()->TutorApiInput.date(request));
+                                              ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:35: error: cannot find symbol
+        assertThrows(ApiFailure.class,()->TutorApiInput.date(repeated));
+                     ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:35: error: cannot find symbol
+        assertThrows(ApiFailure.class,()->TutorApiInput.date(repeated));
+                                          ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:37: error: cannot find symbol
+        assertThrows(ApiFailure.class,()->TutorApiInput.noQuery(unknown));
+                     ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:37: error: cannot find symbol
+        assertThrows(ApiFailure.class,()->TutorApiInput.noQuery(unknown));
+                                          ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:38: error: cannot find symbol
+        for(String id:new String[]{"", "not-a-uuid", "1-1-1-1-1", module+" "}) assertThrows(ApiFailure.class,()->TutorApiInput.id(id));
+                                                                                            ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:38: error: cannot find symbol
+        for(String id:new String[]{"", "not-a-uuid", "1-1-1-1-1", module+" "}) assertThrows(ApiFailure.class,()->TutorApiInput.id(id));
+                                                                                                                 ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:43: error: cannot find symbol
+        assertEquals(Instant.parse("2026-10-21T01:00:00.123Z"),TutorApiInput.create(request(valid.replace("01:00:00Z","01:00:00.123Z"))).startTime());
+                                                               ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:44: error: cannot find symbol
+        for(String time:new String[]{"2026-10-21T01:00:00+00:00","2026-10-21T09:00:00+08:00","2026-10-21T01:00:00","2026-02-30T01:00:00Z"}) assertThrows(ApiFailure.class,()->TutorApiInput.create(request(valid.replace("2026-10-21T01:00:00Z",time))));
+                                                                                                                                                         ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:44: error: cannot find symbol
+        for(String time:new String[]{"2026-10-21T01:00:00+00:00","2026-10-21T09:00:00+08:00","2026-10-21T01:00:00","2026-02-30T01:00:00Z"}) assertThrows(ApiFailure.class,()->TutorApiInput.create(request(valid.replace("2026-10-21T01:00:00Z",time))));
+                                                                                                                                                                              ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:45: error: cannot find symbol
+        TutorApiInput.cancel(request(" {} \n"));
+        ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:46: error: cannot find symbol
+        for(String body:new String[]{"", "null", "[]", "1", "{\"status\":\"CANCELLED\"}"}) assertThrows(ApiFailure.class,()->TutorApiInput.cancel(request(body)));
+                                                                                                        ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:46: error: cannot find symbol
+        for(String body:new String[]{"", "null", "[]", "1", "{\"status\":\"CANCELLED\"}"}) assertThrows(ApiFailure.class,()->TutorApiInput.cancel(request(body)));
+                                                                                                                             ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:48: error: cannot find symbol
+        assertEquals(415,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(unsupported)).status());
+                                      ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:48: error: cannot find symbol
+        assertEquals(415,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(unsupported)).status());
+                                                           ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:53: error: cannot find symbol
+        TutorApiInput.cancel(request("{}"+" ".repeat(65534)));
+        ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:56: error: cannot find symbol
+        assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(tooLarge)).status());
+                                      ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:56: error: cannot find symbol
+        assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(tooLarge)).status());
+                                                           ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:59: error: cannot find symbol
+        assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(multi)).status());
+                                      ^
+  symbol:   class ApiFailure
+  location: class TutorApiInputTest
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:59: error: cannot find symbol
+        assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(multi)).status());
+                                                           ^
+  symbol:   variable TutorApiInput
+  location: class TutorApiInputTest
+27 errors
+
+[Incubating] Problems report is available at: file:///Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileTestJava'.
+> Compilation failed; see the compiler output below.
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:17: error: cannot find symbol
+          assertEquals(UUID.fromString(module),TutorApiInput.create(request(valid)).moduleId());
+                                               ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:19: error: cannot find symbol
+              assertEquals(400,assertThrows(ApiFailure.class,()->TutorApiInput.create(request(body))).status());
+                                            ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:19: error: cannot find symbol
+              assertEquals(400,assertThrows(ApiFailure.class,()->TutorApiInput.create(request(body))).status());
+                                                                 ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:24: error: cannot find symbol
+              assertThrows(ApiFailure.class,()->TutorApiInput.create(request(tree.toString())));
+                           ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:24: error: cannot find symbol
+              assertThrows(ApiFailure.class,()->TutorApiInput.create(request(tree.toString())));
+                                                ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:32: error: cannot find symbol
+              assertThrows(ApiFailure.class,()->TutorApiInput.date(request));
+                           ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:32: error: cannot find symbol
+              assertThrows(ApiFailure.class,()->TutorApiInput.date(request));
+                                                ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:35: error: cannot find symbol
+          assertThrows(ApiFailure.class,()->TutorApiInput.date(repeated));
+                       ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:35: error: cannot find symbol
+          assertThrows(ApiFailure.class,()->TutorApiInput.date(repeated));
+                                            ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:37: error: cannot find symbol
+          assertThrows(ApiFailure.class,()->TutorApiInput.noQuery(unknown));
+                       ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:37: error: cannot find symbol
+          assertThrows(ApiFailure.class,()->TutorApiInput.noQuery(unknown));
+                                            ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:38: error: cannot find symbol
+          for(String id:new String[]{"", "not-a-uuid", "1-1-1-1-1", module+" "}) assertThrows(ApiFailure.class,()->TutorApiInput.id(id));
+                                                                                              ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:38: error: cannot find symbol
+          for(String id:new String[]{"", "not-a-uuid", "1-1-1-1-1", module+" "}) assertThrows(ApiFailure.class,()->TutorApiInput.id(id));
+                                                                                                                   ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:43: error: cannot find symbol
+          assertEquals(Instant.parse("2026-10-21T01:00:00.123Z"),TutorApiInput.create(request(valid.replace("01:00:00Z","01:00:00.123Z"))).startTime());
+                                                                 ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:44: error: cannot find symbol
+          for(String time:new String[]{"2026-10-21T01:00:00+00:00","2026-10-21T09:00:00+08:00","2026-10-21T01:00:00","2026-02-30T01:00:00Z"}) assertThrows(ApiFailure.class,()->TutorApiInput.create(request(valid.replace("2026-10-21T01:00:00Z",time))));
+                                                                                                                                                           ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:44: error: cannot find symbol
+          for(String time:new String[]{"2026-10-21T01:00:00+00:00","2026-10-21T09:00:00+08:00","2026-10-21T01:00:00","2026-02-30T01:00:00Z"}) assertThrows(ApiFailure.class,()->TutorApiInput.create(request(valid.replace("2026-10-21T01:00:00Z",time))));
+                                                                                                                                                                                ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:45: error: cannot find symbol
+          TutorApiInput.cancel(request(" {} \n"));
+          ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:46: error: cannot find symbol
+          for(String body:new String[]{"", "null", "[]", "1", "{\"status\":\"CANCELLED\"}"}) assertThrows(ApiFailure.class,()->TutorApiInput.cancel(request(body)));
+                                                                                                          ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:46: error: cannot find symbol
+          for(String body:new String[]{"", "null", "[]", "1", "{\"status\":\"CANCELLED\"}"}) assertThrows(ApiFailure.class,()->TutorApiInput.cancel(request(body)));
+                                                                                                                               ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:48: error: cannot find symbol
+          assertEquals(415,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(unsupported)).status());
+                                        ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:48: error: cannot find symbol
+          assertEquals(415,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(unsupported)).status());
+                                                             ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:53: error: cannot find symbol
+          TutorApiInput.cancel(request("{}"+" ".repeat(65534)));
+          ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:56: error: cannot find symbol
+          assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(tooLarge)).status());
+                                        ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:56: error: cannot find symbol
+          assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(tooLarge)).status());
+                                                             ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:59: error: cannot find symbol
+          assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(multi)).status());
+                                        ^
+    symbol:   class ApiFailure
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:59: error: cannot find symbol
+          assertEquals(413,assertThrows(ApiFailure.class,()->TutorApiInput.cancel(multi)).status());
+                                                             ^
+    symbol:   variable TutorApiInput
+    location: class TutorApiInputTest
+  /Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/test/java/unichope/tutor/http/TutorApiInputTest.java:9: error: package unichope.platform.web does not exist
+  import unichope.platform.web.ApiFailure;
+                              ^
+  27 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 5s
+3 actionable tasks: 2 executed, 1 up-to-date

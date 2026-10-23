@@ -1,0 +1,186 @@
+[
+  {
+    "path": "src/backend/src/main/java/unichope/UnichopeApplication.java",
+    "sha256": "4847ae7b827a409ad89ebe0328ea715e419e2008dfaa4ea3f141099fe6ec80aa"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/ai/AiGateway.java",
+    "sha256": "610c106b4f9d74f70cd40bcfad4b47403ba9be1c37a56aa473f67016f8c268f8"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/ai/FakeProvider.java",
+    "sha256": "91ddb6c8ee1915edfa6be47c1d29f37917ade55b668ee974e53c033a8da83f01"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/ConsultationLifecycle.java",
+    "sha256": "3065c2c803e6f5b10fe5a7ed17606e1066a8ea4a2897358fe1140e41ce7610fe"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/LifecycleFailure.java",
+    "sha256": "0025872720e4d05ed0d8859f9e9e7700504c59d0dd901d76e5411d7189771dd4"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/Validation.java",
+    "sha256": "eb79c48190b1eea623188c72d8a928bc4bc9e5e920fff7f9847fde0454e2bcf1"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/Booking.java",
+    "sha256": "e5bc4c90e75c2edabe6a225df1aff47ce8f27e05fc588adf341f7d612d7a138f"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/BookingStatus.java",
+    "sha256": "6154c1e1bf0229b8629bf93175d2d85e6314708bc0b3e458cd25e8d0da1b4e3e"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/ConsultationSlot.java",
+    "sha256": "0e6cecc8d998e62ebba669dbe3a4d5cbe46137068d56a3b35b99291247b65513"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/consultation/SlotStatus.java",
+    "sha256": "bbbef164ee5633acf8901484e77b5c8edb0681423149a088aa914d70a99fe905"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/module/Module.java",
+    "sha256": "d14cf54c4be866890f7cab607a41252539a12854630506a01f7503bcbb77a57c"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/module/TutorModule.java",
+    "sha256": "1f282646f9a1f71f0a8005842f81faa9d126edb8131c8d7a5767496b096faa95"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/user/Admin.java",
+    "sha256": "fec5714e6bca91bd276c0ae4e3c90c4a6471eb567b6406f5b569902e58289f6b"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/user/Role.java",
+    "sha256": "f5f02dcc0b95f4a37831745cd6a653a8f7f287c5988ae52cd16567760298c0a0"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/user/Student.java",
+    "sha256": "a3b3fbfa5107ad60540ab3af29fdfa043facc431a2ea64ac8b9377d5a335d9a3"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/user/Tutor.java",
+    "sha256": "bae579cad5d7d10bca83bea628cb64ee916e95668e37e014cabe468c2203d7af"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/model/user/User.java",
+    "sha256": "8e4328a79d7f03a882a877848a267a8d385f975f07bf565023b6dc20add09a23"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresBookingRepository.java",
+    "sha256": "236c06efac26f64f6e68915f772a1640ad7467d0c5c940dedfe16db2a1042956"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresConsultationLifecycle.java",
+    "sha256": "f19a094eafe78f76a8e1ba551b9579033a1210b068e67d5f4ec91cda49cf8d45"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresModuleRepository.java",
+    "sha256": "d21cbbbfe80f1a7c5aa2dbaf69fa8fff8f44c0a3e5a8d6baedfbbb3aeaf1ae41"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresSlotRepository.java",
+    "sha256": "569b40e207491139dd83d171c44e07bc2acbebca5308cb726c51c9a44545e51c"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresUserRepository.java",
+    "sha256": "588582d19bdef47b075c12d3ca027b1fc324dc7ed4d452c60c2fe9347e85a60d"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/repository/BookingRepository.java",
+    "sha256": "987cd2ea90dc3bbb216995609392e1442fd27e8525872c364e15a86be424feef"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/repository/ModuleRepository.java",
+    "sha256": "4f5a91d7068ca433c982531badaadedbf10e4e8658e4aa8b991151fdc7c26db5"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/repository/SlotRepository.java",
+    "sha256": "388083f84a2947aa67955394a0b50d70140b8797eb0f638e87263f4cee43f1d5"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/core/repository/UserRepository.java",
+    "sha256": "deedd769480af9d03dd179fce8f79c074db40c26af440b539e090eb3181848fa"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/web/ApiErrors.java",
+    "sha256": "6aa5443b7e4b3c72873f171f6389aa5c7044228e3751456e85b6137723cb747e"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/web/ApiFailure.java",
+    "sha256": "bd16db4d71195b1a368c5f6845a4f847f0521c484056a00fe584be4f86dd8985"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/web/ApiResponseFilter.java",
+    "sha256": "b2370996d181fce14aa990b98b32442179557ff4129e0dd0f3dd339525c83600"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/platform/web/ApiSecurityConfiguration.java",
+    "sha256": "710ac08304ff6f6c88c9b5359cba7c6a3aae890a4ca936f058c479a44beae357"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/AssignedModule.java",
+    "sha256": "68ab3bb44ac733d3205f6369a6240049b22e41151a5f57f519898bed9a9c312d"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/CurrentActorProvider.java",
+    "sha256": "678bb180df4e3768fd83c9d6040d90233f8719aadc14f38acd00bd449b94615d"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/ModuleOption.java",
+    "sha256": "9288c5891a52d1a71f441ef14fc14c85dea929d77d95449cd117d17724aee540"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/PostgresTutorReadRepository.java",
+    "sha256": "51d22651bdf066dc5743b7ce4f0fe76e249198b2fd8169b5577110a463a8bf97"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/SlotView.java",
+    "sha256": "186f5cf7a82b285b798ecf04ef467e4bad941c2e8f85ae63c31922956403c212"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/TutorAccess.java",
+    "sha256": "eb9ca8c386aea7c01d16cef29864079b26a1716181670a35462249b9121be5a2"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/TutorAccessDeniedException.java",
+    "sha256": "62ad6c8cea3e01d16568da473c4cdbf7b8320b0e51abaa60136e03537a2d06e9"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/TutorAccount.java",
+    "sha256": "dea362dcb615860122599650cd6ee0e29d80e6b017eb28eebd6a7db2018f2559"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/TutorReadRepository.java",
+    "sha256": "6aadb53c9735ce5f3d18063c1c3542118dcc924c4fa983ee6569b28368500bfe"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/TutorReadService.java",
+    "sha256": "aaa3b0d161726410189aea6904b8bcf5dbfe241b2e9fee7d8d1bcbae08f7780c"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/TutorSlot.java",
+    "sha256": "1fe6a3b13391fa4c75dc3dc59613091ea712c41610526d8ead3be98e5e8c0d14"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/http/TutorApiConfiguration.java",
+    "sha256": "479c6a0072c5b87f8a30d93de29627b98aef9bddb7ca4a3097456a31f7cdef3c"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/http/TutorApiInput.java",
+    "sha256": "5aaf020b2ffaa792bbfe9384634777f45a299563820e171026bc34ef1fc992b6"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/http/TutorController.java",
+    "sha256": "8a7dd17d0cd0ae34859b876a1919d47c6c6be3d651e76ea6971cabdf7d7f2279"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/http/TutorExceptionHandler.java",
+    "sha256": "4ddf47d622096a86573954649577b1d01dff28a28c50a6c2bd8275c4bea18c94"
+  },
+  {
+    "path": "src/backend/src/main/java/unichope/tutor/http/TutorHttpService.java",
+    "sha256": "5f43ec43b6328ba987201af9d85aeeb1bba490a9eab7070d43680668430e1e11"
+  }
+]

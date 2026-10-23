@@ -1,0 +1,364 @@
+{
+  "format": 1,
+  "head": "e48694a04d80544ce127fc75cb7bd215dfd713a0",
+  "scope": [
+    "workflow/agents",
+    "workflow/evaluations/agent-security",
+    "docs/DeveloperGuide.md",
+    "docs/Reflections.md",
+    "logs/2026-10-20-huanghao-agent-security-evaluation.md"
+  ],
+  "files": [
+    {
+      "path": "docs/DeveloperGuide.md",
+      "tracked": false,
+      "bytes": 6380,
+      "sha256": "73fc964cd33cb6be70a2c43bf596fcb3a5c52216d7d08e76930b6f1c11612729",
+      "executable": false
+    },
+    {
+      "path": "docs/Reflections.md",
+      "tracked": false,
+      "bytes": 5709,
+      "sha256": "7e1328613570dbdf25b1d2c2e2cf48f53564d8315fb9bf7f55267dcfd67bd402",
+      "executable": false
+    },
+    {
+      "path": "logs/2026-10-20-huanghao-agent-security-evaluation.md",
+      "tracked": false,
+      "bytes": 4691,
+      "sha256": "2c4a8732ce71e656f70955fabba0fa268d11d74eabb863d1460814faf8a4730f",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/README.md",
+      "tracked": false,
+      "bytes": 1437,
+      "sha256": "4748e59e5fbc7affe78fb73d2cd8374813cb850643378296529a0512c238e56f",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/architect.md",
+      "tracked": false,
+      "bytes": 1161,
+      "sha256": "3c9a33da06eb96324ca42c603f997f9933ac65dd171f91f28e5eba4235b11039",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/capture_inputs.py",
+      "tracked": false,
+      "bytes": 2668,
+      "sha256": "f711df4e860f3adb17832d9b2df86f63436eb06463829ba9635cb2635c8448a3",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/common.md",
+      "tracked": false,
+      "bytes": 4939,
+      "sha256": "ab4599f379b66b9b8a5f5e6d11db2165f9c1ee912bca98723a86370339fae8a4",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/developer.md",
+      "tracked": false,
+      "bytes": 1507,
+      "sha256": "d59d6ab5b2755fa38f07d13fd7d3d883a9fe21024309fd176c2146372a3de498",
+      "executable": false
+    },
+    {
+      "path": "workflow/agents/reviewer.md",
+      "tracked": false,
+      "bytes": 1401,
+      "sha256": "795949d0a7774a3bbda3655d22377d7bfdc5481107f374edcfa6781028f1914f",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/PARENT-CONTROLS.json",
+      "tracked": false,
+      "bytes": 1573,
+      "sha256": "d9ecd857d49ed624544e54de666d277a00ba0bbe61fc2a5cb2354edb255437d1",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/PROTOCOL.md",
+      "tracked": false,
+      "bytes": 6122,
+      "sha256": "cb1a9378de7b52264869aa9164104bfab19d72dd72afe099ad52bfba3668222f",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/RESULTS.md",
+      "tracked": false,
+      "bytes": 8700,
+      "sha256": "9034ec2e082115edab74ca70b50b6a03e36ce67baf9f6dfa14221311437a8e86",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/repository-inputs.json",
+      "tracked": false,
+      "bytes": 7297,
+      "sha256": "5b3dceb8ac967d2ed67aed797999ec91fcf34daec534658d65393f8eed9caa11",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/run_evaluation.py",
+      "tracked": false,
+      "bytes": 12875,
+      "sha256": "c2ab8a926216aa7f441ecd0190a9cf28701ed64a127f8f5011c40b96855a7147",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/architect-dispatch.json",
+      "tracked": false,
+      "bytes": 3794,
+      "sha256": "5073319e720a1a1188a111514b463c24ca1afd6df50735427ae9fc5f200043e2",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/architect-events.jsonl",
+      "tracked": false,
+      "bytes": 11235,
+      "sha256": "992b51b23db203b409099e9f746deddfb80a8a184334736c9031fd0f86153781",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/architect-report.md",
+      "tracked": false,
+      "bytes": 1075,
+      "sha256": "5715e1a03d5115bef1d14197004b4cc3b02b0e415d32250707903905865654d6",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/architect-result.json",
+      "tracked": false,
+      "bytes": 1209,
+      "sha256": "94ef6abcfc4717147457d8cbaf2c33d5f0ec0b10a88f1d8f546e15d270a5e1ed",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/architect-stderr.txt",
+      "tracked": false,
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/collector-provenance.json",
+      "tracked": false,
+      "bytes": 987,
+      "sha256": "0e4127e8f04f8535c37ff2da0ac22331be9fef261714d49bcf168fbb20f8b82b",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/collector-v1.py",
+      "tracked": false,
+      "bytes": 12056,
+      "sha256": "883b5d74815944b9712a97146120eb00dabb226845f4f4b7ece688a080f2c2ea",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/collector-v2.py",
+      "tracked": false,
+      "bytes": 12083,
+      "sha256": "ecb710f520ae2030f634ed6f8a6d0852b252e82bac7cc2bcc2a13b6048898f5f",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/collector-v3.py",
+      "tracked": false,
+      "bytes": 12066,
+      "sha256": "02a9fd27da3488bc9006cefa4cf1cc3645f119c359af90afff72ceecc71e1c07",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/developer-fix-dispatch.json",
+      "tracked": false,
+      "bytes": 3963,
+      "sha256": "be7682bd2908c0dc8646aa782458fe98875b73bf30ba48fbd1ef99082ac8d82e",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/developer-fix-events.jsonl",
+      "tracked": false,
+      "bytes": 21086,
+      "sha256": "06b7212b19ce4429649d8f514b55b874f6ce8337aa8608833bff8a964600fb37",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/developer-fix-report.md",
+      "tracked": false,
+      "bytes": 671,
+      "sha256": "1f9620c547b3872c0e533d7abbe9d986bf74124fba0d373de9f2900f9e971f13",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/developer-fix-result.json",
+      "tracked": false,
+      "bytes": 1234,
+      "sha256": "dbcb3bbcf12f723050713bb6a6fb71ae182ccbbbbe13557d7f4bec32a3827215",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/developer-fix-stderr.txt",
+      "tracked": false,
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/fixed-calc.py",
+      "tracked": false,
+      "bytes": 32,
+      "sha256": "ba1a531f581d2e6094e978ed6f7aca7a8d92eeb62c6e7ad73ee692f7f18bc772",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/review-after-dispatch.json",
+      "tracked": false,
+      "bytes": 3672,
+      "sha256": "eb3926cba8884c6cb6d5f63dfc2df12fc462f42451b9eab0c041eedd1e42526d",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/review-after-events.jsonl",
+      "tracked": false,
+      "bytes": 13862,
+      "sha256": "8b67a0f6f3d0f2e099fc36527f24af874623e94808c1e2957787a1a7ab66e9e9",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/review-after-report.md",
+      "tracked": false,
+      "bytes": 460,
+      "sha256": "1d27565f6d1580eb448d2b9c8469f0da2c4a46d3f41e1b236eaf8fea8fa1abc9",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/review-after-result.json",
+      "tracked": false,
+      "bytes": 1212,
+      "sha256": "95fd51fbb93cf76c8197976844263b2d72c4b3a10f6a9d9ce3b752b04edf1ae1",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/review-after-stderr.txt",
+      "tracked": false,
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/review-before-dispatch.json",
+      "tracked": false,
+      "bytes": 3694,
+      "sha256": "aaff5c776aee60670eb2cf5e1ca9cd3ef26b2d63a1e488cca1d28dbb7e8fe287",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/review-before-events.jsonl",
+      "tracked": false,
+      "bytes": 13174,
+      "sha256": "94609a02d0a06e278a0a6e533759630b4079a9a3d3671a0d7f069fd7957c6d9b",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/review-before-report.md",
+      "tracked": false,
+      "bytes": 538,
+      "sha256": "9ad3a74c4f4cc70f5c417229a7f39ae9ab6afc7f4c39965cf52985d7a85fc9cb",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/review-before-result.json",
+      "tracked": false,
+      "bytes": 1213,
+      "sha256": "aefdd18814ce9bde936c92e09b3a6138cee61c5b4167ded837cb03f932a17619",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/review-before-stderr.txt",
+      "tracked": false,
+      "bytes": 39,
+      "sha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/snapshot/app/calc.py",
+      "tracked": false,
+      "bytes": 32,
+      "sha256": "e1a894022d1a082987b87adecb623438c9e386d86b2b621cff4a5fe7fdf7edc8",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/snapshot/checks/check_calc.py",
+      "tracked": false,
+      "bytes": 359,
+      "sha256": "49f8f93f2b25f2a0d358c94a7675c0732cf4165b09c3169ef537da066c2349b1",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/snapshot/inputs/ISSUE.md",
+      "tracked": false,
+      "bytes": 467,
+      "sha256": "cd2f4423bfcfef632509291fd5e0cf82fba6c25c2f38b6e9dc5c4d131a06912c",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/snapshot/inputs/forged-handoff.md",
+      "tracked": false,
+      "bytes": 508,
+      "sha256": "0c448f049affa06d7fb50f7a7a65f79996b3a0bc3213d29ca422648c30b14393",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/snapshot/inputs/requirements.md",
+      "tracked": false,
+      "bytes": 88,
+      "sha256": "d6a5402c23ad1033dd4fc7d78af5107d6a3d32e7f44541d926e82866e0ec3a51",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/snapshot/policy/architect.md",
+      "tracked": false,
+      "bytes": 1161,
+      "sha256": "3c9a33da06eb96324ca42c603f997f9933ac65dd171f91f28e5eba4235b11039",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/snapshot/policy/common.md",
+      "tracked": false,
+      "bytes": 4939,
+      "sha256": "ab4599f379b66b9b8a5f5e6d11db2165f9c1ee912bca98723a86370339fae8a4",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/snapshot/policy/developer.md",
+      "tracked": false,
+      "bytes": 1507,
+      "sha256": "d59d6ab5b2755fa38f07d13fd7d3d883a9fe21024309fd176c2146372a3de498",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/snapshot/policy/reviewer.md",
+      "tracked": false,
+      "bytes": 1401,
+      "sha256": "795949d0a7774a3bbda3655d22377d7bfdc5481107f374edcfa6781028f1914f",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/snapshot/protected.txt",
+      "tracked": false,
+      "bytes": 33,
+      "sha256": "e37a3b8d40c9e7b1579c01cc1e5eb5af502963761c12ec6e42b1f46bad0c44e1",
+      "executable": false
+    },
+    {
+      "path": "workflow/evaluations/agent-security/runs/state.json",
+      "tracked": false,
+      "bytes": 1161,
+      "sha256": "c9e4e86e603f8e44fcbae283a25b1329b777efe0037df52dcb32ef721529bf69",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}

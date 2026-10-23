@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.platform.core.postgres.PostgresLifecycleTest" tests="3" skipped="0" failures="3" errors="0" timestamp="2026-10-21T07:11:18.663Z" hostname="XuHH.local" time="0.697">
+  <properties/>
+  <testcase name="r1SlotNanosecondsAreTruncatedBeforeValidationAndMatchPersistedValues()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.455">
+    <failure message="org.opentest4j.AssertionFailedError: expected: &lt;2026-10-21T01:00:00.123456Z&gt; but was: &lt;2026-10-21T01:00:00.123456789Z&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;2026-10-21T01:00:00.123456Z&gt; but was: &lt;2026-10-21T01:00:00.123456789Z&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:184)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:179)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1188)
+	at app//unichope.platform.core.postgres.PostgresLifecycleTest.r1SlotNanosecondsAreTruncatedBeforeValidationAndMatchPersistedValues(PostgresLifecycleTest.java:215)
+</failure>
+  </testcase>
+  <testcase name="r1BookingCreatedAtWithNanosecondClockMatchesPersistedMicroseconds()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.124">
+    <failure message="org.opentest4j.AssertionFailedError: expected: &lt;2026-10-21T00:00:00.123456Z&gt; but was: &lt;2026-10-21T00:00:00.123456789Z&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;2026-10-21T00:00:00.123456Z&gt; but was: &lt;2026-10-21T00:00:00.123456789Z&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:184)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:179)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1188)
+	at app//unichope.platform.core.postgres.PostgresLifecycleTest.r1BookingCreatedAtWithNanosecondClockMatchesPersistedMicroseconds(PostgresLifecycleTest.java:236)
+</failure>
+  </testcase>
+  <testcase name="r1SubmicroFutureAndCollapsedIntervalsAreTypedInvalidTimeWithoutWrites()" classname="unichope.platform.core.postgres.PostgresLifecycleTest" time="0.117">
+    <failure message="org.opentest4j.AssertionFailedError: Expected unichope.platform.core.LifecycleFailure to be thrown, but nothing was thrown." type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: Expected unichope.platform.core.LifecycleFailure to be thrown, but nothing was thrown.
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:159)
+	at app//org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:74)
+	at app//org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at app//org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3223)
+	at app//unichope.platform.core.postgres.LifecyclePgFixture.failure(LifecyclePgFixture.java:91)
+	at app//unichope.platform.core.postgres.PostgresLifecycleTest.r1SubmicroFutureAndCollapsedIntervalsAreTypedInvalidTimeWithoutWrites(PostgresLifecycleTest.java:224)
+</failure>
+  </testcase>
+  <system-out><![CDATA[15:11:18.928 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:11:18.949 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_85c06525f7ac4c0d818f9b2633efcd84"."flyway_schema_history" does not exist yet
+15:11:18.950 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.008s)
+15:11:18.957 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_85c06525f7ac4c0d818f9b2633efcd84"."flyway_schema_history" ...
+15:11:18.977 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_85c06525f7ac4c0d818f9b2633efcd84": << Empty Schema >>
+15:11:18.985 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_85c06525f7ac4c0d818f9b2633efcd84" to version "1 - create core tables"
+15:11:19.007 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_85c06525f7ac4c0d818f9b2633efcd84", now at version v1 (execution time 00:00.013s)
+15:11:19.141 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:11:19.147 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_a08f3073e667420896194b8a71bb9629"."flyway_schema_history" does not exist yet
+15:11:19.147 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.002s)
+15:11:19.151 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_a08f3073e667420896194b8a71bb9629"."flyway_schema_history" ...
+15:11:19.163 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_a08f3073e667420896194b8a71bb9629": << Empty Schema >>
+15:11:19.167 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_a08f3073e667420896194b8a71bb9629" to version "1 - create core tables"
+15:11:19.183 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_a08f3073e667420896194b8a71bb9629", now at version v1 (execution time 00:00.012s)
+15:11:19.261 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:11:19.267 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_501427ab9dbb4533910100247182d32b"."flyway_schema_history" does not exist yet
+15:11:19.268 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:11:19.272 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_501427ab9dbb4533910100247182d32b"."flyway_schema_history" ...
+15:11:19.282 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_501427ab9dbb4533910100247182d32b": << Empty Schema >>
+15:11:19.284 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_501427ab9dbb4533910100247182d32b" to version "1 - create core tables"
+15:11:19.300 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_501427ab9dbb4533910100247182d32b", now at version v1 (execution time 00:00.012s)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

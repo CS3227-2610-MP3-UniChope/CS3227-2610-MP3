@@ -1,0 +1,31 @@
+# Requirement case mapping
+
+25 AS case groups are scenario groups, not JUnit test counts.
+
+- AS-01: PostgresAuthMigrationTest.emptySchemaConstraintsAndDefaults + baseline-sha256/protected-preservation review
+- AS-02: PostgresAuthMigrationTest.credentiallessExistingSchemaFailsAtomically
+- AS-03: PostgresAuthMigrationTest.emptySchemaConstraintsAndDefaults
+- AS-04: PostgresAccountStorageTest.registerIsAtomicCanonicalAndSafe; PostgresAccountFailureTest.creationBoundsRequiredInputsAndPublicProjection; explicit SQL projection review
+- AS-05: AccountInputTest.snapshotDiagnosticsAreRedactedAndNotBeanAccessors; PostgresAccountFailureTest.deferredFailureRollsBackAllWritesAndRedactsDetails; API/source review
+- AS-06: PostgresAccountStorageTest.registerIsAtomicCanonicalAndSafe
+- AS-07: AccountInputTest.dotlessAndUnicodeEmailPolicy; PostgresAccountFailureTest.creationBoundsRequiredInputsAndPublicProjection; unicodeCanonicalAndLegacyLookup
+- AS-08: PostgresAccountFailureTest.creationBoundsRequiredInputsAndPublicProjection; PostgresAccountStorageTest.guardsProvisioningAndTargetState
+- AS-09: PostgresAccountConcurrencyTest.duplicateRegistrationAndProvisionRaces
+- AS-10: PostgresAccountFailureTest.unicodeCanonicalAndLegacyLookup; collationDependentExtraEquivalenceNeverReturnsWrongCanonicalIdentity
+- AS-11: PostgresAccountStorageTest.guardsProvisioningAndTargetState
+- AS-12: PostgresAccountStorageTest.guardsProvisioningAndTargetState; historicalBookingsDoNotBlockAndInactiveAdminCannotProvision; PostgresAccountConcurrencyTest.staleActorAndConfirmationRecheckedAfterLockWait
+- AS-13: PostgresAccountStorageTest.guardsProvisioningAndTargetState
+- AS-14: PostgresAccountStorageTest.blockersRetainHistoryAndReactivationWorks; historicalBookingsDoNotBlockAndInactiveAdminCannotProvision
+- AS-15: PostgresAccountStorageTest.blockersRetainHistoryAndReactivationWorks; historicalBookingsDoNotBlockAndInactiveAdminCannotProvision; tutorFutureSlotUsesActualClockAcrossSubmicrosecondBoundary
+- AS-16: PostgresAccountStorageTest.generationAndOverflow; blockersRetainHistoryAndReactivationWorks
+- AS-17: PostgresAccountConcurrencyTest.repeatedDeactivationIncrementsOnce; PostgresAccountStorageTest.generationAndOverflow
+- AS-18: PostgresAccountConcurrencyTest.studentBookingAndDeactivationBothOrders; tutorSlotCreationBothOrders
+- AS-19: PostgresAccountConcurrencyTest.tutorBookingRaceDeniesDeactivationInBothOrders; clockIsReadAfterLockWait
+- AS-20: PostgresAccountStorageTest.confirmationChecksEveryObservedDimension
+- AS-21: PostgresAccountConcurrencyTest.staleActorAndConfirmationRecheckedAfterLockWait
+- AS-22: PostgresAccountStorageTest.confirmationChecksEveryObservedDimension; PostgresAccountConcurrencyTest.confirmationThenRevocationRequiresFreshAuthCheck
+- AS-23: PostgresAccountFailureTest.deferredFailureRollsBackAllWritesAndRedactsDetails; unrelatedUniqueViolationIsStorageFailure
+- AS-24: PostgresAccountConcurrencyTest.timeoutAndFreshTransactionRecovery
+- AS-25: final-verified-green.log; final-counts.json; reports; baseline-sha256.json; protected-preservation.json; independent reviewer reproduced 6 unit + 57 PostgreSQL tests (see sibling reviewer evidence)
+
+The collation test selects its oracle from actual PostgreSQL lower(İ), and checks generic extra-equivalence rejection or independent canonical identity as applicable. No Java/PG folding equivalence is assumed. Source review supplements finite race executions. Snapshot safety excludes deliberate custom serializers or explicit encodedHash accessor use: callers must keep this internal type out of DTOs. Auth trust/session policy and production migration readiness are outside these tests.

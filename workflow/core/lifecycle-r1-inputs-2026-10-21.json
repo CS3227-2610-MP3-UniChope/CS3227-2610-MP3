@@ -1,0 +1,41 @@
+{
+  "format": 1,
+  "head": "50c6213abdde9ee5063c7f333e448b33ac83d59b",
+  "scope": [
+    "src/backend/src/main/java/unichope/platform/core/postgres/PostgresConsultationLifecycle.java",
+    "src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java",
+    "workflow/core/LIFECYCLE-SPEC.md",
+    "workflow/handoffs/2026-10-21-developer-lifecycle.md"
+  ],
+  "files": [
+    {
+      "path": "src/backend/src/main/java/unichope/platform/core/postgres/PostgresConsultationLifecycle.java",
+      "tracked": false,
+      "bytes": 12080,
+      "sha256": "1c5bc78754937e0a7d4bb9ff2c8ca5090e5fba54ab185a7566f9fae5318e13b7",
+      "executable": false
+    },
+    {
+      "path": "src/backend/src/test/java/unichope/platform/core/postgres/PostgresLifecycleTest.java",
+      "tracked": false,
+      "bytes": 12963,
+      "sha256": "659daee179c47130d361739980d0d701b519a7a46f1b25836d2e069f17f86aa5",
+      "executable": false
+    },
+    {
+      "path": "workflow/core/LIFECYCLE-SPEC.md",
+      "tracked": false,
+      "bytes": 10146,
+      "sha256": "5679d57457510c364a6b8d99d976fd5525ff8dfe999ae6f2910f6eec4bacd8c9",
+      "executable": false
+    },
+    {
+      "path": "workflow/handoffs/2026-10-21-developer-lifecycle.md",
+      "tracked": false,
+      "bytes": 8177,
+      "sha256": "611456389b2c9803f71c41078c553b153b4170c99df4148a5be80f0b85ebbe55",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}

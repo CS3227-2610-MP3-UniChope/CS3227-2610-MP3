@@ -1,0 +1,65 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Task :compileJava
+/Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/src/main/java/unichope/platform/ai/AiGateway.java:50: warning: [serial] serializable class Failure has no definition of serialVersionUID
+    final class Failure extends RuntimeException {
+          ^
+1 warning
+
+> Task :processResources
+> Task :classes
+> Task :resolveMainClassName
+> Task :bootJar
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :test
+
+> Task :postgresTest
+
+TutorRestPgTest > rt05Rt06AllEndpointsUsePrincipalAndFreshStoredRoleInsteadOfAuthorities() FAILED
+    org.opentest4j.AssertionFailedError at TutorRestPgTest.java:260
+
+TutorRestPgTest > rt12Rt13RepresentativeValidationMediaAndRealConflictsHaveSafeResponses() FAILED
+    org.opentest4j.AssertionFailedError at TutorRestPgTest.java:260
+
+TutorRestPgTest > rt14RealRequestBodyBoundaryAndMisleadingDeclaredLength() FAILED
+    org.opentest4j.AssertionFailedError at TutorRestPgTest.java:260
+
+TutorRestPgTest > rt10Rt11IdentitySpoofsQueriesAndInvalidPathsNeverSelectActor() FAILED
+    org.opentest4j.AssertionFailedError at TutorRestPgTest.java:256
+
+TutorRestPgTest > rt08RealCsrfFiltersDenyMissingInvalidAndPermitValidTokensForBothMutations() FAILED
+    org.opentest4j.AssertionFailedError at TutorRestPgTest.java:256
+
+TutorRestPgTest > rt19PostcommitProjectionFailureIs500ButDoesNotRollbackOrRetry() FAILED
+    org.opentest4j.AssertionFailedError at TutorRestPgTest.java:260
+
+TutorRestPgTest > rt09ForeignAndMissingIdsHaveSameSafeNotFoundAndNoWrites() FAILED
+    org.opentest4j.AssertionFailedError at TutorRestPgTest.java:260
+
+TutorRestPgTest > rt17Rt18LifecycleMappingsSafeErrorsAndServerRequestIds() FAILED
+    org.opentest4j.AssertionFailedError at TutorRestPgTest.java:260
+
+TutorRestPgTest > rt15Rt16CreateLocationDetailAndCancelHistoryUseRealLifecycle() FAILED
+    org.opentest4j.AssertionFailedError at TutorRestPgTest.java:256
+
+50 tests completed, 9 failed
+
+> Task :postgresTest FAILED
+
+[Incubating] Problems report is available at: file:///Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':postgresTest'.
+> There were failing tests. See the report at: file:///Users/huanghao/Desktop/hao/Y3S1/CS3227/MP3/CS3227-2610-MP3/src/backend/build/reports/tests/postgresTest/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 25s
+7 actionable tasks: 7 executed

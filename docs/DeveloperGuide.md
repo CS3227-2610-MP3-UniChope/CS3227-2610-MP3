@@ -179,11 +179,14 @@ modules, tutor assignments, booking activity, all-time statistics and the activi
 report assistant. Public Student registration is at `/register`; successful
 registration returns to sign-in. Existing Student routes are unchanged.
 
-The assistant is read only and displays its source snapshot. Fake-provider
+The Admin assistant is read only and displays its source snapshot. Fake-provider
 responses are clearly labelled; the default unavailable AI mode leaves management
 and statistics usable. For a local mocked demonstration only, start the backend
-with profiles `app-api,local` and `--unichope.ai.mode=fake`. Real SoC remains a
-shared-provider dependency. No frontend secrets or provider keys are required.
+with profiles `app-api,local` and `--unichope.ai.mode=fake`. Provider adapters and
+the shared PostgreSQL admission path are implemented and covered with synthetic
+credentials. Live SoCLaaS behavior, actual provider quota accounting, and
+production key routing remain unverified. No frontend secrets or provider keys are
+required.
 
 Frontend CI installs Node 24, runs unit tests and builds the frontend. Run browser
 checks locally with the frontend README commands; port 5173 must be free because
@@ -400,12 +403,13 @@ diagnostic logs.
 
 The gateway is shared, while each role selects authorized context and validates
 task-specific output. Fake mode is explicitly local; production defaults to
-`AI_UNAVAILABLE`. The Student-owned real SoC provider adapter and durable shared
-quotas/budgets are not implemented by this increment. Do not connect an unrestricted
-provider to bypass those controls. Real-model quality and provider resource limits
-remain release dependencies. Manual Tutor notes remain usable while AI is
+`AI_UNAVAILABLE` unless trusted server configuration supplies a provider. The SoC
+adapter and durable shared admission controls are implemented and covered by
+synthetic-key tests. No live SoCLaaS response has been established by those tests;
+model quality, current provider limits, production key routing, and billing-level
+usage accounting remain unverified. Manual Tutor notes remain usable while AI is
 unavailable. Admin reports can render without a provider when no report content is
-needed; nonempty production reports currently return `AI_UNAVAILABLE`.
+needed; nonempty reports require an available provider.
 
 ## 11. Specifications and verification
 
@@ -455,8 +459,10 @@ verification; a documented command is not evidence that it was run.
   replica. Restarting the app invalidates sessions and clears login limits.
 - There is no password reset flow. Initial Tutor password change is mandatory;
   account recovery/provisioning remains an Admin or deployment operation.
-- Real SoC integration and durable shared AI quotas are not available in this
-  increment; fake AI mode is for local development only.
+- Shared SoC provider routing and durable application admission are implemented,
+  but live SoCLaaS behavior, current provider quota compliance, production secret
+  configuration, and provider usage accounting have not been verified. Fake AI
+  mode is for local development only.
 - Runtime V1–V8 migrations do not backfill legacy credentialless review databases.
   Plan and review any existing-data migration before deployment.
 

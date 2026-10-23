@@ -301,7 +301,11 @@ the assignment's required grading branch `master` before release, not silently i
   grounding, quotas, and failures. Never use exact model wording as the oracle.
 - Deployment check: HTTPS, separate resources/keys, no public secrets, durable data.
 
-Use the team's own analyst/developer/reviewer handoffs. Each task records spec
+Use the team's own architect/test-designer/developer/independent-reviewer handoffs.
+Test design derives its oracles from requirements before implementation; independent
+review compares the actual tests against that matrix. Agent-workflow evaluation is
+a separate periodic task, especially after instruction/permission changes, not an
+extra mandatory role on every increment. Each task records spec
 revision, scoped files, acceptance IDs, commands/results, deviations, and human
 verification. No hidden reasoning or raw secrets are required. Detailed task
 sequencing is in the [Tutor Plan](tutor/PLAN.md); all tasks remain pending.

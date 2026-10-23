@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.tutor.PostgresTutorReadTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-21T11:19:26.124Z" hostname="XuHH.local" time="0.277">
+  <properties/>
+  <testcase name="tutorServiceRejectsMissingWrongRoleAndFreshlyDeactivatedAccounts()" classname="unichope.tutor.PostgresTutorReadTest" time="0.12"/>
+  <testcase name="tutorReadsUseRealAssignmentsOwnerScopeSgtDatesAndDeterministicOrder()" classname="unichope.tutor.PostgresTutorReadTest" time="0.157"/>
+  <system-out><![CDATA[19:19:26.141 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+19:19:26.146 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "core_test_d584238a2e9e4099a9485c1b4e9d3740"."flyway_schema_history" does not exist yet
+19:19:26.147 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+19:19:26.150 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "core_test_d584238a2e9e4099a9485c1b4e9d3740"."flyway_schema_history" ...
+19:19:26.160 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "core_test_d584238a2e9e4099a9485c1b4e9d3740": << Empty Schema >>
+19:19:26.162 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "core_test_d584238a2e9e4099a9485c1b4e9d3740" to version "1 - create core tables"
+19:19:26.177 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "core_test_d584238a2e9e4099a9485c1b4e9d3740", now at version v1 (execution time 00:00.011s)
+19:19:26.188 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.002s)
+19:19:26.194 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "core_test_d584238a2e9e4099a9485c1b4e9d3740": 1
+19:19:26.195 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Schema "core_test_d584238a2e9e4099a9485c1b4e9d3740" is up to date. No migration necessary.
+19:19:26.260 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+19:19:26.265 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "core_test_1436a663725c4ebcb2c601174307a8f8"."flyway_schema_history" does not exist yet
+19:19:26.266 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+19:19:26.269 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "core_test_1436a663725c4ebcb2c601174307a8f8"."flyway_schema_history" ...
+19:19:26.279 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "core_test_1436a663725c4ebcb2c601174307a8f8": << Empty Schema >>
+19:19:26.281 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "core_test_1436a663725c4ebcb2c601174307a8f8" to version "1 - create core tables"
+19:19:26.295 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "core_test_1436a663725c4ebcb2c601174307a8f8", now at version v1 (execution time 00:00.011s)
+19:19:26.306 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+19:19:26.312 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "core_test_1436a663725c4ebcb2c601174307a8f8": 1
+19:19:26.312 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Schema "core_test_1436a663725c4ebcb2c601174307a8f8" is up to date. No migration necessary.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

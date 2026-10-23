@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unichope.platform.core.postgres.TutorRestPgTest" tests="14" skipped="0" failures="9" errors="0" timestamp="2026-10-21T07:54:21.176Z" hostname="XuHH.local" time="2.625">
+  <properties/>
+  <testcase name="rt01ModulesAreActiveAssignedExactAndEmpty()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.683"/>
+  <testcase name="rt05Rt06AllEndpointsUsePrincipalAndFreshStoredRoleInsteadOfAuthorities()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.319">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;a1c0b0e6-61b7-4cb4-a842-567d4b83f4ee&quot;} ==&gt; expected: &lt;401&gt; but was: &lt;400&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;a1c0b0e6-61b7-4cb4-a842-567d4b83f4ee&quot;} ==&gt; expected: &lt;401&gt; but was: &lt;400&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.error(TutorRestPgTest.java:260)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.rt05Rt06AllEndpointsUsePrincipalAndFreshStoredRoleInsteadOfAuthorities(TutorRestPgTest.java:111)
+</failure>
+  </testcase>
+  <testcase name="rt12Rt13RepresentativeValidationMediaAndRealConflictsHaveSafeResponses()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.136">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;62fcdea5-4db7-493c-81e5-b6e6ef8c2bd4&quot;} ==&gt; expected: &lt;415&gt; but was: &lt;400&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;62fcdea5-4db7-493c-81e5-b6e6ef8c2bd4&quot;} ==&gt; expected: &lt;415&gt; but was: &lt;400&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.error(TutorRestPgTest.java:260)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.rt12Rt13RepresentativeValidationMediaAndRealConflictsHaveSafeResponses(TutorRestPgTest.java:214)
+</failure>
+  </testcase>
+  <testcase name="rt14RealRequestBodyBoundaryAndMisleadingDeclaredLength()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.144">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;b6c95d28-4579-4e65-ab17-0534942a0e94&quot;} ==&gt; expected: &lt;413&gt; but was: &lt;400&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;b6c95d28-4579-4e65-ab17-0534942a0e94&quot;} ==&gt; expected: &lt;413&gt; but was: &lt;400&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.error(TutorRestPgTest.java:260)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.rt14RealRequestBodyBoundaryAndMisleadingDeclaredLength(TutorRestPgTest.java:175)
+</failure>
+  </testcase>
+  <testcase name="rt21InterleavedSessionsNeverStickToSingletonActor()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.144"/>
+  <testcase name="rt02Rt03UpcomingOwnerStatusOrderingAndSgtDates()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.162"/>
+  <testcase name="rt10Rt11IdentitySpoofsQueriesAndInvalidPathsNeverSelectActor()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.125">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;6e488805-f1df-4b68-a566-a2d5a2d54d22&quot;} ==&gt; expected: &lt;201&gt; but was: &lt;400&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;6e488805-f1df-4b68-a566-a2d5a2d54d22&quot;} ==&gt; expected: &lt;201&gt; but was: &lt;400&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.ok(TutorRestPgTest.java:256)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.rt10Rt11IdentitySpoofsQueriesAndInvalidPathsNeverSelectActor(TutorRestPgTest.java:167)
+</failure>
+  </testcase>
+  <testcase name="rt08RealCsrfFiltersDenyMissingInvalidAndPermitValidTokensForBothMutations()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.126">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;2f7605fd-b630-4026-933c-df90ec321133&quot;} ==&gt; expected: &lt;201&gt; but was: &lt;400&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;2f7605fd-b630-4026-933c-df90ec321133&quot;} ==&gt; expected: &lt;201&gt; but was: &lt;400&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.ok(TutorRestPgTest.java:256)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.rt08RealCsrfFiltersDenyMissingInvalidAndPermitValidTokensForBothMutations(TutorRestPgTest.java:141)
+</failure>
+  </testcase>
+  <testcase name="rt04DetailAllowsAllStatusesAndPastSlotsWithExactProjection()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.142"/>
+  <testcase name="rt19PostcommitProjectionFailureIs500ButDoesNotRollbackOrRetry()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.103">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;dd1ebef7-af2d-4b6a-a35a-c5080531b4e4&quot;} ==&gt; expected: &lt;500&gt; but was: &lt;400&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;dd1ebef7-af2d-4b6a-a35a-c5080531b4e4&quot;} ==&gt; expected: &lt;500&gt; but was: &lt;400&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.error(TutorRestPgTest.java:260)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.rt19PostcommitProjectionFailureIs500ButDoesNotRollbackOrRetry(TutorRestPgTest.java:226)
+</failure>
+  </testcase>
+  <testcase name="rt07InactiveAndDeletedSessionInvalidatedAndCannotBeReused()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.128"/>
+  <testcase name="rt09ForeignAndMissingIdsHaveSameSafeNotFoundAndNoWrites()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.137">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;da30e0c4-4005-4157-a48c-e34168590e2a&quot;} ==&gt; expected: &lt;404&gt; but was: &lt;400&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;da30e0c4-4005-4157-a48c-e34168590e2a&quot;} ==&gt; expected: &lt;404&gt; but was: &lt;400&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.error(TutorRestPgTest.java:260)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.rt09ForeignAndMissingIdsHaveSameSafeNotFoundAndNoWrites(TutorRestPgTest.java:149)
+</failure>
+  </testcase>
+  <testcase name="rt17Rt18LifecycleMappingsSafeErrorsAndServerRequestIds()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.128">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;4641ecf4-72c4-4f1c-9613-6f09b9c8c356&quot;} ==&gt; expected: &lt;403&gt; but was: &lt;400&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;4641ecf4-72c4-4f1c-9613-6f09b9c8c356&quot;} ==&gt; expected: &lt;403&gt; but was: &lt;400&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.error(TutorRestPgTest.java:260)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.rt17Rt18LifecycleMappingsSafeErrorsAndServerRequestIds(TutorRestPgTest.java:201)
+</failure>
+  </testcase>
+  <testcase name="rt15Rt16CreateLocationDetailAndCancelHistoryUseRealLifecycle()" classname="unichope.platform.core.postgres.TutorRestPgTest" time="0.142">
+    <failure message="org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;12ed7bb1-9625-4b56-a621-60b24a2cc6f0&quot;} ==&gt; expected: &lt;201&gt; but was: &lt;400&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;Request validation failed&quot;,&quot;requestId&quot;:&quot;12ed7bb1-9625-4b56-a621-60b24a2cc6f0&quot;} ==&gt; expected: &lt;201&gt; but was: &lt;400&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.ok(TutorRestPgTest.java:256)
+	at app//unichope.platform.core.postgres.TutorRestPgTest.rt15Rt16CreateLocationDetailAndCancelHistoryUseRealLifecycle(TutorRestPgTest.java:182)
+</failure>
+  </testcase>
+  <system-out><![CDATA[15:54:21.190 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:21.194 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_8a61c2f5e07f4955b69aa1f39012b51f"."flyway_schema_history" does not exist yet
+15:54:21.195 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:21.199 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_8a61c2f5e07f4955b69aa1f39012b51f"."flyway_schema_history" ...
+15:54:21.210 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_8a61c2f5e07f4955b69aa1f39012b51f": << Empty Schema >>
+15:54:21.212 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_8a61c2f5e07f4955b69aa1f39012b51f" to version "1 - create core tables"
+15:54:21.226 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_8a61c2f5e07f4955b69aa1f39012b51f", now at version v1 (execution time 00:00.011s)
+15:54:21.746 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:21.747 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:21.748 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+15:54:21.875 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:21.881 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_5ba1ca309565444eae3274230d56b238"."flyway_schema_history" does not exist yet
+15:54:21.881 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:21.885 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_5ba1ca309565444eae3274230d56b238"."flyway_schema_history" ...
+15:54:21.902 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_5ba1ca309565444eae3274230d56b238": << Empty Schema >>
+15:54:21.903 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_5ba1ca309565444eae3274230d56b238" to version "1 - create core tables"
+15:54:21.920 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_5ba1ca309565444eae3274230d56b238", now at version v1 (execution time 00:00.013s)
+15:54:22.055 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:22.055 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:22.056 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+15:54:22.191 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:22.196 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_c649e00786c74067bf332eb80c4037e1"."flyway_schema_history" does not exist yet
+15:54:22.197 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:22.200 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_c649e00786c74067bf332eb80c4037e1"."flyway_schema_history" ...
+15:54:22.210 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_c649e00786c74067bf332eb80c4037e1": << Empty Schema >>
+15:54:22.212 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_c649e00786c74067bf332eb80c4037e1" to version "1 - create core tables"
+15:54:22.226 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_c649e00786c74067bf332eb80c4037e1", now at version v1 (execution time 00:00.012s)
+15:54:22.296 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:22.297 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:22.297 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+15:54:22.336 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:22.343 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_ea5614102cf141129f9862b2359cdfd5"."flyway_schema_history" does not exist yet
+15:54:22.343 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:22.349 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_ea5614102cf141129f9862b2359cdfd5"."flyway_schema_history" ...
+15:54:22.360 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_ea5614102cf141129f9862b2359cdfd5": << Empty Schema >>
+15:54:22.361 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_ea5614102cf141129f9862b2359cdfd5" to version "1 - create core tables"
+15:54:22.375 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_ea5614102cf141129f9862b2359cdfd5", now at version v1 (execution time 00:00.011s)
+15:54:22.436 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:22.436 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:22.436 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+15:54:22.475 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:22.479 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_86966c4a610d419bb31eb87bc27a1219"."flyway_schema_history" does not exist yet
+15:54:22.480 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:22.483 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_86966c4a610d419bb31eb87bc27a1219"."flyway_schema_history" ...
+15:54:22.492 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_86966c4a610d419bb31eb87bc27a1219": << Empty Schema >>
+15:54:22.493 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_86966c4a610d419bb31eb87bc27a1219" to version "1 - create core tables"
+15:54:22.507 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_86966c4a610d419bb31eb87bc27a1219", now at version v1 (execution time 00:00.011s)
+15:54:22.564 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:22.564 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:22.564 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+15:54:22.616 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:22.620 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_9ff38880189146458fd4dd0078582648"."flyway_schema_history" does not exist yet
+15:54:22.620 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:22.622 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_9ff38880189146458fd4dd0078582648"."flyway_schema_history" ...
+15:54:22.631 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_9ff38880189146458fd4dd0078582648": << Empty Schema >>
+15:54:22.632 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_9ff38880189146458fd4dd0078582648" to version "1 - create core tables"
+15:54:22.646 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_9ff38880189146458fd4dd0078582648", now at version v1 (execution time 00:00.010s)
+15:54:22.705 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:22.705 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:22.706 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+15:54:22.778 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:22.781 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_342c292efaf740dbad8a3cd3c3fd2281"."flyway_schema_history" does not exist yet
+15:54:22.781 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:22.784 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_342c292efaf740dbad8a3cd3c3fd2281"."flyway_schema_history" ...
+15:54:22.792 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_342c292efaf740dbad8a3cd3c3fd2281": << Empty Schema >>
+15:54:22.793 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_342c292efaf740dbad8a3cd3c3fd2281" to version "1 - create core tables"
+15:54:22.806 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_342c292efaf740dbad8a3cd3c3fd2281", now at version v1 (execution time 00:00.009s)
+15:54:22.859 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:22.859 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:22.859 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+15:54:22.905 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:22.908 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_52aef48b39e04ae485869f13bf621aed"."flyway_schema_history" does not exist yet
+15:54:22.909 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:22.912 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_52aef48b39e04ae485869f13bf621aed"."flyway_schema_history" ...
+15:54:22.919 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_52aef48b39e04ae485869f13bf621aed": << Empty Schema >>
+15:54:22.920 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_52aef48b39e04ae485869f13bf621aed" to version "1 - create core tables"
+15:54:22.934 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_52aef48b39e04ae485869f13bf621aed", now at version v1 (execution time 00:00.011s)
+15:54:22.987 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:22.987 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:22.987 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+15:54:23.030 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:23.034 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_d8cc62edaba641b881fadbcfd4f75537"."flyway_schema_history" does not exist yet
+15:54:23.034 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:23.037 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_d8cc62edaba641b881fadbcfd4f75537"."flyway_schema_history" ...
+15:54:23.046 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_d8cc62edaba641b881fadbcfd4f75537": << Empty Schema >>
+15:54:23.047 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_d8cc62edaba641b881fadbcfd4f75537" to version "1 - create core tables"
+15:54:23.060 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_d8cc62edaba641b881fadbcfd4f75537", now at version v1 (execution time 00:00.010s)
+15:54:23.111 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:23.111 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:23.111 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+15:54:23.172 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:23.176 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_24baf39ed0a241b0918937ecff6154a2"."flyway_schema_history" does not exist yet
+15:54:23.176 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:23.180 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_24baf39ed0a241b0918937ecff6154a2"."flyway_schema_history" ...
+15:54:23.188 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_24baf39ed0a241b0918937ecff6154a2": << Empty Schema >>
+15:54:23.190 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_24baf39ed0a241b0918937ecff6154a2" to version "1 - create core tables"
+15:54:23.204 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_24baf39ed0a241b0918937ecff6154a2", now at version v1 (execution time 00:00.011s)
+15:54:23.254 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:23.254 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:23.255 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+15:54:23.275 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:23.280 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_f80551c99bee458791f235a18be21095"."flyway_schema_history" does not exist yet
+15:54:23.280 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:23.283 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_f80551c99bee458791f235a18be21095"."flyway_schema_history" ...
+15:54:23.292 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_f80551c99bee458791f235a18be21095": << Empty Schema >>
+15:54:23.294 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_f80551c99bee458791f235a18be21095" to version "1 - create core tables"
+15:54:23.308 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_f80551c99bee458791f235a18be21095", now at version v1 (execution time 00:00.011s)
+15:54:23.368 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:23.368 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:23.369 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+15:54:23.404 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:23.408 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_44916e6a957d43ed8acc550630b9005a"."flyway_schema_history" does not exist yet
+15:54:23.409 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:23.412 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_44916e6a957d43ed8acc550630b9005a"."flyway_schema_history" ...
+15:54:23.422 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_44916e6a957d43ed8acc550630b9005a": << Empty Schema >>
+15:54:23.423 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_44916e6a957d43ed8acc550630b9005a" to version "1 - create core tables"
+15:54:23.438 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_44916e6a957d43ed8acc550630b9005a", now at version v1 (execution time 00:00.012s)
+15:54:23.494 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:23.494 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:23.494 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+15:54:23.548 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:23.553 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_5ba763da9b3c4338be373dffabd46923"."flyway_schema_history" does not exist yet
+15:54:23.553 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:23.556 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_5ba763da9b3c4338be373dffabd46923"."flyway_schema_history" ...
+15:54:23.565 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_5ba763da9b3c4338be373dffabd46923": << Empty Schema >>
+15:54:23.567 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_5ba763da9b3c4338be373dffabd46923" to version "1 - create core tables"
+15:54:23.581 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_5ba763da9b3c4338be373dffabd46923", now at version v1 (execution time 00:00.010s)
+15:54:23.644 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:23.644 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:23.644 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+15:54:23.675 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+15:54:23.679 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "lifecycle_test_f86a50ac0eb54b38ac00bbfdae1d1cfc"."flyway_schema_history" does not exist yet
+15:54:23.679 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+15:54:23.684 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "lifecycle_test_f86a50ac0eb54b38ac00bbfdae1d1cfc"."flyway_schema_history" ...
+15:54:23.698 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "lifecycle_test_f86a50ac0eb54b38ac00bbfdae1d1cfc": << Empty Schema >>
+15:54:23.699 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "lifecycle_test_f86a50ac0eb54b38ac00bbfdae1d1cfc" to version "1 - create core tables"
+15:54:23.724 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "lifecycle_test_f86a50ac0eb54b38ac00bbfdae1d1cfc", now at version v1 (execution time 00:00.021s)
+15:54:23.789 [Test worker] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+15:54:23.789 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+15:54:23.790 [Test worker] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,18 @@
+{
+  "purpose": "Disposable synthetic PostgreSQL test runtime; no global install, Docker or production service",
+  "version": "PostgreSQL 17.6",
+  "source": "https://repo.maven.apache.org/maven2/io/zonky/test/postgres/embedded-postgres-binaries-darwin-arm64v8/17.6.0/embedded-postgres-binaries-darwin-arm64v8-17.6.0.jar",
+  "upstream": "https://github.com/zonkyio/embedded-postgres-binaries",
+  "bundleSha256": "e87ee36767dee4f00f829d7a52e4a216e2fdebe5934c5683730940aabe570721",
+  "directory": "/tmp/mp3-core-pg-runtime",
+  "listenAddress": "127.0.0.1:55439",
+  "authentication": "Synthetic local-only test account; trust authentication in temporary cluster",
+  "schemaIsolation": "Each test creates a random core_test_<UUID> schema and drops only that schema",
+  "permissions": "Normal sandbox blocked shared-memory initialization; approved escalated execution used for initdb, pg_ctl and Gradle socket access",
+  "status": "Stopped after implementation and independent review; pg_ctl stop exited 0",
+  "limits": [
+    "This verifies native PostgreSQL, not Docker/Testcontainers",
+    "No real user data or credentials",
+    "Review-only schema excludes pending auth credential fields"
+  ]
+}

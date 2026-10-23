@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - PostgresAuthMigrationTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>PostgresAuthMigrationTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/unichope.platform.core.postgres.html">unichope.platform.core.postgres</a> &gt; PostgresAuthMigrationTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">2</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.214s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a href="#">Tests</a>
+</li>
+<li>
+<a href="#">Standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">credentiallessExistingSchemaFailsAtomically()</td>
+<td class="success">0.111s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">emptySchemaConstraintsAndDefaults()</td>
+<td class="success">0.103s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre id="class-stdout">23:07:35.813 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.818 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table &quot;migration_test_3882c1b15f504d63818cfe43a214d34c&quot;.&quot;flyway_schema_history&quot; does not exist yet
+23:07:35.819 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.001s)
+23:07:35.823 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table &quot;migration_test_3882c1b15f504d63818cfe43a214d34c&quot;.&quot;flyway_schema_history&quot; ...
+23:07:35.832 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema &quot;migration_test_3882c1b15f504d63818cfe43a214d34c&quot;: &lt;&lt; Empty Schema &gt;&gt;
+23:07:35.834 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema &quot;migration_test_3882c1b15f504d63818cfe43a214d34c&quot; to version &quot;1 - create core tables&quot;
+23:07:35.849 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema &quot;migration_test_3882c1b15f504d63818cfe43a214d34c&quot; to version &quot;2 - add auth account state&quot;
+23:07:35.853 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 2 migrations to schema &quot;migration_test_3882c1b15f504d63818cfe43a214d34c&quot;, now at version v2 (execution time 00:00.012s)
+23:07:35.912 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.917 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table &quot;migration_test_7fd47c5d6e994460a2eee57e8a9ce37e&quot;.&quot;flyway_schema_history&quot; does not exist yet
+23:07:35.918 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 1 migration (execution time 00:00.001s)
+23:07:35.922 [Test worker] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table &quot;migration_test_7fd47c5d6e994460a2eee57e8a9ce37e&quot;.&quot;flyway_schema_history&quot; ...
+23:07:35.932 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema &quot;migration_test_7fd47c5d6e994460a2eee57e8a9ce37e&quot;: &lt;&lt; Empty Schema &gt;&gt;
+23:07:35.933 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema &quot;migration_test_7fd47c5d6e994460a2eee57e8a9ce37e&quot; to version &quot;1 - create core tables&quot;
+23:07:35.948 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema &quot;migration_test_7fd47c5d6e994460a2eee57e8a9ce37e&quot;, now at version v1 (execution time 00:00.012s)
+23:07:35.965 [Test worker] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://127.0.0.1:55439/postgres (PostgreSQL 17.6)
+23:07:35.972 [Test worker] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 2 migrations (execution time 00:00.002s)
+23:07:35.979 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema &quot;migration_test_7fd47c5d6e994460a2eee57e8a9ce37e&quot;: 1
+23:07:35.980 [Test worker] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema &quot;migration_test_7fd47c5d6e994460a2eee57e8a9ce37e&quot; to version &quot;2 - add auth account state&quot;
+23:07:35.987 [Test worker] ERROR org.flywaydb.core.internal.command.DbMigrate -- Migration of schema &quot;migration_test_7fd47c5d6e994460a2eee57e8a9ce37e&quot; to version &quot;2 - add auth account state&quot; failed! Changes successfully rolled back.
+</pre>
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="class-stdout">Copy</button>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.1.0</a> at 21 Oct 2026, 11:07:48 pm</p>
+</div>
+</div>
+</body>
+</html>

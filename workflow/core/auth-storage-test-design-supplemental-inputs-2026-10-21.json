@@ -1,0 +1,33 @@
+{
+  "format": 1,
+  "head": "508c5bd769e889dea405cb848ddd60429f24ce3b",
+  "scope": [
+    "workflow/core/AUTH-STORAGE-SPEC.md",
+    "workflow/core/AUTH-STORAGE-PLAN.md",
+    "workflow/handoffs/2026-10-21-architect-auth-storage.md"
+  ],
+  "files": [
+    {
+      "path": "workflow/core/AUTH-STORAGE-PLAN.md",
+      "tracked": false,
+      "bytes": 3650,
+      "sha256": "fd2be08e28990d89a88ecf2c50aaaa22f4e01846abcd68fc1168beb317202e18",
+      "executable": false
+    },
+    {
+      "path": "workflow/core/AUTH-STORAGE-SPEC.md",
+      "tracked": false,
+      "bytes": 14012,
+      "sha256": "ddebab35bfe0bba1b8a03dc34528aad946f12ee01e6bb30c79ff2a6fa57ab661",
+      "executable": false
+    },
+    {
+      "path": "workflow/handoffs/2026-10-21-architect-auth-storage.md",
+      "tracked": false,
+      "bytes": 3274,
+      "sha256": "e0534226157d5a57304ab7946151f7ad234c45befd26c5a83bcf44ce1641309f",
+      "executable": false
+    }
+  ],
+  "limitations": "Explicit scope only; filename exclusions are a convenience, not a secret scanner. Inspect paths first. Hashes identify but cannot restore contents."
+}
