@@ -1,6 +1,7 @@
 package unichope.tutor;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import unichope.platform.ai.AiGateway;
 import unichope.platform.web.ApiFailure;
 
@@ -36,8 +37,11 @@ public final class TutorNoteDraftGateway {
 
     AiGateway.Request request =
         new AiGateway.Request(tutorId, TASK, INSTRUCTIONS, roughNotes, maxOutputTokens);
-    AiGateway.Result result = gateway.generate(request);
-    return new Draft(TutorNoteDraftParser.parse(result.text()), result.providerMode());
+    var parsedDraft = new AtomicReference<String>();
+    AiGateway.Result result =
+        gateway.generate(
+            request, response -> parsedDraft.set(TutorNoteDraftParser.parse(response.text())));
+    return new Draft(parsedDraft.get(), result.providerMode());
   }
 
   public record Draft(String text, AiGateway.ProviderMode providerMode) {}

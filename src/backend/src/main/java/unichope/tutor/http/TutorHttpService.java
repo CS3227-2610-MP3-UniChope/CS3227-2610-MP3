@@ -52,6 +52,6 @@ public final class TutorHttpService {
     private SlotView project(ConsultationSlot slot) {
         // Lifecycle has committed. Projection failure cannot undo or automatically retry it.
         String code=modules.findById(slot.moduleId()).orElseThrow(IllegalStateException::new).code();
-        return new SlotView(slot.id(),slot.moduleId(),code,slot.startTime(),slot.endTime(),slot.status());
+        return new SlotView(slot.id(),slot.moduleId(),code,slot.startTime(),slot.endTime(),slot.status(),null);
     }
 }

@@ -42,7 +42,7 @@ public final class TutorReadService {
                 .sorted(Comparator.comparing((TutorSlot projection)->projection.slot().startTime())
                         .thenComparing(projection->projection.slot().id()))
                 .map(slot->new SlotView(slot.slot().id(),slot.slot().moduleId(),slot.moduleCode(),
-                        slot.slot().startTime(),slot.slot().endTime(),slot.slot().status()))
+                        slot.slot().startTime(),slot.slot().endTime(),slot.slot().status(),slot.studentName()))
                 .toList();
     }
 
@@ -57,7 +57,7 @@ public final class TutorReadService {
                 .sorted(Comparator.comparing((TutorSlot projection) -> projection.slot().startTime())
                         .thenComparing(projection -> projection.slot().id()))
                 .map(slot -> new SlotView(slot.slot().id(), slot.slot().moduleId(), slot.moduleCode(),
-                        slot.slot().startTime(), slot.slot().endTime(), slot.slot().status()))
+                        slot.slot().startTime(), slot.slot().endTime(), slot.slot().status(), slot.studentName()))
                 .toList();
     }
 
@@ -83,7 +83,7 @@ public final class TutorReadService {
                 .sorted(Comparator.comparing((TutorBooking item) -> item.slot().startTime())
                         .thenComparing(item -> item.booking().id()))
                 .map(item -> new TutorBookingView(item.booking().id(), item.slot().id(), item.moduleCode(),
-                        item.slot().startTime(), item.slot().endTime(), item.booking().status()))
+                        item.studentName(), item.slot().startTime(), item.slot().endTime(), item.booking().status()))
                 .toList();
     }
 
@@ -93,7 +93,7 @@ public final class TutorReadService {
                 .filter(found -> found.slot().tutorId().equals(tutorId))
                 .orElseThrow(() -> new LifecycleFailure(LifecycleFailure.Code.NOT_FOUND));
         var slot = projection.slot();
-        return new SlotView(slot.id(), slot.moduleId(), projection.moduleCode(), slot.startTime(), slot.endTime(), slot.status());
+        return new SlotView(slot.id(), slot.moduleId(), projection.moduleCode(), slot.startTime(), slot.endTime(), slot.status(), projection.studentName());
     }
 
     private UUID requireActiveTutor() { return access.requireActiveTutor(); }

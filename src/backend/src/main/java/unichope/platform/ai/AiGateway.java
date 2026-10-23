@@ -12,6 +12,18 @@ import java.util.UUID;
 public interface AiGateway {
     Result generate(Request request);
 
+    /** Validates task output before an admitted call is recorded as successful. */
+    default Result generate(Request request, ResultValidator validator) {
+        Result result = generate(request);
+        validator.validate(result);
+        return result;
+    }
+
+    @FunctionalInterface
+    interface ResultValidator {
+        void validate(Result result);
+    }
+
     /** Actor/task metadata is trusted backend context, never provider prompt data. */
     record Request(UUID actorId, String task, String instructions, String input, int maxOutputTokens) {
         public Request {

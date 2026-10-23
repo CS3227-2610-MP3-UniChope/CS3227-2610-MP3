@@ -12,6 +12,7 @@ CREATE TABLE ai_attempt (
     provider_key text NOT NULL CHECK (provider_key IN ('STUDENT', 'TUTOR', 'ADMIN')),
     admitted_at timestamptz NOT NULL,
     reserved_tokens integer NOT NULL CHECK (reserved_tokens > 0),
+    actor_quota_counted boolean NOT NULL DEFAULT true,
     in_flight_until timestamptz
 );
 CREATE INDEX ai_attempt_actor_task_window ON ai_attempt(actor_id, task, admitted_at);

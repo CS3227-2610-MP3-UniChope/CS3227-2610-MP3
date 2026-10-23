@@ -51,7 +51,13 @@ public final class AdmittedAiGateway implements AiGateway, AutoCloseable {
 
   @Override
   public Result generate(Request request) {
+    return generate(request, ignored -> {});
+  }
+
+  @Override
+  public Result generate(Request request, AiGateway.ResultValidator validator) {
     Objects.requireNonNull(request);
+    Objects.requireNonNull(validator);
     AiTaskPolicy policy = policies.get(request.task());
     if (policy == null) throw new AiGateway.Failure(FailureCode.UNAVAILABLE);
     if (request.maxOutputTokens() > policy.maxOutputTokens()
@@ -80,6 +86,7 @@ public final class AdmittedAiGateway implements AiGateway, AutoCloseable {
       throw new AiGateway.Failure(FailureCode.UNAVAILABLE);
     }
     boolean retainLeaseUntilExpiry = false;
+    boolean accepted = false;
     try {
       Future<Result> future;
       try {
@@ -108,15 +115,24 @@ public final class AdmittedAiGateway implements AiGateway, AutoCloseable {
       if (result.text().getBytes(StandardCharsets.UTF_8).length > policy.maxResponseBytes()) {
         throw new AiGateway.Failure(FailureCode.INVALID_OUTPUT);
       }
+      validator.validate(result);
+      accepted = true;
       return result;
     } catch (AiGateway.Failure known) {
       throw known;
     } catch (RuntimeException unexpected) {
       throw new AiGateway.Failure(FailureCode.UNAVAILABLE);
     } finally {
-      if (!retainLeaseUntilExpiry) {
+      if (accepted || !retainLeaseUntilExpiry) {
         try {
-          admissions.complete(reservation);
+          if (accepted) admissions.complete(reservation);
+          else admissions.failed(reservation, false);
+        } catch (RuntimeException unavailable) {
+          throw new AiGateway.Failure(FailureCode.UNAVAILABLE);
+        }
+      } else {
+        try {
+          admissions.failed(reservation, true);
         } catch (RuntimeException unavailable) {
           throw new AiGateway.Failure(FailureCode.UNAVAILABLE);
         }

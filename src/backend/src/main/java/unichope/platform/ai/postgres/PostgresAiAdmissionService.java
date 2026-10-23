@@ -96,8 +96,14 @@ public final class PostgresAiAdmissionService implements AiAdmissionService {
     }
 
     Instant actorCutoff = now.minus(policy.rollingWindow());
-    List<AttemptRow> actorAttempts = attempts("actor_id=:actor AND task=:task AND admitted_at > :cutoff",
-        attempt.actorId(), attempt.task(), attempt.providerKey(), actorCutoff);
+    List<AttemptRow> actorAttempts = jdbc.sql("""
+        SELECT admitted_at,reserved_tokens FROM ai_attempt
+        WHERE actor_id=:actor AND task=:task AND actor_quota_counted=true AND admitted_at > :cutoff
+        """).param("actor", attempt.actorId()).param("task", attempt.task())
+        .param("cutoff", actorCutoff.atOffset(ZoneOffset.UTC))
+        .query((rs, row) -> new AttemptRow(
+            rs.getObject("admitted_at", java.time.OffsetDateTime.class).toInstant(),
+            rs.getInt("reserved_tokens"))).list();
     if (actorAttempts.size() >= policy.admissionsPerActor()) {
       return Decision.denied(AiGateway.FailureCode.RATE_LIMITED,
           budgetRetry(actorAttempts, policy.admissionsPerActor(), Long.MAX_VALUE, policy.rollingWindow(), now));
@@ -152,6 +158,21 @@ public final class PostgresAiAdmissionService implements AiAdmissionService {
     try {
       jdbc.sql("UPDATE ai_attempt SET in_flight_until=NULL WHERE request_id=:id")
           .param("id", reservation.requestId()).update();
+    } catch (RuntimeException unavailable) {
+      throw new AiGateway.Failure(AiGateway.FailureCode.UNAVAILABLE);
+    }
+  }
+
+  @Override
+  public void failed(Reservation reservation, boolean retainLeaseUntilExpiry) {
+    Objects.requireNonNull(reservation);
+    try {
+      jdbc.sql("""
+          UPDATE ai_attempt
+          SET actor_quota_counted=false,
+              in_flight_until=CASE WHEN :retain THEN in_flight_until ELSE NULL END
+          WHERE request_id=:id
+          """).param("retain", retainLeaseUntilExpiry).param("id", reservation.requestId()).update();
     } catch (RuntimeException unavailable) {
       throw new AiGateway.Failure(AiGateway.FailureCode.UNAVAILABLE);
     }
