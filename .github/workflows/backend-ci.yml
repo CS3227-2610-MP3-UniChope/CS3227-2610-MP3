@@ -2,9 +2,9 @@ name: Backend CI
 
 on:
   pull_request:
-    branches: [main, master, prepare/core-sharing]
+    branches: [main, prepare/core-sharing]
   push:
-    branches: [main, master, prepare/core-sharing]
+    branches: [main, prepare/core-sharing]
 
 permissions:
   contents: read
