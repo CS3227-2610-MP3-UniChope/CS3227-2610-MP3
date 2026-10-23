@@ -83,8 +83,8 @@ are not repeated automatically: refresh and check the records before resubmittin
 
 The report assistant displays the returned statistics snapshot and a temporary
 plain-text draft. Review its claims before use. Local fake-provider responses are
-explicitly labelled as mocked; real SoC generation remains dependent on the shared
-provider. The default backend reports AI unavailable while management still works.
+explicitly labelled as mocked. Real SoC generation is available through the shared
+gateway when the backend is started in shared mode with SOC_LLM_API_KEY_ADMIN. The default backend reports AI unavailable while management still works.
 For a local demonstration only, start the backend with the local profile and
 `--unichope.ai.mode=fake`. No provider key is needed for mocked responses.
 

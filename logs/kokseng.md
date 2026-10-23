@@ -122,3 +122,23 @@ Final browser verification: 82 tests passed using a fresh Vite server, including
 Admin320/768/1440px navigation, confirmation keyboard focus, explicit CSRF report
 submission, mock labels and plain-text rendering. The existing Student and theme
 browser checks also passed. These results do not imply my acceptance approval.
+
+## 23 October 2026 — Real Admin report verification
+
+Verification status: awaiting my review of this summary.
+
+I updated to main 6c0c6da and reused the newly merged shared SoCLaaS provider,
+role-key routing and PostgreSQL admission controls. I configured my Admin key
+privately in the local backend process and selected shared mode. No key is included
+in the repository or this log, and no replacement provider was added.
+
+The authenticated live report request returned providerMode soc, requiresReview
+true and a parsed draft using the sample snapshot: two bookings, zero completed,
+one cancelled and a 50% cancellation rate. A subsequent browser request timed out
+and displayed the existing failure message without substituting a mocked report.
+I subsequently confirmed in chat that the feature works. This is a live smoke
+check, not an exhaustive evaluation of factual accuracy or model security.
+
+Focused checks passed: 41 unit tests and 16 PostgreSQL tests, with no failures.
+The updated executable backend built successfully. I updated the setup docs to
+explain shared-mode configuration and retained fake mode for local testing.
