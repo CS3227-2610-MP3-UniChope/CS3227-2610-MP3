@@ -1,9 +1,9 @@
 # Shared AI Gateway Contract Proposal
 
-Status: API/wrapper and PostgreSQL admission implementation are present on
-`feat/tutor-ai-note-draft`; not yet accepted by the Student or Admin owners.
-Production provider routing, runtime wiring, and migration activation remain
-separate review gates.
+Status: API/wrapper, PostgreSQL admission, shared runtime wiring, and V5 are
+integrated on `feat/tutor-booking-completion`. Tutor retry accounting and V6 are
+implemented and PostgreSQL-tested; Core/role-owner review remains pending before
+production use.
 Author: Huanghao (Tutor role contribution).  
 Date: 22 October 2026.
 
@@ -38,17 +38,22 @@ role-specific prompts or validators.
   or making an outbound provider call.
 - `AdmittedAiGateway` validates registered task/input/token bounds, resolves the
   provider route, admits before dispatch, enforces the configured call deadline,
-  checks the returned UTF-8 text size, and clears the in-flight lease after a known
-  completion. It does not refund admitted usage. On timeout/interruption it retains
-  the lease for expiry because provider completion is uncertain. It never retries.
+  checks the returned UTF-8 text size, and runs task output validation before
+  recording actor success when the caller supplies a validator. The Tutor draft
+  caller does this, so malformed Tutor output clears the actor quota charge while
+  preserving provider-key request/token usage. Legacy one-argument callers have no
+  task validator; their bounded provider result counts as accepted unless they
+  migrate to the validator overload. On timeout/interruption the gateway retains
+  the lease until expiry because provider completion is uncertain. It never retries
+  automatically.
 - `AiGateway.Failure` includes BUSY and RATE_LIMITED with an optional positive
   `retryAfter`, plus UNAVAILABLE, TIMEOUT, and INVALID_OUTPUT. Failures carry no
   upstream body or exception cause.
 
 The shared admission implementation must persist metadata only (request ID,
-actor, task, role-key alias, admission time, reserved output-token budget, and lease expiry),
-never prompt or output text. The proposed Tutor task limit is 3 admitted requests
-per Tutor in a rolling 5 minutes and one in-flight request per Tutor, with a
+actor, task, role-key alias, admission time, reserved output-token budget, actor
+quota status, and lease expiry), never prompt or output text. The proposed Tutor
+task limit is 3 usable drafts per Tutor in a rolling 5 minutes and one in-flight request per Tutor, with a
 20-second task deadline. The provider request and output-token reservation budgets
 are required server configuration; production values remain unset until SoC limits
 and input-token accounting are verified. The stored output-token reservation is
@@ -58,14 +63,16 @@ an application admission estimate, not proof of actual provider billing.
 
 `platform/ai/` now contains `AiTaskPolicy`, `AiProviderKey`, `AiProviderBudget`,
 `AiAdmissionService`, `AiProviderRouter`, and `AdmittedAiGateway`; the PostgreSQL
-adapter is in `platform/ai/postgres/PostgresAiAdmissionService`. An isolated
-review-only schema lives at `db/ai-review/V1__create_ai_admission.sql`; it is not
-in `db/migration` and is not activated at application startup.
+adapter is in `platform/ai/postgres/PostgresAiAdmissionService`. The isolated
+review schema is at `db/ai-review/V1__create_ai_admission.sql`; runtime V5 is
+already active through normal Flyway startup, and this change adds V6 for the
+actor-quota outcome flag.
 
 The adapter serializes admission on a singleton quota row, applies per-actor/task
-rolling request and in-flight limits, applies per-role-key request and reserved
-output-token windows and in-flight limits, retains admitted failures, expires
-leases, prunes out-of-window metadata, and maps database errors to sanitized
+rolling successful-draft and in-flight limits, applies per-role-key request and
+reserved output-token windows and in-flight limits, retains failed attempts in the
+provider-key budget without charging the actor success limit, expires leases,
+prunes out-of-window metadata, and maps database errors to sanitized
 UNAVAILABLE. Waiting for the shared quota row is capped at 500 ms and fails
 closed as UNAVAILABLE to bound admission contention. PostgreSQL tests verify rolling limits, independent actors/tasks,
 per-key reservations, concurrent admission, lease expiry, and fail-closed storage
@@ -82,11 +89,12 @@ tests verify the resolution order and that a missing route creates no reservatio
 The existing `AiGateway` method signature remains in place, so current role
 consumers continue to compile. Production integration must inject
 `AdmittedAiGateway` as the shared `AiGateway`; directly injecting a provider
-adapter bypasses admission. This branch adds no Spring production bean, SoC
-provider, API key, or active Flyway migration. Production remains unavailable
-until provider budgets are configured, task registration and route configuration
-are reviewed, fake-provider rejection is enforced, and affected owners accept
-the shared contract.
+adapter bypasses admission. PR #10 added the shared `app-api` runtime bean and put
+the admission schema in the normal Flyway sequence. Local Tutor trials should use
+that shared bean with `unichope.ai.mode=shared`, `SOC_LLM_API_KEY_TUTOR`, and
+conservative environment budgets. Production use still requires owner review of
+the contract, migration activation, provider budgets, environment secrets, and
+fake-provider rejection.
 
 The wrapper's response-size check runs after a provider returns a Java string.
 The real HTTP provider must separately cap raw response bytes while reading the

@@ -114,7 +114,7 @@ class TutorReadServiceTest {
 
     private static TutorSlot slot(UUID id, UUID owner, String start, SlotStatus status) {
         return new TutorSlot(new ConsultationSlot(id, owner, id(99), Instant.parse(start),
-                Instant.parse(start).plusSeconds(1800), status), "CS3227");
+                Instant.parse(start).plusSeconds(1800), status), "CS3227", null);
     }
 
     private static TutorBooking booking(UUID bookingId, UUID owner, String start,
@@ -123,7 +123,7 @@ class TutorReadServiceTest {
         var slot = new ConsultationSlot(id((int) bookingId.getLeastSignificantBits()), owner, id(99),
                 startTime, startTime.plusSeconds(1800), slotStatus);
         var booking = new Booking(bookingId, id(3), slot.id(), startTime, bookingStatus);
-        return new TutorBooking(booking, slot, "CS3227");
+        return new TutorBooking(booking, slot, "CS3227", "Synthetic Student");
     }
 
     private static UUID id(int value) {

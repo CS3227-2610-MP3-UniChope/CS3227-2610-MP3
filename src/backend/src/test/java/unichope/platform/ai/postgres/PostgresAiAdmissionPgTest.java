@@ -93,6 +93,54 @@ class PostgresAiAdmissionPgTest {
   }
 
   @Test
+  void failedAttemptDoesNotConsumeActorSuccessQuota() {
+    AiTaskPolicy policy = policy("tutor.note-draft.v1", 1, 1, 100);
+    AiAdmissionService.Reservation failed = admit(ACTOR, policy, 20);
+    admissions.failed(failed, false);
+
+    AiAdmissionService.Reservation accepted = admit(ACTOR, policy, 20);
+    admissions.complete(accepted);
+
+    AiGateway.Failure limited = assertThrows(
+        AiGateway.Failure.class, () -> admit(ACTOR, policy, 20));
+    assertEquals(AiGateway.FailureCode.RATE_LIMITED, limited.code());
+    assertEquals(2, db.sql("SELECT count(*) FROM ai_attempt WHERE actor_id=:actor")
+        .param("actor", ACTOR).query(Long.class).single());
+    assertEquals(1, db.sql("SELECT count(*) FROM ai_attempt WHERE actor_id=:actor AND actor_quota_counted")
+        .param("actor", ACTOR).query(Long.class).single());
+  }
+
+  @Test
+  void failedAttemptStillConsumesProviderKeyBudget() {
+    AiProviderBudget onePerWindow = new AiProviderBudget(1, 100, Duration.ofMinutes(1), 10);
+    PostgresAiAdmissionService strictKey = service(onePerWindow);
+    AiTaskPolicy policy = policy("tutor.note-draft.v1", 3, 1, 100);
+    strictKey.failed(strictKey.admit(attempt(ACTOR, policy, 20), policy), false);
+
+    AiGateway.Failure limited = assertThrows(
+        AiGateway.Failure.class,
+        () -> strictKey.admit(attempt(OTHER, policy, 20), policy));
+    assertEquals(AiGateway.FailureCode.RATE_LIMITED, limited.code());
+    assertEquals(1, db.sql("SELECT count(*) FROM ai_attempt WHERE provider_key='TUTOR'")
+        .query(Long.class).single());
+  }
+
+  @Test
+  void failedUncertainAttemptKeepsItsInFlightLeaseUntilExpiry() {
+    AiTaskPolicy policy = policy("tutor.note-draft.v1", 3, 1, 100);
+    AiAdmissionService.Reservation failed = admit(ACTOR, policy, 20);
+    admissions.failed(failed, true);
+
+    AiGateway.Failure busy = assertThrows(
+        AiGateway.Failure.class, () -> admit(ACTOR, policy, 20));
+    assertEquals(AiGateway.FailureCode.BUSY, busy.code());
+    assertEquals(0, db.sql("SELECT count(*) FROM ai_attempt WHERE actor_quota_counted")
+        .query(Long.class).single());
+    assertEquals(1, db.sql("SELECT count(*) FROM ai_attempt WHERE in_flight_until IS NOT NULL")
+        .query(Long.class).single());
+  }
+
+  @Test
   void pruningKeepsAnActiveLeaseWhenItsWindowHasExpired() {
     AiProviderBudget shortBudget = new AiProviderBudget(20, 100, Duration.ofSeconds(1), 1);
     PostgresAiAdmissionService shortWindow = service(shortBudget);
