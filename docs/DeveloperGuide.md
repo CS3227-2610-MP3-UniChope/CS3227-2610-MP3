@@ -40,7 +40,7 @@ src/backend/src/main/java/unichope/
     runtime/             Spring wiring, profiles, bootstrap, and report gateway
     web/                 Security configuration, request filters, and safe errors
 src/backend/src/main/resources/db/migration/
-                         Runtime Flyway migrations V1–V7
+                         Runtime Flyway migrations V1–V8
 workflow/                Product, role, technical, and integration contracts
 docs/                    User and developer guides
 ```
@@ -198,7 +198,7 @@ profile and explicit PostgreSQL settings. For local development, the backend gui
 uses `./gradlew bootRun --args='--spring.profiles.active=app-api,local'`; production
 uses HTTPS and omits the `local` cookie profile. Set the JDBC URL, username, and
 password through `UNICHOPE_JDBC_URL`, `UNICHOPE_JDBC_USER`, and
-`UNICHOPE_JDBC_PASSWORD`. Runtime Flyway migrations V1–V7 are applied from
+`UNICHOPE_JDBC_PASSWORD`. Runtime Flyway migrations V1–V8 are applied from
 `db/migration`.
 
 Production session cookies use `Secure`, `HttpOnly`, and `SameSite=Lax` attributes
@@ -351,8 +351,9 @@ and private notes are excluded.
 ## 8. Persistence and consistency
 
 PostgreSQL is the persistent store for business records. Flyway runtime migrations
-V1–V7 cover the core schema, account credentials, private notes, initial Admin
-marker, AI admission schema, and Tutor first-login password change. The separate
+V1–V8 cover the core schema, account credentials, private notes, initial Admin
+marker, AI admission schema, Tutor first-login password change, and initial module
+seed data. The separate
 `db/core-review` and `db/auth-review` SQL locations are isolated review/test schemas;
 they are not activated by the runtime profile. Runtime migrations are not a
 backfill path for credentialless accounts from those review schemas. Use a new,
@@ -456,7 +457,7 @@ verification; a documented command is not evidence that it was run.
   account recovery/provisioning remains an Admin or deployment operation.
 - Real SoC integration and durable shared AI quotas are not available in this
   increment; fake AI mode is for local development only.
-- Runtime V1–V7 migrations do not backfill legacy credentialless review databases.
+- Runtime V1–V8 migrations do not backfill legacy credentialless review databases.
   Plan and review any existing-data migration before deployment.
 
 Admin/auth behavior adapts selected UniChope MP2 designs and code candidates; this

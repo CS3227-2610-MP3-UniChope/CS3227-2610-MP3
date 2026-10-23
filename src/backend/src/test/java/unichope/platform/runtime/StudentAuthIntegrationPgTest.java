@@ -89,8 +89,8 @@ class StudentAuthIntegrationPgTest {
 
     @Test void c5Run1AppApiIncludesStudentWithRealRuntimeMigrationsAndSharedActor() throws Exception {
         assertTrue(Arrays.asList(context.getEnvironment().getActiveProfiles()).containsAll(List.of("auth-api", "tutor-api", "admin-api", "student-api")));
-        // V1-V4 core/auth/notes/bootstrap, V5-V6 AI admission, and V7 Tutor first-login password change.
-        assertEquals(7, db.sql("SELECT count(*) FROM flyway_schema_history WHERE success").query(Integer.class).single());
+        // V1-V4 core/auth/notes/bootstrap, V5-V6 AI admission, V7 Tutor password change, V8 module seed.
+        assertEquals(8, db.sql("SELECT count(*) FROM flyway_schema_history WHERE success").query(Integer.class).single());
         Browser b = login("student");
         assertInstanceOf(SessionPrincipal.class, authentication(b.session()).getPrincipal());
         JsonNode modules = body(ok(get("/api/student/modules"), b, 200));

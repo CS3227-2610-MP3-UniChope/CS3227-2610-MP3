@@ -90,7 +90,7 @@ class LocalSocRuntimePgTest {
     assertInstanceOf(AdmittedAiGateway.class, context.getBean(AiGateway.class));
     assertEquals(1, database.sql("SELECT count(*) FROM ai_quota_state").query(Integer.class).single());
     assertEquals(0, database.sql("SELECT count(*) FROM ai_attempt").query(Integer.class).single());
-    assertEquals(7, database.sql("SELECT count(*) FROM flyway_schema_history WHERE success")
+    assertEquals(8, database.sql("SELECT count(*) FROM flyway_schema_history WHERE success")
         .query(Integer.class).single());
   }
 

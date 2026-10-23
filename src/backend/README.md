@@ -49,8 +49,8 @@ DDL for explicitly isolated tests, not an active/default production migration.
 The app-api profile now supplies explicit datasource/service/authentication wiring.
 The committed [auth specification](../../workflow/auth/TECHNICAL-SPEC.md) selects
 passwordHash and sessionGeneration on users. The core account proposal below now
-implements internal storage and atomic provisioning/revocation. Auth/session wiring and runtime V1-V4 migrations exist. Student app-api composition
-and its platform.auth actor adapter are specified in stu-c5 and pending this increment.
+implements internal storage and atomic provisioning/revocation. Auth/session wiring and runtime V1-V8 migrations exist. Student app-api composition
+and its platform.auth actor adapter are specified in stu-c5 and implemented in the current app-api profile.
 Its storage decision supersedes the historical SQL comment; reviewed SQL is unchanged.
 Core and Student AI owners must coordinate production migration versions.
 
@@ -65,8 +65,8 @@ Keep it out of DTOs and custom serializers. The app-api profile wires auth/sessi
 Only the new isolated auth tests explicitly select `db/core-review` followed by
 `db/auth-review`. V1 and the original credential-free tests remain unchanged.
 The review extension requires an empty users table; applying it to existing accounts
-fails atomically. Runtime numbering is V1-V4; real-account backfill, deployment activation
-and owner agreement require separate review.
+fails atomically. Runtime numbering is V1-V8; real-account backfill and any production
+deployment against existing data still require a separate migration review.
 
 Creation strips names (1–100 Unicode code points), strips and ROOT-lowercases emails
 (1–254 code points, one @, nonempty sides, no Unicode whitespace/control), and accepts
@@ -103,7 +103,7 @@ The authorized stu-c5 increment also activates Student with a SessionPrincipal a
 adapter; see workflow/student/changes/stu-c5-auth-integration.md for current evidence. Default startup
 remains closed and database-free. Runtime migrations use `db/migration`: core V1,
 account columns V2, private notes V3, initial-Admin marker V4, AI admission V5-V6,
-and Tutor first-login password change V7. Existing isolated review migrations/tests
+Tutor first-login password change V7, and initial CS module seed data V8. Existing isolated review migrations/tests
 remain separate. V7 flags existing Tutors for one password change; Students and
 Admins are not affected. `app-api` startup applies Flyway automatically, so account
 for this one-time Tutor reset when deploying against an existing database. V2 does
