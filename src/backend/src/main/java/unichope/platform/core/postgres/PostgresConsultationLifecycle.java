@@ -188,7 +188,11 @@ public final class PostgresConsultationLifecycle implements ConsultationLifecycl
                         currentSlot.moduleId(), currentSlot.id());
             });
         } catch (DataAccessException error) {
-            if (isContention(error)) throw fail(TEMPORARILY_UNAVAILABLE);
+            for (Throwable cause = error; cause != null; cause = cause.getCause()) {
+                if (cause instanceof SQLException sql && CONTENTION_STATES.contains(sql.getSQLState())) {
+                    throw fail(TEMPORARILY_UNAVAILABLE);
+                }
+            }
             throw error;
         }
     }
@@ -228,16 +232,13 @@ public final class PostgresConsultationLifecycle implements ConsultationLifecycl
                 return work.get();
             });
         } catch (DataAccessException error) {
-            if (isContention(error)) throw fail(TEMPORARILY_UNAVAILABLE);
+            for (Throwable cause = error; cause != null; cause = cause.getCause()) {
+                if (cause instanceof SQLException sql && CONTENTION_STATES.contains(sql.getSQLState())) {
+                    throw fail(TEMPORARILY_UNAVAILABLE);
+                }
+            }
             throw error;
         }
-    }
-
-    private static boolean isContention(DataAccessException error) {
-        for (Throwable cause = error; cause != null; cause = cause.getCause()) {
-            if (cause instanceof SQLException sql && CONTENTION_STATES.contains(sql.getSQLState())) return true;
-        }
-        return false;
     }
 
     private User requireActor(UUID actorId, Role role) {
