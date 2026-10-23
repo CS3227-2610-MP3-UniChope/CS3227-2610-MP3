@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-export type Actor = { id: string; name: string; role: 'STUDENT' | 'TUTOR' | 'ADMIN' };
+export type Actor = { id: string; name: string; role: 'STUDENT' | 'TUTOR' | 'ADMIN'; mustChangePassword?: boolean };
 export const ids = {
   student: '10000000-0000-4000-8000-000000000001',
   module: '20000000-0000-4000-8000-000000000001',

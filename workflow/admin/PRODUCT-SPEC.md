@@ -44,7 +44,9 @@ No persistent reports, chat, exports or extra data source is required.
 
 Kok Seng decides Admin scope, management rules, statistics and AI report policies.
 Coordinate shared storage, locks and gateway interfaces with their implementers.
-Password reset and forced password change are excluded. Implementation and verification status are recorded below.
+Admin-provisioned Tutor accounts require one password change on first use; see the
+[Auth increment](../auth/FIRST-LOGIN-PASSWORD-CHANGE-SPEC.md). Password recovery
+and Admin reset remain excluded. Implementation and verification status are recorded below.
 
 
 Admin AI input/output/security limits are selected in the technical specification,

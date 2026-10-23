@@ -33,9 +33,9 @@ public class AuthController {
     this.csrf = csrf;
   }
 
-  public record Actor(UUID id, String name, Role role) {
-    static Actor of(User u) {
-      return new Actor(u.id(), u.name(), u.role());
+  public record Actor(UUID id, String name, Role role, boolean mustChangePassword) {
+    static Actor of(User u, boolean mustChangePassword) {
+      return new Actor(u.id(), u.name(), u.role(), mustChangePassword);
     }
   }
 
@@ -66,13 +66,22 @@ public class AuthController {
         .getSession()
         .setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
     csrf.saveToken(null, request, response);
-    return Actor.of(user);
+    return Actor.of(user, verified.mustChangePassword());
   }
 
   @GetMapping("/me")
   public Actor me(HttpServletRequest request) {
     noQuery(request);
-    return Actor.of(service.current(principal()));
+    var state = service.currentState(principal());
+    return Actor.of(state.user(), state.mustChangePassword());
+  }
+
+  @PostMapping("/change-password")
+  public ResponseEntity<Void> changePassword(HttpServletRequest request) throws IOException {
+    var body = input(request, Set.of("password", "confirmation"));
+    service.changeTutorPassword(
+        principal(), body.get("password").stringValue(), body.get("confirmation").stringValue());
+    return ResponseEntity.noContent().header("Cache-Control", "no-store").build();
   }
 
   public static SessionPrincipal principal() {

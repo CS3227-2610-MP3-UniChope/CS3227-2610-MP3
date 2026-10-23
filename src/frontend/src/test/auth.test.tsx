@@ -38,6 +38,26 @@ test('FE1-LOGIN exact identity-free login, dynamic CSRF header and rotation befo
   expect(api.calls.every(call => !call.init.credentials || call.init.credentials === 'same-origin')).toBe(true);
 });
 
+test('AUTH-PW-01 forced Tutor changes the initial password before accessing the workspace', async () => {
+  const api = apiFixture();
+  const tutor = { ...student, id: '90000000-0000-4000-8000-000000000001', role: 'TUTOR' as const, mustChangePassword: true };
+  api.on('POST', '/api/auth/login', () => json(tutor));
+  api.on('POST', '/api/auth/change-password', () => new Response(null, { status: 204 }));
+  render(<App />);
+  const user = await fillLogin();
+  await user.click(screen.getByRole('button', { name: /^sign in$/i }));
+  await screen.findByRole('heading', { name: /set your password/i });
+  expect(screen.queryByRole('navigation', { name: /tutor/i })).not.toBeInTheDocument();
+  await user.type(screen.getByLabelText(/^new password$/i), 'Tutor-new-pass-2026');
+  await user.type(screen.getByLabelText(/^confirm new password$/i), 'Tutor-new-pass-2026');
+  await user.click(screen.getByRole('button', { name: /change password/i }));
+  await screen.findByRole('heading', { name: /sign in/i });
+  expect(api.requests('/api/auth/change-password', 'POST')[0].body)
+    .toEqual({ password: 'Tutor-new-pass-2026', confirmation: 'Tutor-new-pass-2026' });
+  expect(api.requests('/api/tutor/bookings')).toHaveLength(0);
+  expect(screen.getByRole('alert')).toHaveTextContent(/password updated/i);
+});
+
 test.each(['STUDENT', 'TUTOR', 'ADMIN'] as const)('FE1-RESTORE restored %s resolves wrong-role route to own home', async role => {
   const actor: Actor = { ...student, role };
   const api = apiFixture(actor);

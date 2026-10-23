@@ -44,6 +44,9 @@ public class ApiSecurityConfiguration {
                     "/api/auth/register",
                     "/api/auth/logout")
                 .permitAll();
+            authorize
+                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/auth/change-password")
+                .authenticated();
             authorize.requestMatchers("/api/auth/me").authenticated();
           }
           if (admin) authorize.requestMatchers("/api/admin/**").hasRole("ADMIN");

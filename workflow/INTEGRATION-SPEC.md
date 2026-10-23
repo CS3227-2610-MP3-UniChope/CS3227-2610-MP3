@@ -38,8 +38,15 @@ storage section; the shared endpoint summary below follows that contract.
 | POST `/auth/login` | `{ "email": "...", "password": "..." }` with CSRF | 200 authenticated-user object and rotated session cookie |
 | GET `/auth/me` | Session cookie | 200 authenticated-user object |
 | POST `/auth/logout` | CSRF and session cookie | 204; invalidate session and expire cookie |
+| POST `/auth/change-password` | `{ "password": "...", "confirmation": "..." }` with CSRF and forced Tutor session | 204; atomically change hash, clear first-login flag, and revoke the session |
 
-Authenticated-user object: `{ "id": "UUID", "name": "Tutor name", "role": "TUTOR" }`.
+Authenticated-user object: `{ "id": "UUID", "name": "Tutor name", "role": "TUTOR", "mustChangePassword": false }`.
+`mustChangePassword` is true for a newly provisioned Tutor and for existing Tutor
+accounts marked by V7 until each completes the required change. Such sessions may
+access only auth/me, auth/csrf, auth/logout, and
+auth/change-password; other protected requests return 403
+`PASSWORD_CHANGE_REQUIRED`. V7 marks existing Tutor accounts for this one-time change;
+Student and Admin accounts are unaffected.
 Never return password hashes or stored credentials. Invalid/inactive login returns
 generic 401 `INVALID_CREDENTIALS`; throttle returns 429 without confirming whether
 an account exists. Protected missing/expired sessions return 401 `UNAUTHENTICATED`.

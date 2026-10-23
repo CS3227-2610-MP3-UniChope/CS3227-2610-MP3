@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ApiClient, ApiError, isActor, StaleRequest, type Actor } from './api';
 import { Brand, Icon, Link, Loading } from './components';
 import Login from './Login';
+import ChangePassword from './ChangePassword';
 import Register from './Register';
 import AdminWorkspace from './admin/AdminWorkspace';
 import { navigate, useLocation } from './navigation';
@@ -55,6 +56,7 @@ function SessionApp() {
   async function register(name: string, email: string, password: string, confirmation: string) {
     await api.request('/api/auth/register', { name, email, password, confirmation }, false);
   }
+  function passwordChanged() { api.reset(); setActor(null); setMessage('Password updated. Sign in with your new password.'); navigate('/login', true); }
   function registered() { setMessage('Registration completed. Sign in with your new account.'); navigate('/login', true); }
   async function logout() {
     if (signingOut) return; setSigningOut(true); setActor(null); setMessage(''); setLogoutFailed(false); api.reset(); navigate('/login', true);
@@ -72,7 +74,7 @@ function SessionApp() {
     {(restoring || restoreFailed || unknown) && <header className="app-header"><Brand /><div className="account"><ThemeSwitch /></div></header>}
     {restoring ? <main id="main-content" className="restore-screen"><h1>Opening your workspace</h1><Loading label="Checking your session" /></main> : restoreFailed ? <main id="main-content" className="restore-screen"><h1>Unable to open your workspace</h1><p role="alert">{message}</p><button className="btn btn-primary" onClick={() => setRestoreAttempt(value => value + 1)}>Try again</button></main> : unknown ? <main id="main-content" className="restore-screen"><h1>Page not found</h1><p>This page could not be found.</p><Link href={actor ? home(actor) : '/login'}>Back to home</Link></main> : !actor ? window.location.pathname === '/register' ? <Register register={register} onSuccess={registered} onSignIn={() => navigate('/login')} /> : <Login login={login} message={message} signingOut={signingOut} retryLogout={logoutFailed ? () => void logout() : undefined} /> : <>
       <header className="app-header"><Link href={home(actor)} className="brand-link"><Brand /></Link>{actor.role === 'STUDENT' && <span className="header-caption">CONSULTATION PLANNER</span>}<div className="account">{actor.role !== 'TUTOR' && <span><strong>{actor.name}</strong><small>{actor.role.charAt(0) + actor.role.slice(1).toLowerCase()}</small></span>}<ThemeSwitch /><button className="btn sign-out" onClick={() => void logout()}><Icon name="logout" />Sign out</button></div></header>
-      {actor.role === 'STUDENT' ? agendaPath.test(window.location.pathname) ? <AgendaPage key={actor.id + window.location.pathname} api={api} bookingId={window.location.pathname.split('/')[3]} /> : <StudentWorkspace key={actor.id} api={api} location={location} signOut={() => void logout()} /> : actor.role === 'TUTOR' ? <TutorWorkspace key={actor.id} api={api} actor={actor} /> : <AdminWorkspace key={actor.id} api={api} location={location} />}
+      {actor.mustChangePassword ? <ChangePassword api={api} onComplete={passwordChanged} /> : actor.role === 'STUDENT' ? agendaPath.test(window.location.pathname) ? <AgendaPage key={actor.id + window.location.pathname} api={api} bookingId={window.location.pathname.split('/')[3]} /> : <StudentWorkspace key={actor.id} api={api} location={location} signOut={() => void logout()} /> : actor.role === 'TUTOR' ? <TutorWorkspace key={actor.id} api={api} actor={actor} /> : <AdminWorkspace key={actor.id} api={api} location={location} />}
     </>}
   </>;
 }

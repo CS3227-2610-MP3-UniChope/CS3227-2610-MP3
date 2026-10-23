@@ -1,4 +1,4 @@
-export type Actor = { id: string; name: string; role: 'STUDENT' | 'TUTOR' | 'ADMIN' };
+export type Actor = { id: string; name: string; role: 'STUDENT' | 'TUTOR' | 'ADMIN'; mustChangePassword?: boolean };
 export type Module = { id: string; code: string; name: string };
 export type Slot = { id: string; moduleId: string; moduleCode: string; moduleName: string; tutorName: string; startTime: string; endTime: string };
 export type Booking = Slot & { slotId: string; status: 'ACTIVE' | 'CANCELLED' | 'COMPLETED'; cancellable: boolean };
@@ -11,7 +11,8 @@ export class PreflightError extends ApiError {
 }
 export const isActor = (value: unknown): value is Actor => {
   const a = value as Actor | null;
-  return !!a && typeof a.id === 'string' && typeof a.name === 'string' && ['STUDENT', 'TUTOR', 'ADMIN'].includes(a.role);
+  return !!a && typeof a.id === 'string' && typeof a.name === 'string' && ['STUDENT', 'TUTOR', 'ADMIN'].includes(a.role)
+    && (a.mustChangePassword === undefined || typeof a.mustChangePassword === 'boolean');
 };
 export class ApiClient {
   private generation = 0;
@@ -71,7 +72,7 @@ export class ApiClient {
       if (generation !== this.generation) throw new StaleRequest();
       const assignmentWrite = path.startsWith('/api/admin/assignments/') && ['PUT', 'DELETE'].includes(method);
       const created = method === 'POST' && ['/api/student/bookings', '/api/auth/register', '/api/admin/users', '/api/admin/modules', '/api/tutor/slots'].includes(path);
-      const expectedStatus = assignmentWrite || (method === 'POST' && path === '/api/auth/logout') ? 204 : created ? 201 : 200;
+      const expectedStatus = assignmentWrite || (method === 'POST' && ['/api/auth/logout', '/api/auth/change-password'].includes(path)) ? 204 : created ? 201 : 200;
       if (response.ok && response.status !== expectedStatus) throw new ApiError();
       if (response.status === 204) return undefined as T;
       if (!response.headers.get('Content-Type')?.includes('application/json')) throw new ApiError();
