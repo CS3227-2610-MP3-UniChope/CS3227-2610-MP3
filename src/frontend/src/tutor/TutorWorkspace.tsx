@@ -1,22 +1,30 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ApiClient, ApiError, StaleRequest, type Actor } from '../api';
-import { Loading } from '../components';
+import { Icon, Loading } from '../components';
 
 type CompletedBooking = {
   bookingId: string;
   slotId: string;
   moduleCode: string;
+  studentName: string;
   startTime: string;
   endTime: string;
 };
 type BookingRow = CompletedBooking & { status: 'ACTIVE' | 'CANCELLED' | 'COMPLETED' };
 type TutorModule = { id: string; code: string; name: string };
-type HistorySlot = { id: string; moduleId: string; moduleCode: string; startTime: string; endTime: string; status: 'CANCELLED' | 'COMPLETED' };
+type TutorSlot = { id: string; moduleId: string; moduleCode: string; startTime: string; endTime: string; status: 'AVAILABLE' | 'BOOKED'; studentName: string | null };
+type HistorySlot = { id: string; moduleId: string; moduleCode: string; startTime: string; endTime: string; status: 'CANCELLED' | 'COMPLETED'; studentName: string | null };
 type TutorNote = { bookingId: string; content: string | null; version: number; updatedAt: string | null };
 type DraftResponse = { bookingId: string; draft: string; requiresReview: boolean; providerMode: 'fake' | 'soc' };
+type TutorSection = 'availability' | 'bookings' | 'slot-history' | 'consultation-notes';
+type SlotStatus = TutorSlot['status'] | BookingRow['status'] | HistorySlot['status'];
 
 const MAX_CODE_POINTS = 8000;
 const codePoints = (value: string) => Array.from(value).length;
+function StatusBadge({ status }: { status: SlotStatus }) {
+  const label = status.charAt(0) + status.slice(1).toLowerCase();
+  return <span className={`tutor-status tutor-status-${status.toLowerCase()}`}>{label}</span>;
+}
 const dateLabel = (value: string) => new Intl.DateTimeFormat('en-SG', {
   dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Singapore',
 }).format(new Date(value));
@@ -40,14 +48,41 @@ function bookingFailureMessage(error: unknown) {
   if (error instanceof ApiError && error.code === 'NOT_FOUND') return 'This booking is no longer available. Refresh the list.';
   return failureMessage(error);
 }
+function slotFailureMessage(error: unknown) {
+  if (error instanceof ApiError) {
+    if (error.code === 'SLOT_OVERLAP') return 'This time overlaps another slot. Choose a different time.';
+    if (error.code === 'MODULE_UNAVAILABLE') return 'That module is no longer assigned to your account. Refresh the page.';
+    if (error.code === 'VALIDATION_FAILED' || error.code === 'INVALID_TIME' || error.code === 'INVALID_INPUT') return 'Check the module, date, and times, then try again.';
+    if (error.code === 'INVALID_STATE' || error.code === 'NOT_FOUND') return 'This slot is no longer available. Refresh the list.';
+  }
+  return failureMessage(error);
+}
 
 export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: Actor }) {
+  const [activeSection, setActiveSection] = useState<TutorSection>(() => {
+    const section = window.location.hash.slice(1);
+    return ['availability', 'bookings', 'slot-history', 'consultation-notes'].includes(section)
+      ? section as TutorSection : 'availability';
+  });
   const [bookings, setBookings] = useState<CompletedBooking[]>([]);
   const [bookingRows, setBookingRows] = useState<BookingRow[]>([]);
   const [modules, setModules] = useState<TutorModule[]>([]);
+  const [slots, setSlots] = useState<TutorSlot[]>([]);
+  const [slotDate, setSlotDate] = useState('');
+  const [slotCreateDate, setSlotCreateDate] = useState('');
+  const [slotModule, setSlotModule] = useState('');
+  const [slotStart, setSlotStart] = useState('');
+  const [slotEnd, setSlotEnd] = useState('');
+  const [slotLoadState, setSlotLoadState] = useState<'loading' | 'ready' | 'failed'>('loading');
+  const [slotLoadError, setSlotLoadError] = useState('');
+  const [slotActionError, setSlotActionError] = useState('');
+  const [slotNotice, setSlotNotice] = useState('');
+  const [creatingSlot, setCreatingSlot] = useState(false);
+  const [cancellingSlotId, setCancellingSlotId] = useState('');
   const [bookingModule, setBookingModule] = useState('');
   const [bookingDate, setBookingDate] = useState('');
   const [bookingStatus, setBookingStatus] = useState('');
+  const [bookingStudent, setBookingStudent] = useState('');
   const [bookingLoadState, setBookingLoadState] = useState<'loading' | 'ready' | 'failed'>('loading');
   const [bookingError, setBookingError] = useState('');
   const [bookingNotice, setBookingNotice] = useState('');
@@ -55,6 +90,7 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   const [history, setHistory] = useState<HistorySlot[]>([]);
   const [historyStatus, setHistoryStatus] = useState<'CANCELLED' | 'COMPLETED'>('COMPLETED');
   const [historyDate, setHistoryDate] = useState('');
+  const [historyStudent, setHistoryStudent] = useState('');
   const [historyLoadState, setHistoryLoadState] = useState<'idle' | 'loading' | 'ready' | 'failed'>('idle');
   const [historyError, setHistoryError] = useState('');
   const [bookingId, setBookingId] = useState('');
@@ -62,6 +98,8 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   const [listAttempt, setListAttempt] = useState(0);
   const [note, setNote] = useState<TutorNote | null>(null);
   const [noteText, setNoteText] = useState('');
+  const [editingNote, setEditingNote] = useState(false);
+  const [showDraftTools, setShowDraftTools] = useState(false);
   const [roughNotes, setRoughNotes] = useState('');
   const [draftText, setDraftText] = useState('');
   const [draftBaseline, setDraftBaseline] = useState('');
@@ -74,6 +112,7 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   const draftSequence = useRef(0);
   const bookingFiltersRef = useRef({ moduleId: bookingModule, date: bookingDate, status: bookingStatus });
   const bookingRequestSequence = useRef(0);
+  const slotRequestSequence = useRef(0);
   const historyRequestSequence = useRef(0);
   const selectedBookingRef = useRef(bookingId);
   selectedBookingRef.current = bookingId;
@@ -95,6 +134,60 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
       if (!(cause instanceof StaleRequest)) setBookingError(bookingFailureMessage(cause));
       setBookingLoadState('failed'); return false;
     }
+  }
+
+  async function loadSlots(date = slotDate) {
+    const requestSequence = ++slotRequestSequence.current;
+    const query = new URLSearchParams();
+    if (date) query.set('date', date);
+    setSlotLoadState('loading'); setSlotLoadError(''); setSlotNotice('');
+    try {
+      const rows = await api.request<TutorSlot[]>(`/api/tutor/slots${query.size ? `?${query}` : ''}`);
+      if (requestSequence !== slotRequestSequence.current) return false;
+      setSlots(rows); setSlotLoadState('ready'); return true;
+    } catch (cause) {
+      if (requestSequence !== slotRequestSequence.current) return false;
+      if (!(cause instanceof StaleRequest)) setSlotLoadError(slotFailureMessage(cause));
+      setSlotLoadState('failed'); return false;
+    }
+  }
+
+  async function createSlot(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (creatingSlot) return;
+    if (!slotModule || !slotCreateDate || !slotStart || !slotEnd) {
+      setSlotActionError('Choose a module, date, start time, and end time.'); setSlotNotice(''); return;
+    }
+    const startTime = new Date(`${slotCreateDate}T${slotStart}:00+08:00`);
+    const endTime = new Date(`${slotCreateDate}T${slotEnd}:00+08:00`);
+    if (Number.isNaN(startTime.valueOf()) || Number.isNaN(endTime.valueOf()) || endTime <= startTime) {
+      setSlotActionError('End time must be later than start time.'); setSlotNotice(''); return;
+    }
+    setCreatingSlot(true); setSlotActionError(''); setSlotNotice('');
+    try {
+      await api.request('/api/tutor/slots', {
+        moduleId: slotModule, startTime: startTime.toISOString(), endTime: endTime.toISOString(),
+      });
+      setSlotStart(''); setSlotEnd('');
+      await loadSlots();
+      setSlotNotice('Availability created.');
+    } catch (cause) {
+      if (!(cause instanceof StaleRequest)) setSlotActionError(slotFailureMessage(cause));
+    } finally { setCreatingSlot(false); }
+  }
+
+  async function cancelSlot(item: TutorSlot) {
+    if (item.status !== 'AVAILABLE' || cancellingSlotId) return;
+    if (!window.confirm('Cancel this available slot? Students will no longer be able to book it.')) return;
+    setCancellingSlotId(item.id); setSlotLoadError(''); setSlotNotice(''); setSlotActionError('');
+    try {
+      await api.request(`/api/tutor/slots/${item.id}/cancel`, {});
+      await loadSlots();
+      setSlotNotice('Slot cancelled.');
+    } catch (cause) {
+      await loadSlots();
+      if (!(cause instanceof StaleRequest)) setSlotActionError(slotFailureMessage(cause));
+    } finally { setCancellingSlotId(''); }
   }
 
   async function loadHistory(status = historyStatus, date = historyDate) {
@@ -136,6 +229,7 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   useEffect(() => {
     let current = true;
     void api.request<TutorModule[]>('/api/tutor/modules').then(value => { if (current) setModules(value); }).catch(() => {});
+    void loadSlots();
     void loadBookingRows();
     return () => { current = false; };
   }, [api, actor.id]);
@@ -155,7 +249,7 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   useEffect(() => {
     if (!bookingId) { setNote(null); setNoteText(''); return; }
     let current = true;
-    setNoteLoading(true); setSaving(false); setGenerating(false); setNote(null); setNoteText(''); setRoughNotes('');
+    setNoteLoading(true); setSaving(false); setGenerating(false); setEditingNote(false); setShowDraftTools(false); setNote(null); setNoteText(''); setRoughNotes('');
     setDraftText(''); setDraftBaseline(''); setProviderMode(null); setError(''); setNotice('');
     void api.request<TutorNote>(`/api/tutor/bookings/${bookingId}/note`).then(value => {
       if (!current) return;
@@ -182,12 +276,19 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   }, [note, noteText, providerMode, draftText, draftBaseline, roughNotes]);
 
   function selectBooking(nextId: string) {
-    if (nextId === bookingId) return;
+    if (nextId === bookingId) return true;
     const noteDirty = note !== null && noteText !== (note.content ?? '');
     const hasWork = roughNotes.length > 0 || draftText.length > 0 || noteDirty;
-    if (hasWork && !window.confirm('Discard the unsaved note and draft before changing consultation?')) return;
+    if (hasWork && !window.confirm('Discard the unsaved note and draft before changing consultation?')) return false;
     draftSequence.current++;
     setBookingId(nextId);
+    return true;
+  }
+
+  function cancelNoteEdit() {
+    const dirty = note !== null && noteText !== (note.content ?? '');
+    if (dirty && !window.confirm('Discard your unsaved note edits?')) return;
+    setNoteText(note?.content ?? ''); setEditingNote(false); setError(''); setNotice('');
   }
 
   async function generate() {
@@ -212,7 +313,7 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
     if (!draftText) return;
     const noteDirty = note !== null && noteText !== (note.content ?? '');
     if (noteDirty && !window.confirm('Replace the text in the note editor with this reviewed draft?')) return;
-    setNoteText(draftText); setNotice('Draft copied into the note editor. Choose Save note to store it.'); setError('');
+    setNoteText(draftText); setEditingNote(true); setNotice('Draft copied into the note editor. Choose Save note to store it.'); setError('');
   }
 
   async function saveNote() {
@@ -224,7 +325,7 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
         content: noteText, expectedVersion: note.version,
       });
       if (saved.bookingId !== requestedBooking || selectedBookingRef.current !== requestedBooking) return;
-      setNote(saved); setNoteText(saved.content ?? ''); setNotice('Note saved.');
+      setNote(saved); setNoteText(saved.content ?? ''); setEditingNote(false); setNotice('Note saved.');
     } catch (cause) { if (selectedBookingRef.current === requestedBooking && !(cause instanceof StaleRequest)) setError(failureMessage(cause)); }
     finally { if (selectedBookingRef.current === requestedBooking) setSaving(false); }
   }
@@ -243,11 +344,60 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   }
 
   const selected = bookings.find(item => item.bookingId === bookingId);
-  return <main id="main-content" className="tutor-workspace">
-    <div className="tutor-page-heading"><span className="eyebrow">TUTOR WORKSPACE</span><h1>Consultation notes</h1><p>Review completed consultations, prepare a draft, and save your notes when ready.</p></div>
-    <section className="tutor-panel" aria-labelledby="tutor-bookings-heading">
+  const studentMatches = (name: string | null | undefined, query: string) =>
+    !query.trim() || (name ?? '').toLocaleLowerCase().includes(query.trim().toLocaleLowerCase());
+  const visibleBookingRows = bookingRows.filter(item => studentMatches(item.studentName, bookingStudent));
+  const visibleHistory = history.filter(item => studentMatches(item.studentName, historyStudent));
+  return <div className="student-layout tutor-layout">
+    <nav className="workspace-nav tutor-nav" aria-label="Tutor navigation">
+      <a href="#availability" aria-current={activeSection === 'availability' ? 'page' : undefined} onClick={event => { event.preventDefault(); setActiveSection('availability'); }}><Icon name="calendar" /><span>Availability</span></a>
+      <a href="#bookings" aria-current={activeSection === 'bookings' ? 'page' : undefined} onClick={event => { event.preventDefault(); setActiveSection('bookings'); }}><Icon name="book" /><span>Bookings</span></a>
+      <a href="#slot-history" aria-current={activeSection === 'slot-history' ? 'page' : undefined} onClick={event => { event.preventDefault(); setActiveSection('slot-history'); }}><Icon name="clock" /><span>Slot history</span></a>
+      <a href="#consultation-notes" aria-current={activeSection === 'consultation-notes' ? 'page' : undefined} onClick={event => { event.preventDefault(); setActiveSection('consultation-notes'); }}><Icon name="book" /><span>Consultation notes</span></a>
+    </nav>
+    <main id="main-content" tabIndex={-1} className="workspace-main tutor-main">
+    <div className="page-heading tutor-page-heading"><div><span className="eyebrow">TUTOR WORKSPACE</span><h1>Manage consultations</h1><p className="muted">Publish availability, manage bookings, and prepare private consultation notes.</p></div></div>
+    {activeSection === 'availability' && <>
+    <section id="availability" className="tutor-panel" aria-labelledby="tutor-slots-heading">
+      <h2 id="tutor-slots-heading">Availability</h2>
+      <p className="muted">Publish consultation times for your assigned modules. Times use Singapore time.</p>
+      <form className="tutor-list-filters tutor-slot-create" onSubmit={event => void createSlot(event)}>
+        <label>Assigned module<select className="form-select" value={slotModule} onChange={event => setSlotModule(event.target.value)}>
+          <option value="">Choose a module</option>{modules.map(item => <option key={item.id} value={item.id}>{item.code} · {item.name}</option>)}
+        </select></label>
+        <label>Slot date<input className="form-control" type="date" value={slotCreateDate} onChange={event => setSlotCreateDate(event.target.value)} /></label>
+        <label>Start time<input className="form-control" type="time" value={slotStart} onChange={event => setSlotStart(event.target.value)} /></label>
+        <label>End time<input className="form-control" type="time" value={slotEnd} onChange={event => setSlotEnd(event.target.value)} /></label>
+        <button className="btn btn-primary" type="submit" disabled={creatingSlot || !modules.length}>{creatingSlot ? 'Creating…' : 'Create slot'}</button>
+      </form>
+      <form className="tutor-list-filters tutor-filter-form" onSubmit={event => { event.preventDefault(); void loadSlots(slotDate); }}>
+        <label>Filter by start date<input className="form-control" type="date" value={slotDate} onChange={event => setSlotDate(event.target.value)} /></label>
+        <button className="btn btn-outline-secondary" type="submit">Apply date</button>
+        <button className="btn btn-outline-secondary" type="button" onClick={() => { setSlotDate(''); void loadSlots(''); }}>All upcoming</button>
+        <button className="btn btn-outline-secondary" type="button" onClick={() => void loadSlots()}>Refresh slots</button>
+      </form>
+      {slotActionError && <p role="alert" className="tutor-alert">{slotActionError}</p>}
+      {slotLoadError && <p role="alert" className="tutor-alert">{slotLoadError}</p>}
+      {slotNotice && <p role="status" className="tutor-notice">{slotNotice}</p>}
+      {slotLoadState === 'loading' && <Loading label="Loading Tutor availability" />}
+      {slotLoadState === 'failed' && <button className="btn btn-outline-secondary" onClick={() => void loadSlots()}>Retry slots</button>}
+      {slotLoadState === 'ready' && !modules.length && <p>No active assigned modules are available for slot creation.</p>}
+      {slotLoadState === 'ready' && slots.length === 0 && <p>No upcoming slots match this date.</p>}
+      {slotLoadState === 'ready' && slots.length > 0 && <div className="table-responsive"><table className="table">
+        <thead><tr><th>Module</th><th>Student</th><th>Consultation time (Singapore)</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>{slots.map(item => <tr key={item.id}>
+          <td>{item.moduleCode}</td><td>{item.studentName ?? '—'}</td><td>{dateLabel(item.startTime)} – {dateLabel(item.endTime)}</td><td><StatusBadge status={item.status} /></td>
+          <td>{item.status === 'AVAILABLE' && <button className="btn btn-sm btn-outline-secondary" disabled={cancellingSlotId !== '' || creatingSlot} onClick={() => void cancelSlot(item)}>
+            {cancellingSlotId === item.id ? 'Cancelling…' : 'Cancel slot'}
+          </button>}</td>
+        </tr>)}</tbody>
+      </table></div>}
+    </section>
+    </>}
+    {activeSection === 'bookings' && <>
+    <section id="bookings" className="tutor-panel" aria-labelledby="tutor-bookings-heading">
       <h2 id="tutor-bookings-heading">Bookings</h2>
-      <form className="tutor-list-filters" onSubmit={event => { event.preventDefault(); void loadBookingRows(bookingModule, bookingDate, bookingStatus); }}>
+      <form className="tutor-list-filters tutor-filter-form" onSubmit={event => { event.preventDefault(); void loadBookingRows(bookingModule, bookingDate, bookingStatus); }}>
         <label>Module<select className="form-select" value={bookingModule} onChange={event => setBookingModule(event.target.value)}>
           <option value="">All modules</option>{modules.map(item => <option key={item.id} value={item.id}>{item.code}</option>)}
         </select></label>
@@ -255,6 +405,7 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
         <label>Status<select className="form-select" value={bookingStatus} onChange={event => setBookingStatus(event.target.value)}>
           <option value="">All statuses</option><option value="ACTIVE">Active</option><option value="CANCELLED">Cancelled</option><option value="COMPLETED">Completed</option>
         </select></label>
+        <label>Student<input className="form-control" type="search" value={bookingStudent} onChange={event => setBookingStudent(event.target.value)} placeholder="Search student name" /></label>
         <button className="btn btn-outline-secondary" type="submit">Apply filters</button>
       </form>
       {bookingError && <p role="alert" className="tutor-alert">{bookingError}</p>}
@@ -262,23 +413,27 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
       {bookingLoadState === 'loading' && <Loading label="Loading Tutor bookings" />}
       {bookingLoadState === 'failed' && <button className="btn btn-outline-secondary" onClick={() => void loadBookingRows()}>Retry bookings</button>}
       {bookingLoadState === 'ready' && bookingRows.length === 0 && <p>No bookings match these filters.</p>}
-      {bookingLoadState === 'ready' && bookingRows.length > 0 && <div className="table-responsive"><table className="table">
-        <thead><tr><th>Module</th><th>Consultation time (Singapore)</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody>{bookingRows.map(item => <tr key={item.bookingId}>
-          <td>{item.moduleCode}</td><td>{dateLabel(item.startTime)} – {dateLabel(item.endTime)}</td><td>{item.status}</td>
+      {bookingLoadState === 'ready' && bookingRows.length > 0 && visibleBookingRows.length === 0 && <p>No bookings match this student name.</p>}
+      {bookingLoadState === 'ready' && visibleBookingRows.length > 0 && <div className="table-responsive"><table className="table">
+        <thead><tr><th>Module</th><th>Student</th><th>Consultation time (Singapore)</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>{visibleBookingRows.map(item => <tr key={item.bookingId}>
+          <td>{item.moduleCode}</td><td>{item.studentName}</td><td>{dateLabel(item.startTime)} – {dateLabel(item.endTime)}</td><td><StatusBadge status={item.status} /></td>
           <td>{item.status === 'ACTIVE' && <button className="btn btn-sm btn-outline-secondary" disabled={completingId !== ''} onClick={() => void completeBooking(item)}>
             {completingId === item.bookingId ? 'Completing…' : 'Mark complete'}
           </button>}</td>
         </tr>)}</tbody>
       </table></div>}
     </section>
-    <section className="tutor-panel" aria-labelledby="tutor-history-heading">
+    </>}
+    {activeSection === 'slot-history' && <>
+    <section id="slot-history" className="tutor-panel" aria-labelledby="tutor-history-heading">
       <h2 id="tutor-history-heading">Slot history</h2>
-      <form className="tutor-list-filters" onSubmit={event => { event.preventDefault(); void loadHistory(historyStatus, historyDate); }}>
+      <form className="tutor-list-filters tutor-filter-form" onSubmit={event => { event.preventDefault(); void loadHistory(historyStatus, historyDate); }}>
         <label>Status<select className="form-select" value={historyStatus} onChange={event => setHistoryStatus(event.target.value as 'CANCELLED' | 'COMPLETED')}>
           <option value="CANCELLED">Cancelled</option><option value="COMPLETED">Completed</option>
         </select></label>
         <label>Start date<input className="form-control" type="date" value={historyDate} onChange={event => setHistoryDate(event.target.value)} /></label>
+        <label>Student<input className="form-control" type="search" value={historyStudent} onChange={event => setHistoryStudent(event.target.value)} placeholder="Search student name" /></label>
         <button className="btn btn-outline-secondary" type="submit">Load history</button>
       </form>
       {historyError && <p role="alert" className="tutor-alert">{historyError}</p>}
@@ -286,11 +441,22 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
       {historyLoadState === 'loading' && <Loading label="Loading slot history" />}
       {historyLoadState === 'failed' && <button className="btn btn-outline-secondary" onClick={() => void loadHistory()}>Retry history</button>}
       {historyLoadState === 'ready' && history.length === 0 && <p>No historical slots match these filters.</p>}
-      {historyLoadState === 'ready' && history.length > 0 && <div className="table-responsive"><table className="table">
-        <thead><tr><th>Module</th><th>Consultation time (Singapore)</th><th>Status</th></tr></thead>
-        <tbody>{history.map(item => <tr key={item.id}><td>{item.moduleCode}</td><td>{dateLabel(item.startTime)} – {dateLabel(item.endTime)}</td><td>{item.status}</td></tr>)}</tbody>
+      {historyLoadState === 'ready' && history.length > 0 && visibleHistory.length === 0 && <p>No historical slots match this student name.</p>}
+      {historyLoadState === 'ready' && visibleHistory.length > 0 && <div className="table-responsive"><table className="table">
+        <thead><tr><th>Module</th><th>Student</th><th>Consultation time (Singapore)</th><th>Status</th><th>Note</th></tr></thead>
+        <tbody>{visibleHistory.map(item => {
+          const completedBooking = item.status === 'COMPLETED' ? bookings.find(booking => booking.slotId === item.id) : undefined;
+          return <tr key={item.id}><td>{item.moduleCode}</td><td>{item.studentName ?? '—'}</td><td>{dateLabel(item.startTime)} – {dateLabel(item.endTime)}</td><td><StatusBadge status={item.status} /></td>
+            <td>{completedBooking && <button className="btn btn-sm btn-outline-primary" onClick={() => {
+              if (selectBooking(completedBooking.bookingId)) setActiveSection('consultation-notes');
+            }}>Open note</button>}</td></tr>;
+        })}</tbody>
       </table></div>}
     </section>
+    </>}
+    {activeSection === 'consultation-notes' && <>
+    <div id="consultation-notes" className="tutor-notes-section">
+    <div className="tutor-section-heading"><div><span className="eyebrow">PRIVATE TO YOU</span><h2>Consultation notes</h2><p className="muted">Review a completed session, write a note, or prepare an editable AI draft.</p></div></div>
     {listState === 'loading' && <Loading label="Loading completed consultations" />}
     {listState === 'failed' && <section className="tutor-panel"><p role="alert">We could not load your completed consultations.</p><button className="btn btn-outline-secondary" onClick={() => setListAttempt(value => value + 1)}>Try again</button></section>}
     {listState === 'ready' && bookings.length === 0 && <section className="tutor-panel"><h2>No completed consultations yet</h2><p>Completed consultations will appear here for note taking.</p></section>}
@@ -304,19 +470,33 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
       </section>
       {error && <p className="tutor-alert" role="alert">{error}</p>}
       {notice && <p className="tutor-notice" role="status">{notice}</p>}
-      <div className="tutor-notes-grid">
-        <section className="tutor-panel">
-          <h2>Saved consultation note</h2>
-          <label htmlFor="saved-note">Tutor-only note</label>
-          <textarea id="saved-note" className="form-control tutor-note-area" value={noteText} maxLength={16000}
-            disabled={noteLoading || !note} onChange={event => setNoteText(event.target.value)} />
-          <div className="tutor-note-actions"><span>{codePoints(noteText)} / {MAX_CODE_POINTS} characters{note && ` · version ${note.version}`}</span>
-            <button className="btn btn-outline-secondary" onClick={() => void reloadNote()} disabled={noteLoading}>Reload saved note</button>
-            <button className="btn btn-primary" onClick={() => void saveNote()} disabled={!note || noteLoading || saving || !noteText.trim() || codePoints(noteText) > MAX_CODE_POINTS || noteText === (note.content ?? '')}>{saving ? 'Saving…' : 'Save note'}</button>
+      <div className={`tutor-notes-grid ${showDraftTools ? '' : 'tutor-notes-grid-single'}`}>
+        <section className="tutor-panel tutor-note-panel">
+          <div className="tutor-note-card-heading"><h2>Saved consultation note</h2>
+            <button className="btn btn-outline-primary" onClick={() => setShowDraftTools(value => !value)} disabled={generating}>
+              {showDraftTools ? 'Hide AI draft' : 'Prepare AI draft'}
+            </button>
           </div>
-          {note?.updatedAt && <p className="muted">Saved {dateLabel(note.updatedAt)}</p>}
+          {noteLoading ? <Loading label="Loading saved note" /> : editingNote ? <>
+            <label htmlFor="saved-note">Tutor-only note</label>
+            <textarea id="saved-note" className="form-control tutor-note-area" value={noteText} maxLength={16000}
+              disabled={!note} onChange={event => setNoteText(event.target.value)} />
+            <div className="tutor-note-actions"><span>{codePoints(noteText)} / {MAX_CODE_POINTS} characters{note && ` · version ${note.version}`}</span>
+              <button className="btn btn-outline-secondary" onClick={cancelNoteEdit} disabled={saving}>Cancel</button>
+              <button className="btn btn-outline-secondary" onClick={() => void reloadNote()} disabled={noteLoading || saving}>Reload saved note</button>
+              <button className="btn btn-primary" onClick={() => void saveNote()} disabled={!note || noteLoading || saving || !noteText.trim() || codePoints(noteText) > MAX_CODE_POINTS || noteText === (note.content ?? '')}>{saving ? 'Saving…' : 'Save note'}</button>
+            </div>
+          </> : <>
+            <p className="tutor-note-label">Tutor-only note</p>
+            <div className={`tutor-note-content ${note?.content ? '' : 'empty-note'}`} role="region" aria-label="Tutor-only note">
+              {note?.content ? note.content : <span className="muted">No note saved for this consultation yet.</span>}
+            </div>
+            <div className="tutor-note-actions"><span>{note?.updatedAt ? `Saved ${dateLabel(note.updatedAt)} · version ${note.version}` : 'No saved version'}</span>
+              <button className="btn btn-outline-primary" onClick={() => { setNoteText(note?.content ?? ''); setEditingNote(true); setError(''); setNotice(''); }} disabled={!note}>Edit note</button>
+            </div>
+          </>}
         </section>
-        <section className="tutor-panel">
+        {showDraftTools && <section className="tutor-panel tutor-draft-panel">
           <h2>Prepare a draft</h2>
           <p className="muted">Enter rough notes. The assistant returns a suggestion for you to review; generation never saves it.</p>
           <label htmlFor="rough-notes">Rough notes</label>
@@ -332,8 +512,11 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
             <textarea id="draft-text" className="form-control tutor-note-area" value={draftText} onChange={event => setDraftText(event.target.value)} />
             <button className="btn btn-outline-primary" onClick={useDraft} disabled={!draftText}>Use reviewed draft</button>
           </div>}
-        </section>
+        </section>}
       </div>
     </>}
-  </main>;
+    </div>
+    </>}
+    </main>
+  </div>;
 }

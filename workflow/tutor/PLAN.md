@@ -109,6 +109,7 @@ boundaries. Validate the browser-to-database read path before adding mutations.
 - [ ] Cover an empty tutor schedule, concurrent overlapping inserts, and Admin
   assignment/deactivation changes using the same tutor/module locks.
 - [ ] Adapt slot validation and shared locked transactions; implement API/forms.
+- [x] Restore the MP2 Tutor Slots tab actions in React: upcoming list/date filter, create for an assigned module, and confirmed cancellation of AVAILABLE slots. See [slot UI increment spec](SLOT-MANAGEMENT-UI-SPEC.md), [test matrix](SLOT-MANAGEMENT-UI-TEST-MATRIX.md), and [developer handoff](../handoffs/2026-10-23-developer-tutor-slot-ui.md).
 - [ ] Coordinate Student booking transaction tests to cover cancellation races.
 - [ ] Include the same student's simultaneous bookings of different overlapping slots;
   locking only each selected slot must not allow both requests to succeed.

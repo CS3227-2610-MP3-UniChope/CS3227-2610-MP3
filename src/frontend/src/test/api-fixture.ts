@@ -39,6 +39,7 @@ export function apiFixture(initialActor: Actor | null = null) {
   const calls: Call[] = [];
   const handlers = new Map<string, Handler>();
   let slots: unknown[] = [slot];
+  let tutorSlots: unknown[] = [];
   let bookings: unknown[] = [booking];
   const fetchMock = vi.fn(async (input: RequestInfo | URL, init: RequestInit = {}) => {
     const request = input instanceof Request ? input : null;
@@ -63,6 +64,7 @@ export function apiFixture(initialActor: Actor | null = null) {
     if (url.pathname === '/api/student/bookings' && method === 'POST') return json(booking, 201);
     if (url.pathname === `/api/student/bookings/${ids.booking}/cancel` && method === 'POST') return json({ ...booking, status: 'CANCELLED', cancellable: false });
     if (url.pathname === '/api/tutor/modules') return json([]);
+    if (url.pathname === '/api/tutor/slots' && method === 'GET') return json(tutorSlots);
     throw new Error(`Unconfigured test-only API: ${method} ${url.pathname}`);
   });
   vi.stubGlobal('fetch', fetchMock);
@@ -70,6 +72,7 @@ export function apiFixture(initialActor: Actor | null = null) {
     calls, fetchMock,
     givenActor(value: Actor | null) { actor = value; },
     givenSlots(value: unknown[]) { slots = value; },
+    givenTutorSlots(value: unknown[]) { tutorSlots = value; },
     givenBookings(value: unknown[]) { bookings = value; },
     on(method: string, path: string, handler: Handler) { handlers.set(`${method} ${path}`, handler); },
     requests(path: string, method?: string) { return calls.filter(call => call.url.pathname === path && (!method || call.method === method)); },

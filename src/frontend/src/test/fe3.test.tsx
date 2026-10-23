@@ -162,7 +162,7 @@ test.each(['login', 'restoring', 'restore-failure', 'not-found', 'slots', 'booki
     expect(within(banner).getAllByRole('button')).toHaveLength(2);
     expect(within(banner).getByRole('button', { name: /^sign out$/i })).toBeVisible();
     expect(within(banner).queryAllByRole('link').length).toBeLessThanOrEqual(1);
-    expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: /tutor/i })).toBeVisible();
     expect(banner).not.toHaveTextContent(student.name);
   }
   if (page === 'ADMIN') {

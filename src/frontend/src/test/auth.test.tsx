@@ -52,7 +52,8 @@ test.each(['STUDENT', 'TUTOR', 'ADMIN'] as const)('FE1-RESTORE restored %s resol
     expect(screen.getByRole('banner')).toHaveTextContent(actor.name);
     expect(api.calls.some(call => call.url.pathname.startsWith('/api/student'))).toBe(false);
   } else if (role === 'TUTOR') {
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/consultation notes/i);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/manage consultations/i);
+    expect(screen.getByRole('navigation', { name: /tutor/i })).toBeVisible();
     expect(api.requests('/api/tutor/bookings')).toHaveLength(2);
     expect(api.calls.some(call => call.url.pathname.startsWith('/api/student'))).toBe(false);
   }

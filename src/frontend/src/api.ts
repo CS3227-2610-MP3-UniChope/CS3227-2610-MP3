@@ -70,7 +70,7 @@ export class ApiClient {
         ...(body === undefined ? {} : { body: JSON.stringify(body) }), credentials: 'same-origin', cache: 'no-store', signal: controller.signal });
       if (generation !== this.generation) throw new StaleRequest();
       const assignmentWrite = path.startsWith('/api/admin/assignments/') && ['PUT', 'DELETE'].includes(method);
-      const created = method === 'POST' && ['/api/student/bookings', '/api/auth/register', '/api/admin/users', '/api/admin/modules'].includes(path);
+      const created = method === 'POST' && ['/api/student/bookings', '/api/auth/register', '/api/admin/users', '/api/admin/modules', '/api/tutor/slots'].includes(path);
       const expectedStatus = assignmentWrite || (method === 'POST' && path === '/api/auth/logout') ? 204 : created ? 201 : 200;
       if (response.ok && response.status !== expectedStatus) throw new ApiError();
       if (response.status === 204) return undefined as T;
