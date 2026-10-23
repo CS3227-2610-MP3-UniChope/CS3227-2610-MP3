@@ -3,54 +3,81 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="UniChope helps NUS students book consultations with tutors.">
+  <meta name="description" content="UniChope connects students and tutors through simple consultation booking.">
   <title>UniChope — consultation booking</title>
   <style>
-    :root { color-scheme: light; --ink:#19212b; --muted:#5d6b7a; --blue:#174a7e; --pale:#eef4fa; }
-    * { box-sizing:border-box; }
-    body { margin:0; background:#f7f9fc; color:var(--ink); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
-    header { background:var(--blue); color:white; padding:4.5rem max(1.25rem,calc((100% - 1080px)/2)); }
-    header p { max-width:650px; color:#e2edf8; font-size:1.15rem; }
-    main { max-width:1080px; margin:auto; padding:2rem 1.25rem 4rem; }
-    h1 { margin:0; font-size:clamp(2.4rem,6vw,4rem); line-height:1.1; }
-    h2 { margin-top:2.5rem; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
-    article { background:white; border:1px solid #dce4ec; border-radius:12px; padding:1.2rem; }
-    article h3 { margin-top:0; color:var(--blue); }
-    a { color:#145b9b; }
-    .links { display:flex; flex-wrap:wrap; gap:1rem; padding:0; list-style:none; }
-    .links a { display:inline-block; background:var(--pale); border-radius:8px; padding:.65rem .9rem; font-weight:650; }
-    footer { border-top:1px solid #dce4ec; color:var(--muted); padding:1.5rem max(1.25rem,calc((100% - 1080px)/2)); }
+    :root { color-scheme: light; --paper: #f7f7f5; --ink: #252c38; --muted: #647087; --line: #dce1e8; --accent: #bd431f; --accent-dark: #963216; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 1rem/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    a { color: var(--accent-dark); }
+    a:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+    .wrap { width: min(68rem, calc(100% - 3rem)); margin-inline: auto; }
+    .topbar { border-bottom: 1px solid var(--line); }
+    .topbar-inner { min-height: 4.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .brand { color: var(--ink); text-decoration: none; font-weight: 800; font-size: 1.2rem; letter-spacing: -.04em; }
+    .brand-mark { display: inline-grid; place-items: center; width: 2rem; height: 2rem; margin-right: .55rem; border-radius: .4rem; background: var(--accent); color: white; }
+    .open-link { font-weight: 750; text-underline-offset: .2em; }
+    main { padding: clamp(4rem, 10vw, 7rem) 0 5rem; }
+    .intro { max-width: 47rem; }
+    .eyebrow { margin: 0 0 .9rem; color: var(--accent); font-size: .78rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    h1, h2, h3 { margin: 0; line-height: 1.15; letter-spacing: -.035em; }
+    h1 { max-width: 13ch; font-size: clamp(2.6rem, 7vw, 4.7rem); }
+    .intro-copy { max-width: 39rem; margin: 1.2rem 0 1.7rem; color: var(--muted); font-size: 1.15rem; }
+    .button { display: inline-flex; align-items: center; min-height: 3rem; padding: .7rem 1.15rem; border-radius: .4rem; background: var(--accent); color: white; text-decoration: none; font-weight: 750; }
+    .button:hover { background: var(--accent-dark); }
+    .how { margin-top: clamp(4rem, 9vw, 6.5rem); }
+    .how h2 { margin-bottom: 1.4rem; font-size: clamp(1.8rem, 4vw, 2.5rem); }
+    .steps { border-top: 1px solid var(--ink); }
+    .step { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); gap: 1rem; padding: 1.25rem 0; border-bottom: 1px solid var(--line); }
+    .step-number { color: var(--accent); font-size: .82rem; font-weight: 850; letter-spacing: .1em; }
+    .step h3 { margin-bottom: .35rem; font-size: 1.15rem; }
+    .step p { max-width: 46rem; margin: 0; color: var(--muted); }
+    footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+    footer .wrap { padding: 1.4rem 0 1.8rem; }
+    footer p { margin: 0; }
+    @media (max-width: 36rem) {
+      .wrap { width: min(68rem, calc(100% - 2rem)); }
+      .topbar-inner { min-height: 4rem; }
+      main { padding-top: 3.5rem; }
+      .step { grid-template-columns: 2.5rem minmax(0, 1fr); gap: .7rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   </style>
 </head>
 <body>
-  <header>
-    <h1>UniChope</h1>
-    <p>Find a consultation, meet with a tutor, and keep the follow-up in one place.</p>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">▣</span>UniChope</a>
+      <a class="open-link" href="https://cs3227-2610-mp3-ysvg.onrender.com/login">Open the app</a>
+    </div>
   </header>
-  <main>
-    <section aria-labelledby="about">
-      <h2 id="about">Consultations made easier</h2>
-      <p>UniChope is a role-based consultation booking app built for students, tutors, and administrators. Each person sees the tools for their role, while the backend enforces access and booking rules.</p>
-      <div class="grid">
-        <article><h3>Students</h3><p>Browse available consultation slots, book a time, and manage your bookings.</p></article>
-        <article><h3>Tutors</h3><p>Manage availability, review bookings, complete sessions, and keep private consultation notes.</p></article>
-        <article><h3>Administrators</h3><p>Manage accounts, modules, Tutor assignments, and review booking activity.</p></article>
+  <main id="top" class="wrap">
+    <section class="intro" aria-labelledby="title">
+      <p class="eyebrow">Consultations, made simpler</p>
+      <h1 id="title">Make room for your next question.</h1>
+      <p class="intro-copy">UniChope brings students, tutors, and administrators together to arrange consultations and keep each session on track.</p>
+      <a class="button" href="https://cs3227-2610-mp3-ysvg.onrender.com/login">Open UniChope</a>
+    </section>
+
+    <section class="how" aria-labelledby="how-title">
+      <h2 id="how-title">How it works</h2>
+      <div class="steps">
+        <article class="step">
+          <span class="step-number">01</span>
+          <div><h3>Admins set things up</h3><p>Organize modules, accounts, and tutor assignments. An AI assistant can summarize booking activity.</p></div>
+        </article>
+        <article class="step">
+          <span class="step-number">02</span>
+          <div><h3>Tutors share their availability</h3><p>Publish consultation times, manage bookings, and keep private session notes. AI can prepare an editable note draft for review.</p></div>
+        </article>
+        <article class="step">
+          <span class="step-number">03</span>
+          <div><h3>Students book a session</h3><p>Find an available time, book a consultation, and manage upcoming sessions. AI can turn your questions into a preparation agenda.</p></div>
+        </article>
       </div>
     </section>
-    <section aria-labelledby="ai">
-      <h2 id="ai">AI stays advisory</h2>
-      <p>Optional AI assistance can draft consultation notes or explain aggregate activity. People review generated text; it does not book, complete, or save anything by itself. Provider access is server-side and subject to application limits. Live provider behavior and deployment availability depend on the team's configured environment.</p>
-    </section>
-    <nav aria-label="Project guides">
-      <h2>Guides and project details</h2>
-      <ul class="links">
-        <li><a href="https://github.com/CS3227-2610-MP3-UniChope/CS3227-2610-MP3/blob/main/docs/UserGuide.md">User guide</a></li>
-        <li><a href="https://github.com/CS3227-2610-MP3-UniChope/CS3227-2610-MP3/blob/main/docs/DeveloperGuide.md">Developer guide</a></li>
-        <li><a href="https://github.com/CS3227-2610-MP3-UniChope/CS3227-2610-MP3/blob/main/docs/Reflections.md">Project reflections</a></li>
-      </ul>
-    </nav>
   </main>
-  <footer>UniChope · CS3227 MP3 · Product website</footer>
+  <footer><div class="wrap"><p>UniChope · CS3227 MP3</p></div></footer>
 </body>
 </html>
