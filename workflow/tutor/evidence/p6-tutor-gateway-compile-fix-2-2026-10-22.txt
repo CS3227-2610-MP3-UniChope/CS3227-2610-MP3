@@ -1,0 +1,32 @@
+> Task :compileJava
+> Task :processResources UP-TO-DATE
+> Task :classes
+
+> Task :compileTestJava FAILED
+/private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/src/test/java/unichope/tutor/TutorNoteDraftGatewayTest.java:24: error: cannot find symbol
+        () -> new TutorNoteDraftGateway(new FakeProvider(VALID_OUTPUT), 0));
+                                            ^
+  symbol:   class FakeProvider
+  location: class TutorNoteDraftGatewayTest
+1 error
+
+[Incubating] Problems report is available at: file:///private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileTestJava'.
+> Compilation failed; see the compiler output below.
+  /private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/src/test/java/unichope/tutor/TutorNoteDraftGatewayTest.java:24: error: cannot find symbol
+          () -> new TutorNoteDraftGateway(new FakeProvider(VALID_OUTPUT), 0));
+                                              ^
+    symbol:   class FakeProvider
+    location: class TutorNoteDraftGatewayTest
+  1 error
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 637ms
+3 actionable tasks: 2 executed, 1 up-to-date

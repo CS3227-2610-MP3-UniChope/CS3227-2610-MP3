@@ -429,7 +429,6 @@ class StudentBrowsePgTest extends LifecyclePgFixture {
 
     private void registerTutorDependencies(ConfigurableListableBeanFactory factory) {
         factory.registerSingleton("tutorReads", new PostgresTutorReadRepository(new PostgresUserRepository(db), db));
-        factory.registerSingleton("currentActorProvider", (unichope.tutor.CurrentActorProvider) StudentTestActors::currentPrincipal);
     }
 
     private UUID slotWithId(UUID id, UUID owner, UUID module, Instant start, Instant end, String status) {

@@ -1,6 +1,7 @@
 package unichope.tutor;
 
 import java.util.UUID;
+import unichope.platform.auth.CurrentActorProvider;
 import unichope.platform.core.model.user.Role;
 
 /** Current persisted account state is authoritative; no cached role authorization. */

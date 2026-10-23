@@ -43,7 +43,7 @@ for (const outcome of ['student', 'tutor', 'admin', '401', 'inactive', '503']) {
       await screen.findByLabelText(/^email$/i);
       if (outcome === 'inactive') expect(screen.getByRole('alert')).toHaveTextContent(/inactive/i);
       else expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-    } else await screen.findByRole('heading', { level: 1, name: outcome === 'student' ? /find a consultation/i : new RegExp(outcome, 'i') });
+    } else await screen.findByRole('heading', { level: 1, name: outcome === 'student' ? /find a consultation/i : outcome === 'tutor' ? /consultation notes/i : /admin overview/i });
   });
 }
 test.each([[401, 'UNAUTHENTICATED'], [403, 'ACCOUNT_INACTIVE']] as const)('FE1-RESTORE-UNREACHABLE S3 initial %s', async (status, code) => {

@@ -1,0 +1,48 @@
+Tutor P6 production-auth integration follow-up
+Date: 23 October 2026
+Branch: feat/tutor-ai-note-draft
+
+Disposable PostgreSQL:
+- Initialized a UTF-8 PostgreSQL cluster under /private/tmp/cs3227-p6-auth-pg.
+- Started it on 127.0.0.1:55433 and stopped it after the run.
+- Removed the temporary cluster after the tests completed.
+
+Command:
+./gradlew postgresTest --tests 'unichope.platform.runtime.StudentAuthIntegrationPgTest' \
+  -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55433/postgres \
+  -Dcore.test.user=mp3_test -Dcore.test.password= --console=plain
+
+Result: BUILD SUCCESSFUL. All 9 tests in StudentAuthIntegrationPgTest passed,
+including the two P6 cases. A rerun after adding anonymous and wrong-role no-call
+assertions also passed all 9 tests. The run used the production app-api/local
+composition, real AuthenticationService and PostgreSQL account storage, a
+server-issued browser session/CSRF token, and an injected deterministic fake
+AiGateway. It made no real provider call.
+
+P6 cases verified:
+- Anonymous and Student-role sessions are denied before the AI gateway; the fake
+  call count remains zero.
+- A logged-in Tutor generated a draft for a completed booking; exact response
+  fields, authenticated Tutor ID, task key, rough-note input, output-token budget,
+  fake provider label, and absence of private-note writes were checked.
+- Incrementing the stored session generation inside the fake provider call caused
+  the post-generation recheck to return 401, discard the draft, and invalidate the
+  browser session.
+- Deactivating the Tutor inside the fake provider call caused the post-generation
+  recheck to return 403 ACCOUNT_INACTIVE, discard the draft, and invalidate the
+  browser session.
+
+The first attempt failed because PostgreSQL was not running. A temporary cluster
+was then started and the reruns passed. A separate focused unit run passed 19
+tests across the Tutor draft gateway/parser/service, controller, failure mapping,
+and runtime fake guard suites. `git diff --check` passed after the changes. A full
+clean verification then ran:
+
+./gradlew clean test postgresTest bootJar \
+  -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55433/postgres \
+  -Dcore.test.user=mp3_test -Dcore.test.password= --console=plain
+
+Result: BUILD SUCCESSFUL. The clean run passed all 87 unit tests across 25 suites
+and all 191 PostgreSQL tests across 18 suites, with zero failures, errors, or
+skips; `bootJar` succeeded. Production SoC/provider wiring, key routing, active AI
+migration, React draft state, and live model behavior remain unverified.

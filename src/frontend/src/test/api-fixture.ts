@@ -59,8 +59,10 @@ export function apiFixture(initialActor: Actor | null = null) {
     if (url.pathname === '/api/student/modules') return json([moduleOption, { id: ids.otherModule, code: 'CS9999', name: 'Other module' }]);
     if (url.pathname === '/api/student/slots') return json(slots);
     if (url.pathname === '/api/student/bookings' && method === 'GET') return json(bookings);
+    if (url.pathname === '/api/tutor/bookings' && method === 'GET') return json([]);
     if (url.pathname === '/api/student/bookings' && method === 'POST') return json(booking, 201);
     if (url.pathname === `/api/student/bookings/${ids.booking}/cancel` && method === 'POST') return json({ ...booking, status: 'CANCELLED', cancellable: false });
+    if (url.pathname === '/api/tutor/modules') return json([]);
     throw new Error(`Unconfigured test-only API: ${method} ${url.pathname}`);
   });
   vi.stubGlobal('fetch', fetchMock);

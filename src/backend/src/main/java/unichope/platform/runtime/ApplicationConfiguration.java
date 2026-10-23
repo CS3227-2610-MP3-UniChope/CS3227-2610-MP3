@@ -2,17 +2,20 @@ package unichope.platform.runtime;
 
 import java.time.Clock;
 import javax.sql.DataSource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import unichope.platform.auth.*;
+import unichope.platform.ai.AiGateway;
+import unichope.platform.ai.FakeProvider;
 import unichope.platform.core.*;
 import unichope.platform.core.postgres.*;
 import unichope.platform.core.repository.*;
 import unichope.tutor.*;
-import unichope.tutor.CurrentActorProvider;
 
 /** Explicit application wiring; default profile remains closed and database-free. */
 @Configuration
@@ -88,13 +91,7 @@ public class ApplicationConfiguration {
   }
 
   @Bean
-  CurrentActorProvider tutorActor() {
-    return () ->
-        java.util.Optional.ofNullable(AuthController.principal()).map(SessionPrincipal::userId);
-  }
-
-  @Bean
-  unichope.platform.auth.CurrentActorProvider sharedActor() {
+  CurrentActorProvider sharedActor() {
     return () -> {
       var authentication = org.springframework.security.core.context.SecurityContextHolder
           .getContext().getAuthentication();
@@ -120,5 +117,16 @@ public class ApplicationConfiguration {
   AuthenticationService authenticationService(
       AccountStorage accounts, PasswordHasher hasher, LoginLimiter limiter, Clock clock) {
     return new AuthenticationService(accounts, hasher, limiter, clock);
+  }
+
+  @Bean
+  @Profile("local")
+  @ConditionalOnProperty(prefix = "unichope.ai", name = "mode", havingValue = "fake")
+  @ConditionalOnMissingBean(AiGateway.class)
+  AiGateway localFakeAiGateway() {
+    return new FakeProvider(
+        """
+        {"summary":"Local fake draft for review.","topicsDiscussed":"Tutor note-drafting integration.","followUp":"Edit this draft before saving."}
+        """);
   }
 }

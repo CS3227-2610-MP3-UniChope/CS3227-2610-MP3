@@ -1,0 +1,62 @@
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+
+> Task :compileTestJava FAILED
+/private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/src/test/java/unichope/tutor/TutorNoteDraftGatewayTest.java:33: error: cannot find symbol
+    try (var service = new TutorNoteDraftGateway(fake, Duration.ofSeconds(1))) {
+                           ^
+  symbol:   class TutorNoteDraftGateway
+  location: class TutorNoteDraftGatewayTest
+/private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/src/test/java/unichope/tutor/TutorNoteDraftGatewayTest.java:65: error: cannot find symbol
+    try (var service = new TutorNoteDraftGateway(fake, Duration.ofSeconds(1))) {
+                           ^
+  symbol:   class TutorNoteDraftGateway
+  location: class TutorNoteDraftGatewayTest
+/private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/src/test/java/unichope/tutor/TutorNoteDraftGatewayTest.java:85: error: cannot find symbol
+    try (var service = new TutorNoteDraftGateway(fake, Duration.ofSeconds(1))) {
+                           ^
+  symbol:   class TutorNoteDraftGateway
+  location: class TutorNoteDraftGatewayTest
+/private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/src/test/java/unichope/tutor/TutorNoteDraftGatewayTest.java:115: error: cannot find symbol
+    try (var service = new TutorNoteDraftGateway(hanging, Duration.ofMillis(50))) {
+                           ^
+  symbol:   class TutorNoteDraftGateway
+  location: class TutorNoteDraftGatewayTest
+4 errors
+
+[Incubating] Problems report is available at: file:///private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileTestJava'.
+> Compilation failed; see the compiler output below.
+  /private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/src/test/java/unichope/tutor/TutorNoteDraftGatewayTest.java:33: error: cannot find symbol
+      try (var service = new TutorNoteDraftGateway(fake, Duration.ofSeconds(1))) {
+                             ^
+    symbol:   class TutorNoteDraftGateway
+    location: class TutorNoteDraftGatewayTest
+  /private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/src/test/java/unichope/tutor/TutorNoteDraftGatewayTest.java:65: error: cannot find symbol
+      try (var service = new TutorNoteDraftGateway(fake, Duration.ofSeconds(1))) {
+                             ^
+    symbol:   class TutorNoteDraftGateway
+    location: class TutorNoteDraftGatewayTest
+  /private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/src/test/java/unichope/tutor/TutorNoteDraftGatewayTest.java:85: error: cannot find symbol
+      try (var service = new TutorNoteDraftGateway(fake, Duration.ofSeconds(1))) {
+                             ^
+    symbol:   class TutorNoteDraftGateway
+    location: class TutorNoteDraftGatewayTest
+  /private/tmp/cs3227-mp3-tutor-ai-note-draft/src/backend/src/test/java/unichope/tutor/TutorNoteDraftGatewayTest.java:115: error: cannot find symbol
+      try (var service = new TutorNoteDraftGateway(hanging, Duration.ofMillis(50))) {
+                             ^
+    symbol:   class TutorNoteDraftGateway
+    location: class TutorNoteDraftGatewayTest
+  4 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 810ms
+3 actionable tasks: 1 executed, 2 up-to-date

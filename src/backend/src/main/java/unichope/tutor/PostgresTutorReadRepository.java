@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import unichope.platform.core.model.consultation.ConsultationSlot;
+import unichope.platform.core.model.consultation.Booking;
+import unichope.platform.core.model.consultation.BookingStatus;
 import unichope.platform.core.model.consultation.SlotStatus;
 import unichope.platform.core.repository.UserRepository;
 
@@ -35,6 +37,31 @@ public final class PostgresTutorReadRepository implements TutorReadRepository {
                                 row.getObject("module_id", UUID.class), row.getObject("start_time", OffsetDateTime.class).toInstant(),
                                 row.getObject("end_time", OffsetDateTime.class).toInstant(), SlotStatus.valueOf(row.getString("status"))),
                         row.getString("code"))).list();
+    }
+
+    @Override
+    public List<TutorBooking> findBookingsByTutor(UUID tutorId) {
+        return jdbc.sql("""
+                SELECT b.id AS booking_id, b.student_id, b.slot_id, b.created_at,
+                       b.status AS booking_status, s.tutor_id, s.module_id, s.start_time,
+                       s.end_time, s.status AS slot_status, m.code
+                FROM bookings b
+                JOIN slots s ON s.id=b.slot_id
+                JOIN modules m ON m.id=s.module_id
+                WHERE s.tutor_id=:tutor
+                ORDER BY s.start_time DESC, b.id
+                """).param("tutor", tutorId).query((row, index) -> {
+            var slot = new ConsultationSlot(row.getObject("slot_id", UUID.class),
+                    row.getObject("tutor_id", UUID.class), row.getObject("module_id", UUID.class),
+                    row.getObject("start_time", OffsetDateTime.class).toInstant(),
+                    row.getObject("end_time", OffsetDateTime.class).toInstant(),
+                    SlotStatus.valueOf(row.getString("slot_status")));
+            var booking = new Booking(row.getObject("booking_id", UUID.class),
+                    row.getObject("student_id", UUID.class), slot.id(),
+                    row.getObject("created_at", OffsetDateTime.class).toInstant(),
+                    BookingStatus.valueOf(row.getString("booking_status")));
+            return new TutorBooking(booking, slot, row.getString("code"));
+        }).list();
     }
 
     @Override

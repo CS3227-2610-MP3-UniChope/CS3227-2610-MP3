@@ -1,0 +1,47 @@
+Shared AI PostgreSQL admission increment verification
+Date: 22 October 2026
+Branch: feat/tutor-ai-note-draft
+
+Temporary database: a fresh local PostgreSQL 17 cluster owned by this test run,
+listening on 127.0.0.1:55433 with trust authentication. Each test created and
+dropped its own randomly named schema. No SoC provider or credentials were used.
+
+Focused:
+  ./gradlew postgresTest --tests '*PostgresAiAdmissionPgTest' \
+    -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55433/postgres \
+    -Dcore.test.user=mp3_test -Dcore.test.password= --console=plain
+  Result: 9 tests, 0 failures, 0 errors, 0 skipped.
+
+Full:
+  ./gradlew clean test postgresTest bootJar \
+    -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55433/postgres \
+    -Dcore.test.user=mp3_test -Dcore.test.password= --console=plain
+  Result: test 76 / 0 failures / 0 errors / 0 skipped across 21 suites;
+  postgresTest 187 / 0 failures / 0 errors / 0 skipped across 18 suites;
+  bootJar succeeded.
+
+The first focused run failed because the test left an earlier accepted request in
+flight before it tested the rolling request count. The test fixture was corrected
+to complete those requests. A later compile exposed a missing Duration import in
+the new lock-wait test; that import was fixed. The focused and full runs recorded
+above passed after those corrections. Independent review then found that old
+request rows could prune an active lease when the rolling window was shorter than
+the deadline. Pruning now preserves active leases; regression
+`pruningKeepsAnActiveLeaseWhenItsWindowHasExpired` passed in both the focused and
+full run. The independent reviewer rechecked the fix and recorded no remaining
+findings; see the review handoff.
+
+JUnit XML totals were read from build/test-results/{test,postgresTest} after the
+final run. This evidence verifies isolated PostgreSQL behavior only. It does not
+prove managed-database multi-instance performance, SoC quota accounting, runtime
+wiring, active production migrations, real-model behavior, or independent owner acceptance. Review findings and the
+fix re-review are recorded in `workflow/handoffs/2026-10-22-review-ai-admission.md`.
+
+
+23 October 2026 rerun after Tutor endpoint work:
+  `./gradlew clean test postgresTest bootJar -Dcore.test.jdbcUrl=jdbc:postgresql://127.0.0.1:55433/postgres -Dcore.test.user=mp3_test -Dcore.test.password= --console=plain`
+  Result after adding the Tutor endpoint integration cases: test 84 / 0 failures /
+  0 errors / 0 skipped across 24 suites; postgresTest 189 / 0 failures / 0 errors /
+  0 skipped across 18 suites;
+  bootJar succeeded. The disposable PostgreSQL 17 cluster used UTF-8 and trust
+  authentication. The first 23 October cluster used `SQL_ASCII` and caused seven existing Unicode-note cases to fail; rerunning against a UTF-8 cluster passed. Current JUnit XML is retained under `src/backend/build/test-results/`.

@@ -1,14 +1,16 @@
 # Tutor Implementation Plan
 
-Status: Draft execution plan; every task is pending. Writing this plan does not
-indicate team approval or authorize deployment/changes to other roles by itself.
+Status: Partially implemented; consult the task checkboxes and dated handoffs for
+current progress. Checkboxes do not indicate team approval or authorize
+deployment/changes to other roles by themselves.
 Owner: Huanghao
 Date: 20 October 2026
 
-Scope: Tutor implementation plus shared AI infrastructure in `platform/ai`.
-This plan does not assign shared core/auth/deployment work to Huanghao or change
-teammates' responsibilities. The shared ownership proposal still needs alignment
-with the team; only Huanghao's contribution is recorded here.
+Scope: Tutor implementation, including the Tutor-specific prompt, request
+construction, output validation, and orchestration of its AI feature. The Student
+role owns generic shared AI transport, durable admission, and per-key quotas in
+`platform/ai`. This plan does not assign shared core/auth/deployment work to
+Huanghao or change teammates' responsibilities.
 
 Inputs: [Tutor Product](PRODUCT-SPEC.md), [Tutor Technical](TECHNICAL-SPEC.md),
 [Shared Technical](../SHARED-TECHNICAL-SPEC.md), [Integration](../INTEGRATION-SPEC.md).
@@ -24,7 +26,10 @@ Inputs: [Tutor Product](PRODUCT-SPEC.md), [Tutor Technical](TECHNICAL-SPEC.md),
 - Start with fake-backed AI. The real SoC API link/key/model can be supplied later;
   only provider activation and real evaluation depend on them.
 - No existing SDD toolkit supplies this process. Specialized agents use the team's
-  own scoped instructions and handoff records. No task below has been executed.
+  own scoped instructions and handoff records. P5 manual notes and P6 fake-backed
+  Tutor AI have implementation records. P4 is implemented and its scoped independent
+  review is recorded; human acceptance is pending. P7 has an additional focused approval-text check;
+  see its security-verification handoff.
 
 ## 2. Specialized-Agent Workflow
 
@@ -56,9 +61,9 @@ Do not read or publish hidden reasoning or expose production resources to these 
 - [ ] Review team size, owners, privacy, active-account policy, early completion,
   note conflicts, draft limits, stack, role-first packages, and row-lock protocol.
 - [ ] Assign shared auth/schema/quota/deployment work; do not assume Huanghao owns it all.
-- [ ] Record Huanghao as Tutor and shared AI infrastructure owner; agree AiGateway
-  inputs/results/failures and quota integration with affected role owners. Do not
-  allocate core/auth/deployment work on teammates' behalf.
+- [ ] Record Huanghao as Tutor AI feature owner; agree the Tutor-to-shared-AiGateway
+  request/result/failure and quota integration with affected role owners. Do not
+  allocate shared platform, core/auth, or deployment work on teammates' behalf.
 - [ ] Review proposed maintainer/reviewer assignments in the shared technical spec;
   record actual agreement and keep Tutor-private notes within Tutor ownership.
 - [ ] Create team-authored agent instructions and an evaluation/handoff template.
@@ -114,39 +119,45 @@ be cancelled; no booking survives attached to a cancelled slot; CSRF is enforced
 
 ### P4: Bookings, completion, and history
 
-- [ ] Test filters, owner scoping, completion atomicity/rollback/repetition, history.
-- [ ] Implement booking queries, completion transition, and independent UI filters.
+- [x] Test filters, owner scoping, completion atomicity/rollback/repetition, and history.
+- [x] Implement booking queries, completion transition, confirmation, and independent booking/history UI filters.
 
 Depends on: P3 and shared booking fixture/contract. Requirements: TUT-BOOK-01, TUT-BOOK-02,
 TUT-HIST-01. Verify: two statuses update together, repeated completion conflicts,
-early completion follows the reviewed rule, history selection does not alter notes.
+early completion follows the specified product rule, history selection does not alter
+notes. Implementation and verification evidence are recorded in the P4 developer
+handoffs; scoped independent review is complete, and human acceptance remains pending.
 
 ### P5: Manual notes and version conflicts
 
-- [ ] Test completed-only load/save, version 0/1/update, Unicode/blank limits,
+- [x] Test completed-only load/save, version 0/1/update, Unicode/blank limits,
   competing first saves and stale updates, and retained content after failure.
-- [ ] Implement note API, conditional persistence, editor, conflict handling, and timestamps.
-- [ ] Keep NoteService, PrivateNoteRepository, and PostgresPrivateNoteRepository
+- [x] Implement note API, conditional persistence, editor, conflict handling, and timestamps.
+- [x] Keep NoteService, PrivateNoteRepository, and PostgresPrivateNoteRepository
   within `unichope.tutor`; use shared locking support without reverse platform imports.
-- [ ] Test restart/reload persistence and private DTO boundaries.
+- [x] Test restart/reload persistence and private DTO boundaries.
 
 Depends on: P4. Requirements: TUT-NOTE-01. Verify: stale saves never overwrite newer
 notes; explicit save persists; other roles/tutors cannot load or change private notes.
 Manual note workflow must work before AI is introduced.
 
-### P6: Fake-backed AI and shared usage control
+### P6: Tutor fake-backed AI feature (depends on shared usage control)
 
-- [ ] Implement shared AiGateway and FakeProvider wiring with deterministic valid/error doubles.
-- [ ] Implement shared durable admission counters/reservations, account/provider
-  budgets, deadlines, and sanitized infrastructure failures as Huanghao's shared work.
-- [ ] Coordinate AI metadata migrations with the core maintainer and trusted actor
-  integration with the auth maintainer; keep consultation lifecycle code outside this scope.
-- [ ] Give other role owners the gateway contract and fake-provider examples so
-  they can implement their own prompts, context selection, validation, and UIs.
-- [ ] Test authorization-before-provider, invalid input, quota races, restart/expiry,
-  deadlines, invalid output, and sanitized errors before implementing those paths.
-- [ ] Implement versioned Tutor prompt/output parser and fake-backed draft endpoint.
-- [ ] Add rough-input/draft/editor separation, reviewed copy, explicit save,
+- [ ] Coordinate with the Student owner on the shared `AiGateway`, Tutor task
+  registration/key routing, durable admission, per-key quotas, error mapping,
+  deadline, and fake-provider contract; do not duplicate shared implementations.
+- [ ] Coordinate any shared AI metadata migration with the core maintainer and
+  trusted actor integration with the auth maintainer; keep consultation lifecycle
+  code outside this scope.
+- [x] Complete production AuthenticationService/account integration tests for
+  Tutor login, anonymous/wrong-role denial, session-generation revocation, and
+  inactive-account output discard during generation. PostgreSQL-backed MockMvc
+  endpoint tests separately cover CSRF, booking owner/state, response shape, and
+  no-write behavior with test-only auth. Shared quota tests are recorded separately.
+- [x] Implement the Tutor prompt, output parser, fake-backed request orchestration,
+  and draft endpoint. The HTTP route is unavailable until an approved shared gateway
+  bean and output-token configuration are wired.
+- [x] Add rough-input/draft/editor separation, reviewed copy, explicit save,
   confirmations, pending state, account/selection race protection, and fake label.
 
 Depends on: P5 and agreed shared quota contract for Tutor integration. The gateway,
@@ -160,11 +171,18 @@ work. This task needs no real LLM link, key, or external provider access.
 
 - [ ] Reviewer independently inspects auth/ownership/CSRF, unsafe text, note versions,
   quota accounting, prompt/data separation, logs, configuration, and MP2 reuse claims.
-- [ ] Run direct/indirect injection fixtures with fake canary secrets and no real data.
-- [ ] Test generated "approval" cannot trigger saving or grant permissions.
+- [x] Verify direct injection with a fake canary; no indirect retrieval channel exists.
+  Add its tests if retrieval or tool access is introduced.
+- [x] Test generated "approval" cannot trigger saving or grant permissions.
 - [ ] Evaluate development agents against malicious issue/handoff text and false
   test claims, recording visible actions and independently checked evidence.
 - [ ] Fix scoped findings, rerun affected checks, retain honest unresolved limitations.
+
+The approval-text test and scope record are in
+[`AI-SECURITY-VERIFICATION-SPEC.md`](AI-SECURITY-VERIFICATION-SPEC.md),
+[`AI-SECURITY-VERIFICATION-MATRIX.md`](AI-SECURITY-VERIFICATION-MATRIX.md), and the
+[P7 handoff](../handoffs/2026-10-23-tutor-ai-security-verification.md). The existing
+agent-security evaluation is recorded separately; this increment does not repeat it.
 
 Depends on: P6. Verify: sanitized evaluation records include revision, fixture,
 expected/observed outcomes, commands, reviewer, and human verification. Fake-provider
@@ -172,6 +190,15 @@ tests establish boundaries, not real-model resistance or factual quality.
 
 ### P8: Connect and evaluate real SoC provider later
 
+- [x] Capture the public SoCLaaS base host, chat-completions route, Bearer-key
+  authentication, and model-catalogue discovery in the provider spec. The internal
+  reference remains NUS-network restricted; response/error compatibility and live
+  limits remain explicit verification items.
+- [x] Implement a bounded OpenAI-compatible Chat Completions adapter and local
+  loopback contract tests; see the P8 spec, matrix, and developer handoff.
+- [ ] Review the shared provider adapter with the Student AI owner before routing
+  any production role key through it. Keep the adapter unwired until runtime routing,
+  durable admission, migration, and environment configuration are accepted.
 - [ ] Supply real endpoint/model/auth details server-side and verify hosting access.
 - [ ] Confirm provider request/token limits and configure conservative shared budgets,
   input accounting, output caps, deadlines, and separate dev/prod team keys.
@@ -184,7 +211,10 @@ tests establish boundaries, not real-model resistance or factual quality.
 Depends on: P6, actual provider details, and P7 findings resolution. Requirements:
 AI-01, AI-02, TUT-AI-01, TUT-AI-02. Verify: real SoC responses reach the review UI; no secret is
 in browser/build/logs; quality errors are documented and fixed where feasible.
-Never mark fake output or an unverified external call as completing this task.
+Never mark fake output or an unverified external call as completing this task. The
+adapter is implemented but not wired; see
+[`SOCLAAS-PROVIDER-SPEC.md`](SOCLAAS-PROVIDER-SPEC.md) and
+[`SOCLAAS-PROVIDER-TEST-MATRIX.md`](SOCLAAS-PROVIDER-TEST-MATRIX.md).
 
 ### P9: Deployment, guides, and release evidence
 

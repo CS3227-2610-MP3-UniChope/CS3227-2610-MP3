@@ -91,6 +91,7 @@ export class ApiClient {
       throw error instanceof ApiError || error instanceof StaleRequest ? error : new ApiError();
     } finally { this.controllers.delete(controller); }
   }
+  put<T>(path: string, body: object) { return this.request<T>(path, body, true, 'PUT'); }
 }
 export function safeError(error: unknown, mutation = false) {
   if (error instanceof PreflightError) return 'Nothing was changed. Please try again.';

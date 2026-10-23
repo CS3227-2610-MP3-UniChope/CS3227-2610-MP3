@@ -7,7 +7,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import unichope.platform.auth.CurrentActorProvider;
 import unichope.platform.core.model.consultation.SlotStatus;
+import unichope.platform.core.model.consultation.BookingStatus;
 import unichope.platform.core.LifecycleFailure;
 
 public final class TutorReadService {
@@ -31,6 +33,19 @@ public final class TutorReadService {
         return upcomingSlots(Optional.of(date));
     }
 
+    public List<SlotView> historySlots(SlotStatus status, Optional<LocalDate> date) {
+        UUID tutorId=requireActiveTutor();
+        return reads.findSlotsByTutor(tutorId).stream()
+                .filter(slot->slot.slot().tutorId().equals(tutorId))
+                .filter(slot->slot.slot().status()==status)
+                .filter(slot->date.isEmpty()||slot.slot().startTime().atZone(SINGAPORE).toLocalDate().equals(date.get()))
+                .sorted(Comparator.comparing((TutorSlot projection)->projection.slot().startTime())
+                        .thenComparing(projection->projection.slot().id()))
+                .map(slot->new SlotView(slot.slot().id(),slot.slot().moduleId(),slot.moduleCode(),
+                        slot.slot().startTime(),slot.slot().endTime(),slot.slot().status()))
+                .toList();
+    }
+
     private List<SlotView> upcomingSlots(Optional<LocalDate> date) {
         UUID tutorId = requireActiveTutor();
         var now = clock.instant();
@@ -52,6 +67,23 @@ public final class TutorReadService {
                 .filter(AssignedModule::active)
                 .sorted(Comparator.comparing(AssignedModule::code).thenComparing(AssignedModule::id))
                 .map(module -> new ModuleOption(module.id(), module.code(), module.name()))
+                .toList();
+    }
+
+    public List<TutorBookingView> bookings(Optional<UUID> moduleId, Optional<LocalDate> date,
+            Optional<BookingStatus> status) {
+        UUID tutorId = requireActiveTutor();
+        return reads.findBookingsByTutor(tutorId).stream()
+                .filter(item -> item.slot().tutorId().equals(tutorId))
+                .filter(item -> moduleId.isEmpty() || item.slot().moduleId().equals(moduleId.get()))
+                .filter(item -> date.isEmpty() || item.slot().startTime().atZone(SINGAPORE).toLocalDate().equals(date.get()))
+                .filter(item -> status.isEmpty() || item.booking().status() == status.get())
+                .filter(item -> status.filter(value -> value == BookingStatus.COMPLETED).isEmpty()
+                        || item.slot().status() == SlotStatus.COMPLETED)
+                .sorted(Comparator.comparing((TutorBooking item) -> item.slot().startTime())
+                        .thenComparing(item -> item.booking().id()))
+                .map(item -> new TutorBookingView(item.booking().id(), item.slot().id(), item.moduleCode(),
+                        item.slot().startTime(), item.slot().endTime(), item.booking().status()))
                 .toList();
     }
 

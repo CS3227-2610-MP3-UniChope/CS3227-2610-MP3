@@ -83,14 +83,16 @@ lookups for another owner's ID behave identically to a nonexistent ID: 404.
 | POST `/slots` | `{ moduleId, startTime, endTime }` | 201 `Slot`; `Location: /api/tutor/slots/{id}` | 400 invalid time; 409 `MODULE_UNAVAILABLE`, `SLOT_OVERLAP` |
 | GET `/slots/{id}` | Slot ID | 200 owned `Slot`, any status | 404 `NOT_FOUND` |
 | POST `/slots/{id}/cancel` | Empty JSON object `{}` | 200 cancelled `Slot` | 404; 409 `INVALID_STATE` |
-| GET `/bookings` | Optional `moduleId`, `date`, `status` | 200 `Booking[]` | 400 invalid filter |
+| GET `/bookings` | Optional `moduleId`, `date`, `status` | 200 `TutorBooking[]`: `bookingId`, `slotId`, `moduleCode`, `startTime`, `endTime`, `status` | 400 invalid filter |
 | POST `/bookings/{id}/complete` | `{}` | 200 completed `Booking` | 404; 409 `INVALID_STATE` |
 | GET `/history/slots` | Required `status=CANCELLED` or `COMPLETED`; optional `date` | 200 `Slot[]` | 400 invalid/missing filter |
 | GET `/bookings/{id}/note` | Booking ID | 200 `Note` | 404; 409 `INVALID_STATE` unless COMPLETED |
 | PUT `/bookings/{id}/note` | `{ content, expectedVersion }` | 200 saved `Note` | 400 invalid content/version; 404; 409 `INVALID_STATE`, `NOTE_CONFLICT` |
 | POST `/bookings/{id}/note-draft` | `{ roughNotes }` | 200 draft response below | 400; 404; 409 `INVALID_STATE`, `AI_BUSY`; 429; 502/503/504 |
 
-All slot and booking lists are ordered by startTime ascending, then ID. A valid
+Tutor booking lists include only rows whose slot belongs to the authenticated Tutor;
+the completed-note selector uses `GET /bookings?status=COMPLETED`. All slot and
+booking lists are ordered by startTime ascending, then ID. A valid
 but unmatched module filter returns `[]` and does not reveal whether another
 tutor is assigned that module. No status filter means all booking statuses.
 Creation with a nonexistent/inactive/unassigned module returns the same
