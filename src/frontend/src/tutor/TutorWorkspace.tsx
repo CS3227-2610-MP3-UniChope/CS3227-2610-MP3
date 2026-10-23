@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ApiClient, ApiError, StaleRequest, type Actor } from '../api';
 import { Loading } from '../components';
 
@@ -11,6 +11,7 @@ type CompletedBooking = {
 };
 type BookingRow = CompletedBooking & { status: 'ACTIVE' | 'CANCELLED' | 'COMPLETED' };
 type TutorModule = { id: string; code: string; name: string };
+type TutorSlot = { id: string; moduleId: string; moduleCode: string; startTime: string; endTime: string; status: 'AVAILABLE' | 'BOOKED' };
 type HistorySlot = { id: string; moduleId: string; moduleCode: string; startTime: string; endTime: string; status: 'CANCELLED' | 'COMPLETED' };
 type TutorNote = { bookingId: string; content: string | null; version: number; updatedAt: string | null };
 type DraftResponse = { bookingId: string; draft: string; requiresReview: boolean; providerMode: 'fake' | 'soc' };
@@ -40,11 +41,32 @@ function bookingFailureMessage(error: unknown) {
   if (error instanceof ApiError && error.code === 'NOT_FOUND') return 'This booking is no longer available. Refresh the list.';
   return failureMessage(error);
 }
+function slotFailureMessage(error: unknown) {
+  if (error instanceof ApiError) {
+    if (error.code === 'SLOT_OVERLAP') return 'This time overlaps another slot. Choose a different time.';
+    if (error.code === 'MODULE_UNAVAILABLE') return 'That module is no longer assigned to your account. Refresh the page.';
+    if (error.code === 'VALIDATION_FAILED' || error.code === 'INVALID_TIME' || error.code === 'INVALID_INPUT') return 'Check the module, date, and times, then try again.';
+    if (error.code === 'INVALID_STATE' || error.code === 'NOT_FOUND') return 'This slot is no longer available. Refresh the list.';
+  }
+  return failureMessage(error);
+}
 
 export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: Actor }) {
   const [bookings, setBookings] = useState<CompletedBooking[]>([]);
   const [bookingRows, setBookingRows] = useState<BookingRow[]>([]);
   const [modules, setModules] = useState<TutorModule[]>([]);
+  const [slots, setSlots] = useState<TutorSlot[]>([]);
+  const [slotDate, setSlotDate] = useState('');
+  const [slotCreateDate, setSlotCreateDate] = useState('');
+  const [slotModule, setSlotModule] = useState('');
+  const [slotStart, setSlotStart] = useState('');
+  const [slotEnd, setSlotEnd] = useState('');
+  const [slotLoadState, setSlotLoadState] = useState<'loading' | 'ready' | 'failed'>('loading');
+  const [slotLoadError, setSlotLoadError] = useState('');
+  const [slotActionError, setSlotActionError] = useState('');
+  const [slotNotice, setSlotNotice] = useState('');
+  const [creatingSlot, setCreatingSlot] = useState(false);
+  const [cancellingSlotId, setCancellingSlotId] = useState('');
   const [bookingModule, setBookingModule] = useState('');
   const [bookingDate, setBookingDate] = useState('');
   const [bookingStatus, setBookingStatus] = useState('');
@@ -74,6 +96,7 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   const draftSequence = useRef(0);
   const bookingFiltersRef = useRef({ moduleId: bookingModule, date: bookingDate, status: bookingStatus });
   const bookingRequestSequence = useRef(0);
+  const slotRequestSequence = useRef(0);
   const historyRequestSequence = useRef(0);
   const selectedBookingRef = useRef(bookingId);
   selectedBookingRef.current = bookingId;
@@ -95,6 +118,60 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
       if (!(cause instanceof StaleRequest)) setBookingError(bookingFailureMessage(cause));
       setBookingLoadState('failed'); return false;
     }
+  }
+
+  async function loadSlots(date = slotDate) {
+    const requestSequence = ++slotRequestSequence.current;
+    const query = new URLSearchParams();
+    if (date) query.set('date', date);
+    setSlotLoadState('loading'); setSlotLoadError(''); setSlotNotice('');
+    try {
+      const rows = await api.request<TutorSlot[]>(`/api/tutor/slots${query.size ? `?${query}` : ''}`);
+      if (requestSequence !== slotRequestSequence.current) return false;
+      setSlots(rows); setSlotLoadState('ready'); return true;
+    } catch (cause) {
+      if (requestSequence !== slotRequestSequence.current) return false;
+      if (!(cause instanceof StaleRequest)) setSlotLoadError(slotFailureMessage(cause));
+      setSlotLoadState('failed'); return false;
+    }
+  }
+
+  async function createSlot(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (creatingSlot) return;
+    if (!slotModule || !slotCreateDate || !slotStart || !slotEnd) {
+      setSlotActionError('Choose a module, date, start time, and end time.'); setSlotNotice(''); return;
+    }
+    const startTime = new Date(`${slotCreateDate}T${slotStart}:00+08:00`);
+    const endTime = new Date(`${slotCreateDate}T${slotEnd}:00+08:00`);
+    if (Number.isNaN(startTime.valueOf()) || Number.isNaN(endTime.valueOf()) || endTime <= startTime) {
+      setSlotActionError('End time must be later than start time.'); setSlotNotice(''); return;
+    }
+    setCreatingSlot(true); setSlotActionError(''); setSlotNotice('');
+    try {
+      await api.request('/api/tutor/slots', {
+        moduleId: slotModule, startTime: startTime.toISOString(), endTime: endTime.toISOString(),
+      });
+      setSlotStart(''); setSlotEnd('');
+      await loadSlots();
+      setSlotNotice('Availability created.');
+    } catch (cause) {
+      if (!(cause instanceof StaleRequest)) setSlotActionError(slotFailureMessage(cause));
+    } finally { setCreatingSlot(false); }
+  }
+
+  async function cancelSlot(item: TutorSlot) {
+    if (item.status !== 'AVAILABLE' || cancellingSlotId) return;
+    if (!window.confirm('Cancel this available slot? Students will no longer be able to book it.')) return;
+    setCancellingSlotId(item.id); setSlotLoadError(''); setSlotNotice(''); setSlotActionError('');
+    try {
+      await api.request(`/api/tutor/slots/${item.id}/cancel`, {});
+      await loadSlots();
+      setSlotNotice('Slot cancelled.');
+    } catch (cause) {
+      await loadSlots();
+      if (!(cause instanceof StaleRequest)) setSlotActionError(slotFailureMessage(cause));
+    } finally { setCancellingSlotId(''); }
   }
 
   async function loadHistory(status = historyStatus, date = historyDate) {
@@ -136,6 +213,7 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   useEffect(() => {
     let current = true;
     void api.request<TutorModule[]>('/api/tutor/modules').then(value => { if (current) setModules(value); }).catch(() => {});
+    void loadSlots();
     void loadBookingRows();
     return () => { current = false; };
   }, [api, actor.id]);
@@ -245,6 +323,41 @@ export default function TutorWorkspace({ api, actor }: { api: ApiClient; actor: 
   const selected = bookings.find(item => item.bookingId === bookingId);
   return <main id="main-content" className="tutor-workspace">
     <div className="tutor-page-heading"><span className="eyebrow">TUTOR WORKSPACE</span><h1>Consultation notes</h1><p>Review completed consultations, prepare a draft, and save your notes when ready.</p></div>
+    <section className="tutor-panel" aria-labelledby="tutor-slots-heading">
+      <h2 id="tutor-slots-heading">Availability</h2>
+      <p className="muted">Publish consultation times for your assigned modules. Times use Singapore time.</p>
+      <form className="tutor-list-filters" onSubmit={event => void createSlot(event)}>
+        <label>Assigned module<select className="form-select" value={slotModule} onChange={event => setSlotModule(event.target.value)}>
+          <option value="">Choose a module</option>{modules.map(item => <option key={item.id} value={item.id}>{item.code} · {item.name}</option>)}
+        </select></label>
+        <label>Slot date<input className="form-control" type="date" value={slotCreateDate} onChange={event => setSlotCreateDate(event.target.value)} /></label>
+        <label>Start time<input className="form-control" type="time" value={slotStart} onChange={event => setSlotStart(event.target.value)} /></label>
+        <label>End time<input className="form-control" type="time" value={slotEnd} onChange={event => setSlotEnd(event.target.value)} /></label>
+        <button className="btn btn-primary" type="submit" disabled={creatingSlot || !modules.length}>{creatingSlot ? 'Creating…' : 'Create slot'}</button>
+      </form>
+      <form className="tutor-list-filters" onSubmit={event => { event.preventDefault(); void loadSlots(slotDate); }}>
+        <label>Filter by start date<input className="form-control" type="date" value={slotDate} onChange={event => setSlotDate(event.target.value)} /></label>
+        <button className="btn btn-outline-secondary" type="submit">Apply date</button>
+        <button className="btn btn-outline-secondary" type="button" onClick={() => { setSlotDate(''); void loadSlots(''); }}>All upcoming</button>
+        <button className="btn btn-outline-secondary" type="button" onClick={() => void loadSlots()}>Refresh slots</button>
+      </form>
+      {slotActionError && <p role="alert" className="tutor-alert">{slotActionError}</p>}
+      {slotLoadError && <p role="alert" className="tutor-alert">{slotLoadError}</p>}
+      {slotNotice && <p role="status" className="tutor-notice">{slotNotice}</p>}
+      {slotLoadState === 'loading' && <Loading label="Loading Tutor availability" />}
+      {slotLoadState === 'failed' && <button className="btn btn-outline-secondary" onClick={() => void loadSlots()}>Retry slots</button>}
+      {slotLoadState === 'ready' && !modules.length && <p>No active assigned modules are available for slot creation.</p>}
+      {slotLoadState === 'ready' && slots.length === 0 && <p>No upcoming slots match this date.</p>}
+      {slotLoadState === 'ready' && slots.length > 0 && <div className="table-responsive"><table className="table">
+        <thead><tr><th>Module</th><th>Consultation time (Singapore)</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>{slots.map(item => <tr key={item.id}>
+          <td>{item.moduleCode}</td><td>{dateLabel(item.startTime)} – {dateLabel(item.endTime)}</td><td>{item.status}</td>
+          <td>{item.status === 'AVAILABLE' && <button className="btn btn-sm btn-outline-secondary" disabled={cancellingSlotId !== '' || creatingSlot} onClick={() => void cancelSlot(item)}>
+            {cancellingSlotId === item.id ? 'Cancelling…' : 'Cancel slot'}
+          </button>}</td>
+        </tr>)}</tbody>
+      </table></div>}
+    </section>
     <section className="tutor-panel" aria-labelledby="tutor-bookings-heading">
       <h2 id="tutor-bookings-heading">Bookings</h2>
       <form className="tutor-list-filters" onSubmit={event => { event.preventDefault(); void loadBookingRows(bookingModule, bookingDate, bookingStatus); }}>

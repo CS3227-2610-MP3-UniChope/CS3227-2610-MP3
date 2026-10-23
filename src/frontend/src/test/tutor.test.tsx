@@ -62,6 +62,86 @@ test('P4 UI keeps booking filters separate from completed-note selection', async
   expect(screen.getByLabelText('Completed consultation')).toHaveValue(bookingId);
 });
 
+test('P3 slot management converts SGT values to UTC and refreshes after creation', async () => {
+  const user = userEvent.setup();
+  const moduleId = '20000000-0000-4000-8000-000000000001';
+  const slotId = '30000000-0000-4000-8000-000000000020';
+  let slotReads = 0;
+  api.on('GET', '/api/tutor/modules', () => json([{ id: moduleId, code: 'CS3227', name: 'Software Architecture' }]));
+  api.on('GET', '/api/tutor/slots', () => json(slotReads++ === 0 ? [] : [{
+    id: slotId, moduleId, moduleCode: 'CS3227', startTime: '2026-10-25T02:00:00Z',
+    endTime: '2026-10-25T03:00:00Z', status: 'AVAILABLE',
+  }]));
+  api.on('POST', '/api/tutor/slots', () => json({ id: slotId }, 201));
+  render(<TutorWorkspace api={new ApiClient()} actor={tutor} />);
+  await user.selectOptions(await screen.findByLabelText('Assigned module'), moduleId);
+  fireEvent.change(screen.getByLabelText('Slot date'), { target: { value: '2026-10-25' } });
+  fireEvent.change(screen.getByLabelText('Start time'), { target: { value: '10:00' } });
+  fireEvent.change(screen.getByLabelText('End time'), { target: { value: '11:00' } });
+  await user.click(screen.getByRole('button', { name: 'Create slot' }));
+  expect(await screen.findByText('Availability created.')).toBeVisible();
+  const create = api.requests('/api/tutor/slots', 'POST')[0];
+  expect(create.body).toEqual({ moduleId, startTime: '2026-10-25T02:00:00.000Z', endTime: '2026-10-25T03:00:00.000Z' });
+  expect(api.requests('/api/tutor/slots', 'GET')).toHaveLength(2);
+  expect(await screen.findByText('AVAILABLE')).toBeVisible();
+});
+
+test('P3 slot date filter is Singapore-date based and All upcoming removes the filter', async () => {
+  const user = userEvent.setup();
+  render(<TutorWorkspace api={new ApiClient()} actor={tutor} />);
+  await screen.findByRole('heading', { name: 'Availability' });
+  fireEvent.change(screen.getByLabelText('Filter by start date'), { target: { value: '2026-10-25' } });
+  await user.click(screen.getByRole('button', { name: 'Apply date' }));
+  await waitFor(() => expect(api.requests('/api/tutor/slots', 'GET').at(-1)?.url.searchParams.get('date')).toBe('2026-10-25'));
+  await user.click(screen.getByRole('button', { name: 'All upcoming' }));
+  await waitFor(() => expect(api.requests('/api/tutor/slots', 'GET').at(-1)?.url.search).toBe(''));
+});
+
+test('P3 slot creation validates interval and retains input after server failure', async () => {
+  const user = userEvent.setup();
+  const moduleId = '20000000-0000-4000-8000-000000000001';
+  api.on('GET', '/api/tutor/modules', () => json([{ id: moduleId, code: 'CS3227', name: 'Software Architecture' }]));
+  api.on('POST', '/api/tutor/slots', () => failure(409, 'SLOT_OVERLAP'));
+  render(<TutorWorkspace api={new ApiClient()} actor={tutor} />);
+  await user.selectOptions(await screen.findByLabelText('Assigned module'), moduleId);
+  fireEvent.change(screen.getByLabelText('Slot date'), { target: { value: '2026-10-25' } });
+  fireEvent.change(screen.getByLabelText('Start time'), { target: { value: '11:00' } });
+  fireEvent.change(screen.getByLabelText('End time'), { target: { value: '10:00' } });
+  await user.click(screen.getByRole('button', { name: 'Create slot' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('End time must be later than start time.');
+  expect(api.requests('/api/tutor/slots', 'POST')).toHaveLength(0);
+  fireEvent.change(screen.getByLabelText('End time'), { target: { value: '12:00' } });
+  await user.click(screen.getByRole('button', { name: 'Create slot' }));
+  expect(await screen.findByRole('alert')).toHaveTextContent('This time overlaps another slot. Choose a different time.');
+  expect(screen.getByLabelText('Assigned module')).toHaveValue(moduleId);
+  expect(screen.getByLabelText('Slot date')).toHaveValue('2026-10-25');
+  expect(screen.getByLabelText('Start time')).toHaveValue('11:00');
+  expect(screen.getByLabelText('End time')).toHaveValue('12:00');
+  expect(api.requests('/api/tutor/slots', 'POST')).toHaveLength(1);
+});
+
+test('P3 slot cancellation is confirmed, refreshed, and unavailable for booked rows', async () => {
+  const user = userEvent.setup();
+  const availableId = '30000000-0000-4000-8000-000000000020';
+  const bookedId = '30000000-0000-4000-8000-000000000021';
+  const available = { id: availableId, moduleId: '20000000-0000-4000-8000-000000000001', moduleCode: 'CS3227', startTime: '2026-10-25T02:00:00Z', endTime: '2026-10-25T03:00:00Z', status: 'AVAILABLE' };
+  const booked = { ...available, id: bookedId, status: 'BOOKED' };
+  let slotReads = 0;
+  api.on('GET', '/api/tutor/slots', () => json(slotReads++ === 0 ? [available, booked] : [booked]));
+  api.on('POST', `/api/tutor/slots/${availableId}/cancel`, () => json({ ...available, status: 'CANCELLED' }));
+  const confirm = vi.spyOn(window, 'confirm').mockReturnValueOnce(false).mockReturnValueOnce(true);
+  render(<TutorWorkspace api={new ApiClient()} actor={tutor} />);
+  const cancelButton = await screen.findByRole('button', { name: 'Cancel slot' });
+  await user.click(cancelButton);
+  expect(api.requests(`/api/tutor/slots/${availableId}/cancel`, 'POST')).toHaveLength(0);
+  await user.click(cancelButton);
+  expect(await screen.findByText('Slot cancelled.')).toBeVisible();
+  expect(api.requests(`/api/tutor/slots/${availableId}/cancel`, 'POST')[0].body).toEqual({});
+  expect(api.requests('/api/tutor/slots', 'GET')).toHaveLength(2);
+  expect(screen.queryByRole('button', { name: 'Cancel slot' })).not.toBeInTheDocument();
+  expect(confirm).toHaveBeenCalledTimes(2);
+});
+
 test('P4 UI requires confirmation and refreshes after completion', async () => {
   const user = userEvent.setup();
   const item = { ...completed[0], status: 'ACTIVE' as const };
