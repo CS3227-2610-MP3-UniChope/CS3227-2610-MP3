@@ -102,9 +102,12 @@ The baseline `app-api` profile activates authentication, Admin and Tutor APIs.
 The authorized stu-c5 increment also activates Student with a SessionPrincipal actor
 adapter; see workflow/student/changes/stu-c5-auth-integration.md for current evidence. Default startup
 remains closed and database-free. Runtime migrations use `db/migration`: core V1,
-account columns V2, private notes V3 and initial-Admin marker V4. Existing isolated
-review migrations/tests remain unchanged. Use a new empty database for first setup;
-these migrations do not backfill credentialless accounts from old review schemas.
+account columns V2, private notes V3, initial-Admin marker V4, AI admission V5-V6,
+and Tutor first-login password change V7. Existing isolated review migrations/tests
+remain separate. V7 flags existing Tutors for one password change; Students and
+Admins are not affected. `app-api` startup applies Flyway automatically, so account
+for this one-time Tutor reset when deploying against an existing database. V2 does
+not backfill credentialless accounts from old review schemas.
 
 Set `UNICHOPE_JDBC_URL`, `UNICHOPE_JDBC_USER` and `UNICHOPE_JDBC_PASSWORD` for a
 PostgreSQL database. For first setup only, set `UNICHOPE_ADMIN_NAME`,
@@ -121,11 +124,14 @@ forwarded headers only for a trusted proxy. The server uses one replica/in-memor
 sessions; restart requires sign-in again while database records remain.
 
 Authentication endpoints: `GET /api/auth/csrf`, `POST /api/auth/login`,
-`GET /api/auth/me`, `POST /api/auth/logout`, `POST /api/auth/register`.
+`GET /api/auth/me`, `POST /api/auth/logout`, `POST /api/auth/register`, and
+`POST /api/auth/change-password` for Tutors required to replace their initial password.
 Obtain CSRF first with cookies, send its returned header/token on mutations and
-obtain a new token after login/logout. User output contains only id/name/role.
-Student registration does not sign in. Password reset/change and forced-change flows
-are excluded. Admin APIs are specified in `workflow/admin/TECHNICAL-SPEC.md`.
+obtain a new token after login/logout. Auth output contains only id/name/role and
+the server-derived password-change flag; it never includes credentials.
+The authenticated-user response also includes `mustChangePassword`. Student
+registration does not sign in. Password recovery and Admin password reset are not
+provided. Admin APIs are specified in `workflow/admin/TECHNICAL-SPEC.md`.
 Tutor APIs now receive trusted identity from the same session through runtime wiring.
 
 AI is unavailable by default. The shared SoCLaaS client, role-key routing and

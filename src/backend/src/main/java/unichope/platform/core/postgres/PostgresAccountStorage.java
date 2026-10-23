@@ -27,7 +27,7 @@ import unichope.platform.core.model.user.User;
 /** PostgreSQL account boundary, coordinated with consultation operations by user locks. */
 public final class PostgresAccountStorage implements AccountStorage {
     private static final Set<String> CONTENTION = Set.of("55P03", "40P01", "40001", "57014");
-    private static final String SELECT = "SELECT id,name,email,role,active,password_hash,session_generation FROM users";
+    private static final String SELECT = "SELECT id,name,email,role,active,password_hash,session_generation,must_change_password FROM users";
     private final JdbcClient jdbc;
     private final TransactionTemplate transaction;
     private final Clock clock;
@@ -43,7 +43,7 @@ public final class PostgresAccountStorage implements AccountStorage {
     @Override public Optional<AccountCredentialSnapshot> findCredentialByEmail(String normalizedEmail) {
         String email = canonical(normalizedEmail);
         return safe(() -> jdbc.sql(SELECT + " WHERE email=:email").param("email", email)
-                .query((row, index) -> new AccountCredentialSnapshot(PostgresUserRepository.map(row,index), row.getString("password_hash"), row.getLong("session_generation"))).optional());
+                .query((row, index) -> new AccountCredentialSnapshot(PostgresUserRepository.map(row,index), row.getString("password_hash"), row.getLong("session_generation"), row.getBoolean("must_change_password"))).optional());
     }
 
     @Override public Optional<AccountState> findAccountState(UUID userId) {
@@ -94,23 +94,38 @@ public final class PostgresAccountStorage implements AccountStorage {
         return mutate(() -> {
             lockUsers(userId);
             AccountCredentialSnapshot current = jdbc.sql(SELECT + " WHERE id=:id").param("id", userId)
-                    .query((row,index) -> new AccountCredentialSnapshot(PostgresUserRepository.map(row,index), row.getString("password_hash"), row.getLong("session_generation")))
+                    .query((row,index) -> new AccountCredentialSnapshot(PostgresUserRepository.map(row,index), row.getString("password_hash"), row.getLong("session_generation"), row.getBoolean("must_change_password")))
                     .optional().orElseThrow(() -> fail(LOGIN_REJECTED));
             if (!current.user().isActive() || current.user().role() != observedRole
                     || current.sessionGeneration() != observedGeneration || !current.encodedHash().equals(observedHash)) throw fail(LOGIN_REJECTED);
-            return new AccountState(current.user(),current.sessionGeneration());
+            return new AccountState(current.user(),current.sessionGeneration(),current.mustChangePassword());
+        });
+    }
+
+    @Override public AccountState changeTutorPassword(UUID userId, long expectedGeneration, String encodedHash) {
+        required(userId); hash(encodedHash);
+        if (expectedGeneration < 0) throw fail(INVALID_INPUT);
+        return mutate(() -> {
+            lockUsers(userId);
+            AccountState current = state(userId).orElseThrow(() -> fail(ACCESS_DENIED));
+            if (current.user().role() != Role.TUTOR || !current.user().isActive()
+                    || current.sessionGeneration() != expectedGeneration || !current.mustChangePassword()
+                    || expectedGeneration == Long.MAX_VALUE) throw fail(ACCESS_DENIED);
+            jdbc.sql("UPDATE users SET password_hash=:hash,must_change_password=false,session_generation=:generation WHERE id=:id")
+                    .param("hash", encodedHash).param("generation", expectedGeneration + 1).param("id", userId).update();
+            return state(userId).orElseThrow(() -> fail(STORAGE_FAILURE));
         });
     }
 
     private User insert(Role role, String name, String email, String hash) {
         UUID id = UUID.randomUUID();
-        jdbc.sql("INSERT INTO users (id,name,email,role,active,password_hash,session_generation) VALUES (:id,:name,:email,:role,true,:hash,0)")
-                .param("id",id).param("name",name).param("email",email).param("role",role.name()).param("hash",hash).update();
+        jdbc.sql("INSERT INTO users (id,name,email,role,active,password_hash,session_generation,must_change_password) VALUES (:id,:name,:email,:role,true,:hash,0,:mustChange)")
+                .param("id",id).param("name",name).param("email",email).param("role",role.name()).param("hash",hash).param("mustChange",role == Role.TUTOR).update();
         return state(id).orElseThrow(() -> fail(STORAGE_FAILURE)).user();
     }
     private Optional<AccountState> state(UUID id) {
-        return jdbc.sql("SELECT id,name,email,role,active,session_generation FROM users WHERE id=:id").param("id",id)
-                .query((row,index) -> new AccountState(PostgresUserRepository.map(row,index),row.getLong("session_generation"))).optional();
+        return jdbc.sql("SELECT id,name,email,role,active,session_generation,must_change_password FROM users WHERE id=:id").param("id",id)
+                .query((row,index) -> new AccountState(PostgresUserRepository.map(row,index),row.getLong("session_generation"),row.getBoolean("must_change_password"))).optional();
     }
     private void requireAdmin(AdminContext admin) {
         AccountState actor = state(admin.actorId()).orElseThrow(() -> fail(ACCESS_DENIED));

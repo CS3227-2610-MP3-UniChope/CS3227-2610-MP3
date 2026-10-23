@@ -36,7 +36,7 @@ public final class AuthenticationService implements AutoCloseable {
     this.dummy = hasher.hash("dummy-only-not-a-real-account");
   }
 
-  public record LoginResult(SessionPrincipal principal, User user, long deadlineNanos) {
+  public record LoginResult(SessionPrincipal principal, User user, boolean mustChangePassword, long deadlineNanos) {
     public void requireUnexpired() {
       if (System.nanoTime() - deadlineNanos >= 0)
         throw new AuthFailure(503, "TEMPORARILY_UNAVAILABLE");
@@ -94,6 +94,7 @@ public final class AuthenticationService implements AutoCloseable {
           new LoginResult(
               new SessionPrincipal(confirmed.user().id(), confirmed.sessionGeneration()),
               confirmed.user(),
+              confirmed.mustChangePassword(),
               deadlineNanos);
       result.requireUnexpired();
       success = true;
@@ -104,6 +105,10 @@ public final class AuthenticationService implements AutoCloseable {
   }
 
   public User current(SessionPrincipal principal) {
+    return currentState(principal).user();
+  }
+
+  public AccountState currentState(SessionPrincipal principal) {
     if (principal == null) throw new AuthFailure(401, "UNAUTHENTICATED");
     AccountState state =
         accounts
@@ -112,7 +117,7 @@ public final class AuthenticationService implements AutoCloseable {
     if (!state.user().isActive()) throw new AuthFailure(403, "ACCOUNT_INACTIVE");
     if (state.sessionGeneration() != principal.generation())
       throw new AuthFailure(401, "UNAUTHENTICATED");
-    return state.user();
+    return state;
   }
 
   public User register(String name, String email, String password, String confirmation) {
@@ -127,6 +132,16 @@ public final class AuthenticationService implements AutoCloseable {
     if (role != Role.STUDENT && role != Role.TUTOR) throw new AuthFailure(400, "VALIDATION_FAILED");
     return accounts.provisionAccount(
         actor, role, name.strip(), email.strip().toLowerCase(Locale.ROOT), hash(password));
+  }
+
+  public void changeTutorPassword(SessionPrincipal principal, String password, String confirmation) {
+    if (!validPassword(password) || !password.equals(confirmation))
+      throw new AuthFailure(400, "VALIDATION_FAILED");
+    AccountState current = currentState(principal);
+    if (current.user().role() != Role.TUTOR || !current.mustChangePassword())
+      throw new AuthFailure(403, "FORBIDDEN");
+    String encoded = hash(password);
+    accounts.changeTutorPassword(principal.userId(), principal.generation(), encoded);
   }
 
   private String hash(String password) {

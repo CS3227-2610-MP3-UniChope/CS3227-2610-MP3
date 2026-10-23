@@ -89,8 +89,8 @@ class StudentAuthIntegrationPgTest {
 
     @Test void c5Run1AppApiIncludesStudentWithRealRuntimeMigrationsAndSharedActor() throws Exception {
         assertTrue(Arrays.asList(context.getEnvironment().getActiveProfiles()).containsAll(List.of("auth-api", "tutor-api", "admin-api", "student-api")));
-        // V1-V4 core/auth/notes/bootstrap plus V5 admission and V6 retry accounting.
-        assertEquals(6, db.sql("SELECT count(*) FROM flyway_schema_history WHERE success").query(Integer.class).single());
+        // V1-V4 core/auth/notes/bootstrap, V5-V6 AI admission, and V7 Tutor first-login password change.
+        assertEquals(7, db.sql("SELECT count(*) FROM flyway_schema_history WHERE success").query(Integer.class).single());
         Browser b = login("student");
         assertInstanceOf(SessionPrincipal.class, authentication(b.session()).getPrincipal());
         JsonNode modules = body(ok(get("/api/student/modules"), b, 200));
@@ -294,7 +294,7 @@ class StudentAuthIntegrationPgTest {
     private Browser login(String name) throws Exception { return login(name, token(null)); }
     private Browser login(String name, Browser b) throws Exception {
         MvcResult result = ok(post("/api/auth/login").contentType("application/json").content("{\"email\":\"" + name + "@example.edu\",\"password\":\"" + PASSWORD + "\"}"), b, 200);
-        assertEquals(Set.of("id", "name", "role"), Set.copyOf(body(result).propertyNames())); return token((MockHttpSession) result.getRequest().getSession(false));
+        assertEquals(Set.of("id", "name", "role", "mustChangePassword"), Set.copyOf(body(result).propertyNames())); return token((MockHttpSession) result.getRequest().getSession(false));
     }
     private org.springframework.security.core.Authentication authentication(MockHttpSession session) {
         return ((org.springframework.security.core.context.SecurityContext) session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)).getAuthentication();

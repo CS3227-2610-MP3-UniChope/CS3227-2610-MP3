@@ -105,7 +105,10 @@ browser secrets or backend CORS changes. Production is one origin; deployment
 server must supply SPA history fallback without rewriting `/api` errors to HTML.
 
 FE1 restores identity with GET `/api/auth/me` before rendering protected data.
-Use exact `{id,name,role}` actor and stored uppercase STUDENT/TUTOR/ADMIN role.
+Use `{id,name,role,mustChangePassword}` actor and stored uppercase
+STUDENT/TUTOR/ADMIN role. A Tutor with `mustChangePassword=true` sees only the
+mandatory password-change form; do not request Tutor workspace data until the
+backend confirms a later session with the flag cleared.
 Public route `/login`; role homes `/student/slots`, `/tutor`, `/admin`.
 Root, authenticated Login and wrong-role deep links resolve to the actor's own
 home; unknown routes have an accessible not-found/back-to-home state. Pending

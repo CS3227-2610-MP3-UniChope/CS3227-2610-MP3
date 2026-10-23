@@ -13,13 +13,16 @@ Inputs [Product](PRODUCT-SPEC.md),[Technical](TECHNICAL-SPEC.md),
 | AUTH-P4 | P2 | T1 bounded per-email failure throttle and concurrent reservations/fixed-clock expiry. Test account-existence non-disclosure, capacity and documented restart limitation. |
 | AUTH-P5 | P1; bootstrap contract/deployment owner | I1 offline initial Admin procedure, concurrent bootstrap/rollback/no default secret tests and documented operation. No public endpoint. |
 | AUTH-P6 | P3/P4/P5 | Independent reviewer security/integration checks, Student review, fix/retest findings, guides/measured MP2 reuse/verified summaries/reflections, human acceptance. |
+| AUTH-P7 | P3; shared core storage; increment spec | Force newly provisioned Tutors to replace their initial password; gate other protected routes; verify atomic hash/flag/session-generation update in PostgreSQL and HTTP tests, plus forced UI behavior. |
 
 Use the decisions recorded in the product and technical specifications.
 Review relevant specs before code; tests prove intent, not just implementation
 shape. Record actual commands, revisions, failures and remaining limits. In-memory
 HTTP sessions are not business persistence; test restart signs users out and retains
 committed data. Platform/core migration changes reviewed by Huanghao; auth does not
-invent duplicate users tables or port desktop setup UI. Password reset and forced password change are excluded. No password-change endpoint is planned.
+invent duplicate users tables or port desktop setup UI. Password recovery and Admin
+password reset remain excluded. Tutor first-login change is specified in
+[FIRST-LOGIN-PASSWORD-CHANGE-SPEC](FIRST-LOGIN-PASSWORD-CHANGE-SPEC.md).
 
 
 ## Current results
@@ -50,4 +53,4 @@ The /register page sends the existing public contract with CSRF, clears password
 fields after submission and returns to Login without signing in automatically.
 Existing login, logout, session restoration and Student routing are retained.
 See [Admin and registration frontend specification](../admin/FRONTEND-SPEC.md).
-No password reset/change or forced-change feature is added.
+No password recovery or Admin reset feature is added. Tutor first-login change is tracked by AUTH-P7.

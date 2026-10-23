@@ -129,7 +129,7 @@ class ApplicationIntegrationTest {
     assertEquals(200, result.getResponse().getStatus(), result.getResponse().getContentAsString());
     assertNotEquals(previous, result.getRequest().getSession(false).getId());
     var body = JsonMapper.shared().readTree(result.getResponse().getContentAsString());
-    assertEquals(Set.of("id", "name", "role"), Set.copyOf(body.propertyNames()));
+    assertEquals(Set.of("id", "name", "role", "mustChangePassword"), Set.copyOf(body.propertyNames()));
     return token((MockHttpSession) result.getRequest().getSession(false));
   }
 
@@ -267,12 +267,31 @@ class ApplicationIntegrationTest {
         201, created.getResponse().getStatus(), created.getResponse().getContentAsString());
     assertFalse(created.getResponse().getContentAsString().contains("hash"));
     assertFalse(created.getResponse().getContentAsString().contains(PASSWORD));
-    assertEquals(
-        200,
-        mvc.perform(get("/api/auth/me").session(login("created").session()))
-            .andReturn()
-            .getResponse()
-            .getStatus());
+    UUID createdId = UUID.fromString(JsonMapper.shared().readTree(created.getResponse().getContentAsString()).get("id").stringValue());
+    assertTrue(db.sql("SELECT must_change_password FROM users WHERE id=:id").param("id", createdId).query(Boolean.class).single());
+    Browser initial = login("created");
+    var me = mvc.perform(get("/api/auth/me").session(initial.session())).andReturn();
+    assertTrue(me.getResponse().getContentAsString().contains("\"mustChangePassword\":true"));
+    assertEquals(403, mvc.perform(get("/api/tutor/modules").session(initial.session())).andReturn().getResponse().getStatus());
+    assertTrue(mvc.perform(get("/api/tutor/modules").session(initial.session())).andReturn().getResponse().getContentAsString().contains("PASSWORD_CHANGE_REQUIRED"));
+    var mismatch = mvc.perform(post("/api/auth/change-password").session(initial.session()).header(initial.header(), initial.token())
+        .contentType("application/json").content("{\"password\":\"New-password-2026\",\"confirmation\":\"Different-password-2026\"}")).andReturn();
+    assertEquals(400, mismatch.getResponse().getStatus());
+    assertTrue(db.sql("SELECT must_change_password FROM users WHERE id=:id").param("id", createdId).query(Boolean.class).single());
+    var missingCsrf = mvc.perform(post("/api/auth/change-password").session(initial.session())
+        .contentType("application/json").content("{\"password\":\"New-password-2026\",\"confirmation\":\"New-password-2026\"}")).andReturn();
+    assertEquals(403, missingCsrf.getResponse().getStatus());
+    var changed = mvc.perform(post("/api/auth/change-password").session(initial.session()).header(initial.header(), initial.token())
+        .contentType("application/json").content("{\"password\":\"New-password-2026\",\"confirmation\":\"New-password-2026\"}")).andReturn();
+    assertEquals(204, changed.getResponse().getStatus(), changed.getResponse().getContentAsString());
+    assertEquals(401, mvc.perform(get("/api/auth/me").session(initial.session())).andReturn().getResponse().getStatus());
+    var newLoginToken = token(null);
+    var newLogin = mvc.perform(post("/api/auth/login").session(newLoginToken.session()).header(newLoginToken.header(), newLoginToken.token())
+        .contentType("application/json").content("{\"email\":\"created@example.edu\",\"password\":\"New-password-2026\"}")).andReturn();
+    assertEquals(200, newLogin.getResponse().getStatus(), newLogin.getResponse().getContentAsString());
+    assertTrue(newLogin.getResponse().getContentAsString().contains("\"mustChangePassword\":false"));
+    assertEquals(200, mvc.perform(get("/api/auth/me").session((MockHttpSession) newLogin.getRequest().getSession(false)))
+        .andReturn().getResponse().getStatus());
     var report =
         mvc.perform(
                 post("/api/admin/activity-report")
